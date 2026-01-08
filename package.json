@@ -6,12 +6,11 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/plawn/wti.git",
-    "directory": "packages/glass-ui"
+    "url": "git+https://github.com/Plawn/glass-ui.git"
   },
-  "homepage": "https://github.com/plawn/wti/tree/main/packages/glass-ui#readme",
+  "homepage": "https://github.com/Plawn/glass-ui#readme",
   "bugs": {
-    "url": "https://github.com/plawn/wti/issues"
+    "url": "https://github.com/Plawn/glass-ui/issues"
   },
   "keywords": [
     "solidjs",
