@@ -1,3 +1,0 @@
-export { Menu } from './Menu';
-export type { MenuProps, MenuItem, MenuPlacement } from './types';
-//# sourceMappingURL=index.d.ts.map

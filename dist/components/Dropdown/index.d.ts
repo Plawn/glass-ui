@@ -1,3 +1,0 @@
-export { Dropdown } from './Dropdown';
-export type { DropdownProps, DropdownPlacement } from './types';
-//# sourceMappingURL=index.d.ts.map

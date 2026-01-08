@@ -1,3 +1,0 @@
-export { Alert } from './Alert';
-export type { AlertProps, AlertType } from './types';
-//# sourceMappingURL=index.d.ts.map

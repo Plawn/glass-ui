@@ -1,1 +1,0 @@
-{"version":3,"file":"useCopyToClipboard.d.ts","sourceRoot":"","sources":["../../src/hooks/useCopyToClipboard.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,wBAAwB;IACvC,MAAM,EAAE,MAAM,OAAO,CAAC;IACtB,IAAI,EAAE,CAAC,IAAI,EAAE,MAAM,KAAK,OAAO,CAAC,OAAO,CAAC,CAAC;CAC1C;AAED;;;;;GAKG;AACH,wBAAgB,kBAAkB,CAAC,UAAU,SAAO,GAAG,wBAAwB,CA0B9E"}
