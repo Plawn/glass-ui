@@ -3,7 +3,7 @@
   background: linear-gradient(to bottom right, var(--bg-from), var(--bg-via), var(--bg-to));
 }
 
-:global(.dark) .glass-background {
+.dark .glass-background {
   background: linear-gradient(to bottom right, var(--bg-from-dark), var(--bg-via-dark), var(--bg-to-dark));
 }
 
@@ -12,7 +12,7 @@
   opacity: var(--blob-opacity, 0.25);
 }
 
-:global(.dark) .glass-blob {
+.dark .glass-blob {
   opacity: var(--blob-opacity-dark, 0.15);
 }
 

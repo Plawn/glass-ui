@@ -33,10 +33,19 @@
   box-shadow: 0 4px 6px -1px oklch(0 0 0 / 0.02), 0 2px 4px -2px oklch(0 0 0 / 0.02);
 }
 
-.dark .glass {
+.dark .glass,
+:root:has(.dark) .glass {
   background: oklch(0.15 0.02 260 / 0.6);
   border-color: oklch(1 0 0 / 0.08);
   box-shadow: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(:has(.light)) .glass {
+    background: oklch(0.15 0.02 260 / 0.6);
+    border-color: oklch(1 0 0 / 0.08);
+    box-shadow: none;
+  }
 }
 
 /* iOS 26 Glass - Thick (more opaque) */

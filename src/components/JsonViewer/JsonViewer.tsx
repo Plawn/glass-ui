@@ -182,21 +182,28 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
 
   const jsonString = createMemo(() => formatJson(props.data));
 
-  const [expandAll, setExpandAll] = createSignal(false);
-  const [key, setKey] = createSignal(0);
+  const [expandState, setExpandState] = createSignal<boolean | null>(null);
+  const [key, setKey] = createSignal(1);
+
+  const currentExpandDepth = () => {
+    const state = expandState();
+    if (state === true) return 100;
+    if (state === false) return 0;
+    return initialExpandDepth();
+  };
 
   const handleExpandAll = () => {
-    setExpandAll(true);
+    setExpandState(true);
     setKey((k) => k + 1);
   };
 
   const handleCollapseAll = () => {
-    setExpandAll(false);
+    setExpandState(false);
     setKey((k) => k + 1);
   };
 
   return (
-    <div class={`relative group rounded-xl overflow-hidden ${props.class ?? ''}`}>
+    <div class={`relative group rounded-xl overflow-hidden glass-card ${props.class ?? ''}`}>
       {/* Toolbar */}
       <div class="absolute top-3 right-3 z-10 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
@@ -285,21 +292,21 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
 
       {/* JSON content */}
       <div
-        class="p-6 pt-10 overflow-auto scrollbar-thin bg-surface-50/50 dark:bg-surface-900/50"
+        class="p-6 pt-10 overflow-auto scrollbar-thin"
         style={{ 'max-height': maxHeight() }}
       >
-        <Show when={key() >= 0} keyed>
-          {(_) => (
+        <For each={[key()]}>
+          {() => (
             <div class="pl-4">
               <JsonNode
                 value={props.data as JsonValue}
                 depth={0}
-                initialExpandDepth={expandAll() ? 100 : initialExpandDepth()}
+                initialExpandDepth={currentExpandDepth()}
                 isLast
               />
             </div>
           )}
-        </Show>
+        </For>
       </div>
     </div>
   );
