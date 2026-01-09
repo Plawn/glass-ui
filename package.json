@@ -1,6 +1,6 @@
 {
   "name": "glass-ui-solid",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "iOS 26-inspired glassmorphism UI components for SolidJS",
   "author": "plawn",
   "license": "Apache-2.0",
