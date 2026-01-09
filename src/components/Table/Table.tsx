@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js';
 import { For, Show, createMemo, createSignal } from 'solid-js';
+import { ChevronDownIcon, ChevronUpIcon, SortIcon as SortIconBase } from '../shared/icons';
 import type { SortDirection, SortState, TableProps } from './types';
 
 // Sort icon component
@@ -9,44 +10,13 @@ const SortIcon: Component<{ direction: SortDirection; active: boolean }> = (prop
     aria-hidden="true"
   >
     <Show when={props.direction === 'asc'}>
-      <svg
-        class="w-3.5 h-3.5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-        aria-hidden="true"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-      </svg>
+      <ChevronUpIcon class="w-3.5 h-3.5" />
     </Show>
     <Show when={props.direction === 'desc'}>
-      <svg
-        class="w-3.5 h-3.5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-        aria-hidden="true"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
+      <ChevronDownIcon class="w-3.5 h-3.5" />
     </Show>
     <Show when={!props.direction}>
-      <svg
-        class="w-3.5 h-3.5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-        aria-hidden="true"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-        />
-      </svg>
+      <SortIconBase class="w-3.5 h-3.5" />
     </Show>
   </span>
 );

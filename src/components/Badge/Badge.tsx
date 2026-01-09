@@ -1,23 +1,20 @@
 import type { Component } from 'solid-js';
-import type { BadgeProps, BadgeSize, BadgeVariant, HttpMethod } from './types';
+import {
+  SEMANTIC_COLORS_FILLED,
+  HTTP_METHOD_COLORS,
+  getFilledClasses,
+  type SemanticColor,
+  type HttpMethodColor,
+} from '../../constants';
+import type { BadgeProps, BadgeSize, BadgeVariant } from './types';
 
-const variantStyles: Record<BadgeVariant, string> = {
-  default: 'bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300',
-  success: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
-  warning: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
-  error: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
-  info: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-  method: '', // Handled separately based on method prop
-};
-
-const methodStyles: Record<HttpMethod, string> = {
-  get: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
-  post: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-  put: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
-  patch: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
-  delete: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
-  head: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
-  options: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300',
+/** Map badge variants to semantic color keys */
+const variantToColor: Record<Exclude<BadgeVariant, 'method'>, SemanticColor> = {
+  default: 'default',
+  success: 'success',
+  warning: 'warning',
+  error: 'error',
+  info: 'info',
 };
 
 const sizeStyles: Record<BadgeSize, string> = {
@@ -32,9 +29,11 @@ export const Badge: Component<BadgeProps> = (props) => {
 
   const getVariantStyle = () => {
     if (variant() === 'method' && props.method) {
-      return methodStyles[props.method];
+      const methodColor = HTTP_METHOD_COLORS[props.method as HttpMethodColor];
+      return getFilledClasses(methodColor);
     }
-    return variantStyles[variant()];
+    const colorKey = variantToColor[variant() as Exclude<BadgeVariant, 'method'>];
+    return getFilledClasses(SEMANTIC_COLORS_FILLED[colorKey]);
   };
 
   return (

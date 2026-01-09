@@ -28,13 +28,13 @@ const getValueColor = (type: string): string => {
     case 'string':
       return 'text-emerald-600 dark:text-emerald-400';
     case 'number':
-      return 'text-blue-600 dark:text-blue-400';
+      return 'text-accent-600 dark:text-accent-400';
     case 'boolean':
       return 'text-amber-600 dark:text-amber-400';
     case 'null':
-      return 'text-gray-500 dark:text-gray-500';
+      return 'text-surface-500 dark:text-surface-500';
     default:
-      return 'text-gray-800 dark:text-gray-200';
+      return 'text-surface-800 dark:text-surface-200';
   }
 };
 
@@ -80,7 +80,7 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
           <button
             type="button"
             onClick={() => setExpanded(!expanded())}
-            class="w-4 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 flex-shrink-0 -ml-4"
+            class="w-4 h-5 flex items-center justify-center text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 flex-shrink-0 -ml-4"
             aria-label={expanded() ? 'Collapse' : 'Expand'}
           >
             <svg
@@ -102,7 +102,7 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
         {/* Key name */}
         <Show when={props.keyName !== undefined}>
           <span class="text-violet-600 dark:text-violet-400">"{props.keyName}"</span>
-          <span class="text-gray-500 dark:text-gray-400 mx-1">:</span>
+          <span class="text-surface-500 dark:text-surface-400 mx-1">:</span>
         </Show>
 
         {/* Value */}
@@ -112,7 +112,7 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
             <>
               {renderPrimitive()}
               <Show when={!props.isLast}>
-                <span class="text-gray-500 dark:text-gray-400">,</span>
+                <span class="text-surface-500 dark:text-surface-400">,</span>
               </Show>
             </>
           }
@@ -124,28 +124,28 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
                 <button
                   type="button"
                   onClick={() => setExpanded(true)}
-                  class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  class="text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200"
                 >
                   {brackets()[0]}
-                  <span class="mx-1 px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded text-xs">
+                  <span class="mx-1 px-1.5 py-0.5 bg-surface-100 dark:bg-surface-800 rounded text-xs">
                     {itemCount()} {itemCount() === 1 ? 'item' : 'items'}
                   </span>
                   {brackets()[1]}
                 </button>
                 <Show when={!props.isLast}>
-                  <span class="text-gray-500 dark:text-gray-400">,</span>
+                  <span class="text-surface-500 dark:text-surface-400">,</span>
                 </Show>
               </>
             }
           >
-            <span class="text-gray-500 dark:text-gray-400">{brackets()[0]}</span>
+            <span class="text-surface-500 dark:text-surface-400">{brackets()[0]}</span>
           </Show>
         </Show>
       </div>
 
       {/* Children */}
       <Show when={isExpandable() && expanded()}>
-        <div class="ml-4 border-l border-gray-200 dark:border-gray-700 pl-2">
+        <div class="ml-4 border-l border-surface-200 dark:border-surface-700 pl-2">
           <For each={entries()}>
             {([key, val], index) => (
               <JsonNode
@@ -160,9 +160,9 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
         </div>
         <div class="flex items-center">
           <span class="w-4 flex-shrink-0" />
-          <span class="text-gray-500 dark:text-gray-400">{brackets()[1]}</span>
+          <span class="text-surface-500 dark:text-surface-400">{brackets()[1]}</span>
           <Show when={!props.isLast}>
-            <span class="text-gray-500 dark:text-gray-400">,</span>
+            <span class="text-surface-500 dark:text-surface-400">,</span>
           </Show>
         </div>
       </Show>

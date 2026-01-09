@@ -2,7 +2,7 @@ import { type Component, For, Show } from 'solid-js';
 import type { BreadcrumbItem, BreadcrumbProps } from './types';
 
 const DefaultSeparator: Component = () => (
-  <span class="mx-2 text-gray-400 dark:text-gray-600" aria-hidden="true">
+  <span class="mx-2 text-surface-400 dark:text-surface-600" aria-hidden="true">
     /
   </span>
 );
@@ -26,7 +26,7 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
       // Current page (last item) - not clickable
       return (
         <span
-          class="flex items-center text-sm font-medium text-gray-900 dark:text-white"
+          class="flex items-center text-sm font-medium text-surface-900 dark:text-surface-100"
           aria-current="page"
         >
           {content}
@@ -38,7 +38,7 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
       return (
         <a
           href={item.href}
-          class="flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+          class="flex items-center text-sm text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
           onClick={(e) => {
             if (item.onClick) {
               e.preventDefault();
@@ -56,7 +56,7 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
         <button
           type="button"
           onClick={item.onClick}
-          class="flex items-center text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+          class="flex items-center text-sm text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
         >
           {content}
         </button>
@@ -65,7 +65,7 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
 
     // Non-clickable item
     return (
-      <span class="flex items-center text-sm text-gray-500 dark:text-gray-400">{content}</span>
+      <span class="flex items-center text-sm text-surface-500 dark:text-surface-400">{content}</span>
     );
   };
 

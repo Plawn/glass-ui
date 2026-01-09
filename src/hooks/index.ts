@@ -1,3 +1,6 @@
+export { useAnimationState } from './useAnimationState';
+export type { UseAnimationStateOptions, UseAnimationStateReturn } from './useAnimationState';
+
 export { useDialogState } from './useDialogState';
 export type { UseDialogStateOptions, UseDialogStateReturn } from './useDialogState';
 

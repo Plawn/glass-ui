@@ -1,6 +1,7 @@
 import { type Component, For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { useIsDark } from '../../hooks';
+import { CloseIcon } from '../shared/icons';
 import { type SnackbarItem, dismissSnackbar, getSnackbarStore } from './store';
 import type { SnackbarPosition } from './types';
 
@@ -69,14 +70,14 @@ const SnackbarItemComponent: Component<{
         exiting() ? exitAnimation() : enterAnimation()
       }`}
     >
-      <p class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200">
+      <p class="flex-1 text-sm font-medium text-surface-800 dark:text-surface-200">
         {props.snackbar.message}
       </p>
       <Show when={props.snackbar.action}>
         <button
           type="button"
           onClick={handleAction}
-          class="flex-shrink-0 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+          class="flex-shrink-0 text-sm font-semibold text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 transition-colors"
         >
           {props.snackbar.action}
         </button>
@@ -84,19 +85,10 @@ const SnackbarItemComponent: Component<{
       <button
         type="button"
         onClick={handleDismiss}
-        class="flex-shrink-0 p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+        class="flex-shrink-0 p-1 rounded-lg text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
         aria-label="Dismiss"
       >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-          aria-hidden="true"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <CloseIcon class="w-4 h-4" />
       </button>
     </div>
   );

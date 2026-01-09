@@ -1,6 +1,8 @@
 import { type Component, Show, createEffect, onCleanup } from 'solid-js';
 import { Portal } from 'solid-js/web';
+import { BACKDROP_ENTER, MODAL_PANEL_ENTER } from '../../constants';
 import { useIsDark } from '../../hooks';
+import { CloseButton } from '../shared';
 import type { ModalProps, ModalSize } from './types';
 
 const sizeStyles: Record<ModalSize, string> = {
@@ -56,42 +58,26 @@ export const Modal: Component<ModalProps> = (props) => {
       <Portal>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled separately */}
         <div
-          class={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 ${isDark() ? 'dark' : ''}`}
+          class={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm ${BACKDROP_ENTER} ${isDark() ? 'dark' : ''}`}
           onClick={handleBackdropClick}
           role="dialog"
           aria-modal="true"
           aria-labelledby={props.title ? 'modal-title' : undefined}
         >
           <div
-            class={`w-full ${sizeStyles[size()]} glass-card rounded-2xl shadow-2xl animate-in zoom-in-95 fade-in duration-200`}
+            class={`w-full ${sizeStyles[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <Show when={props.title || showClose()}>
-              <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/5">
+              <div class="flex items-center justify-between px-6 py-4 border-b border-surface-200 dark:border-white/5">
                 <Show when={props.title}>
-                  <h2 id="modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">
+                  <h2 id="modal-title" class="text-lg font-semibold text-surface-900 dark:text-surface-100">
                     {props.title}
                   </h2>
                 </Show>
                 <Show when={showClose()}>
-                  <button
-                    type="button"
-                    onClick={props.onClose}
-                    class="ml-auto p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                    aria-label="Close"
-                  >
-                    <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      aria-hidden="true"
-                    >
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
+                  <CloseButton onClick={props.onClose} class="ml-auto" />
                 </Show>
               </div>
             </Show>
@@ -101,7 +87,7 @@ export const Modal: Component<ModalProps> = (props) => {
 
             {/* Footer */}
             <Show when={props.footer}>
-              <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-white/5">
+              <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-surface-200 dark:border-white/5">
                 {props.footer}
               </div>
             </Show>

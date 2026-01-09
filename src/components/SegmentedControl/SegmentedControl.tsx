@@ -69,8 +69,8 @@ export function SegmentedControl<T extends string | number>(props: SegmentedCont
             disabled={option.disabled}
             class={`${sizeClasses()} font-bold rounded-lg transition-colors duration-200 relative z-10 ${
               props.value === option.value
-                ? 'text-surface-900 dark:text-white'
-                : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-white'
+                ? 'text-surface-900 dark:text-surface-100'
+                : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100'
             } ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {option.label}

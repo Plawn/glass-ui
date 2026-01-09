@@ -1,6 +1,13 @@
 import { type Component, Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import { Portal } from 'solid-js/web';
+import {
+  ANIMATION_DURATION,
+  DURATION_DEFAULT,
+  SNACKBAR_ENTER,
+  SNACKBAR_EXIT,
+} from '../../constants';
 import { useIsDark } from '../../hooks';
+import { CloseIcon } from '../shared/icons';
 import type { SnackbarPosition, SnackbarProps } from './types';
 
 const positionStyles: Record<SnackbarPosition, string> = {
@@ -9,7 +16,6 @@ const positionStyles: Record<SnackbarPosition, string> = {
   'bottom-right': 'bottom-4 right-4',
 };
 
-const ANIMATION_DURATION = 200;
 const DEFAULT_DURATION = 4000;
 
 export const Snackbar: Component<SnackbarProps> = (props) => {
@@ -54,30 +60,13 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
     props.onClose();
   };
 
-  const enterAnimation = () => {
-    switch (position()) {
-      case 'bottom-left':
-        return 'animate-in slide-in-from-left-4 fade-in';
-      case 'bottom-right':
-        return 'animate-in slide-in-from-right-4 fade-in';
-      default:
-        return 'animate-in slide-in-from-bottom-4 fade-in';
-    }
-  };
-
-  const exitAnimation = () => {
-    switch (position()) {
-      case 'bottom-left':
-        return 'animate-out slide-out-to-left-4 fade-out';
-      case 'bottom-right':
-        return 'animate-out slide-out-to-right-4 fade-out';
-      default:
-        return 'animate-out slide-out-to-bottom-4 fade-out';
-    }
-  };
+  const enterAnimation = () => SNACKBAR_ENTER[position()];
+  const exitAnimation = () => SNACKBAR_EXIT[position()];
 
   const animationClasses = () =>
-    isClosing() ? `${exitAnimation()} duration-200` : `${enterAnimation()} duration-200`;
+    isClosing()
+      ? `${exitAnimation()} ${DURATION_DEFAULT}`
+      : `${enterAnimation()} ${DURATION_DEFAULT}`;
 
   return (
     <Show when={visible()}>
@@ -89,14 +78,14 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
           <div
             class={`glass-card flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg min-w-[200px] max-w-sm ${animationClasses()}`}
           >
-            <p class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200">
+            <p class="flex-1 text-sm font-medium text-surface-800 dark:text-surface-200">
               {props.message}
             </p>
             <Show when={props.action}>
               <button
                 type="button"
                 onClick={handleAction}
-                class="flex-shrink-0 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+                class="flex-shrink-0 text-sm font-semibold text-accent-600 dark:text-accent-400 hover:text-accent-700 dark:hover:text-accent-300 transition-colors"
               >
                 {props.action}
               </button>
@@ -104,19 +93,10 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
             <button
               type="button"
               onClick={props.onClose}
-              class="flex-shrink-0 p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              class="flex-shrink-0 p-1 rounded-lg text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
               aria-label="Dismiss"
             >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-                aria-hidden="true"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              <CloseIcon class="w-4 h-4" />
             </button>
           </div>
         </output>

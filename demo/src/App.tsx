@@ -1,4 +1,4 @@
-import { createSignal, For, Show } from 'solid-js';
+import { createSignal, For, Show, onMount } from 'solid-js';
 import {
   // Layout
   Card,
@@ -569,7 +569,23 @@ Inline \`code\` example.`;
 export default function App() {
   const [activeCategory, setActiveCategory] = createSignal('layout');
   const isDark = useIsDark();
-  const [darkMode, setDarkMode] = createSignal(false);
+
+  // Detect system dark mode preference
+  const prefersDarkMode = () => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    return false;
+  };
+
+  const [darkMode, setDarkMode] = createSignal(prefersDarkMode());
+
+  // Apply dark mode class on mount based on system preference
+  onMount(() => {
+    if (prefersDarkMode()) {
+      document.documentElement.classList.add('dark');
+    }
+  });
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode());

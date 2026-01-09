@@ -1,4 +1,5 @@
 import { type Component, For, Show, createSignal } from 'solid-js';
+import { CheckIcon, CloseIcon, InfoIcon, WarningIcon } from '../shared/icons';
 import { dismissToast, getToastStore } from './store';
 import type { Toast, ToastType } from './types';
 
@@ -19,9 +20,9 @@ const typeStyles: Record<ToastType, { bg: string; icon: string; iconBg: string }
     iconBg: 'bg-amber-100 dark:bg-amber-900/30',
   },
   info: {
-    bg: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800/30',
-    icon: 'text-blue-600 dark:text-blue-400',
-    iconBg: 'bg-blue-100 dark:bg-blue-900/30',
+    bg: 'bg-accent-50 dark:bg-accent-900/20 border-accent-200 dark:border-accent-800/30',
+    icon: 'text-accent-600 dark:text-accent-400',
+    iconBg: 'bg-accent-100 dark:bg-accent-900/30',
   },
 };
 
@@ -35,60 +36,17 @@ const ToastIcon: Component<{ type: ToastType }> = (props) => {
           fallback={
             <Show
               when={props.type === 'warning'}
-              fallback={
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              }
+              fallback={<InfoIcon class="w-5 h-5" />}
             >
-              <svg
-                class="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
+              <WarningIcon class="w-5 h-5" />
             </Show>
           }
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <CloseIcon class="w-5 h-5" />
         </Show>
       }
     >
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-      </svg>
+      <CheckIcon class="w-5 h-5" />
     </Show>
   );
 };
@@ -112,25 +70,16 @@ const ToastItem: Component<{ toast: Toast }> = (props) => {
       >
         <ToastIcon type={props.toast.type} />
       </div>
-      <p class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200 pt-1">
+      <p class="flex-1 text-sm font-medium text-surface-800 dark:text-surface-200 pt-1">
         {props.toast.message}
       </p>
       <button
         type="button"
         onClick={handleDismiss}
-        class="flex-shrink-0 p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+        class="flex-shrink-0 p-1 rounded-lg text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
         aria-label="Dismiss"
       >
-        <svg
-          class="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-          aria-hidden="true"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <CloseIcon class="w-4 h-4" />
       </button>
     </div>
   );

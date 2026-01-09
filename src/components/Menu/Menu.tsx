@@ -164,15 +164,15 @@ export const Menu: Component<MenuProps> = (props) => {
               {(item, index) => (
                 <Show
                   when={!item.divider}
-                  fallback={<hr class="my-1.5 border-t border-gray-200 dark:border-white/10" />}
+                  fallback={<hr class="my-1.5 border-t border-surface-200 dark:border-white/10" />}
                 >
                   <button
                     type="button"
                     class={`w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-left transition-colors
                       ${
                         item.disabled
-                          ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed'
-                          : 'text-gray-700 dark:text-gray-200 hover:bg-black/5 dark:hover:bg-white/5'
+                          ? 'text-surface-400 dark:text-surface-600 cursor-not-allowed'
+                          : 'text-surface-700 dark:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5'
                       }
                       ${
                         getActualIndex(focusedIndex()) === index()

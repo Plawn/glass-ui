@@ -1,31 +1,6 @@
 import { type Component, For, Show, createMemo } from 'solid-js';
+import { ChevronLeftIcon, ChevronRightIcon } from '../shared/icons';
 import type { PaginationProps } from './types';
-
-const ChevronLeftIcon: Component = () => (
-  <svg
-    class="w-4 h-4"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-  >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-  </svg>
-);
-
-const ChevronRightIcon: Component = () => (
-  <svg
-    class="w-4 h-4"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-  >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-  </svg>
-);
 
 export const Pagination: Component<PaginationProps> = (props) => {
   const defaultPageSizeOptions = [10, 20, 50, 100];
@@ -105,16 +80,16 @@ export const Pagination: Component<PaginationProps> = (props) => {
   const buttonBaseClass =
     'inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-medium transition-colors';
   const buttonInactiveClass =
-    'text-gray-600 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5';
-  const buttonActiveClass = 'glass-active text-gray-900 dark:text-white';
-  const buttonDisabledClass = 'text-gray-300 dark:text-gray-600 cursor-not-allowed';
+    'text-surface-600 dark:text-surface-400 hover:bg-black/5 dark:hover:bg-white/5';
+  const buttonActiveClass = 'glass-active text-surface-900 dark:text-surface-100';
+  const buttonDisabledClass = 'text-surface-300 dark:text-surface-600 cursor-not-allowed';
 
   return (
     <div class={`flex items-center gap-4 ${props.class ?? ''}`}>
       {/* Page size selector */}
       <Show when={props.showPageSize}>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-gray-600 dark:text-gray-400">Show</span>
+          <span class="text-sm text-surface-600 dark:text-surface-400">Show</span>
           <select
             value={props.pageSize}
             onChange={handlePageSizeChange}
@@ -122,7 +97,7 @@ export const Pagination: Component<PaginationProps> = (props) => {
           >
             <For each={pageSizeOptions()}>{(size) => <option value={size}>{size}</option>}</For>
           </select>
-          <span class="text-sm text-gray-600 dark:text-gray-400">per page</span>
+          <span class="text-sm text-surface-600 dark:text-surface-400">per page</span>
         </div>
       </Show>
 
@@ -136,7 +111,7 @@ export const Pagination: Component<PaginationProps> = (props) => {
           class={`${buttonBaseClass} ${canGoPrev() ? buttonInactiveClass : buttonDisabledClass}`}
           aria-label="Previous page"
         >
-          <ChevronLeftIcon />
+          <ChevronLeftIcon class="w-4 h-4" />
         </button>
 
         {/* Page numbers */}
@@ -145,7 +120,7 @@ export const Pagination: Component<PaginationProps> = (props) => {
             <Show
               when={page !== 'ellipsis'}
               fallback={
-                <span class="w-8 h-8 flex items-center justify-center text-gray-400 dark:text-gray-600">
+                <span class="w-8 h-8 flex items-center justify-center text-surface-400 dark:text-surface-600">
                   ...
                 </span>
               }
@@ -173,13 +148,13 @@ export const Pagination: Component<PaginationProps> = (props) => {
           class={`${buttonBaseClass} ${canGoNext() ? buttonInactiveClass : buttonDisabledClass}`}
           aria-label="Next page"
         >
-          <ChevronRightIcon />
+          <ChevronRightIcon class="w-4 h-4" />
         </button>
       </div>
 
       {/* Page info */}
       <Show when={props.total > 0}>
-        <span class="text-sm text-gray-600 dark:text-gray-400">
+        <span class="text-sm text-surface-600 dark:text-surface-400">
           {(props.page - 1) * props.pageSize + 1}-
           {Math.min(props.page * props.pageSize, props.total)} of {props.total}
         </span>

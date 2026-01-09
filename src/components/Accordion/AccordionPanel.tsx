@@ -1,4 +1,5 @@
 import { type Component, Show, createSignal } from 'solid-js';
+import { ChevronDownIcon, ChevronRightIcon } from '../shared/icons';
 import type { AccordionPanelProps } from './types';
 
 /** Single accordion panel for simple use cases */
@@ -14,32 +15,18 @@ export const AccordionPanel: Component<AccordionPanelProps> = (props) => {
         aria-expanded={open()}
       >
         <div class="flex items-center gap-2 text-left">
-          <svg
-            class={`w-3.5 h-3.5 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${open() ? 'rotate-90' : ''}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-            aria-hidden="true"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-          <span class="text-xs font-medium text-gray-700 dark:text-gray-200">{props.title}</span>
+          <ChevronRightIcon
+            class={`w-3.5 h-3.5 text-surface-500 dark:text-surface-400 transition-transform duration-200 ${open() ? 'rotate-90' : ''}`}
+          />
+          <span class="text-xs font-medium text-surface-700 dark:text-surface-200">{props.title}</span>
         </div>
-        <svg
-          class={`w-3.5 h-3.5 text-gray-400 dark:text-gray-500 transition-transform duration-200 ${open() ? 'rotate-180' : ''}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="2"
-          aria-hidden="true"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
+        <ChevronDownIcon
+          class={`w-3.5 h-3.5 text-surface-400 dark:text-surface-500 transition-transform duration-200 ${open() ? 'rotate-180' : ''}`}
+        />
       </button>
 
       <Show when={open()}>
-        <div class="px-3 pb-3 border-t border-gray-200 dark:border-white/5 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div class="px-3 pb-3 border-t border-surface-200 dark:border-white/5 animate-in fade-in slide-in-from-top-2 duration-200">
           <div class="pt-3">{props.children}</div>
         </div>
       </Show>

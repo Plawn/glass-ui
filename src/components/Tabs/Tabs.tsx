@@ -31,8 +31,8 @@ export const Tabs: Component<TabsProps> = (props) => {
               onClick={() => handleTabChange(item.id)}
               class={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap outline-none focus-ring ${
                 activeTab() === item.id
-                  ? 'glass-active text-gray-900 dark:text-white'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-black/[0.03] dark:hover:bg-white/[0.03]'
+                  ? 'glass-active text-surface-900 dark:text-surface-100'
+                  : 'text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-black/[0.03] dark:hover:bg-white/[0.03]'
               }`}
               aria-selected={activeTab() === item.id}
               role="tab"
@@ -47,8 +47,8 @@ export const Tabs: Component<TabsProps> = (props) => {
                 <span
                   class={`ml-1 px-1.5 py-0.5 text-[0.625rem] rounded-md ${
                     activeTab() === item.id
-                      ? 'glass-button text-gray-700 dark:text-gray-200'
-                      : 'glass-button text-gray-500 dark:text-gray-400'
+                      ? 'glass-button text-surface-700 dark:text-surface-200'
+                      : 'glass-button text-surface-500 dark:text-surface-400'
                   }`}
                 >
                   {item.badge}

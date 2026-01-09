@@ -1,4 +1,5 @@
 import { type Component, Show } from 'solid-js';
+import { CheckIcon } from '../shared/icons';
 import type { CheckboxProps } from './types';
 
 /**
@@ -33,19 +34,12 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
           onChange={(e) => props.onChange?.(e.currentTarget.checked)}
           class="sr-only"
         />
-        <svg
+        <CheckIcon
           class={`w-3 h-3 text-white transition-all duration-200 ${props.checked ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          stroke-width="3"
-          aria-hidden="true"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
+        />
       </div>
       <Show when={props.label}>
-        <span class="text-sm text-gray-700 dark:text-gray-300">{props.label}</span>
+        <span class="text-sm text-surface-700 dark:text-surface-300">{props.label}</span>
       </Show>
     </label>
   );
