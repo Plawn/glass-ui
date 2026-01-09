@@ -19,6 +19,10 @@ export interface BaseInputProps {
   placeholder?: string;
   /** Size variant */
   size?: InputSize;
+  /** Label text displayed above the input */
+  label?: string;
+  /** Error message displayed below the input */
+  error?: string;
 }
 
 /**
@@ -81,6 +85,10 @@ export interface SelectProps {
   name?: string;
   /** Whether the select is required */
   required?: boolean;
+  /** Label text displayed above the select */
+  label?: string;
+  /** Error message displayed below the select */
+  error?: string;
 }
 
 /**
@@ -90,7 +98,7 @@ export interface CheckboxProps {
   /** Whether the checkbox is checked */
   checked: boolean;
   /** Callback when checked state changes */
-  onChange: (checked: boolean) => void;
+  onChange?: (checked: boolean) => void;
   /** Label text displayed next to the checkbox */
   label?: string;
   /** Additional CSS classes */

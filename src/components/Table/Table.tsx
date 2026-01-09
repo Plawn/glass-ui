@@ -114,6 +114,40 @@ export function Table<T extends Record<string, unknown>>(
     }
   };
 
+  // Sort data internally when no onSort handler is provided
+  const sortedData = createMemo(() => {
+    const sort = currentSort();
+    // If controlled externally (onSort provided), don't sort - parent handles it
+    if (props.onSort || !sort.column || !sort.direction) {
+      return props.data;
+    }
+
+    const column = props.columns.find((c) => c.key === sort.column);
+    if (!column) return props.data;
+
+    return [...props.data].sort((a, b) => {
+      const aVal = getCellValue(a, sort.column as string);
+      const bVal = getCellValue(b, sort.column as string);
+
+      // Handle null/undefined
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return sort.direction === 'asc' ? -1 : 1;
+      if (bVal == null) return sort.direction === 'asc' ? 1 : -1;
+
+      // Compare values
+      let comparison = 0;
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        comparison = aVal - bVal;
+      } else if (typeof aVal === 'string' && typeof bVal === 'string') {
+        comparison = aVal.localeCompare(bVal);
+      } else {
+        comparison = String(aVal).localeCompare(String(bVal));
+      }
+
+      return sort.direction === 'asc' ? comparison : -comparison;
+    });
+  });
+
   return (
     <div class={`glass-card rounded-xl overflow-hidden ${props.class ?? ''}`}>
       <div class="overflow-x-auto">
@@ -153,7 +187,7 @@ export function Table<T extends Record<string, unknown>>(
           </thead>
           <tbody>
             <Show
-              when={props.data.length > 0}
+              when={sortedData().length > 0}
               fallback={
                 <tr>
                   <td
@@ -165,7 +199,7 @@ export function Table<T extends Record<string, unknown>>(
                 </tr>
               }
             >
-              <For each={props.data}>
+              <For each={sortedData()}>
                 {(row, index) => (
                   <tr class="border-b border-surface-100/50 dark:border-surface-800/50 last:border-b-0 hover:bg-surface-50/50 dark:hover:bg-surface-800/30 transition-colors">
                     <For each={props.columns}>

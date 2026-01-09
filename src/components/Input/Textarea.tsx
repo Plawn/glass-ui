@@ -1,4 +1,4 @@
-import type { Component } from 'solid-js';
+import { type Component, Show } from 'solid-js';
 import type { InputSize, TextareaProps } from './types';
 
 /**
@@ -33,17 +33,30 @@ export const Textarea: Component<TextareaProps> = (props) => {
   const sizeClasses = () => getSizeClasses(props.size ?? 'md');
 
   return (
-    <textarea
-      id={props.id}
-      name={props.name}
-      class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.class ?? ''}`}
-      placeholder={props.placeholder}
-      value={props.value}
-      rows={props.rows}
-      disabled={props.disabled}
-      readonly={props.readonly}
-      required={props.required}
-      onInput={(e) => props.onInput(e.currentTarget.value)}
-    />
+    <div class="w-full">
+      <Show when={props.label}>
+        <label
+          for={props.id}
+          class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
+        >
+          {props.label}
+        </label>
+      </Show>
+      <textarea
+        id={props.id}
+        name={props.name}
+        class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''} ${props.class ?? ''}`}
+        placeholder={props.placeholder}
+        value={props.value}
+        rows={props.rows}
+        disabled={props.disabled}
+        readonly={props.readonly}
+        required={props.required}
+        onInput={(e) => props.onInput(e.currentTarget.value)}
+      />
+      <Show when={props.error}>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
+      </Show>
+    </div>
   );
 };

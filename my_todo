@@ -1,0 +1,6 @@
+---
+
+- [ ] CSS tree-shaking complet : actuellement le JS est tree-shakable (preserveModules) mais le CSS reste bundlé en un seul fichier (71 kB). Options :
+  1. Migrer vers CSS-in-JS (solid-styled-components)
+  2. Créer des fichiers CSS par composant et les importer dans chaque composant
+  - Pour l'instant, les consommateurs avec leur propre Tailwind peuvent importer `theme.css` et laisser Tailwind purger les classes inutilisées

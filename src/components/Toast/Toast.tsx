@@ -141,7 +141,7 @@ export const ToastContainer: Component = () => {
   const store = getToastStore();
 
   return (
-    <div class="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+    <div class="fixed top-4 right-4 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
       <For each={store.toasts}>
         {(t) => (
           <div class="pointer-events-auto">

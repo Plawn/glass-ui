@@ -1,14 +1,13 @@
 import type { Component } from 'solid-js';
 import { Match, Switch, createMemo } from 'solid-js';
-import {
-  ArrayField,
-  BooleanField,
-  EnumField,
-  NumberField,
-  ObjectField,
-  OneOfField,
-  StringField,
-} from './fields';
+// Direct imports to avoid circular dependency with barrel file
+import { ArrayField } from './fields/ArrayField';
+import { BooleanField } from './fields/BooleanField';
+import { EnumField } from './fields/EnumField';
+import { NumberField } from './fields/NumberField';
+import { ObjectField } from './fields/ObjectField';
+import { OneOfField } from './fields/OneOfField';
+import { StringField } from './fields/StringField';
 import type { JsonSchemaFormProps } from './types';
 
 /**

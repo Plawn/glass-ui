@@ -120,34 +120,43 @@ import {
 
 ## Theming
 
-The library uses CSS custom properties for theming. Override these in your CSS:
+The library uses CSS custom properties with a numbered scale (OKLCH color space). Override these in your CSS:
 
 ```css
 :root {
+  /* Glass effects */
   --glass-bg: rgba(255, 255, 255, 0.7);
   --glass-border: rgba(255, 255, 255, 0.3);
   --glass-blur: 20px;
 
-  --color-surface: #ffffff;
-  --color-surface-secondary: #f5f5f7;
-  --color-text: #1d1d1f;
-  --color-text-secondary: #86868b;
+  /* Surface colors (backgrounds, cards, inputs) */
+  --color-surface-50: oklch(0.99 0.002 240);
+  --color-surface-100: oklch(0.97 0.004 240);
+  --color-surface-200: oklch(0.92 0.01 240);
+  --color-surface-300: oklch(0.8 0.02 240);
+  --color-surface-400: oklch(0.6 0.025 240);
+  --color-surface-500: oklch(0.4 0.03 240);
+  --color-surface-600: oklch(0.3 0.03 250);
+  --color-surface-700: oklch(0.2 0.03 260);
+  --color-surface-800: oklch(0.15 0.03 260);
+  --color-surface-900: oklch(0.1 0.03 260);
+  --color-surface-950: oklch(0.05 0.03 260);
 
-  --color-accent: #007aff;
-  --color-success: #34c759;
-  --color-warning: #ff9500;
-  --color-error: #ff3b30;
+  /* Accent colors (buttons, links, focus states) */
+  --color-accent-500: oklch(0.55 0.2 250);
+  /* ... see theme.css for full scale */
 }
 
 .dark {
   --glass-bg: rgba(30, 30, 30, 0.8);
   --glass-border: rgba(255, 255, 255, 0.1);
-
-  --color-surface: #1c1c1e;
-  --color-surface-secondary: #2c2c2e;
-  --color-text: #f5f5f7;
-  --color-text-secondary: #98989d;
 }
+```
+
+For the full color palette, import the theme file directly:
+
+```css
+@import "glass-ui-solid/theme.css";
 ```
 
 ## Dark Mode

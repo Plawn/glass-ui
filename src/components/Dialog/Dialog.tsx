@@ -1,4 +1,6 @@
-import { type Component, Show, createEffect, onCleanup, onMount } from 'solid-js';
+import { type Component, Show, createEffect, onCleanup } from 'solid-js';
+import { Portal } from 'solid-js/web';
+import { useIsDark } from '../../hooks';
 import type { DialogProps, DialogVariant } from './types';
 
 const confirmButtonStyles: Record<DialogVariant, string> = {
@@ -8,47 +10,25 @@ const confirmButtonStyles: Record<DialogVariant, string> = {
 };
 
 export const Dialog: Component<DialogProps> = (props) => {
-  let dialogRef: HTMLDialogElement | undefined;
-
   const variant = () => props.variant ?? 'default';
   const confirmLabel = () => props.confirmLabel ?? 'Confirm';
   const cancelLabel = () => props.cancelLabel ?? 'Cancel';
 
-  // Sync dialog open state with props.open
+  const isDark = useIsDark();
+
+  // Handle escape key
   createEffect(() => {
-    if (!dialogRef) {
-      return;
-    }
+    if (!props.open) return;
 
-    if (props.open) {
-      if (!dialogRef.open) {
-        dialogRef.showModal();
-      }
-    } else {
-      if (dialogRef.open) {
-        dialogRef.close();
-      }
-    }
-  });
-
-  // Handle native dialog close event (e.g., Escape key)
-  onMount(() => {
-    if (!dialogRef) {
-      return;
-    }
-
-    const handleClose = () => {
-      if (props.open) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         props.onOpenChange(false);
         props.onCancel?.();
       }
     };
 
-    dialogRef.addEventListener('close', handleClose);
-
-    onCleanup(() => {
-      dialogRef?.removeEventListener('close', handleClose);
-    });
+    document.addEventListener('keydown', handleKeyDown);
+    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
   });
 
   // Prevent body scroll when dialog is open
@@ -64,7 +44,7 @@ export const Dialog: Component<DialogProps> = (props) => {
   });
 
   const handleBackdropClick = (e: MouseEvent) => {
-    if (e.target === dialogRef) {
+    if (e.target === e.currentTarget) {
       props.onOpenChange(false);
       props.onCancel?.();
     }
@@ -81,41 +61,49 @@ export const Dialog: Component<DialogProps> = (props) => {
   };
 
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: Native dialog handles Escape key
-    <dialog
-      ref={dialogRef}
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent backdrop:bg-black/50 backdrop:backdrop-blur-sm m-auto"
-      onClick={handleBackdropClick}
-      aria-labelledby="dialog-title"
-      aria-describedby={props.description ? 'dialog-description' : undefined}
-    >
-      <div class="w-full max-w-sm glass-card rounded-2xl shadow-2xl animate-in zoom-in-95 fade-in duration-200">
-        {/* Content */}
-        <div class="p-6">
-          <h2 id="dialog-title" class="text-lg font-semibold text-gray-900 dark:text-white">
-            {props.title}
-          </h2>
-          <Show when={props.description}>
-            <p id="dialog-description" class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              {props.description}
-            </p>
-          </Show>
-        </div>
-
-        {/* Actions */}
-        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-white/5">
-          <button type="button" onClick={handleCancel} class="btn-secondary px-4 py-2 text-sm">
-            {cancelLabel()}
-          </button>
-          <button
-            type="button"
-            onClick={handleConfirm}
-            class={`${confirmButtonStyles[variant()]} px-4 py-2 text-sm`}
+    <Show when={props.open}>
+      <Portal>
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled separately */}
+        <div
+          class={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 ${isDark() ? 'dark' : ''}`}
+          onClick={handleBackdropClick}
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="dialog-title"
+          aria-describedby={props.description ? 'dialog-description' : undefined}
+        >
+          <div
+            class="w-full max-w-sm glass-card rounded-2xl shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            onClick={(e) => e.stopPropagation()}
           >
-            {confirmLabel()}
-          </button>
+            {/* Content */}
+            <div class="p-6">
+              <h2 id="dialog-title" class="text-lg font-semibold text-gray-900 dark:text-white">
+                {props.title}
+              </h2>
+              <Show when={props.description}>
+                <p id="dialog-description" class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                  {props.description}
+                </p>
+              </Show>
+            </div>
+
+            {/* Actions */}
+            <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-white/5">
+              <button type="button" onClick={handleCancel} class="btn-secondary px-4 py-2 text-sm">
+                {cancelLabel()}
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirm}
+                class={`${confirmButtonStyles[variant()]} px-4 py-2 text-sm`}
+              >
+                {confirmLabel()}
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </dialog>
+      </Portal>
+    </Show>
   );
 };

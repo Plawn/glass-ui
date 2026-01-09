@@ -24,8 +24,8 @@ export { ToastContainer, toast, dismissToast, clearToasts } from './Toast';
 export type { Toast, ToastType, ToastStore } from './Toast';
 
 // Snackbar
-export { Snackbar } from './Snackbar';
-export type { SnackbarProps, SnackbarPosition } from './Snackbar';
+export { Snackbar, SnackbarContainer, snackbar, showSnackbar, dismissSnackbar, clearSnackbars } from './Snackbar';
+export type { SnackbarProps, SnackbarPosition, SnackbarItem, SnackbarStore } from './Snackbar';
 
 // Tooltip
 export { Tooltip } from './Tooltip';
@@ -127,3 +127,7 @@ export type { ProgressProps, ProgressVariant, ProgressSize, ProgressColor } from
 // Chip
 export { Chip } from './Chip';
 export type { ChipProps, ChipVariant, ChipSize, ChipColor } from './Chip';
+
+// GlassBackground
+export { GlassBackground } from './GlassBackground';
+export type { GlassBackgroundProps, GlassBackgroundBlob } from './GlassBackground';

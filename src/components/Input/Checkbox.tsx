@@ -30,7 +30,7 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
           checked={props.checked}
           disabled={props.disabled}
           required={props.required}
-          onChange={(e) => props.onChange(e.currentTarget.checked)}
+          onChange={(e) => props.onChange?.(e.currentTarget.checked)}
           class="sr-only"
         />
         <svg

@@ -4,7 +4,7 @@ import type { CardProps, CardVariant } from './types';
 
 const variantStyles: Record<CardVariant, string> = {
   default: 'glass-card',
-  elevated: 'glass-card shadow-lg dark:shadow-2xl',
+  elevated: 'glass-thick shadow-xl dark:shadow-2xl dark:border-surface-600/50 dark:bg-surface-800/90',
   outlined: 'bg-transparent border border-surface-200 dark:border-surface-700',
 };
 

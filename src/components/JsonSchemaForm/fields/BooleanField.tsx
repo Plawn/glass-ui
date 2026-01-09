@@ -4,14 +4,14 @@ import type { BaseFieldProps } from '../types';
 
 /**
  * Boolean field renderer
- * Renders a checkbox with true/false label
+ * Renders a checkbox with schema title as label
  */
 export const BooleanField: Component<BaseFieldProps> = (props) => {
   return (
     <Checkbox
       checked={props.value === true}
       onChange={(checked) => props.onChange(checked)}
-      label={props.value === true ? 'true' : 'false'}
+      label={props.schema.title}
     />
   );
 };

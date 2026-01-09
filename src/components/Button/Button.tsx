@@ -7,14 +7,15 @@ const variantClasses: Record<ButtonVariant, string> = {
   primary: 'btn-primary',
   secondary: 'btn-secondary',
   tertiary: 'btn-tertiary',
+  ghost: 'btn-ghost',
+  danger: 'btn-danger',
 };
 
-// Note: .btn-primary/.btn-secondary/.btn-tertiary already define padding in CSS
-// These size classes only adjust when a non-default size is used
+// Size classes with !important to override .btn-* CSS padding
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-2.5 py-1.5 text-xs gap-1.5',
-  md: 'gap-2.5', // Default: use padding from CSS classes
-  lg: 'px-6 py-3 text-base gap-2.5',
+  sm: '!px-2.5 !py-1.5 !text-xs gap-1.5',
+  md: '!px-5 !py-2.5 !text-sm gap-2',
+  lg: '!px-6 !py-3 !text-base gap-2.5',
 };
 
 export const Button: Component<ButtonProps> = (props) => {

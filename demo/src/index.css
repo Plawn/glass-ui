@@ -1,0 +1,6 @@
+@import '../../src/styles/theme.css';
+@import '../../src/styles/global.css';
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}

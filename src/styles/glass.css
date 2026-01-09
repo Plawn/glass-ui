@@ -280,13 +280,15 @@ select.glass-input {
 
 .glass-checkbox-checked {
   background: oklch(0.55 0.2 260);
-  border-color: oklch(0.55 0.2 260);
+  border: 1.5px solid oklch(0.55 0.2 260);
+  border-radius: 0.375rem;
   box-shadow: 0 2px 4px oklch(0.55 0.2 260 / 0.3);
 }
 
 .dark .glass-checkbox-checked {
   background: oklch(0.6 0.2 260);
-  border-color: oklch(0.6 0.2 260);
+  border: 1.5px solid oklch(0.6 0.2 260);
+  border-radius: 0.375rem;
   box-shadow: 0 0.125rem 0.25rem oklch(0.55 0.2 260 / 0.4);
 }
 

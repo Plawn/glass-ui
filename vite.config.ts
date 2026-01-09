@@ -17,9 +17,8 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'GlassUI',
       formats: ['es'],
-      fileName: 'index',
     },
-    cssCodeSplit: false,
+    cssCodeSplit: true,
     rollupOptions: {
       external: ['solid-js', 'solid-js/web', 'solid-js/store'],
       output: {
@@ -28,14 +27,16 @@ export default defineConfig({
           'solid-js/web': 'SolidJSWeb',
           'solid-js/store': 'SolidJSStore',
         },
+        // Preserve modules for tree-shaking
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+        entryFileNames: '[name].js',
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') {
+          if (assetInfo.name?.endsWith('.css')) {
             return 'styles.css';
           }
           return assetInfo.name || 'asset';
         },
-        // Preserve modules for better tree-shaking
-        preserveModules: false,
       },
     },
     sourcemap: true,

@@ -6,7 +6,7 @@ const [store, setStore] = createStore<ToastStore>({ toasts: [] });
 let toastId = 0;
 
 /** Add a toast notification */
-export function toast(message: string, type: ToastType = 'info', duration = 4000) {
+function addToast(message: string, type: ToastType = 'info', duration = 4000) {
   const id = `toast-${++toastId}`;
   setStore(
     produce((s) => {
@@ -22,6 +22,17 @@ export function toast(message: string, type: ToastType = 'info', duration = 4000
 
   return id;
 }
+
+/** Toast API with helper methods */
+export const toast = Object.assign(
+  (message: string, type: ToastType = 'info', duration = 4000) => addToast(message, type, duration),
+  {
+    success: (message: string, duration = 4000) => addToast(message, 'success', duration),
+    error: (message: string, duration = 4000) => addToast(message, 'error', duration),
+    warning: (message: string, duration = 4000) => addToast(message, 'warning', duration),
+    info: (message: string, duration = 4000) => addToast(message, 'info', duration),
+  }
+);
 
 /** Dismiss a toast by ID */
 export function dismissToast(id: string) {
