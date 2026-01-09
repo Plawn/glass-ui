@@ -1,18 +1,16 @@
 import type { JSX } from 'solid-js';
+import type { StatusColor, BaseComponentProps, IconProps } from '../../types';
 
-export type AlertType = 'info' | 'success' | 'warning' | 'error';
-
-export interface AlertProps {
+export interface AlertProps extends BaseComponentProps, IconProps {
   /** Type of alert, determines color styling */
-  type: AlertType;
+  type: StatusColor;
   /** Optional title displayed prominently */
   title?: string;
   /** Alert content */
   children: JSX.Element;
-  /** Custom icon to display (defaults to type-specific icon) */
-  icon?: JSX.Element;
   /** Callback when close button is clicked (shows close button when provided) */
   onClose?: () => void;
-  /** Additional CSS classes */
-  class?: string;
 }
+
+// Re-export shared types for convenience
+export type { StatusColor as AlertType } from '../../types';

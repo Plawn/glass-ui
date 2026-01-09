@@ -1,4 +1,6 @@
-export interface CodeBlockProps {
+import type { BaseComponentProps } from '../../types';
+
+export interface CodeBlockProps extends BaseComponentProps {
   /** The code to display */
   code: string;
   /** The programming language for syntax highlighting (default: 'json') */
@@ -13,6 +15,4 @@ export interface CodeBlockProps {
   copyLabel?: string;
   /** Label shown after copying (default: 'Copied') */
   copiedLabel?: string;
-  /** Additional CSS classes */
-  class?: string;
 }

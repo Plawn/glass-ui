@@ -1,4 +1,6 @@
-export interface PaginationProps {
+import type { BaseComponentProps } from '../../types';
+
+export interface PaginationProps extends BaseComponentProps {
   /** Total number of items */
   total: number;
   /** Current page (1-indexed) */
@@ -13,6 +15,4 @@ export interface PaginationProps {
   pageSizeOptions?: number[];
   /** Callback when page size changes */
   onPageSizeChange?: (pageSize: number) => void;
-  /** Additional CSS classes */
-  class?: string;
 }

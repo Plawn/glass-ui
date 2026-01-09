@@ -1,9 +1,14 @@
 import type { JSX } from 'solid-js';
+import type {
+  ComponentSize,
+  ButtonVariant,
+  BaseComponentProps,
+  DisableableProps,
+  LoadableProps,
+  DualIconProps,
+} from '../../types';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
-
-export interface ButtonProps {
+export interface ButtonProps extends BaseComponentProps, DisableableProps, LoadableProps, DualIconProps {
   /** Button content */
   children: JSX.Element;
   /** Click handler */
@@ -11,26 +16,17 @@ export interface ButtonProps {
   /** Visual variant */
   variant?: ButtonVariant;
   /** Button size */
-  size?: ButtonSize;
-  /** Whether the button is disabled */
-  disabled?: boolean;
-  /** Whether the button is in a loading state */
-  loading?: boolean;
-  /** Additional CSS classes */
-  class?: string;
+  size?: ComponentSize;
   /** Button type attribute */
   type?: 'button' | 'submit' | 'reset';
-  /** Icon to display on the left side */
-  leftIcon?: JSX.Element;
-  /** Icon to display on the right side */
-  rightIcon?: JSX.Element;
   /** Whether the button should take full width of its container */
   fullWidth?: boolean;
 }
 
-export interface SpinnerProps {
+export interface SpinnerProps extends BaseComponentProps {
   /** Spinner size */
-  size?: ButtonSize;
-  /** Additional CSS classes */
-  class?: string;
+  size?: ComponentSize;
 }
+
+// Re-export shared types for convenience
+export type { ButtonVariant, ComponentSize as ButtonSize } from '../../types';

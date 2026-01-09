@@ -1,22 +1,23 @@
 import type { JSX } from 'solid-js';
+import type { DrawerPosition, OverlayProps } from '../../types';
 
-export type DrawerPosition = 'left' | 'right';
+/**
+ * Drawer size - excludes 'full' since drawers slide from edges
+ */
 export type DrawerSize = 'sm' | 'md' | 'lg' | 'xl';
 
-export interface DrawerProps {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
+export interface DrawerProps extends OverlayProps {
+  /** Drawer content */
   children: JSX.Element;
+  /** Position of the drawer */
   position?: DrawerPosition;
+  /** Size variant */
   size?: DrawerSize;
-  /** Show close button in header */
-  showClose?: boolean;
-  /** Close on backdrop click */
-  closeOnBackdrop?: boolean;
-  /** Close on Escape key */
-  closeOnEscape?: boolean;
+  /** Footer content */
   footer?: JSX.Element;
   /** Remove padding from content area */
   noPadding?: boolean;
 }
+
+// Re-export shared types for convenience
+export type { DrawerPosition } from '../../types';

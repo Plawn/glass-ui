@@ -1,18 +1,26 @@
 import type { JSX } from 'solid-js';
+import type {
+  ComponentSize,
+  StatusColor,
+  HttpMethodColor,
+  BaseComponentProps,
+} from '../../types';
 
-export type BadgeVariant = 'default' | 'success' | 'warning' | 'error' | 'info' | 'method';
-export type BadgeSize = 'sm' | 'md' | 'lg';
-export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options';
+/**
+ * Badge variant - status colors plus 'default' and 'method'
+ */
+export type BadgeVariant = 'default' | StatusColor | 'method';
 
-export interface BadgeProps {
+export interface BadgeProps extends BaseComponentProps {
   /** Badge content */
   children: JSX.Element;
   /** Visual variant */
   variant?: BadgeVariant;
   /** Badge size */
-  size?: BadgeSize;
-  /** Additional CSS classes */
-  class?: string;
+  size?: ComponentSize;
   /** HTTP method for method variant - determines color scheme */
-  method?: HttpMethod;
+  method?: HttpMethodColor;
 }
+
+// Re-export shared types for convenience
+export type { ComponentSize as BadgeSize, HttpMethodColor as HttpMethod } from '../../types';

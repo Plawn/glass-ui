@@ -1,6 +1,6 @@
-export type SkeletonVariant = 'text' | 'circular' | 'rectangular';
+import type { SkeletonVariant, BaseComponentProps } from '../../types';
 
-export interface SkeletonProps {
+export interface SkeletonProps extends BaseComponentProps {
   /** Width of the skeleton (CSS value) */
   width?: string;
   /** Height of the skeleton (CSS value) */
@@ -9,6 +9,7 @@ export interface SkeletonProps {
   rounded?: boolean;
   /** Skeleton shape variant */
   variant?: SkeletonVariant;
-  /** Additional CSS classes */
-  class?: string;
 }
+
+// Re-export shared types for convenience
+export type { SkeletonVariant } from '../../types';

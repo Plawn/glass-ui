@@ -1,20 +1,20 @@
 import type { JSX } from 'solid-js';
+import type { Placement, BaseComponentProps, DisableableProps, IconProps } from '../../types';
 
-export type MenuPlacement = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end';
+/**
+ * Menu placement - subset of Placement for vertical menus
+ */
+export type MenuPlacement = Extract<Placement, 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'>;
 
 export type MenuItem =
-  | {
+  | ({
       /** Display label for the menu item */
       label: string;
       /** Click handler */
       onClick?: () => void;
-      /** Optional icon element */
-      icon?: JSX.Element;
-      /** Whether the item is disabled */
-      disabled?: boolean;
       /** Must be false or omitted for regular items */
       divider?: false;
-    }
+    } & DisableableProps & IconProps)
   | {
       /** Divider item - renders a horizontal line */
       divider: true;
@@ -24,13 +24,11 @@ export type MenuItem =
       disabled?: never;
     };
 
-export interface MenuProps {
+export interface MenuProps extends BaseComponentProps {
   /** Trigger element that opens the menu */
   trigger: JSX.Element;
   /** Menu items to display */
   items: MenuItem[];
   /** Menu placement relative to trigger */
   placement?: MenuPlacement;
-  /** Additional CSS classes for the menu container */
-  class?: string;
 }

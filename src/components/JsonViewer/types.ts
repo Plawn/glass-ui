@@ -1,4 +1,6 @@
-export interface JsonViewerProps {
+import type { BaseComponentProps } from '../../types';
+
+export interface JsonViewerProps extends BaseComponentProps {
   /** The JSON data to display */
   data: unknown;
   /** Maximum height of the viewer (default: '31.25rem') */
@@ -13,8 +15,6 @@ export interface JsonViewerProps {
   expandAllLabel?: string;
   /** Tooltip for collapse all button (default: 'Collapse all') */
   collapseAllLabel?: string;
-  /** Additional CSS classes */
-  class?: string;
 }
 
 export type JsonValue =

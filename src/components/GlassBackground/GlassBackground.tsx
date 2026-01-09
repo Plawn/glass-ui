@@ -1,52 +1,7 @@
-import type { Component, JSX } from 'solid-js';
+import type { Component } from 'solid-js';
 import { For, mergeProps } from 'solid-js';
+import type { GlassBackgroundProps, GlassBackgroundBlob } from './types';
 import './GlassBackground.css';
-
-export interface GlassBackgroundBlob {
-  /** Position from top (CSS value) */
-  top?: string;
-  /** Position from left (CSS value) */
-  left?: string;
-  /** Position from right (CSS value) */
-  right?: string;
-  /** Position from bottom (CSS value) */
-  bottom?: string;
-  /** Size of the blob (CSS value) */
-  size?: string;
-  /** Gradient colors */
-  colors: [string, string];
-  /** Opacity in light mode (0-1) */
-  opacity?: number;
-  /** Opacity in dark mode (0-1) */
-  darkOpacity?: number;
-  /** Animation duration in seconds */
-  duration?: number;
-  /** Animation delay in seconds */
-  delay?: number;
-}
-
-export interface GlassBackgroundProps {
-  /** Child content to render on top of the background */
-  children?: JSX.Element;
-  /** Additional CSS classes for the container */
-  class?: string;
-  /** Custom blobs configuration. If not provided, uses default blobs */
-  blobs?: GlassBackgroundBlob[];
-  /** Whether to animate the blobs */
-  animated?: boolean;
-  /** Base gradient colors for the background (light mode) */
-  gradient?: {
-    from: string;
-    via?: string;
-    to: string;
-  };
-  /** Base gradient colors for the background (dark mode) */
-  darkGradient?: {
-    from: string;
-    via?: string;
-    to: string;
-  };
-}
 
 const defaultBlobs: GlassBackgroundBlob[] = [
   {
@@ -127,7 +82,7 @@ export const GlassBackground: Component<GlassBackgroundProps> = (rawProps) => {
         <For each={props.blobs}>
           {(blob) => (
             <div
-              class={`glass-blob absolute rounded-full blur-3xl ${props.animated ? 'glass-blob-animate' : ''}`}
+              class={`glass-blob absolute ${props.animated ? 'glass-blob-animate' : 'rounded-full'} blur-3xl`}
               style={{
                 top: blob.top,
                 left: blob.left,

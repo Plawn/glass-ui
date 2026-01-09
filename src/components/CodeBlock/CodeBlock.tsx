@@ -104,7 +104,7 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
       {/* Code container with syntax highlighting */}
       {/* innerHTML is the correct SolidJS pattern - content is sanitized via DOMPurify in highlightedCode() */}
       <pre
-        class={`p-6 pt-10 text-sm font-mono overflow-auto scrollbar-thin glass-thin ${props.wrap ? 'whitespace-pre-wrap break-all' : ''}`}
+        class={`p-6 pt-10 text-sm font-mono overflow-auto scrollbar-thin glass-thin rounded-xl ${props.wrap ? 'whitespace-pre-wrap break-all' : ''}`}
         style={{ 'max-height': maxHeight() }}
       >
         <code ref={codeRef} class={`language-${language()}`} innerHTML={highlightedCode()} />

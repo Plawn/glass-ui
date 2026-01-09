@@ -80,6 +80,7 @@ function App() {
 - **Alert** - Inline alert messages (info, success, warning, error)
 - **Progress** - Progress bar with variants
 - **Skeleton** - Loading placeholder
+- **ErrorDisplay** - Error message display with optional details
 
 ### Navigation
 - **Tabs** - Tab navigation
@@ -102,6 +103,9 @@ function App() {
 ### Disclosure
 - **Accordion** - Collapsible accordion panels
 
+### Backgrounds
+- **GlassBackground** - Animated glassmorphism background with customizable blobs
+
 ## Hooks
 
 ```typescript
@@ -109,7 +113,8 @@ import {
   useDialogState,
   useDisclosure,
   useCopyToClipboard,
-  useIsDark
+  useIsDark,
+  useAnimationState
 } from 'glass-ui-solid';
 ```
 
@@ -117,6 +122,7 @@ import {
 - **useDisclosure** - Simple open/close state management
 - **useCopyToClipboard** - Copy text with success feedback
 - **useIsDark** - Detect dark mode (useful for Portals)
+- **useAnimationState** - Manage enter/exit animations with mounting state
 
 ## Theming
 
@@ -201,7 +207,9 @@ import type {
   ButtonProps,
   ModalProps,
   Schema,
-  TableColumn
+  TableColumn,
+  ErrorDisplayProps,
+  GlassBackgroundProps
 } from 'glass-ui-solid';
 ```
 

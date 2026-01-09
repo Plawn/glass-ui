@@ -1,4 +1,5 @@
 import type { JSX } from 'solid-js';
+import type { Alignment, BaseComponentProps } from '../../types';
 
 export type SortDirection = 'asc' | 'desc' | null;
 
@@ -14,7 +15,7 @@ export interface TableColumn<T> {
   /** Column width (CSS value) */
   width?: string;
   /** Text alignment */
-  align?: 'left' | 'center' | 'right';
+  align?: Alignment;
 }
 
 export interface SortState {
@@ -24,7 +25,7 @@ export interface SortState {
   direction: SortDirection;
 }
 
-export interface TableProps<T> {
+export interface TableProps<T> extends BaseComponentProps {
   /** Column definitions */
   columns: TableColumn<T>[];
   /** Data rows */
@@ -37,8 +38,6 @@ export interface TableProps<T> {
   onSort?: (sort: SortState) => void;
   /** Message to display when data is empty */
   emptyMessage?: string;
-  /** Additional CSS classes */
-  class?: string;
   /** Row key accessor function */
   getRowKey?: (row: T, index: number) => string | number;
 }

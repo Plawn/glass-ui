@@ -1,4 +1,4 @@
-export type SnackbarPosition = 'bottom-left' | 'bottom-center' | 'bottom-right';
+import type { SnackbarPosition } from '../../types';
 
 export interface SnackbarProps {
   /** Message to display */
@@ -16,3 +16,6 @@ export interface SnackbarProps {
   /** Callback when snackbar should close */
   onClose: () => void;
 }
+
+// Re-export shared types for convenience
+export type { SnackbarPosition } from '../../types';

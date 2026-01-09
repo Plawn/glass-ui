@@ -1,10 +1,18 @@
 import type { JSX } from 'solid-js';
+import type {
+  ComponentSize,
+  SemanticColor,
+  ChipVariant,
+  BaseComponentProps,
+  DisableableProps,
+} from '../../types';
 
-export type ChipVariant = 'filled' | 'outlined';
-export type ChipSize = 'sm' | 'md' | 'lg';
-export type ChipColor = 'default' | 'primary' | 'success' | 'warning' | 'error';
+/**
+ * Chip color - semantic colors without 'info'
+ */
+export type ChipColor = Exclude<SemanticColor, 'info'>;
 
-export interface ChipProps {
+export interface ChipProps extends BaseComponentProps, DisableableProps {
   /** Chip content */
   children: JSX.Element;
   /** Callback when remove button is clicked */
@@ -14,9 +22,8 @@ export interface ChipProps {
   /** Color theme */
   color?: ChipColor;
   /** Chip size */
-  size?: ChipSize;
-  /** Additional CSS classes */
-  class?: string;
-  /** Whether the chip is disabled */
-  disabled?: boolean;
+  size?: ComponentSize;
 }
+
+// Re-export shared types for convenience
+export type { ChipVariant, ComponentSize as ChipSize } from '../../types';

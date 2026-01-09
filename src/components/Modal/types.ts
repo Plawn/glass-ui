@@ -1,18 +1,14 @@
 import type { JSX } from 'solid-js';
+import type { OverlaySize, OverlayProps } from '../../types';
 
-export type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
-
-export interface ModalProps {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
+export interface ModalProps extends OverlayProps {
+  /** Modal content */
   children: JSX.Element;
-  size?: ModalSize;
-  /** Show close button in header */
-  showClose?: boolean;
-  /** Close on backdrop click */
-  closeOnBackdrop?: boolean;
-  /** Close on Escape key */
-  closeOnEscape?: boolean;
+  /** Size variant */
+  size?: OverlaySize;
+  /** Footer content */
   footer?: JSX.Element;
 }
+
+// Re-export shared types for convenience
+export type { OverlaySize as ModalSize } from '../../types';

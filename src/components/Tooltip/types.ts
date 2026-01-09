@@ -1,11 +1,16 @@
 import type { JSX } from 'solid-js';
+import type { Direction, BaseComponentProps } from '../../types';
 
-export type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
-
-export interface TooltipProps {
+export interface TooltipProps extends BaseComponentProps {
+  /** Tooltip content */
   content: string | JSX.Element;
+  /** Trigger element */
   children: JSX.Element;
-  position?: TooltipPosition;
+  /** Position relative to trigger */
+  position?: Direction;
+  /** Delay before showing (ms) */
   delay?: number;
-  class?: string;
 }
+
+// Re-export shared types for convenience
+export type { Direction as TooltipPosition } from '../../types';

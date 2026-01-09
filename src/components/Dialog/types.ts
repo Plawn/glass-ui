@@ -1,6 +1,6 @@
-export type DialogVariant = 'default' | 'danger';
+import type { DialogVariant, BaseComponentProps } from '../../types';
 
-export interface DialogProps {
+export interface DialogProps extends BaseComponentProps {
   /** Whether the dialog is open */
   open: boolean;
   /** Callback when open state changes */
@@ -20,3 +20,6 @@ export interface DialogProps {
   /** Visual variant - danger shows red confirm button */
   variant?: DialogVariant;
 }
+
+// Re-export shared types for convenience
+export type { DialogVariant } from '../../types';

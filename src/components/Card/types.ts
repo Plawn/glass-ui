@@ -1,8 +1,7 @@
 import type { JSX } from 'solid-js';
+import type { CardVariant, BaseComponentProps } from '../../types';
 
-export type CardVariant = 'default' | 'elevated' | 'outlined';
-
-export interface CardProps {
+export interface CardProps extends BaseComponentProps {
   /** Card header content */
   header?: JSX.Element;
   /** Card body content */
@@ -11,6 +10,7 @@ export interface CardProps {
   footer?: JSX.Element;
   /** Visual variant */
   variant?: CardVariant;
-  /** Additional CSS classes */
-  class?: string;
 }
+
+// Re-export shared types for convenience
+export type { CardVariant } from '../../types';
