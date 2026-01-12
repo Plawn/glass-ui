@@ -1,70 +1,216 @@
-import { type Component, For, Show, createMemo, createSignal } from 'solid-js';
+import {
+  type Component,
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onMount,
+} from 'solid-js';
+import type { ComponentSize } from '../../types';
 import type { TabsProps } from './types';
 
+// =============================================================================
+// STYLE CONSTANTS
+// =============================================================================
+
+const sizeStyles: Record<ComponentSize, { tab: string; icon: string; badge: string }> = {
+  sm: {
+    tab: 'px-3 py-1.5 text-xs gap-1.5',
+    icon: 'w-3.5 h-3.5',
+    badge: 'px-1.5 py-0.5 text-[0.625rem]',
+  },
+  md: {
+    tab: 'px-4 py-2 text-sm gap-2',
+    icon: 'w-4 h-4',
+    badge: 'px-2 py-0.5 text-xs',
+  },
+  lg: {
+    tab: 'px-5 py-2.5 text-base gap-2.5',
+    icon: 'w-5 h-5',
+    badge: 'px-2 py-1 text-xs',
+  },
+};
+
+// =============================================================================
+// COMPONENT
+// =============================================================================
+
 export const Tabs: Component<TabsProps> = (props) => {
-  // Internal state for uncontrolled mode
+  // --- Refs for indicator animation ---
+  let containerRef: HTMLDivElement | undefined;
+  const buttonRefs: Map<string, HTMLButtonElement> = new Map();
+
+  // --- Indicator state ---
+  const [indicatorStyle, setIndicatorStyle] = createSignal({ x: 0, y: 0, width: 0, height: 0 });
+  const [isInitialized, setIsInitialized] = createSignal(false);
+
+  // --- Defaults ---
+  const size = () => props.size ?? 'md';
+  const orientation = () => props.orientation ?? 'horizontal';
+  const fullWidth = () => props.fullWidth ?? false;
+  const lazy = () => props.lazy ?? true;
+  const keepMounted = () => props.keepMounted ?? false;
+
+  const isVertical = () => orientation() === 'vertical';
+
+  // --- Internal state for uncontrolled mode ---
   const [internalTab, setInternalTab] = createSignal(props.defaultTab || props.items[0]?.id);
 
-  // Determine if we're in controlled mode
-  const isControlled = createMemo(() => props.activeTab !== undefined);
-
-  // Get the current active tab (controlled or uncontrolled)
-  const activeTab = createMemo(() =>
-    isControlled() ? (props.activeTab as string) : internalTab(),
+  // Track which tabs have been visited (for lazy loading with keepMounted)
+  const [visitedTabs, setVisitedTabs] = createSignal<Set<string>>(
+    new Set([props.defaultTab || props.items[0]?.id]),
   );
 
+  // --- Controlled vs uncontrolled ---
+  const isControlled = createMemo(() => props.activeTab !== undefined);
+  const activeTab = createMemo(() => (isControlled() ? (props.activeTab as string) : internalTab()));
+
+  // --- Indicator animation ---
+  const updateIndicator = () => {
+    const activeButton = buttonRefs.get(activeTab());
+    if (activeButton && containerRef) {
+      const containerRect = containerRef.getBoundingClientRect();
+      const buttonRect = activeButton.getBoundingClientRect();
+      setIndicatorStyle({
+        x: buttonRect.left - containerRect.left,
+        y: buttonRect.top - containerRect.top,
+        width: buttonRect.width,
+        height: buttonRect.height,
+      });
+    }
+  };
+
+  onMount(() => {
+    updateIndicator();
+    requestAnimationFrame(() => setIsInitialized(true));
+  });
+
+  createEffect(() => {
+    // Track value changes
+    activeTab();
+    if (isInitialized()) {
+      updateIndicator();
+    }
+  });
+
   const handleTabChange = (tabId: string) => {
+    const tab = props.items.find((item) => item.id === tabId);
+    if (tab?.disabled) return;
+
     if (!isControlled()) {
       setInternalTab(tabId);
     }
+
+    if (keepMounted()) {
+      setVisitedTabs((prev) => new Set([...prev, tabId]));
+    }
+
     props.onTabChange?.(tabId);
   };
 
+  // --- Computed styles ---
+  const sizeStyle = () => sizeStyles[size()];
+
+  const getTabClass = (isActive: boolean, isDisabled: boolean) => {
+    const base = `relative z-10 flex items-center font-medium transition-colors duration-200 whitespace-nowrap select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50 focus-visible:ring-offset-1 rounded-lg ${sizeStyle().tab}`;
+
+    if (isDisabled) {
+      return `${base} opacity-40 cursor-not-allowed`;
+    }
+
+    const state = isActive
+      ? 'text-surface-900 dark:text-surface-100'
+      : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100 cursor-pointer';
+
+    return `${base} ${state}`;
+  };
+
+  // --- Render helpers ---
+  const shouldRenderContent = (tabId: string) => {
+    if (!lazy()) return true;
+    if (keepMounted()) return visitedTabs().has(tabId);
+    return activeTab() === tabId;
+  };
+
+  const getIndicatorStyle = () => {
+    const style = indicatorStyle();
+    return {
+      left: `${style.x}px`,
+      top: `${style.y}px`,
+      width: `${style.width}px`,
+      height: `${style.height}px`,
+      'transition-timing-function': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    };
+  };
+
   return (
-    <div class={`w-full ${props.class ?? ''}`}>
-      {/* Tab List */}
-      <div class="flex items-center gap-1 p-1 rounded-xl glass-input overflow-x-auto scrollbar-thin">
+    <div class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${props.class ?? ''}`}>
+      {/* Tab List - Segmented Control Style */}
+      <div
+        ref={containerRef}
+        class={`relative flex gap-0.5 p-1 bg-black/5 dark:bg-white/10 rounded-xl ${
+          isVertical() ? 'flex-col shrink-0 h-fit' : 'flex-row items-center'
+        } ${fullWidth() && !isVertical() ? 'w-full' : 'w-fit'} ${props.tabListClass ?? ''}`}
+        role="tablist"
+        aria-orientation={orientation()}
+      >
+        {/* Sliding indicator */}
+        <div
+          class={`absolute rounded-lg bg-white dark:bg-white/15 shadow-sm dark:shadow-none ${
+            isInitialized() ? 'transition-all duration-300' : ''
+          }`}
+          style={getIndicatorStyle()}
+        />
+
         <For each={props.items}>
-          {(item) => (
-            <button
-              type="button"
-              onClick={() => handleTabChange(item.id)}
-              class={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap outline-none focus-ring ${
-                activeTab() === item.id
-                  ? 'glass-active text-surface-900 dark:text-surface-100'
-                  : 'text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 hover:bg-black/[0.03] dark:hover:bg-white/[0.03]'
-              }`}
-              aria-selected={activeTab() === item.id}
-              role="tab"
-            >
-              <Show when={item.icon}>
-                <span class={activeTab() === item.id ? 'text-accent-500 dark:text-accent-500' : ''}>
-                  {item.icon}
-                </span>
-              </Show>
-              {item.label}
-              <Show when={item.badge}>
-                <span
-                  class={`ml-1 px-1.5 py-0.5 text-[0.625rem] rounded-md ${
-                    activeTab() === item.id
-                      ? 'glass-button text-surface-700 dark:text-surface-200'
-                      : 'glass-button text-surface-500 dark:text-surface-400'
-                  }`}
-                >
-                  {item.badge}
-                </span>
-              </Show>
-            </button>
-          )}
+          {(item) => {
+            const isActive = () => activeTab() === item.id;
+            const isDisabled = () => item.disabled ?? false;
+
+            return (
+              <button
+                ref={(el) => buttonRefs.set(item.id, el)}
+                type="button"
+                onClick={() => handleTabChange(item.id)}
+                class={`${getTabClass(isActive(), isDisabled())} ${fullWidth() && !isVertical() ? 'flex-1 justify-center' : ''}`}
+                aria-selected={isActive()}
+                aria-disabled={isDisabled()}
+                disabled={isDisabled()}
+                role="tab"
+                tabindex={isActive() ? 0 : -1}
+              >
+                <Show when={item.icon}>
+                  <span class={sizeStyle().icon}>{item.icon}</span>
+                </Show>
+                <span>{item.label}</span>
+                <Show when={item.badge !== undefined}>
+                  <span
+                    class={`rounded-full font-medium tabular-nums ${sizeStyle().badge} ${
+                      isActive()
+                        ? 'bg-accent-500/15 text-accent-600 dark:text-accent-400'
+                        : 'bg-black/5 dark:bg-white/10 text-surface-500 dark:text-surface-400'
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                </Show>
+              </button>
+            );
+          }}
         </For>
       </div>
 
       {/* Tab Content */}
-      <div class="mt-4">
+      <div class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${props.contentClass ?? ''}`}>
         <For each={props.items}>
           {(item) => (
-            <Show when={activeTab() === item.id}>
-              <div role="tabpanel" class="animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <Show when={shouldRenderContent(item.id)}>
+              <div
+                role="tabpanel"
+                class={`${activeTab() === item.id ? 'animate-in fade-in slide-in-from-bottom-2 duration-200' : 'hidden'}`}
+                aria-hidden={activeTab() !== item.id}
+              >
                 {item.content}
               </div>
             </Show>

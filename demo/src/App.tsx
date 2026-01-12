@@ -41,6 +41,9 @@ import {
   CodeBlock,
   JsonViewer,
   Markdown,
+  // Virtualization
+  VirtualList,
+  VirtualTable,
   // Hooks
   useDisclosure,
   useIsDark,
@@ -207,14 +210,14 @@ function FormsDemo() {
             value={inputValue()}
             onInput={setInputValue}
           />
-          <Input label="With Error" error="This field is required" value="" onInput={() => {}} />
-          <Input label="Disabled" disabled value="Cannot edit" onInput={() => {}} />
+          <Input label="With Error" error="This field is required" value="" onInput={() => { }} />
+          <Input label="Disabled" disabled value="Cannot edit" onInput={() => { }} />
         </div>
       </DemoSection>
 
       <DemoSection title="Textarea">
         <div class="max-w-sm">
-          <Textarea label="Description" placeholder="Enter description..." rows={3} value="" onInput={() => {}} />
+          <Textarea label="Description" placeholder="Enter description..." rows={3} value="" onInput={() => { }} />
         </div>
       </DemoSection>
 
@@ -392,15 +395,194 @@ function NavigationDemo() {
 
   return (
     <>
-      <DemoSection title="Tabs">
+      <DemoSection title="Tabs - Variants">
+        <p class="text-sm text-surface-500 mb-4">Three visual variants: pills (default), underline, enclosed</p>
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs text-surface-400 mb-2">variant="pills" (default)</p>
+            <Tabs
+              variant="pills"
+              items={[
+                { id: 'tab1', label: 'Overview', content: <p class="text-surface-600 dark:text-surface-400">Pills variant content - Overview</p> },
+                { id: 'tab2', label: 'Details', content: <p class="text-surface-600 dark:text-surface-400">Pills variant content - Details</p> },
+                { id: 'tab3', label: 'Settings', content: <p class="text-surface-600 dark:text-surface-400">Pills variant content - Settings</p> },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">variant="underline"</p>
+            <Tabs
+              variant="underline"
+              items={[
+                { id: 'tab1', label: 'Overview', content: <p class="text-surface-600 dark:text-surface-400">Underline variant content - Overview</p> },
+                { id: 'tab2', label: 'Details', content: <p class="text-surface-600 dark:text-surface-400">Underline variant content - Details</p> },
+                { id: 'tab3', label: 'Settings', content: <p class="text-surface-600 dark:text-surface-400">Underline variant content - Settings</p> },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">variant="enclosed"</p>
+            <Tabs
+              variant="enclosed"
+              items={[
+                { id: 'tab1', label: 'Overview', content: <p class="text-surface-600 dark:text-surface-400">Enclosed variant content - Overview. This variant has a bordered content area.</p> },
+                { id: 'tab2', label: 'Details', content: <p class="text-surface-600 dark:text-surface-400">Enclosed variant content - Details</p> },
+                { id: 'tab3', label: 'Settings', content: <p class="text-surface-600 dark:text-surface-400">Enclosed variant content - Settings</p> },
+              ]}
+            />
+          </div>
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Tabs - Sizes">
+        <p class="text-sm text-surface-500 mb-4">Three sizes: sm, md (default), lg</p>
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs text-surface-400 mb-2">size="sm"</p>
+            <Tabs
+              size="sm"
+              items={[
+                { id: 'tab1', label: 'Small', content: <p class="text-surface-600 dark:text-surface-400 text-sm">Small tabs content</p> },
+                { id: 'tab2', label: 'Tabs', content: <p class="text-surface-600 dark:text-surface-400 text-sm">Content 2</p> },
+                { id: 'tab3', label: 'Here', content: <p class="text-surface-600 dark:text-surface-400 text-sm">Content 3</p> },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">size="md" (default)</p>
+            <Tabs
+              size="md"
+              items={[
+                { id: 'tab1', label: 'Medium', content: <p class="text-surface-600 dark:text-surface-400">Medium tabs content</p> },
+                { id: 'tab2', label: 'Tabs', content: <p class="text-surface-600 dark:text-surface-400">Content 2</p> },
+                { id: 'tab3', label: 'Here', content: <p class="text-surface-600 dark:text-surface-400">Content 3</p> },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">size="lg"</p>
+            <Tabs
+              size="lg"
+              items={[
+                { id: 'tab1', label: 'Large', content: <p class="text-surface-600 dark:text-surface-400 text-lg">Large tabs content</p> },
+                { id: 'tab2', label: 'Tabs', content: <p class="text-surface-600 dark:text-surface-400 text-lg">Content 2</p> },
+                { id: 'tab3', label: 'Here', content: <p class="text-surface-600 dark:text-surface-400 text-lg">Content 3</p> },
+              ]}
+            />
+          </div>
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Tabs - Full Width">
+        <p class="text-sm text-surface-500 mb-4">Tabs stretch to fill available width</p>
+        <Tabs
+          fullWidth
+          items={[
+            { id: 'tab1', label: 'First', content: <p class="text-surface-600 dark:text-surface-400">Full width tab 1</p> },
+            { id: 'tab2', label: 'Second', content: <p class="text-surface-600 dark:text-surface-400">Full width tab 2</p> },
+            { id: 'tab3', label: 'Third', content: <p class="text-surface-600 dark:text-surface-400">Full width tab 3</p> },
+          ]}
+        />
+        <div class="mt-4">
+          <p class="text-xs text-surface-400 mb-2">fullWidth + variant="underline"</p>
+          <Tabs
+            fullWidth
+            variant="underline"
+            items={[
+              { id: 'tab1', label: 'Tab 1', content: <p class="text-surface-600 dark:text-surface-400">Content 1</p> },
+              { id: 'tab2', label: 'Tab 2', content: <p class="text-surface-600 dark:text-surface-400">Content 2</p> },
+              { id: 'tab3', label: 'Tab 3', content: <p class="text-surface-600 dark:text-surface-400">Content 3</p> },
+            ]}
+          />
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Tabs - With Icons & Badges">
+        <p class="text-sm text-surface-500 mb-4">Tabs can have icons and badge counts</p>
         <Tabs
           items={[
-            { id: 'tab1', label: 'Overview', content: <p class="text-surface-600">Overview content</p> },
-            { id: 'tab2', label: 'Details', content: <p class="text-surface-600">Details content</p> },
-            { id: 'tab3', label: 'Settings', content: <p class="text-surface-600">Settings content</p> },
+            {
+              id: 'inbox',
+              label: 'Inbox',
+              badge: 12,
+              icon: <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" /></svg>,
+              content: <p class="text-surface-600 dark:text-surface-400">You have 12 new messages in your inbox.</p>
+            },
+            {
+              id: 'sent',
+              label: 'Sent',
+              icon: <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>,
+              content: <p class="text-surface-600 dark:text-surface-400">Sent messages appear here.</p>
+            },
+            {
+              id: 'drafts',
+              label: 'Drafts',
+              badge: 3,
+              icon: <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
+              content: <p class="text-surface-600 dark:text-surface-400">You have 3 draft messages.</p>
+            },
           ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Tabs - Disabled">
+        <p class="text-sm text-surface-500 mb-4">Individual tabs can be disabled</p>
+        <Tabs
+          items={[
+            { id: 'tab1', label: 'Active Tab', content: <p class="text-surface-600 dark:text-surface-400">This tab is enabled</p> },
+            { id: 'tab2', label: 'Disabled', disabled: true, content: <p class="text-surface-600 dark:text-surface-400">You shouldn't see this</p> },
+            { id: 'tab3', label: 'Another Active', content: <p class="text-surface-600 dark:text-surface-400">This tab is also enabled</p> },
+            { id: 'tab4', label: 'Also Disabled', disabled: true, badge: 5, content: <p class="text-surface-600 dark:text-surface-400">You shouldn't see this either</p> },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Tabs - Vertical Orientation">
+        <p class="text-sm text-surface-500 mb-4">Tabs can be displayed vertically</p>
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs text-surface-400 mb-2">orientation="vertical" + variant="pills"</p>
+            <Tabs
+              orientation="vertical"
+              variant="pills"
+              items={[
+                { id: 'account', label: 'Account', content: <div class="text-surface-600 dark:text-surface-400"><h4 class="font-medium mb-2">Account Settings</h4><p>Manage your account details and preferences.</p></div> },
+                { id: 'security', label: 'Security', content: <div class="text-surface-600 dark:text-surface-400"><h4 class="font-medium mb-2">Security Settings</h4><p>Password, 2FA, and security options.</p></div> },
+                { id: 'notifications', label: 'Notifications', content: <div class="text-surface-600 dark:text-surface-400"><h4 class="font-medium mb-2">Notification Preferences</h4><p>Configure how you receive notifications.</p></div> },
+                { id: 'billing', label: 'Billing', disabled: true, content: <div>Billing content</div> },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">orientation="vertical" + variant="enclosed"</p>
+            <Tabs
+              orientation="vertical"
+              variant="enclosed"
+              items={[
+                { id: 'general', label: 'General', content: <div class="text-surface-600 dark:text-surface-400"><h4 class="font-medium mb-2">General Settings</h4><p>Basic configuration options.</p></div> },
+                { id: 'advanced', label: 'Advanced', content: <div class="text-surface-600 dark:text-surface-400"><h4 class="font-medium mb-2">Advanced Settings</h4><p>Power user options and configurations.</p></div> },
+                { id: 'integrations', label: 'Integrations', content: <div class="text-surface-600 dark:text-surface-400"><h4 class="font-medium mb-2">Integrations</h4><p>Connect with third-party services.</p></div> },
+              ]}
+            />
+          </div>
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Tabs - Controlled">
+        <p class="text-sm text-surface-500 mb-4">Controlled mode with external state</p>
+        <div class="flex gap-2 mb-4">
+          <Button size="sm" variant={activeTab() === 'tab1' ? 'primary' : 'secondary'} onClick={() => setActiveTab('tab1')}>Go to Tab 1</Button>
+          <Button size="sm" variant={activeTab() === 'tab2' ? 'primary' : 'secondary'} onClick={() => setActiveTab('tab2')}>Go to Tab 2</Button>
+          <Button size="sm" variant={activeTab() === 'tab3' ? 'primary' : 'secondary'} onClick={() => setActiveTab('tab3')}>Go to Tab 3</Button>
+        </div>
+        <Tabs
           activeTab={activeTab()}
           onTabChange={setActiveTab}
+          items={[
+            { id: 'tab1', label: 'First', content: <p class="text-surface-600 dark:text-surface-400">Controlled tab content 1. Current: {activeTab()}</p> },
+            { id: 'tab2', label: 'Second', content: <p class="text-surface-600 dark:text-surface-400">Controlled tab content 2. Current: {activeTab()}</p> },
+            { id: 'tab3', label: 'Third', content: <p class="text-surface-600 dark:text-surface-400">Controlled tab content 3. Current: {activeTab()}</p> },
+          ]}
         />
       </DemoSection>
 
@@ -477,7 +659,7 @@ function NavigationDemo() {
         <p class="text-sm text-surface-500 mb-4">
           Test these scenarios to verify z-index hierarchy works correctly:
         </p>
-        
+
         {/* Test 1: Menu near header */}
         <div class="space-y-6">
           <div class="p-4 border border-dashed border-warning-500 rounded-lg">
@@ -523,15 +705,15 @@ function NavigationDemo() {
               <Menu
                 trigger={<Button size="sm" variant="ghost">Menu A</Button>}
                 items={[
-                  { label: 'Menu A - Item 1', onClick: () => {} },
-                  { label: 'Menu A - Item 2', onClick: () => {} },
+                  { label: 'Menu A - Item 1', onClick: () => { } },
+                  { label: 'Menu A - Item 2', onClick: () => { } },
                 ]}
               />
               <Menu
                 trigger={<Button size="sm" variant="ghost">Menu B</Button>}
                 items={[
-                  { label: 'Menu B - Item 1', onClick: () => {} },
-                  { label: 'Menu B - Item 2', onClick: () => {} },
+                  { label: 'Menu B - Item 1', onClick: () => { } },
+                  { label: 'Menu B - Item 2', onClick: () => { } },
                 ]}
               />
               <Dropdown trigger={<Button size="sm" variant="ghost">Dropdown C</Button>}>
@@ -614,7 +796,7 @@ function NavigationDemo() {
 // Separate component for modal test to manage its own state
 function ModalDropdownTest() {
   const modal = useDisclosure();
-  
+
   return (
     <>
       <Button size="sm" onClick={modal.onOpen}>Open Modal with Dropdown</Button>
@@ -659,6 +841,16 @@ function DataDisplayDemo() {
     score: Math.floor(Math.random() * 100),
   }));
 
+  // Large dataset for virtualization demo (1000 rows)
+  const virtualizedTableData = Array.from({ length: 1000 }, (_, i) => ({
+    id: i + 1,
+    name: `Employee ${i + 1}`,
+    email: `employee${i + 1}@company.com`,
+    department: ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance'][i % 5],
+    salary: 50000 + Math.floor(i * 50),
+    startDate: new Date(2020, i % 12, (i % 28) + 1).toLocaleDateString(),
+  }));
+
   const jsonData = {
     name: 'Glass UI',
     version: '0.2.0',
@@ -687,7 +879,7 @@ Inline \`code\` example.`;
   return (
     <>
       {/* ==================== TABLE DEMOS ==================== */}
-      
+
       <DemoSection title="Table - Basic">
         <p class="text-sm text-surface-500 mb-3">Simple table with sortable columns</p>
         <Table
@@ -833,11 +1025,13 @@ Inline \`code\` example.`;
           columns={[
             { key: 'name', header: 'Name' },
             { key: 'email', header: 'Email' },
-            { key: 'status', header: 'Status', render: (value) => (
-              <Badge variant={value === 'active' ? 'success' : value === 'pending' ? 'warning' : 'error'}>
-                {String(value)}
-              </Badge>
-            )},
+            {
+              key: 'status', header: 'Status', render: (value) => (
+                <Badge variant={value === 'active' ? 'success' : value === 'pending' ? 'warning' : 'error'}>
+                  {String(value)}
+                </Badge>
+              )
+            },
           ]}
         />
       </DemoSection>
@@ -847,8 +1041,8 @@ Inline \`code\` example.`;
         <Table
           data={tableData}
           columns={[
-            { 
-              key: 'name', 
+            {
+              key: 'name',
               header: 'User',
               render: (_, row) => (
                 <div class="flex items-center gap-2">
@@ -862,15 +1056,14 @@ Inline \`code\` example.`;
             },
             { key: 'role', header: 'Role', render: (value) => <Chip size="sm">{String(value)}</Chip> },
             { key: 'department', header: 'Department' },
-            { 
-              key: 'status', 
+            {
+              key: 'status',
               header: 'Status',
               align: 'center',
               render: (value) => (
-                <span class={`inline-flex w-2 h-2 rounded-full ${
-                  value === 'active' ? 'bg-success-500' : 
+                <span class={`inline-flex w-2 h-2 rounded-full ${value === 'active' ? 'bg-success-500' :
                   value === 'pending' ? 'bg-warning-500' : 'bg-error-500'
-                }`} />
+                  }`} />
               ),
             },
           ]}
@@ -958,6 +1151,31 @@ Inline \`code\` example.`;
         />
       </DemoSection>
 
+      {/* <DemoSection title="Table - Virtualization (1000 rows)">
+        <p class="text-sm text-surface-500 mb-3">
+          Virtualized rendering for large datasets. Only visible rows are rendered in the DOM.
+          <span class="ml-2 text-xs text-accent-500 font-medium">1000 rows, ~60fps scroll</span>
+        </p>
+        <Table
+          data={virtualizedTableData}
+          maxHeight="400px"
+          sortable
+          selectable="multiple"
+          virtualizeThreshold={50}
+          columns={[
+            { key: 'id', header: 'ID', width: '70px', align: 'center' },
+            { key: 'name', header: 'Name', minWidth: '150px' },
+            { key: 'email', header: 'Email', minWidth: '200px' },
+            { key: 'department', header: 'Department' },
+            { key: 'salary', header: 'Salary', align: 'right', render: (v) => <div style={{ height: "100px" }}>hello</div> },
+            { key: 'startDate', header: 'Start Date', align: 'center' },
+          ]}
+        />
+        <p class="mt-2 text-xs text-surface-400">
+          Tip: Open DevTools and inspect the tbody - only ~15-20 rows are in the DOM at any time.
+        </p>
+      </DemoSection> */}
+
       <DemoSection title="Table - Column Alignment & Width">
         <p class="text-sm text-surface-500 mb-3">Control column alignment and fixed widths</p>
         <Table
@@ -997,8 +1215,8 @@ Inline \`code\` example.`;
           onSelectionChange={(keys) => setSelectedKeys(keys)}
           onRowClick={(row) => console.log('Clicked:', row)}
           columns={[
-            { 
-              key: 'name', 
+            {
+              key: 'name',
               header: 'User',
               sortable: true,
               render: (_, row) => (
@@ -1011,8 +1229,8 @@ Inline \`code\` example.`;
             { key: 'email', header: 'Email', sortable: true },
             { key: 'role', header: 'Role', align: 'center', render: (v) => <Chip size="sm" variant="outlined">{String(v)}</Chip> },
             { key: 'department', header: 'Dept', sortable: true },
-            { 
-              key: 'status', 
+            {
+              key: 'status',
               header: 'Status',
               align: 'center',
               render: (value) => (
@@ -1071,6 +1289,146 @@ Inline \`code\` example.`;
         <Card class="p-4">
           <Markdown content={markdownExample} />
         </Card>
+      </DemoSection>
+
+      {/* ==================== VIRTUALIZATION COMPONENTS ==================== */}
+
+      <DemoSection title="VirtualList - Basic">
+        <p class="text-sm text-surface-500 mb-3">
+        Supports variable height items with automatic measurement.
+        </p>
+        <VirtualList
+          style={{ height: '300px' }}
+          totalCount={1000}
+          defaultItemHeight={56}
+          itemContent={(index) => (
+            <div class={`px-4 py-3 border-b border-surface-200 dark:border-surface-700 ${index % 2 === 0 ? 'bg-surface-50 dark:bg-surface-800/50' : ''}`}>
+              <div class="font-medium">Item {index}</div>
+              <div class="text-sm text-surface-500">This is item number {index} in a list of 1000 items</div>
+            </div>
+          )}
+        />
+      </DemoSection>
+
+      <DemoSection title="VirtualList - Variable Heights">
+        <p class="text-sm text-surface-500 mb-3">
+          Items with variable heights are automatically measured and positioned correctly.
+        </p>
+        <VirtualList
+          style={{ height: '400px' }}
+          totalCount={500}
+          defaultItemHeight={80}
+          itemContent={(index) => (
+            <div class="px-4 py-3 border-b border-surface-200 dark:border-surface-700">
+              <div class="flex items-start gap-3">
+                <Avatar name={`User ${index}`} size="md" />
+                <div class="flex-1">
+                  <div class="font-medium">User {index}</div>
+                  <p class="text-sm text-surface-600 dark:text-surface-400">
+                    {index % 3 === 0
+                      ? 'Short message'
+                      : index % 3 === 1
+                        ? 'Medium length message that spans multiple lines to demonstrate variable height support in the virtualized list component.'
+                        : 'Long message that demonstrates how the virtual list handles items of different sizes. This message is intentionally longer to create visual variety and test the measurement system. The virtualization engine automatically measures each item and positions them correctly, even when heights vary significantly.'}
+                  </p>
+                  <div class="mt-1 text-xs text-surface-400">{index} minutes ago</div>
+                </div>
+              </div>
+            </div>
+          )}
+        />
+      </DemoSection>
+
+      <DemoSection title="VirtualTable - Basic">
+        <p class="text-sm text-surface-500 mb-3">
+          Semantic HTML table with virtualization. Perfect for large datasets with proper table accessibility.
+        </p>
+        <VirtualTable
+          style={{ height: '400px' }}
+          totalCount={1000}
+          fixedHeaderContent={() => (
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400 w-20">ID</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400">Name</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400">Email</th>
+              <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400">Department</th>
+              <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400 w-24">Salary</th>
+            </tr>
+          )}
+          itemContent={(index) => (
+            <>
+              <td class="px-4 py-3 text-sm text-surface-500">{index + 1}</td>
+              <td class="px-4 py-3 text-sm font-medium">User {index + 1}</td>
+              <td class="px-4 py-3 text-sm text-surface-600 dark:text-surface-400">user{index + 1}@example.com</td>
+              <td class="px-4 py-3 text-sm">{['Engineering', 'Design', 'Marketing', 'Sales'][index % 4]}</td>
+              <td class="px-4 py-3 text-sm text-right font-mono">${(50000 + (index * 1000) % 100000).toLocaleString()}</td>
+            </>
+          )}
+          components={{
+            TableRow: (props) => (
+              <tr
+                data-index={props['data-index']}
+                data-known-size={props['data-known-size']}
+                class={`border-b border-surface-200 dark:border-surface-700 ${props['data-index'] % 2 === 0 ? 'bg-surface-50/50 dark:bg-surface-800/30' : ''}`}
+              >
+                {props.children}
+              </tr>
+            ),
+          }}
+        />
+        <p class="mt-2 text-xs text-surface-400">
+          Tip: The sticky header remains visible while scrolling through 1000 rows.
+        </p>
+      </DemoSection>
+
+      <DemoSection title="VirtualTable - With Data Array">
+        <p class="text-sm text-surface-500 mb-3">
+          Using the data prop for type-safe access to row data.
+        </p>
+          <VirtualTable
+            style={{ height: '350px' }}
+            data={virtualizedTableData}
+            fixedHeaderContent={() => (
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400 w-16">ID</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400">Name</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400">Email</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400">Department</th>
+                <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400 w-24">Status</th>
+              </tr>
+            )}
+            itemContent={(index, data) => (
+              <>
+                <td class="px-4 py-3 text-sm text-surface-500">{data.id}</td>
+                <td class="px-4 py-3 text-sm">
+                  <div class="flex items-center gap-2">
+                    <Avatar name={String(data.name)} size="sm" />
+                    <span class="font-medium">{String(data.name)}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-sm text-surface-600 dark:text-surface-400">{String(data.email)}</td>
+                <td class="px-4 py-3 text-sm text-center">
+                  <Chip size="sm" variant="outlined">{String(data.department)}</Chip>
+                </td>
+                <td class="px-4 py-3 text-sm text-center">
+                  <Badge size="sm" variant={data.status === 'Active' ? 'success' : data.status === 'Pending' ? 'warning' : 'default'}>
+                    {String(data.status)}
+                  </Badge>
+                </td>
+              </>
+            )}
+            components={{
+              TableRow: (props) => (
+                <tr
+                  data-index={props['data-index']}
+                  data-known-size={props['data-known-size']}
+                  class="border-b border-surface-200/50 dark:border-surface-700/50 hover:bg-surface-50/50 dark:hover:bg-surface-800/30 transition-colors"
+                >
+                  {props.children}
+                </tr>
+              ),
+            }}
+          />
       </DemoSection>
     </>
   );
@@ -1131,11 +1489,10 @@ export default function App() {
                 <button
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
-                  class={`w-full text-left px-2.5 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                    activeCategory() === cat.id
-                      ? 'bg-accent-500 text-white'
-                      : 'text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800'
-                  }`}
+                  class={`w-full text-left px-2.5 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${activeCategory() === cat.id
+                    ? 'bg-accent-500 text-white'
+                    : 'text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800'
+                    }`}
                 >
                   {cat.label}
                 </button>

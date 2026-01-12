@@ -131,3 +131,23 @@ export type { ChipProps, ChipVariant, ChipSize, ChipColor } from './Chip';
 // GlassBackground
 export { GlassBackground } from './GlassBackground';
 export type { GlassBackgroundProps, GlassBackgroundBlob } from './GlassBackground';
+
+export { VirtualList, VirtualTable, useVirtualizer } from './virtual';
+export type {
+  VirtualListProps,
+  VirtualTableProps,
+  VirtualHandle,
+  ListRange,
+  ListItem,
+  ScrollAlignment,
+  ScrollBehavior,
+  ScrollToIndexLocation,
+  TableComponents,
+  TableRowContent,
+  FixedHeaderContent,
+  FixedFooterContent,
+  ComputeItemKey,
+  ItemContent,
+  VirtualizerOptions,
+  VirtualizerResult,
+} from './virtual';

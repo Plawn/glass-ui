@@ -1,2 +1,2 @@
 export { Tabs } from './Tabs';
-export type { TabItem, TabsProps } from './types';
+export type { TabItem, TabOrientation, TabsProps, TabSize } from './types';
