@@ -471,18 +471,193 @@ function NavigationDemo() {
           </div>
         </Dropdown>
       </DemoSection>
+
+      {/* Z-INDEX CONFLICT TEST CASES */}
+      <DemoSection title="Z-Index Tests">
+        <p class="text-sm text-surface-500 mb-4">
+          Test these scenarios to verify z-index hierarchy works correctly:
+        </p>
+        
+        {/* Test 1: Menu near header */}
+        <div class="space-y-6">
+          <div class="p-4 border border-dashed border-warning-500 rounded-lg">
+            <p class="text-xs text-warning-600 dark:text-warning-400 mb-2 font-medium">
+              Test 1: Menu should appear ABOVE the sticky header when scrolled
+            </p>
+            <Menu
+              trigger={<Button size="sm">Menu (scroll page then open)</Button>}
+              items={[
+                { label: 'This menu should', disabled: true },
+                { label: 'appear above header', disabled: true },
+                { divider: true },
+                { label: 'Action 1', onClick: () => toast.success('Menu works!') },
+                { label: 'Action 2', onClick: () => toast.success('Menu works!') },
+              ]}
+            />
+          </div>
+
+          {/* Test 2: Dropdown in a card with overflow */}
+          <div class="p-4 border border-dashed border-warning-500 rounded-lg">
+            <p class="text-xs text-warning-600 dark:text-warning-400 mb-2 font-medium">
+              Test 2: Dropdown inside a Card should escape overflow:hidden
+            </p>
+            <Card class="p-4 overflow-hidden">
+              <p class="text-sm text-surface-600 mb-2">Card with overflow:hidden</p>
+              <Dropdown
+                trigger={<Button size="sm" variant="secondary">Dropdown in Card</Button>}
+              >
+                <div class="p-3 w-48">
+                  <p class="text-sm font-medium mb-2">I should be fully visible!</p>
+                  <p class="text-xs text-surface-500">Not clipped by the card</p>
+                </div>
+              </Dropdown>
+            </Card>
+          </div>
+
+          {/* Test 3: Multiple overlapping menus */}
+          <div class="p-4 border border-dashed border-warning-500 rounded-lg">
+            <p class="text-xs text-warning-600 dark:text-warning-400 mb-2 font-medium">
+              Test 3: Multiple triggers - only one should be open at a time
+            </p>
+            <div class="flex gap-2 flex-wrap">
+              <Menu
+                trigger={<Button size="sm" variant="ghost">Menu A</Button>}
+                items={[
+                  { label: 'Menu A - Item 1', onClick: () => {} },
+                  { label: 'Menu A - Item 2', onClick: () => {} },
+                ]}
+              />
+              <Menu
+                trigger={<Button size="sm" variant="ghost">Menu B</Button>}
+                items={[
+                  { label: 'Menu B - Item 1', onClick: () => {} },
+                  { label: 'Menu B - Item 2', onClick: () => {} },
+                ]}
+              />
+              <Dropdown trigger={<Button size="sm" variant="ghost">Dropdown C</Button>}>
+                <div class="p-3">Dropdown C content</div>
+              </Dropdown>
+            </div>
+          </div>
+
+          {/* Test 4: Tooltip vs Dropdown */}
+          <div class="p-4 border border-dashed border-warning-500 rounded-lg">
+            <p class="text-xs text-warning-600 dark:text-warning-400 mb-2 font-medium">
+              Test 4: Tooltip and Dropdown interaction
+            </p>
+            <div class="flex gap-4 items-center">
+              <Tooltip content="I'm a tooltip!">
+                <Button size="sm" variant="secondary">Hover for tooltip</Button>
+              </Tooltip>
+              <Dropdown trigger={<Button size="sm">Click for dropdown</Button>}>
+                <div class="p-3 w-48">
+                  <p class="text-sm">Dropdown content</p>
+                  <Tooltip content="Nested tooltip!" position="right">
+                    <Badge class="mt-2 cursor-help">Hover me too</Badge>
+                  </Tooltip>
+                </div>
+              </Dropdown>
+            </div>
+          </div>
+
+          {/* Test 5: Menu in scrollable Table area */}
+          <div class="p-4 border border-dashed border-warning-500 rounded-lg">
+            <p class="text-xs text-warning-600 dark:text-warning-400 mb-2 font-medium">
+              Test 5: Menu in a table with sticky header - menu should appear above table header
+            </p>
+            <Table
+              maxHeight="200px"
+              stickyHeader
+              data={[
+                { id: 1, name: 'Row 1', action: 'menu' },
+                { id: 2, name: 'Row 2', action: 'menu' },
+                { id: 3, name: 'Row 3', action: 'menu' },
+                { id: 4, name: 'Row 4', action: 'menu' },
+                { id: 5, name: 'Row 5', action: 'menu' },
+                { id: 6, name: 'Row 6', action: 'menu' },
+              ]}
+              columns={[
+                { key: 'id', header: 'ID', width: '60px' },
+                { key: 'name', header: 'Name' },
+                {
+                  key: 'action',
+                  header: 'Actions',
+                  align: 'right',
+                  render: (_, row) => (
+                    <Menu
+                      placement="bottom-end"
+                      trigger={<Button size="sm" variant="ghost">Actions</Button>}
+                      items={[
+                        { label: `Edit ${row.name}`, onClick: () => toast.info(`Edit ${row.name}`) },
+                        { label: `Delete ${row.name}`, onClick: () => toast.error(`Delete ${row.name}`) },
+                      ]}
+                    />
+                  ),
+                },
+              ]}
+            />
+          </div>
+
+          {/* Test 6: Modal with dropdown inside */}
+          <div class="p-4 border border-dashed border-warning-500 rounded-lg">
+            <p class="text-xs text-warning-600 dark:text-warning-400 mb-2 font-medium">
+              Test 6: Dropdown inside a Modal
+            </p>
+            <ModalDropdownTest />
+          </div>
+        </div>
+      </DemoSection>
+    </>
+  );
+}
+
+// Separate component for modal test to manage its own state
+function ModalDropdownTest() {
+  const modal = useDisclosure();
+  
+  return (
+    <>
+      <Button size="sm" onClick={modal.onOpen}>Open Modal with Dropdown</Button>
+      <Modal open={modal.isOpen()} onClose={modal.onClose} title="Modal with Dropdown">
+        <p class="text-surface-600 mb-4">The dropdown below should appear correctly inside this modal:</p>
+        <Dropdown trigger={<Button variant="secondary">Dropdown in Modal</Button>}>
+          <div class="p-3 w-48">
+            <p class="text-sm font-medium mb-2">Dropdown content</p>
+            <p class="text-xs text-surface-500">Should be fully visible and interactive</p>
+            <Button size="sm" class="mt-2 w-full" onClick={() => toast.success('Clicked inside modal dropdown!')}>
+              Click me
+            </Button>
+          </div>
+        </Dropdown>
+        <div class="mt-6 flex justify-end">
+          <Button onClick={modal.onClose}>Close</Button>
+        </div>
+      </Modal>
     </>
   );
 }
 
 function DataDisplayDemo() {
   const [chips, setChips] = createSignal(['React', 'Vue', 'Solid', 'Angular']);
+  const [tableLoading, setTableLoading] = createSignal(false);
+  const [selectedKeys, setSelectedKeys] = createSignal<Set<string | number>>(new Set());
+  const [singleSelectedKey, setSingleSelectedKey] = createSignal<Set<string | number>>(new Set());
 
   const tableData = [
-    { id: 1, name: 'Alice', email: 'alice@example.com', role: 'Admin' },
-    { id: 2, name: 'Bob', email: 'bob@example.com', role: 'User' },
-    { id: 3, name: 'Charlie', email: 'charlie@example.com', role: 'Editor' },
+    { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', department: 'Engineering', status: 'active' },
+    { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User', department: 'Marketing', status: 'active' },
+    { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', role: 'Editor', department: 'Content', status: 'inactive' },
+    { id: 4, name: 'Diana Prince', email: 'diana@example.com', role: 'Admin', department: 'HR', status: 'active' },
+    { id: 5, name: 'Edward Norton', email: 'edward@example.com', role: 'User', department: 'Finance', status: 'pending' },
   ];
+
+  const largeTableData = Array.from({ length: 50 }, (_, i) => ({
+    id: i + 1,
+    name: `User ${i + 1}`,
+    email: `user${i + 1}@example.com`,
+    role: ['Admin', 'User', 'Editor'][i % 3],
+    score: Math.floor(Math.random() * 100),
+  }));
 
   const jsonData = {
     name: 'Glass UI',
@@ -504,9 +679,17 @@ This is **bold** and *italic* text.
 
 Inline \`code\` example.`;
 
+  const handleLoadTable = () => {
+    setTableLoading(true);
+    setTimeout(() => setTableLoading(false), 2000);
+  };
+
   return (
     <>
-      <DemoSection title="Table">
+      {/* ==================== TABLE DEMOS ==================== */}
+      
+      <DemoSection title="Table - Basic">
+        <p class="text-sm text-surface-500 mb-3">Simple table with sortable columns</p>
         <Table
           data={tableData}
           columns={[
@@ -516,6 +699,333 @@ Inline \`code\` example.`;
           ]}
         />
       </DemoSection>
+
+      <DemoSection title="Table - Sizes">
+        <p class="text-sm text-surface-500 mb-3">Three size variants: sm, md (default), lg</p>
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs text-surface-400 mb-2">size="sm"</p>
+            <Table
+              size="sm"
+              data={tableData.slice(0, 3)}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+                { key: 'role', header: 'Role' },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">size="md" (default)</p>
+            <Table
+              size="md"
+              data={tableData.slice(0, 3)}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+                { key: 'role', header: 'Role' },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">size="lg"</p>
+            <Table
+              size="lg"
+              data={tableData.slice(0, 3)}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+                { key: 'role', header: 'Role' },
+              ]}
+            />
+          </div>
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Table - Variants">
+        <p class="text-sm text-surface-500 mb-3">Visual variants: default, bordered, striped</p>
+        <div class="space-y-6">
+          <div>
+            <p class="text-xs text-surface-400 mb-2">variant="default"</p>
+            <Table
+              variant="default"
+              data={tableData.slice(0, 3)}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+                { key: 'role', header: 'Role' },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">variant="bordered"</p>
+            <Table
+              variant="bordered"
+              data={tableData.slice(0, 3)}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+                { key: 'role', header: 'Role' },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">variant="striped"</p>
+            <Table
+              variant="striped"
+              data={tableData}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+                { key: 'role', header: 'Role' },
+              ]}
+            />
+          </div>
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Table - Selection (Multiple)">
+        <p class="text-sm text-surface-500 mb-3">Multi-select with checkboxes. Selected: {selectedKeys().size} rows</p>
+        <Table
+          data={tableData}
+          selectable="multiple"
+          selectedKeys={selectedKeys()}
+          onSelectionChange={(keys) => setSelectedKeys(keys)}
+          columns={[
+            { key: 'name', header: 'Name' },
+            { key: 'email', header: 'Email' },
+            { key: 'role', header: 'Role' },
+            { key: 'department', header: 'Department' },
+          ]}
+        />
+        <div class="mt-2 text-xs text-surface-500">
+          Selected IDs: {Array.from(selectedKeys()).join(', ') || 'none'}
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Table - Selection (Single)">
+        <p class="text-sm text-surface-500 mb-3">Single selection with radio-style behavior</p>
+        <Table
+          data={tableData}
+          selectable="single"
+          selectedKeys={singleSelectedKey()}
+          onSelectionChange={(keys) => setSingleSelectedKey(keys)}
+          clickableRows
+          columns={[
+            { key: 'name', header: 'Name' },
+            { key: 'email', header: 'Email' },
+            { key: 'role', header: 'Role' },
+          ]}
+        />
+        <div class="mt-2 text-xs text-surface-500">
+          Selected ID: {Array.from(singleSelectedKey())[0] ?? 'none'}
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Table - Row Click & Custom Row Classes">
+        <p class="text-sm text-surface-500 mb-3">Click rows to see events. Inactive users are highlighted.</p>
+        <Table
+          data={tableData}
+          onRowClick={(row, index) => toast.info(`Clicked: ${row.name} (row ${index})`)}
+          onRowDoubleClick={(row) => toast.success(`Double-clicked: ${row.name}`)}
+          clickableRows
+          rowClass={(row) => row.status === 'inactive' ? 'bg-error-50/30 dark:bg-error-900/20' : ''}
+          columns={[
+            { key: 'name', header: 'Name' },
+            { key: 'email', header: 'Email' },
+            { key: 'status', header: 'Status', render: (value) => (
+              <Badge variant={value === 'active' ? 'success' : value === 'pending' ? 'warning' : 'error'}>
+                {String(value)}
+              </Badge>
+            )},
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Table - Custom Cell Rendering">
+        <p class="text-sm text-surface-500 mb-3">Custom render functions for cells and headers</p>
+        <Table
+          data={tableData}
+          columns={[
+            { 
+              key: 'name', 
+              header: 'User',
+              render: (_, row) => (
+                <div class="flex items-center gap-2">
+                  <Avatar name={String(row.name)} size="sm" />
+                  <div>
+                    <div class="font-medium">{String(row.name)}</div>
+                    <div class="text-xs text-surface-500">{String(row.email)}</div>
+                  </div>
+                </div>
+              ),
+            },
+            { key: 'role', header: 'Role', render: (value) => <Chip size="sm">{String(value)}</Chip> },
+            { key: 'department', header: 'Department' },
+            { 
+              key: 'status', 
+              header: 'Status',
+              align: 'center',
+              render: (value) => (
+                <span class={`inline-flex w-2 h-2 rounded-full ${
+                  value === 'active' ? 'bg-success-500' : 
+                  value === 'pending' ? 'bg-warning-500' : 'bg-error-500'
+                }`} />
+              ),
+            },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Table - Loading State">
+        <p class="text-sm text-surface-500 mb-3">Skeleton loading with configurable row count</p>
+        <div class="mb-3">
+          <Button size="sm" onClick={handleLoadTable}>
+            {tableLoading() ? 'Loading...' : 'Simulate Loading'}
+          </Button>
+        </div>
+        <Table
+          loading={tableLoading()}
+          loadingRows={5}
+          data={tableData}
+          columns={[
+            { key: 'name', header: 'Name' },
+            { key: 'email', header: 'Email' },
+            { key: 'role', header: 'Role' },
+            { key: 'department', header: 'Department' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Table - Empty State">
+        <p class="text-sm text-surface-500 mb-3">Custom empty message and render</p>
+        <div class="space-y-4">
+          <div>
+            <p class="text-xs text-surface-400 mb-2">Default empty message</p>
+            <Table
+              data={[]}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">Custom empty message</p>
+            <Table
+              data={[]}
+              emptyMessage="No users found. Try adjusting your filters."
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+              ]}
+            />
+          </div>
+          <div>
+            <p class="text-xs text-surface-400 mb-2">Custom empty render</p>
+            <Table
+              data={[]}
+              emptyRender={() => (
+                <div class="flex flex-col items-center gap-2 py-4">
+                  <span class="text-4xl">📭</span>
+                  <span class="font-medium">No data yet</span>
+                  <Button size="sm" variant="secondary">Add your first item</Button>
+                </div>
+              )}
+              columns={[
+                { key: 'name', header: 'Name' },
+                { key: 'email', header: 'Email' },
+              ]}
+            />
+          </div>
+        </div>
+      </DemoSection>
+
+      <DemoSection title="Table - Sticky Header">
+        <p class="text-sm text-surface-500 mb-3">Fixed header with scrollable body (maxHeight)</p>
+        <Table
+          data={largeTableData}
+          maxHeight="300px"
+          stickyHeader
+          sortable
+          columns={[
+            { key: 'id', header: 'ID', width: '60px', align: 'center' },
+            { key: 'name', header: 'Name' },
+            { key: 'email', header: 'Email' },
+            { key: 'role', header: 'Role' },
+            { key: 'score', header: 'Score', align: 'right' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Table - Column Alignment & Width">
+        <p class="text-sm text-surface-500 mb-3">Control column alignment and fixed widths</p>
+        <Table
+          data={largeTableData.slice(0, 5)}
+          columns={[
+            { key: 'id', header: 'ID', width: '80px', align: 'center' },
+            { key: 'name', header: 'Name', minWidth: '150px' },
+            { key: 'email', header: 'Email' },
+            { key: 'role', header: 'Role', align: 'center', width: '100px' },
+            { key: 'score', header: 'Score', align: 'right', width: '80px' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Table - Hoverable Control">
+        <p class="text-sm text-surface-500 mb-3">Disable hover effect with hoverable=false</p>
+        <Table
+          data={tableData.slice(0, 3)}
+          hoverable={false}
+          columns={[
+            { key: 'name', header: 'Name' },
+            { key: 'email', header: 'Email' },
+            { key: 'role', header: 'Role' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Table - Full Featured Example">
+        <p class="text-sm text-surface-500 mb-3">Combining multiple features: selection, sorting, custom rendering, variants</p>
+        <Table
+          variant="striped"
+          size="sm"
+          data={tableData}
+          sortable
+          selectable="multiple"
+          selectedKeys={selectedKeys()}
+          onSelectionChange={(keys) => setSelectedKeys(keys)}
+          onRowClick={(row) => console.log('Clicked:', row)}
+          columns={[
+            { 
+              key: 'name', 
+              header: 'User',
+              sortable: true,
+              render: (_, row) => (
+                <div class="flex items-center gap-2">
+                  <Avatar name={String(row.name)} size="sm" />
+                  <span class="font-medium">{String(row.name)}</span>
+                </div>
+              ),
+            },
+            { key: 'email', header: 'Email', sortable: true },
+            { key: 'role', header: 'Role', align: 'center', render: (v) => <Chip size="sm" variant="outlined">{String(v)}</Chip> },
+            { key: 'department', header: 'Dept', sortable: true },
+            { 
+              key: 'status', 
+              header: 'Status',
+              align: 'center',
+              render: (value) => (
+                <Badge variant={value === 'active' ? 'success' : value === 'pending' ? 'warning' : 'error'} size="sm">
+                  {String(value)}
+                </Badge>
+              ),
+            },
+          ]}
+        />
+      </DemoSection>
+
+      {/* ==================== OTHER DATA DISPLAY COMPONENTS ==================== */}
 
       <DemoSection title="Chip">
         <div class="flex gap-2 flex-wrap">
@@ -598,7 +1108,7 @@ export default function App() {
       <SnackbarContainer />
 
       {/* Header */}
-      <header class="sticky top-0 z-50 bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border-b border-surface-200 dark:border-surface-800">
+      <header class="sticky top-0 z-40 bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border-b border-surface-200 dark:border-surface-800">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 class="text-xl font-bold text-surface-900 dark:text-white">
             Glass UI Demo
@@ -612,16 +1122,16 @@ export default function App() {
         </div>
       </header>
 
-      <div class="max-w-7xl mx-auto px-4 py-8 flex gap-8">
+      <div class="max-w-7xl mx-auto px-4 py-8 flex gap-6">
         {/* Sidebar */}
-        <nav class="w-48 shrink-0 relative z-10">
-          <div class="sticky top-24 space-y-1">
+        <nav class="w-40 shrink-0">
+          <div class="sticky top-20 space-y-0.5">
             <For each={categories}>
               {(cat) => (
                 <button
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
-                  class={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer ${
+                  class={`w-full text-left px-2.5 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
                     activeCategory() === cat.id
                       ? 'bg-accent-500 text-white'
                       : 'text-surface-600 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-800'
