@@ -91,7 +91,9 @@ function App() {
 - **Dropdown** - Generic dropdown container
 
 ### Data Display
-- **Table** - Data table with sorting
+- **Table** - Data table with sorting, selection, and sticky headers
+- **VirtualList** - Virtualized list for large datasets (react-virtuoso inspired)
+- **VirtualTable** - Virtualized table with sticky header for large datasets
 - **Badge** - Status badges and HTTP method badges
 - **Chip** - Dismissible chips/tags
 - **Avatar** - User avatar with fallback
@@ -106,6 +108,103 @@ function App() {
 ### Backgrounds
 - **GlassBackground** - Animated glassmorphism background with customizable blobs
 
+## Table & Virtualization
+
+### Table
+
+Standard table component for small to medium datasets:
+
+```tsx
+import { Table } from 'glass-ui-solid';
+
+const columns = [
+  { key: 'name', header: 'Name', sortable: true },
+  { key: 'email', header: 'Email' },
+  { key: 'role', header: 'Role' },
+];
+
+const data = [
+  { id: 1, name: 'John', email: 'john@example.com', role: 'Admin' },
+  { id: 2, name: 'Jane', email: 'jane@example.com', role: 'User' },
+];
+
+<Table
+  columns={columns}
+  data={data}
+  sortable
+  selectable="multiple"
+  maxHeight="400px"
+  onSelectionChange={(keys, rows) => console.log(rows)}
+/>
+```
+
+### VirtualList
+
+For large lists (1000+ items), use VirtualList for optimal performance:
+
+```tsx
+import { VirtualList } from 'glass-ui-solid';
+
+<VirtualList
+  style={{ height: '400px' }}
+  totalCount={10000}
+  defaultItemHeight={56}
+  itemContent={(index) => (
+    <div class="px-4 py-3 border-b border-surface-200">
+      Item {index}
+    </div>
+  )}
+/>
+```
+
+### VirtualTable
+
+For large tables, use VirtualTable with sticky headers:
+
+```tsx
+import { VirtualTable } from 'glass-ui-solid';
+
+<VirtualTable
+  style={{ height: '400px' }}
+  totalCount={10000}
+  fixedHeaderContent={() => (
+    <tr>
+      <th class="px-4 py-3 text-left">ID</th>
+      <th class="px-4 py-3 text-left">Name</th>
+      <th class="px-4 py-3 text-left">Email</th>
+    </tr>
+  )}
+  itemContent={(index) => (
+    <>
+      <td class="px-4 py-3">{index + 1}</td>
+      <td class="px-4 py-3">User {index + 1}</td>
+      <td class="px-4 py-3">user{index + 1}@example.com</td>
+    </>
+  )}
+/>
+```
+
+You can also pass a `data` array for type-safe access:
+
+```tsx
+<VirtualTable
+  style={{ height: '400px' }}
+  data={users}
+  fixedHeaderContent={() => (
+    <tr>
+      <th class="px-4 py-3">Name</th>
+      <th class="px-4 py-3">Email</th>
+    </tr>
+  )}
+  itemContent={(index, user) => (
+    <>
+      <td class="px-4 py-3">{user.name}</td>
+      <td class="px-4 py-3">{user.email}</td>
+    </>
+  )}
+/>
+```
+
 ## Hooks
 
 ```typescript
@@ -114,7 +213,8 @@ import {
   useDisclosure,
   useCopyToClipboard,
   useIsDark,
-  useAnimationState
+  useAnimationState,
+  useVirtualizer
 } from 'glass-ui-solid';
 ```
 
@@ -123,6 +223,7 @@ import {
 - **useCopyToClipboard** - Copy text with success feedback
 - **useIsDark** - Detect dark mode (useful for Portals)
 - **useAnimationState** - Manage enter/exit animations with mounting state
+- **useVirtualizer** - Low-level virtualization hook for custom implementations
 
 ## Theming
 
@@ -208,6 +309,9 @@ import type {
   ModalProps,
   Schema,
   TableColumn,
+  TableProps,
+  VirtualListProps,
+  VirtualTableProps,
   ErrorDisplayProps,
   GlassBackgroundProps
 } from 'glass-ui-solid';
