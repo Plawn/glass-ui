@@ -1,12 +1,12 @@
-import { type Component, Show, createEffect, createSignal, onCleanup } from 'solid-js';
-import { Portal } from 'solid-js/web';
+import { type Component, Show, createEffect, onCleanup } from 'solid-js';
 import {
   ANIMATION_DURATION,
   DURATION_DEFAULT,
   SNACKBAR_ENTER,
   SNACKBAR_EXIT,
 } from '../../constants';
-import { useIsDark } from '../../hooks';
+import { useAnimationState } from '../../hooks';
+import { PortalWithDarkMode } from '../shared';
 import { CloseIcon } from '../shared/icons';
 import type { SnackbarPosition, SnackbarProps } from './types';
 
@@ -22,27 +22,10 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
   const position = () => props.position ?? 'bottom-center';
   const duration = () => props.duration ?? DEFAULT_DURATION;
 
-  // Track visibility separately from open state for exit animation
-  const [visible, setVisible] = createSignal(false);
-  const [isClosing, setIsClosing] = createSignal(false);
-
-  // Check if dark mode is active (needed for Portal which renders outside the dark class container)
-  const isDark = useIsDark();
-
-  // Handle open/close transitions
-  createEffect(() => {
-    if (props.open) {
-      setIsClosing(false);
-      setVisible(true);
-    } else if (visible()) {
-      // Start closing animation
-      setIsClosing(true);
-      const timer = setTimeout(() => {
-        setVisible(false);
-        setIsClosing(false);
-      }, ANIMATION_DURATION);
-      onCleanup(() => clearTimeout(timer));
-    }
+  // Use animation state hook for enter/exit animations
+  const { visible, isClosing } = useAnimationState({
+    open: () => props.open,
+    duration: ANIMATION_DURATION,
   });
 
   // Auto-dismiss timer
@@ -70,11 +53,8 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
 
   return (
     <Show when={visible()}>
-      <Portal>
-        <output
-          class={`fixed ${positionStyles[position()]} z-50 ${isDark() ? 'dark' : ''}`}
-          aria-live="polite"
-        >
+      <PortalWithDarkMode class={`fixed ${positionStyles[position()]} z-50`}>
+        <output aria-live="polite">
           <div
             class={`glass-card flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg min-w-[200px] max-w-sm ${animationClasses()}`}
           >
@@ -100,7 +80,7 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
             </button>
           </div>
         </output>
-      </Portal>
+      </PortalWithDarkMode>
     </Show>
   );
 };

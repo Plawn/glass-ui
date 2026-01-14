@@ -25,7 +25,7 @@ export const EnumField: Component<BaseFieldProps> = (props) => {
   return (
     <Select value={stringValue()} onChange={handleChange}>
       <option value="">-- Select --</option>
-      <For each={props.schema.enum as unknown[]}>
+      <For each={props.schema.enum}>
         {(enumValue) => <option value={String(enumValue)}>{String(enumValue)}</option>}
       </For>
     </Select>

@@ -10,6 +10,15 @@ import { OneOfField } from './fields/OneOfField';
 import { StringField } from './fields/StringField';
 import type { JsonSchemaFormProps } from './types';
 
+// Type guards for safe type narrowing
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isArray(value: unknown): value is unknown[] {
+  return Array.isArray(value);
+}
+
 /**
  * JsonSchemaForm - A recursive JSON Schema form renderer for SolidJS
  *
@@ -52,7 +61,7 @@ export const JsonSchemaForm: Component<JsonSchemaFormProps> = (props) => {
       <Match when={schemaType() === 'object'}>
         <ObjectField
           schema={props.schema}
-          value={props.value as Record<string, unknown> | undefined}
+          value={isRecord(props.value) ? props.value : undefined}
           onChange={props.onChange}
           path={props.path || []}
         />
@@ -60,7 +69,7 @@ export const JsonSchemaForm: Component<JsonSchemaFormProps> = (props) => {
       <Match when={schemaType() === 'array'}>
         <ArrayField
           schema={props.schema}
-          value={props.value as unknown[] | undefined}
+          value={isArray(props.value) ? props.value : undefined}
           onChange={props.onChange}
           path={props.path || []}
         />

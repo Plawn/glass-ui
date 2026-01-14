@@ -406,7 +406,7 @@ export function Table<T extends Record<string, unknown>>(
                   handleSort(column.key);
                 }
               }}
-              tabindex={isSortable ? 0 : undefined}
+              tabIndex={isSortable ? 0 : undefined}
             >
               <Show when={!column.headerRender} fallback={column.headerRender?.(column)}>
                 <span class="inline-flex items-center">

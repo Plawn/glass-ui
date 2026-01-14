@@ -1,5 +1,4 @@
 import { type Component, Show } from 'solid-js';
-import { Portal } from 'solid-js/web';
 import {
   ANIMATION_DURATION,
   BACKDROP_ENTER,
@@ -9,8 +8,8 @@ import {
   DURATION_DEFAULT,
   DURATION_SLOW,
 } from '../../constants';
-import { useAnimationState, useDialogState, useIsDark } from '../../hooks';
-import { CloseButton } from '../shared';
+import { useAnimationState, useDialogState } from '../../hooks';
+import { CloseButton, PortalWithDarkMode } from '../shared';
 import type { DrawerPosition, DrawerProps, DrawerSize } from './types';
 
 const sizeStyles: Record<DrawerSize, string> = {
@@ -46,9 +45,6 @@ export const Drawer: Component<DrawerProps> = (props) => {
 
   const panelStyle = () => positionPanelStyles[position()];
 
-  // Check if dark mode is active (needed for Portal which renders outside the dark class container)
-  const isDark = useIsDark();
-
   const backdropClasses = () => (isClosing() ? BACKDROP_EXIT : BACKDROP_ENTER);
 
   const drawerClasses = () =>
@@ -58,10 +54,10 @@ export const Drawer: Component<DrawerProps> = (props) => {
 
   return (
     <Show when={visible()}>
-      <Portal>
+      <PortalWithDarkMode>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: Backdrop click is supplementary to Escape key (handled by useDialogState) */}
         <div
-          class={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm ${backdropClasses()} ${isDark() ? 'dark' : ''}`}
+          class={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm ${backdropClasses()}`}
           onClick={(e) => handleBackdropClick(e)}
           aria-modal="true"
           aria-labelledby={props.title ? 'drawer-title' : undefined}
@@ -103,7 +99,7 @@ export const Drawer: Component<DrawerProps> = (props) => {
             </div>
           </div>
         </div>
-      </Portal>
+      </PortalWithDarkMode>
     </Show>
   );
 };

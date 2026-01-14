@@ -1,4 +1,9 @@
-import type { DialogVariant, BaseComponentProps } from '../../types';
+import type { DialogVariant, BaseComponentProps, OverlaySize } from '../../types';
+
+/**
+ * Dialog size variants - subset of OverlaySize most appropriate for dialogs
+ */
+export type DialogSize = Extract<OverlaySize, 'sm' | 'md' | 'lg'>;
 
 export interface DialogProps extends BaseComponentProps {
   /** Whether the dialog is open */
@@ -19,6 +24,8 @@ export interface DialogProps extends BaseComponentProps {
   onCancel?: () => void;
   /** Visual variant - danger shows red confirm button */
   variant?: DialogVariant;
+  /** Size variant */
+  size?: DialogSize;
 }
 
 // Re-export shared types for convenience

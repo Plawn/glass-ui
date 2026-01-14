@@ -1,4 +1,4 @@
-import { type Component, Show, createSignal, onCleanup } from 'solid-js';
+import { type Component, Show, createEffect, createSignal, onCleanup } from 'solid-js';
 import type { TooltipPosition, TooltipProps } from './types';
 
 const positionStyles: Record<TooltipPosition, string> = {
@@ -19,28 +19,23 @@ const arrowStyles: Record<TooltipPosition, string> = {
 
 export const Tooltip: Component<TooltipProps> = (props) => {
   const [visible, setVisible] = createSignal(false);
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  const [hovering, setHovering] = createSignal(false);
 
   const position = () => props.position ?? 'top';
   const delay = () => props.delay ?? 200;
 
-  const showTooltip = () => {
-    timeoutId = setTimeout(() => setVisible(true), delay());
-  };
-
-  const hideTooltip = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      timeoutId = undefined;
-    }
-    setVisible(false);
-  };
-
-  onCleanup(() => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
+  // Handle delayed show with proper cleanup (idiomatic SolidJS pattern)
+  createEffect(() => {
+    if (hovering()) {
+      const timer = setTimeout(() => setVisible(true), delay());
+      onCleanup(() => clearTimeout(timer));
+    } else {
+      setVisible(false);
     }
   });
+
+  const showTooltip = () => setHovering(true);
+  const hideTooltip = () => setHovering(false);
 
   return (
     <div

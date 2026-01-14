@@ -113,6 +113,12 @@ export const BACKDROP_EXIT = 'animate-out fade-out duration-200';
 export const MODAL_PANEL_ENTER = 'animate-in zoom-in-95 fade-in duration-200';
 
 /**
+ * Command Palette panel animation
+ * Combines fade and slight scale for quick entrance
+ */
+export const COMMAND_PALETTE_PANEL_ENTER = 'animate-in zoom-in-95 fade-in duration-150';
+
+/**
  * Dropdown/Menu/Tooltip animation
  * Fast fade with subtle scale
  */

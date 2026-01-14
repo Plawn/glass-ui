@@ -16,7 +16,7 @@ const DefaultScroller: Component<{
     style={props.style}
     class="glass-card rounded-xl overflow-hidden"
     data-virtual-scroller
-    tabindex={0}
+    tabIndex={0}
   >
     {props.children}
   </div>

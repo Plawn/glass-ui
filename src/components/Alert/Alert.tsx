@@ -1,4 +1,5 @@
 import { type Component, Show } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { ALERT_COLORS } from '../../constants';
 import {
   CheckIcon,
@@ -9,24 +10,16 @@ import {
 } from '../shared/icons';
 import type { AlertProps, AlertType } from './types';
 
+/** Icon component mapping by alert type */
+const ALERT_ICONS: Record<AlertType, Component<{ class?: string }>> = {
+  info: InfoIcon,
+  success: CheckIcon,
+  warning: WarningIcon,
+  error: ErrorIcon,
+};
+
 const DefaultIcon: Component<{ type: AlertType }> = (props) => (
-  <Show
-    when={props.type === 'info'}
-    fallback={
-      <Show
-        when={props.type === 'success'}
-        fallback={
-          <Show when={props.type === 'warning'} fallback={<ErrorIcon class="w-5 h-5" />}>
-            <WarningIcon class="w-5 h-5" />
-          </Show>
-        }
-      >
-        <CheckIcon class="w-5 h-5" />
-      </Show>
-    }
-  >
-    <InfoIcon class="w-5 h-5" />
-  </Show>
+  <Dynamic component={ALERT_ICONS[props.type]} class="w-5 h-5" />
 );
 
 export const Alert: Component<AlertProps> = (props) => {

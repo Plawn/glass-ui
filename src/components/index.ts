@@ -15,6 +15,16 @@ export type { ModalProps, ModalSize } from './Modal';
 export { Dialog } from './Dialog';
 export type { DialogProps, DialogVariant } from './Dialog';
 
+// CommandPalette
+export { CommandPalette, CommandPaletteItem } from './CommandPalette';
+export type {
+  CommandPaletteProps,
+  CommandPaletteItemType,
+  CommandPaletteSearchResult,
+  CommandPaletteHandle,
+  CommandPaletteItemProps,
+} from './CommandPalette';
+
 // Drawer
 export { Drawer } from './Drawer';
 export type { DrawerProps, DrawerPosition, DrawerSize } from './Drawer';

@@ -182,7 +182,7 @@ export const Menu: Component<MenuProps> = (props) => {
                     onClick={() => handleItemClick(item)}
                     disabled={item.disabled}
                     role="menuitem"
-                    tabindex={-1}
+                    tabIndex={-1}
                   >
                     <Show when={item.icon}>
                       <span class="w-4 h-4 flex items-center justify-center opacity-70">

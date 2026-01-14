@@ -227,7 +227,7 @@ export interface DualIconProps {
 export interface FilledColorStyle {
   bg: string;
   text: string;
-  border: string;
+  border?: string;
 }
 
 /**

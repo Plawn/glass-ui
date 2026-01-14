@@ -1,8 +1,7 @@
-import { type Component, Show, createEffect, onCleanup } from 'solid-js';
-import { Portal } from 'solid-js/web';
+import { type Component, Show } from 'solid-js';
 import { BACKDROP_ENTER, MODAL_PANEL_ENTER } from '../../constants';
-import { useIsDark } from '../../hooks';
-import { CloseButton } from '../shared';
+import { useDialogState } from '../../hooks';
+import { CloseButton, PortalWithDarkMode } from '../shared';
 import type { ModalProps, ModalSize } from './types';
 
 const sizeStyles: Record<ModalSize, string> = {
@@ -16,50 +15,22 @@ const sizeStyles: Record<ModalSize, string> = {
 export const Modal: Component<ModalProps> = (props) => {
   const size = () => props.size ?? 'md';
   const showClose = () => props.showClose ?? true;
-  const closeOnBackdrop = () => props.closeOnBackdrop ?? true;
-  const closeOnEscape = () => props.closeOnEscape ?? true;
 
-  const isDark = useIsDark();
-
-  // Handle escape key
-  createEffect(() => {
-    if (!props.open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && closeOnEscape()) {
-        props.onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+  // Use shared dialog state hook for escape, scroll lock, and backdrop
+  const { handleBackdropClick } = useDialogState({
+    open: () => props.open,
+    onClose: props.onClose,
+    closeOnEscape: () => props.closeOnEscape ?? true,
+    closeOnBackdrop: () => props.closeOnBackdrop ?? true,
   });
-
-  // Prevent body scroll when modal is open
-  createEffect(() => {
-    if (props.open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    onCleanup(() => {
-      document.body.style.overflow = '';
-    });
-  });
-
-  const handleBackdropClick = (e: MouseEvent) => {
-    if (closeOnBackdrop() && e.target === e.currentTarget) {
-      props.onClose();
-    }
-  };
 
   return (
     <Show when={props.open}>
-      <Portal>
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled separately */}
+      <PortalWithDarkMode>
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled by useDialogState */}
         <div
-          class={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm ${BACKDROP_ENTER} ${isDark() ? 'dark' : ''}`}
-          onClick={handleBackdropClick}
+          class={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm ${BACKDROP_ENTER}`}
+          onClick={(e) => handleBackdropClick(e)}
           role="dialog"
           aria-modal="true"
           aria-labelledby={props.title ? 'modal-title' : undefined}
@@ -93,7 +64,7 @@ export const Modal: Component<ModalProps> = (props) => {
             </Show>
           </div>
         </div>
-      </Portal>
+      </PortalWithDarkMode>
     </Show>
   );
 };

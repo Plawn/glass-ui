@@ -8,45 +8,26 @@
  * - Variants (filled, outlined)
  */
 
-// =============================================================================
-// Type Definitions
-// =============================================================================
+import type {
+  AlertColorStyle,
+  FilledColorStyle,
+  HttpMethodColor,
+  OutlinedColorStyle,
+  ProgressColorStyle,
+  SemanticColor,
+  StatusColor,
+} from '../types';
 
-/** Standard status colors used across components */
-export type StatusColor = 'success' | 'warning' | 'error' | 'info';
-
-/** Extended color palette including primary and default */
-export type SemanticColor = StatusColor | 'primary' | 'default';
-
-/** HTTP method types for API-related components */
-export type HttpMethodColor = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options';
-
-/** Style structure for filled variant components */
-export interface FilledColorStyle {
-  bg: string;
-  text: string;
-  border?: string;
-}
-
-/** Style structure for outlined variant components */
-export interface OutlinedColorStyle {
-  border: string;
-  text: string;
-}
-
-/** Style structure for alert-type components with icon support */
-export interface AlertColorStyle {
-  border: string;
-  bg: string;
-  icon: string;
-  iconBg: string;
-}
-
-/** Style structure for progress-type components */
-export interface ProgressColorStyle {
-  track: string;
-  fill: string;
-}
+// Re-export types for backwards compatibility
+export type {
+  AlertColorStyle,
+  FilledColorStyle,
+  HttpMethodColor,
+  OutlinedColorStyle,
+  ProgressColorStyle,
+  SemanticColor,
+  StatusColor,
+};
 
 // =============================================================================
 // Status Colors - Filled Variant

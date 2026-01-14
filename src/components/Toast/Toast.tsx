@@ -1,5 +1,6 @@
-import { type Component, For, Show, createSignal } from 'solid-js';
-import { CheckIcon, CloseIcon, InfoIcon, WarningIcon } from '../shared/icons';
+import { type Component, For, createSignal } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
+import { CheckIcon, CloseIcon, ErrorIcon, InfoIcon, WarningIcon } from '../shared/icons';
 import { dismissToast, getToastStore } from './store';
 import type { Toast, ToastType } from './types';
 
@@ -26,30 +27,17 @@ const typeStyles: Record<ToastType, { bg: string; icon: string; iconBg: string }
   },
 };
 
-const ToastIcon: Component<{ type: ToastType }> = (props) => {
-  return (
-    <Show
-      when={props.type === 'success'}
-      fallback={
-        <Show
-          when={props.type === 'error'}
-          fallback={
-            <Show
-              when={props.type === 'warning'}
-              fallback={<InfoIcon class="w-5 h-5" />}
-            >
-              <WarningIcon class="w-5 h-5" />
-            </Show>
-          }
-        >
-          <CloseIcon class="w-5 h-5" />
-        </Show>
-      }
-    >
-      <CheckIcon class="w-5 h-5" />
-    </Show>
-  );
+/** Icon component mapping by toast type */
+const TOAST_ICONS: Record<ToastType, Component<{ class?: string }>> = {
+  success: CheckIcon,
+  error: ErrorIcon,
+  warning: WarningIcon,
+  info: InfoIcon,
 };
+
+const ToastIcon: Component<{ type: ToastType }> = (props) => (
+  <Dynamic component={TOAST_ICONS[props.type]} class="w-5 h-5" />
+);
 
 const ToastItem: Component<{ toast: Toast }> = (props) => {
   const [exiting, setExiting] = createSignal(false);

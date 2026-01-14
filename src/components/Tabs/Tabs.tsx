@@ -178,7 +178,7 @@ export const Tabs: Component<TabsProps> = (props) => {
                 aria-disabled={isDisabled()}
                 disabled={isDisabled()}
                 role="tab"
-                tabindex={isActive() ? 0 : -1}
+                tabIndex={isActive() ? 0 : -1}
               >
                 <Show when={item.icon}>
                   <span class={sizeStyle().icon}>{item.icon}</span>

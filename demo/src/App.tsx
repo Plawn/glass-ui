@@ -33,6 +33,9 @@ import {
   Pagination,
   Menu,
   Dropdown,
+  CommandPalette,
+  type CommandPaletteItemType,
+  type CommandPaletteHandle,
   // Data Display
   Table,
   Chip,
@@ -387,14 +390,63 @@ function FeedbackDemo() {
   );
 }
 
+// Command palette items for demo
+const commandPaletteItems: CommandPaletteItemType[] = [
+  { id: 'search', label: 'Search files', description: 'Find files in project', keywords: ['find', 'locate'] },
+  { id: 'settings', label: 'Open settings', description: 'Configure preferences', group: 'Preferences' },
+  { id: 'theme', label: 'Toggle theme', description: 'Switch between light and dark mode', group: 'Preferences', keywords: ['dark', 'light'] },
+  { id: 'new-file', label: 'New file', description: 'Create a new file', group: 'Actions' },
+  { id: 'new-folder', label: 'New folder', description: 'Create a new folder', group: 'Actions' },
+  { id: 'git-commit', label: 'Git: Commit', description: 'Commit staged changes', group: 'Git' },
+  { id: 'git-push', label: 'Git: Push', description: 'Push to remote', group: 'Git' },
+  { id: 'git-pull', label: 'Git: Pull', description: 'Pull from remote', group: 'Git' },
+  { id: 'format', label: 'Format document', description: 'Format current file' },
+  { id: 'reload', label: 'Reload window', description: 'Reload the application window' },
+];
+
 function NavigationDemo() {
   const [activeTab, setActiveTab] = createSignal('tab1');
   const [segment, setSegment] = createSignal<'day' | 'week' | 'month'>('day');
   const [page, setPage] = createSignal(1);
   const [dropdownOpen, setDropdownOpen] = createSignal(false);
+  const [paletteOpen, setPaletteOpen] = createSignal(false);
+  const [recentIds, setRecentIds] = createSignal<string[]>([]);
+  let paletteHandle: CommandPaletteHandle | undefined;
+
+  const handleCommandSelect = (item: CommandPaletteItemType) => {
+    // Update recents
+    setRecentIds((prev) => [item.id, ...prev.filter((id) => id !== item.id)].slice(0, 5));
+    toast.info(`Selected: ${item.label}`);
+  };
 
   return (
     <>
+      <DemoSection title="CommandPalette">
+        <p class="text-sm text-surface-500 mb-4">
+          Press <kbd class="px-1.5 py-0.5 text-xs bg-surface-100 dark:bg-white/10 rounded border border-surface-200 dark:border-white/10">⌘K</kbd> or click the button to open.
+        </p>
+        <div class="flex gap-2 flex-wrap">
+          <Button onClick={() => paletteHandle?.open()}>Open Command Palette</Button>
+          <Button variant="secondary" onClick={() => setPaletteOpen(true)}>Controlled Open</Button>
+        </div>
+        <CommandPalette
+          items={commandPaletteItems}
+          onSelect={handleCommandSelect}
+          recentIds={recentIds()}
+          placeholder="Type a command or search..."
+          ref={(handle) => (paletteHandle = handle)}
+        />
+        <CommandPalette
+          items={commandPaletteItems}
+          onSelect={handleCommandSelect}
+          recentIds={recentIds()}
+          open={paletteOpen()}
+          onOpenChange={setPaletteOpen}
+          disableShortcut
+          placeholder="Controlled palette..."
+        />
+      </DemoSection>
+
       <DemoSection title="Tabs - Variants">
         <p class="text-sm text-surface-500 mb-4">Three visual variants: pills (default), underline, enclosed</p>
         <div class="space-y-6">

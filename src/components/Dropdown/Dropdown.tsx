@@ -1,7 +1,18 @@
+import type { JSX } from 'solid-js';
 import { type Component, Show, createEffect, onCleanup } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { useDisclosure, useIsDark } from '../../hooks';
 import type { DropdownProps } from './types';
+
+/** Position style properties for dropdown placement */
+type PositionStyles = Pick<JSX.CSSProperties, 'top' | 'bottom' | 'left' | 'right' | 'transform'>;
+
+/** Minimum space required between dropdown and viewport edge */
+const VIEWPORT_PADDING = 8;
+/** Default estimated dropdown height for viewport calculations */
+const ESTIMATED_DROPDOWN_HEIGHT = 200;
+/** Gap between trigger and dropdown */
+const DROPDOWN_GAP = 4;
 
 export const Dropdown: Component<DropdownProps> = (props) => {
   // Use internal state if not controlled
@@ -14,7 +25,7 @@ export const Dropdown: Component<DropdownProps> = (props) => {
 
   // Determine if controlled or uncontrolled
   const isControlled = () => props.open !== undefined;
-  const isOpen = () => (isControlled() ? (props.open as boolean) : disclosure.isOpen());
+  const isOpen = () => (isControlled() ? !!props.open : disclosure.isOpen());
 
   const setOpen = (value: boolean) => {
     if (isControlled()) {
@@ -71,32 +82,60 @@ export const Dropdown: Component<DropdownProps> = (props) => {
     onCleanup(() => document.removeEventListener('mousedown', handleClickOutside));
   });
 
-  // Calculate position styles
-  const getPositionStyles = () => {
+  // Calculate position styles with viewport boundary checking
+  const getPositionStyles = (): PositionStyles => {
     if (!triggerRef) {
       return {};
     }
     const rect = triggerRef.getBoundingClientRect();
-    const p = placement();
+    const requestedPlacement = placement();
 
-    const styles: Record<string, string> = {};
+    // Calculate available space
+    const spaceBelow = window.innerHeight - rect.bottom - VIEWPORT_PADDING;
+    const spaceAbove = rect.top - VIEWPORT_PADDING;
+    const spaceRight = window.innerWidth - rect.left - VIEWPORT_PADDING;
+    const spaceLeft = rect.right - VIEWPORT_PADDING;
 
-    // Vertical positioning
-    if (p.startsWith('bottom')) {
-      styles.top = `${rect.bottom + 4}px`;
-    } else if (p.startsWith('top')) {
-      styles.bottom = `${window.innerHeight - rect.top + 4}px`;
+    // Get actual dropdown height if available, otherwise use estimate
+    const dropdownHeight = contentRef?.offsetHeight || ESTIMATED_DROPDOWN_HEIGHT;
+    const dropdownWidth = contentRef?.offsetWidth || 200;
+
+    // Determine actual vertical placement (with auto-flip if needed)
+    let verticalPlacement: 'top' | 'bottom';
+    if (requestedPlacement.startsWith('bottom')) {
+      verticalPlacement = spaceBelow >= dropdownHeight || spaceBelow >= spaceAbove ? 'bottom' : 'top';
+    } else {
+      verticalPlacement = spaceAbove >= dropdownHeight || spaceAbove >= spaceBelow ? 'top' : 'bottom';
     }
 
-    // Horizontal positioning
-    if (p.includes('start') || p === 'bottom' || p === 'top') {
-      styles.left = `${rect.left}px`;
+    // Determine horizontal alignment
+    let horizontalAlignment: 'start' | 'end' | 'center';
+    if (requestedPlacement.includes('start')) {
+      // Check if dropdown would overflow right edge
+      horizontalAlignment = spaceRight >= dropdownWidth ? 'start' : 'end';
+    } else if (requestedPlacement.includes('end')) {
+      // Check if dropdown would overflow left edge
+      horizontalAlignment = spaceLeft >= dropdownWidth ? 'end' : 'start';
+    } else {
+      horizontalAlignment = 'center';
     }
-    if (p.includes('end')) {
-      styles.right = `${window.innerWidth - rect.right}px`;
+
+    const styles: PositionStyles = {};
+
+    // Apply vertical positioning
+    if (verticalPlacement === 'bottom') {
+      styles.top = `${rect.bottom + DROPDOWN_GAP}px`;
+    } else {
+      styles.bottom = `${window.innerHeight - rect.top + DROPDOWN_GAP}px`;
     }
-    if (p === 'bottom' || p === 'top') {
-      // Center alignment for plain bottom/top
+
+    // Apply horizontal positioning
+    if (horizontalAlignment === 'start') {
+      styles.left = `${Math.max(VIEWPORT_PADDING, rect.left)}px`;
+    } else if (horizontalAlignment === 'end') {
+      styles.right = `${Math.max(VIEWPORT_PADDING, window.innerWidth - rect.right)}px`;
+    } else {
+      // Center alignment
       styles.left = `${rect.left + rect.width / 2}px`;
       styles.transform = 'translateX(-50%)';
     }

@@ -1,7 +1,7 @@
-import { type Component, Show, createEffect, onCleanup } from 'solid-js';
-import { Portal } from 'solid-js/web';
-import { useIsDark } from '../../hooks';
-import type { DialogProps, DialogVariant } from './types';
+import { type Component, Show } from 'solid-js';
+import { useDialogState } from '../../hooks';
+import { PortalWithDarkMode } from '../shared';
+import type { DialogProps, DialogSize, DialogVariant } from './types';
 
 const confirmButtonStyles: Record<DialogVariant, string> = {
   default: 'btn-primary',
@@ -9,51 +9,30 @@ const confirmButtonStyles: Record<DialogVariant, string> = {
     'bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-medium transition-colors focus:outline-none focus-ring',
 };
 
+const sizeStyles: Record<DialogSize, string> = {
+  sm: 'max-w-sm',
+  md: 'max-w-md',
+  lg: 'max-w-lg',
+};
+
 export const Dialog: Component<DialogProps> = (props) => {
   const variant = () => props.variant ?? 'default';
+  const size = () => props.size ?? 'sm';
   const confirmLabel = () => props.confirmLabel ?? 'Confirm';
   const cancelLabel = () => props.cancelLabel ?? 'Cancel';
-
-  const isDark = useIsDark();
-
-  // Handle escape key
-  createEffect(() => {
-    if (!props.open) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        props.onOpenChange(false);
-        props.onCancel?.();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
-  });
-
-  // Prevent body scroll when dialog is open
-  createEffect(() => {
-    if (props.open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    onCleanup(() => {
-      document.body.style.overflow = '';
-    });
-  });
-
-  const handleBackdropClick = (e: MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      props.onOpenChange(false);
-      props.onCancel?.();
-    }
-  };
 
   const handleCancel = () => {
     props.onOpenChange(false);
     props.onCancel?.();
   };
+
+  // Use shared dialog state hook for escape, scroll lock, and backdrop
+  const { handleBackdropClick } = useDialogState({
+    open: () => props.open,
+    onClose: handleCancel,
+    closeOnEscape: () => true,
+    closeOnBackdrop: () => true,
+  });
 
   const handleConfirm = () => {
     props.onConfirm();
@@ -62,18 +41,18 @@ export const Dialog: Component<DialogProps> = (props) => {
 
   return (
     <Show when={props.open}>
-      <Portal>
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled separately */}
+      <PortalWithDarkMode>
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled by useDialogState */}
         <div
-          class={`fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200 ${isDark() ? 'dark' : ''}`}
-          onClick={handleBackdropClick}
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={(e) => handleBackdropClick(e)}
           role="alertdialog"
           aria-modal="true"
           aria-labelledby="dialog-title"
           aria-describedby={props.description ? 'dialog-description' : undefined}
         >
           <div
-            class="w-full max-w-sm glass-card rounded-2xl shadow-2xl animate-in zoom-in-95 fade-in duration-200"
+            class={`w-full ${sizeStyles[size()]} glass-card rounded-2xl shadow-2xl animate-in zoom-in-95 fade-in duration-200`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Content */}
@@ -103,7 +82,7 @@ export const Dialog: Component<DialogProps> = (props) => {
             </div>
           </div>
         </div>
-      </Portal>
+      </PortalWithDarkMode>
     </Show>
   );
 };
