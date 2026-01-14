@@ -23,4 +23,6 @@ export interface PopoverProps extends BaseComponentProps {
   offset?: number;
   /** Additional CSS classes for the content container */
   contentClass?: string;
+  /** Additional props to pass to the trigger button (e.g., keyboard handlers) */
+  triggerProps?: Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'ref'>;
 }

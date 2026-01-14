@@ -258,12 +258,18 @@ export const Popover: Component<PopoverProps> = (props) => {
     <div class={`relative inline-block ${props.class ?? ''}`} style={props.style}>
       <button
         type="button"
+        {...props.triggerProps}
         ref={triggerRef}
         onClick={handleToggle}
-        onKeyDown={handleKeyDown}
-        aria-haspopup="true"
+        onKeyDown={(e) => {
+          handleKeyDown(e);
+          if (typeof props.triggerProps?.onKeyDown === 'function') {
+            props.triggerProps.onKeyDown(e);
+          }
+        }}
+        aria-haspopup={props.triggerProps?.['aria-haspopup'] ?? 'true'}
         aria-expanded={isOpen()}
-        class="appearance-none bg-transparent border-none p-0 m-0 cursor-pointer"
+        class={`appearance-none bg-transparent border-none p-0 m-0 cursor-pointer ${props.triggerProps?.class ?? ''}`}
       >
         {props.trigger}
       </button>
