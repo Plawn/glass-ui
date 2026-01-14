@@ -89,6 +89,7 @@ function App() {
 - **Pagination** - Page navigation
 - **Menu** - Dropdown menu with items
 - **Dropdown** - Generic dropdown container
+- **ContextMenu** - Right-click context menu with data support for lists
 
 ### Data Display
 - **Table** - Data table with sorting, selection, and sticky headers
@@ -205,6 +206,101 @@ You can also pass a `data` array for type-safe access:
 />
 ```
 
+## ContextMenu
+
+Right-click context menus with support for contextual data in lists.
+
+### Simple Usage
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator
+} from 'glass-ui-solid';
+
+<ContextMenu>
+  <ContextMenuTrigger>
+    <div>Right-click this area</div>
+  </ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem onSelect={() => console.log('New File')}>
+      New File
+    </ContextMenuItem>
+    <ContextMenuItem onSelect={() => console.log('New Folder')}>
+      New Folder
+    </ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem shortcut="Cmd+V" onSelect={() => console.log('Paste')}>
+      Paste
+    </ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+### With Data (for Lists)
+
+Use `createContextMenu<T>()` to create a typed context menu where each trigger can pass its own data:
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  createContextMenu
+} from 'glass-ui-solid';
+
+interface FileItem {
+  id: string;
+  name: string;
+}
+
+function FileList() {
+  const menu = createContextMenu<FileItem>();
+
+  return (
+    <ContextMenu {...menu.props}>
+      {/* Multiple triggers sharing the same menu */}
+      <For each={files()}>
+        {(file) => (
+          <ContextMenuTrigger data={file}>
+            <div class="file-row">{file.name}</div>
+          </ContextMenuTrigger>
+        )}
+      </For>
+
+      {/* Menu adapts based on which item was right-clicked */}
+      <ContextMenuContent>
+        <ContextMenuItem onSelect={() => openFile(menu.data()!.id)}>
+          Open "{menu.data()?.name}"
+        </ContextMenuItem>
+        <ContextMenuItem shortcut="Cmd+C" onSelect={() => copyFile(menu.data()!.id)}>
+          Copy
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem destructive onSelect={() => deleteFile(menu.data()!.id)}>
+          Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+```
+
+### ContextMenuItem Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `onSelect` | `() => void` | Callback when item is selected |
+| `disabled` | `boolean` | Disable the item |
+| `icon` | `JSX.Element` | Icon displayed on the left |
+| `shortcut` | `string` | Keyboard shortcut displayed on the right |
+| `destructive` | `boolean` | Red styling for destructive actions |
+
 ## Hooks
 
 ```typescript
@@ -313,9 +409,19 @@ import type {
   VirtualListProps,
   VirtualTableProps,
   ErrorDisplayProps,
-  GlassBackgroundProps
+  GlassBackgroundProps,
+  ContextMenuProps,
+  ContextMenuItemProps,
+  CreateContextMenuReturn
 } from 'glass-ui-solid';
 ```
+
+## Documentation
+
+Full documentation for all components and hooks is available in the [docs](/docs) folder:
+
+- [Component Documentation](/docs/README.md) - Full API reference for all components
+- [Hooks Documentation](/docs/hooks.md) - Utility hooks
 
 ## License
 

@@ -106,6 +106,24 @@ export type { MenuProps, MenuItem, MenuPlacement } from './Menu';
 export { Dropdown } from './Dropdown';
 export type { DropdownProps, DropdownPlacement } from './Dropdown';
 
+// ContextMenu
+export {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  createContextMenu,
+} from './ContextMenu';
+export type {
+  ContextMenuProps,
+  ContextMenuTriggerProps,
+  ContextMenuContentProps,
+  ContextMenuItemProps,
+  ContextMenuSeparatorProps,
+  CreateContextMenuReturn,
+} from './ContextMenu';
+
 // Breadcrumb
 export { Breadcrumb } from './Breadcrumb';
 export type { BreadcrumbProps, BreadcrumbItem } from './Breadcrumb';

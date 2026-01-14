@@ -34,6 +34,12 @@ import {
   Pagination,
   Menu,
   Dropdown,
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  createContextMenu,
   CommandPalette,
   type CommandPaletteItemType,
   type CommandPaletteHandle,
@@ -391,6 +397,119 @@ function FeedbackDemo() {
   );
 }
 
+// Context menu demo data
+interface FileItem {
+  id: string;
+  name: string;
+  type: 'folder' | 'file';
+  size?: string;
+}
+
+const demoFiles: FileItem[] = [
+  { id: '1', name: 'Documents', type: 'folder' },
+  { id: '2', name: 'report.pdf', type: 'file', size: '2.4 MB' },
+  { id: '3', name: 'photo.jpg', type: 'file', size: '1.2 MB' },
+  { id: '4', name: 'Projects', type: 'folder' },
+  { id: '5', name: 'notes.txt', type: 'file', size: '12 KB' },
+];
+
+function ContextMenuDemo() {
+  const menu = createContextMenu<FileItem>();
+
+  const handleAction = (action: string, file: FileItem | null) => {
+    if (file) {
+      toast.info(`${action}: ${file.name}`);
+    }
+  };
+
+  return (
+    <>
+      <DemoSection title="ContextMenu - Simple">
+        <p class="text-sm text-surface-500 mb-3">Right-click on the area below to open the context menu.</p>
+        <ContextMenu>
+          <ContextMenuTrigger>
+            <div class="p-8 border-2 border-dashed border-surface-300 dark:border-surface-600 rounded-xl text-center text-surface-500">
+              Right-click here
+            </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent>
+            <ContextMenuItem onSelect={() => toast.info('New File')}>
+              New File
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={() => toast.info('New Folder')}>
+              New Folder
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem onSelect={() => toast.info('Paste')}>
+              Paste
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem onSelect={() => toast.info('Refresh')}>
+              Refresh
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+      </DemoSection>
+
+      <DemoSection title="ContextMenu - With Data (List)">
+        <p class="text-sm text-surface-500 mb-3">
+          Right-click on any file to see contextual actions. The menu adapts based on which item you clicked.
+        </p>
+        <ContextMenu {...menu.props}>
+          <div class="border border-surface-200 dark:border-surface-700 rounded-xl overflow-hidden">
+            <For each={demoFiles}>
+              {(file) => (
+                <ContextMenuTrigger data={file}>
+                  <div class="flex items-center gap-3 px-4 py-3 hover:bg-surface-50 dark:hover:bg-surface-800/50 cursor-default border-b border-surface-100 dark:border-surface-800 last:border-b-0">
+                    <span class="text-xl">
+                      {file.type === 'folder' ? '📁' : '📄'}
+                    </span>
+                    <div class="flex-1">
+                      <div class="font-medium text-surface-900 dark:text-white">{file.name}</div>
+                      {file.size && (
+                        <div class="text-xs text-surface-500">{file.size}</div>
+                      )}
+                    </div>
+                  </div>
+                </ContextMenuTrigger>
+              )}
+            </For>
+          </div>
+
+          <ContextMenuContent>
+            <ContextMenuItem onSelect={() => handleAction('Open', menu.data())}>
+              Open "{menu.data()?.name}"
+            </ContextMenuItem>
+            <ContextMenuItem
+              shortcut="Cmd+C"
+              onSelect={() => handleAction('Copy', menu.data())}
+            >
+              Copy
+            </ContextMenuItem>
+            <ContextMenuItem
+              shortcut="Cmd+X"
+              onSelect={() => handleAction('Cut', menu.data())}
+            >
+              Cut
+            </ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem onSelect={() => handleAction('Rename', menu.data())}>
+              Rename
+            </ContextMenuItem>
+            <ContextMenuItem
+              destructive
+              shortcut="Cmd+Del"
+              onSelect={() => handleAction('Delete', menu.data())}
+            >
+              Delete
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+      </DemoSection>
+    </>
+  );
+}
+
 // Command palette items for demo
 const commandPaletteItems: CommandPaletteItemType[] = [
   { id: 'search', label: 'Search files', description: 'Find files in project', keywords: ['find', 'locate'] },
@@ -706,6 +825,8 @@ function NavigationDemo() {
           </div>
         </Dropdown>
       </DemoSection>
+
+      <ContextMenuDemo />
 
       {/* Z-INDEX CONFLICT TEST CASES */}
       <DemoSection title="Z-Index Tests">
