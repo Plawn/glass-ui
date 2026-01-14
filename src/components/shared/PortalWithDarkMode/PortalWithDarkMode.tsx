@@ -25,7 +25,7 @@ export function PortalWithDarkMode(props: PortalWithDarkModeProps): JSX.Element 
   const isDark = useIsDark();
 
   return (
-    <Portal>
+    <Portal mount={document.body}>
       <div class={`${isDark() ? 'dark' : ''} ${props.class ?? ''}`}>{props.children}</div>
     </Portal>
   );
