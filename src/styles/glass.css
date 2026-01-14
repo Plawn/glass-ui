@@ -39,13 +39,6 @@
   box-shadow: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not(:has(.light)) .glass {
-    background: oklch(0.15 0.02 260 / 0.6);
-    border-color: oklch(1 0 0 / 0.08);
-    box-shadow: none;
-  }
-}
 
 /* iOS 26 Glass - Thick (more opaque) */
 .glass-thick {

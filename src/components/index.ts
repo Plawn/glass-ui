@@ -3,6 +3,14 @@ export * from './Button';
 export * from './Badge';
 export * from './Input';
 
+// NumberInput
+export { NumberInput } from './NumberInput';
+export type { NumberInputProps, NumberInputSize } from './NumberInput';
+
+// Autocomplete
+export { Autocomplete } from './Autocomplete';
+export type { AutocompleteProps, AutocompleteOption, AutocompleteSize } from './Autocomplete';
+
 // Alert
 export { Alert } from './Alert';
 export type { AlertProps, AlertType } from './Alert';
@@ -29,6 +37,10 @@ export type {
 export { Drawer } from './Drawer';
 export type { DrawerProps, DrawerPosition, DrawerSize } from './Drawer';
 
+// Sheet
+export { Sheet } from './Sheet';
+export type { SheetProps } from './Sheet';
+
 // Toast
 export { ToastContainer, toast, dismissToast, clearToasts } from './Toast';
 export type { Toast, ToastType, ToastStore } from './Toast';
@@ -41,6 +53,25 @@ export type { SnackbarProps, SnackbarPosition, SnackbarItem, SnackbarStore } fro
 export { Tooltip } from './Tooltip';
 export type { TooltipProps, TooltipPosition } from './Tooltip';
 
+// Popover
+export { Popover } from './Popover';
+export type { PopoverProps, PopoverPlacement } from './Popover';
+
+// HoverCard
+export { HoverCard } from './HoverCard';
+export type { HoverCardProps, HoverCardPlacement } from './HoverCard';
+
+// DatePicker
+export { DatePicker } from './DatePicker';
+export type {
+  DatePickerProps,
+  DatePickerSize,
+  DateFormat,
+  WeekStartDay,
+  CalendarProps,
+  CalendarDay,
+} from './DatePicker';
+
 // Tabs
 export { Tabs } from './Tabs';
 export type { TabItem, TabsProps } from './Tabs';
@@ -52,6 +83,10 @@ export type { AccordionItem, AccordionPanelProps, AccordionProps } from './Accor
 // SegmentedControl
 export { SegmentedControl } from './SegmentedControl';
 export type { SegmentedControlOption, SegmentedControlProps } from './SegmentedControl';
+
+// RadioGroup
+export { RadioGroup } from './RadioGroup';
+export type { RadioGroupProps, RadioOption, RadioGroupSize, RadioGroupOrientation } from './RadioGroup';
 
 // CodeBlock
 export { CodeBlock } from './CodeBlock';
@@ -148,17 +183,41 @@ export type { AvatarProps, AvatarSize } from './Avatar';
 export { Skeleton } from './Skeleton';
 export type { SkeletonProps, SkeletonVariant } from './Skeleton';
 
+// Spinner
+export { Spinner } from './Spinner';
+export type { SpinnerProps, SpinnerSize, SpinnerColor } from './Spinner';
+
 // Progress
 export { Progress } from './Progress';
 export type { ProgressProps, ProgressVariant, ProgressSize, ProgressColor } from './Progress';
+
+// Slider
+export { Slider } from './Slider';
+export type { SliderProps, SliderSize, SliderMark } from './Slider';
 
 // Chip
 export { Chip } from './Chip';
 export type { ChipProps, ChipVariant, ChipSize, ChipColor } from './Chip';
 
+// Switch
+export { Switch } from './Switch';
+export type { SwitchProps, SwitchSize, SwitchLabelPosition } from './Switch';
+
 // GlassBackground
 export { GlassBackground } from './GlassBackground';
 export type { GlassBackgroundProps, GlassBackgroundBlob } from './GlassBackground';
+
+// Divider
+export { Divider } from './Divider';
+export type { DividerProps, DividerOrientation, DividerLabelPosition, DividerVariant } from './Divider';
+
+// EmptyState
+export { EmptyState } from './EmptyState';
+export type { EmptyStateProps, EmptyStateSize } from './EmptyState';
+
+// Navbar
+export { Navbar } from './Navbar';
+export type { NavbarProps, NavbarItem } from './Navbar';
 
 export { VirtualList, VirtualTable, useVirtualizer } from './virtual';
 export type {
@@ -179,3 +238,19 @@ export type {
   VirtualizerOptions,
   VirtualizerResult,
 } from './virtual';
+
+// Stepper
+export { Stepper } from './Stepper';
+export type { StepperProps, StepperStep, StepperOrientation, StepperSize } from './Stepper';
+
+// FileUpload
+export { FileUpload } from './FileUpload';
+export type { FileUploadProps } from './FileUpload';
+
+// Collapsible
+export { Collapsible } from './Collapsible';
+export type { CollapsibleProps } from './Collapsible';
+
+// Sidebar
+export { Sidebar, SidebarItemComponent } from './Sidebar';
+export type { SidebarProps, SidebarItem, SidebarItemComponentProps } from './Sidebar';

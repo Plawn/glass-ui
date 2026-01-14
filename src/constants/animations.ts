@@ -123,6 +123,7 @@ export const COMMAND_PALETTE_PANEL_ENTER = 'animate-in zoom-in-95 fade-in durati
  * Fast fade with subtle scale
  */
 export const POPOVER_ENTER = 'animate-in fade-in zoom-in-95 duration-150';
+export const POPOVER_EXIT = 'animate-out fade-out zoom-out-95 duration-150';
 
 /**
  * Toast/Notification animation (slides from right)
