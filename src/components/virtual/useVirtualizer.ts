@@ -326,14 +326,29 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
   createEffect(() => {
     const container = options.getScrollContainer();
     if (!container) return;
-    
+
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+    let retryCount = 0;
+    const MAX_RETRIES = 10;
+
     const measureViewport = () => {
       const size = options.horizontal ? container.clientWidth : container.clientHeight;
       if (size > 0) {
         setViewportSize(size);
+        // Clear retry timer once we have a valid size
+        if (retryTimer) {
+          clearTimeout(retryTimer);
+          retryTimer = null;
+        }
+      } else if (retryCount < MAX_RETRIES) {
+        // If size is 0, retry after a short delay (CSS might not be loaded yet)
+        retryCount++;
+        retryTimer = setTimeout(() => {
+          requestAnimationFrame(measureViewport);
+        }, 50 * retryCount); // Exponential backoff: 50ms, 100ms, 150ms, etc.
       }
     };
-    
+
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
@@ -342,16 +357,16 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
           const newScrollTop = options.horizontal ? container.scrollLeft : container.scrollTop;
           setScrollTop(newScrollTop);
           ticking = false;
-          
+
           if (!isScrolling()) {
             setIsScrolling(true);
             options.onScrollingChanged?.(true);
           }
-          
+
           if (scrollingTimer) {
             clearTimeout(scrollingTimer);
           }
-          
+
           scrollingTimer = setTimeout(() => {
             setIsScrolling(false);
             options.onScrollingChanged?.(false);
@@ -360,12 +375,13 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
         });
       }
     };
-    
-    measureViewport();
+
+    // Initial measurement - use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(measureViewport);
     setScrollTop(options.horizontal ? container.scrollLeft : container.scrollTop);
-    
+
     container.addEventListener('scroll', handleScroll, { passive: true });
-    
+
     let resizeObserver: ResizeObserver | undefined;
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(measureViewport);
@@ -373,7 +389,7 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
     } else {
       window.addEventListener('resize', measureViewport, { passive: true });
     }
-    
+
     onCleanup(() => {
       container.removeEventListener('scroll', handleScroll);
       if (resizeObserver) {
@@ -383,6 +399,9 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
       }
       if (scrollingTimer) {
         clearTimeout(scrollingTimer);
+      }
+      if (retryTimer) {
+        clearTimeout(retryTimer);
       }
     });
   });
