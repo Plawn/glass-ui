@@ -1,4 +1,5 @@
 import { createSignal, For, Show, onMount } from 'solid-js';
+import { version } from '../../package.json';
 import {
   // Layout
   Card,
@@ -905,7 +906,7 @@ function DataDisplayDemo() {
 
   const jsonData = {
     name: 'Glass UI',
-    version: '0.2.0',
+    version,
     features: ['Glassmorphism', 'Dark mode', 'Animations'],
     config: { theme: 'ios26', responsive: true },
   };
@@ -1524,7 +1525,7 @@ export default function App() {
             Glass UI Demo
           </h1>
           <div class="flex items-center gap-4">
-            <span class="text-sm text-surface-600 dark:text-surface-400">v0.2.0</span>
+            <span class="text-sm text-surface-600 dark:text-surface-400">v{version}</span>
             <Button variant="ghost" size="sm" onClick={toggleDarkMode}>
               {darkMode() ? 'Light' : 'Dark'}
             </Button>
