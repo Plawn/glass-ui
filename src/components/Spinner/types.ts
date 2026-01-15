@@ -1,9 +1,7 @@
-import type { BaseComponentProps } from '../../types';
+import type { BaseComponentProps, SpinnerSize } from '../../types';
 
-/**
- * Spinner size variants
- */
-export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl';
+// Re-export from central types
+export type { SpinnerSize } from '../../types';
 
 /**
  * Spinner color variants

@@ -8,35 +8,9 @@ import {
   onCleanup,
 } from 'solid-js';
 import { PortalWithDarkMode } from '../shared';
-import type { AutocompleteOption, AutocompleteProps, AutocompleteSize } from './types';
-
-/**
- * Get size-specific classes for the input
- */
-const getSizeClasses = (size: AutocompleteSize): string => {
-  switch (size) {
-    case 'sm':
-      return 'px-2.5 py-1.5 text-xs';
-    case 'lg':
-      return 'px-4 py-3 text-base';
-    default:
-      return 'px-3 sm:px-4 py-2 sm:py-2.5 text-sm';
-  }
-};
-
-/**
- * Get size-specific classes for dropdown items
- */
-const getItemSizeClasses = (size: AutocompleteSize): string => {
-  switch (size) {
-    case 'sm':
-      return 'px-2.5 py-1.5 text-xs';
-    case 'lg':
-      return 'px-4 py-3 text-base';
-    default:
-      return 'px-3 py-2 text-sm';
-  }
-};
+import { useClickOutside } from '../../hooks';
+import { INPUT_SIZE_CLASSES, DROPDOWN_ITEM_SIZE_CLASSES } from '../../constants';
+import type { AutocompleteOption, AutocompleteProps } from './types';
 
 /**
  * Default filter function - case-insensitive substring match
@@ -152,9 +126,20 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   const [inputValue, setInputValue] = createSignal('');
   const [focusedIndex, setFocusedIndex] = createSignal(-1);
 
-  let inputRef: HTMLInputElement | undefined;
+  let internalInputRef: HTMLInputElement | undefined;
   let containerRef: HTMLDivElement | undefined;
   let dropdownRef: HTMLDivElement | undefined;
+
+  // Combine internal ref with user-provided ref
+  const setInputRef = (el: HTMLInputElement) => {
+    internalInputRef = el;
+    if (typeof props.ref === 'function') {
+      props.ref(el);
+    } else if (props.ref !== undefined) {
+      // For direct assignment refs, we can't set them directly
+      // but SolidJS handles this case automatically
+    }
+  };
 
   const size = () => props.size ?? 'md';
   const emptyText = () => props.emptyText ?? 'No options found';
@@ -220,7 +205,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
     setInputValue(option.label);
     props.onChange(option.value);
     handleClose();
-    inputRef?.focus();
+    internalInputRef?.focus();
   };
 
   const handleInputChange = (value: string) => {
@@ -329,23 +314,29 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   };
 
   // Click outside to close
-  createEffect(() => {
-    if (!isOpen()) return;
+  useClickOutside({
+    refs: () => [containerRef, dropdownRef],
+    onClickOutside: handleClose,
+    enabled: isOpen,
+  });
 
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (
-        containerRef &&
-        !containerRef.contains(target) &&
-        dropdownRef &&
-        !dropdownRef.contains(target)
-      ) {
-        handleClose();
+  // Close on scroll (any scrollable container, but not internal scroll)
+  createEffect(() => {
+    if (!isOpen()) {
+      return;
+    }
+
+    const handleScroll = (e: Event) => {
+      // Ignore scroll events from inside the dropdown
+      if (dropdownRef?.contains(e.target as Node)) {
+        return;
       }
+      handleClose();
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    onCleanup(() => document.removeEventListener('mousedown', handleClickOutside));
+    // Use capture to catch scroll events on any scrollable ancestor
+    window.addEventListener('scroll', handleScroll, true);
+    onCleanup(() => window.removeEventListener('scroll', handleScroll, true));
   });
 
   // Calculate dropdown position
@@ -369,8 +360,8 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
     };
   };
 
-  const sizeClasses = () => getSizeClasses(size());
-  const itemSizeClasses = () => getItemSizeClasses(size());
+  const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
+  const itemSizeClasses = () => DROPDOWN_ITEM_SIZE_CLASSES[size()];
 
   return (
     <div class={`w-full ${props.class ?? ''}`} ref={containerRef}>
@@ -385,7 +376,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
       <div class="relative">
         <input
-          ref={inputRef}
+          ref={setInputRef}
           type="text"
           id={props.id}
           name={props.name}

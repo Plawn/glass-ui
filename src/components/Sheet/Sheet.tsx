@@ -6,13 +6,8 @@ import {
   onCleanup,
 } from 'solid-js';
 import clsx from 'clsx';
-import {
-  ANIMATION_DURATION_SLOW,
-  BACKDROP_ENTER,
-  BACKDROP_EXIT,
-} from '../../constants';
-import { useAnimationState, useDialogState } from '../../hooks';
-import { PortalWithDarkMode } from '../shared';
+import { ANIMATION_DURATION_SLOW } from '../../constants';
+import { PortalOverlay } from '../shared';
 import type { SheetProps } from './types';
 
 // Default snap points if none provided
@@ -35,12 +30,6 @@ export const Sheet: Component<SheetProps> = (props) => {
   const [dragOffset, setDragOffset] = createSignal(0);
   const [startY, setStartY] = createSignal(0);
 
-  // Use animation state hook for enter/exit animations
-  const { visible, isClosing } = useAnimationState({
-    open: () => props.open,
-    duration: ANIMATION_DURATION_SLOW,
-  });
-
   // Reset snap point when opening
   createEffect(() => {
     if (props.open) {
@@ -48,17 +37,6 @@ export const Sheet: Component<SheetProps> = (props) => {
       setDragOffset(0);
     }
   });
-
-  // Use shared dialog state hook for escape, scroll lock, and backdrop
-  const { handleBackdropClick } = useDialogState({
-    open: visible,
-    onClose: () => props.onOpenChange(false),
-    closeOnEscape: () => dismissible(),
-    closeOnBackdrop: () => dismissible(),
-  });
-
-  const backdropClasses = () =>
-    isClosing() ? BACKDROP_EXIT : BACKDROP_ENTER;
 
   // Calculate current height percentage
   const currentHeight = () => {
@@ -69,17 +47,6 @@ export const Sheet: Component<SheetProps> = (props) => {
       return Math.max(0, Math.min(100, baseHeight - offsetPercent));
     }
     return baseHeight;
-  };
-
-  // Sheet animation classes
-  const sheetClasses = () => {
-    if (isClosing()) {
-      return 'animate-out slide-out-to-bottom duration-300';
-    }
-    if (isDragging()) {
-      return ''; // No animation during drag
-    }
-    return 'animate-in slide-in-from-bottom duration-300';
   };
 
   // Handle drag start
@@ -177,15 +144,27 @@ export const Sheet: Component<SheetProps> = (props) => {
   });
 
   return (
-    <Show when={visible()}>
-      <PortalWithDarkMode>
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Backdrop click is supplementary to Escape key (handled by useDialogState) */}
-        <div
-          class={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm ${backdropClasses()}`}
-          onClick={(e) => handleBackdropClick(e)}
-          aria-modal="true"
-        >
-          {/* Sheet container */}
+    <PortalOverlay
+      open={props.open}
+      onClose={() => props.onOpenChange(false)}
+      closeOnEscape={dismissible()}
+      closeOnBackdrop={dismissible()}
+      animated
+      animationDuration={ANIMATION_DURATION_SLOW}
+    >
+      {({ isClosing, stopPropagation }) => {
+        // Sheet animation classes
+        const sheetClasses = () => {
+          if (isClosing()) {
+            return 'animate-out slide-out-to-bottom duration-300';
+          }
+          if (isDragging()) {
+            return ''; // No animation during drag
+          }
+          return 'animate-in slide-in-from-bottom duration-300';
+        };
+
+        return (
           <div
             class={clsx(
               'absolute bottom-0 left-0 right-0',
@@ -198,7 +177,7 @@ export const Sheet: Component<SheetProps> = (props) => {
               props.class
             )}
             style={{ height: `${currentHeight()}vh` }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={stopPropagation}
           >
             {/* Handle indicator */}
             <Show when={showHandle()}>
@@ -216,8 +195,8 @@ export const Sheet: Component<SheetProps> = (props) => {
               {props.children}
             </div>
           </div>
-        </div>
-      </PortalWithDarkMode>
-    </Show>
+        );
+      }}
+    </PortalOverlay>
   );
 };

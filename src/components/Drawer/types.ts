@@ -1,10 +1,8 @@
 import type { JSX } from 'solid-js';
-import type { DrawerPosition, OverlayProps } from '../../types';
+import type { DrawerPosition, DrawerSize, OverlayProps } from '../../types';
 
-/**
- * Drawer size - excludes 'full' since drawers slide from edges
- */
-export type DrawerSize = 'sm' | 'md' | 'lg' | 'xl';
+// Re-export from central types for backwards compatibility
+export type { DrawerSize } from '../../types';
 
 export interface DrawerProps extends OverlayProps {
   /** Drawer content */

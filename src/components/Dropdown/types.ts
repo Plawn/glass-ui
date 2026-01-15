@@ -1,10 +1,9 @@
 import type { JSX } from 'solid-js';
-import type { Placement, BaseComponentProps } from '../../types';
+import type { DropdownPlacement, BaseComponentProps } from '../../types';
+import type { OverlayScrollBehavior } from '../../hooks';
 
-/**
- * Dropdown placement - vertical placements only
- */
-export type DropdownPlacement = Extract<Placement, 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'bottom' | 'top'>;
+// Re-export from central types for backwards compatibility
+export type { DropdownPlacement } from '../../types';
 
 export interface DropdownProps extends BaseComponentProps {
   /** Trigger element that opens the dropdown */
@@ -19,4 +18,11 @@ export interface DropdownProps extends BaseComponentProps {
   placement?: DropdownPlacement;
   /** Additional CSS classes for the content container */
   contentClass?: string;
+  /**
+   * How to handle scroll when dropdown is open
+   * - 'close': Close on scroll (default)
+   * - 'lock': Prevent body scroll while open
+   * - 'none': Stay open and allow scroll
+   */
+  scrollBehavior?: OverlayScrollBehavior;
 }

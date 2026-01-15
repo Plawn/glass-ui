@@ -1,10 +1,10 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps, DisableableProps } from '../../types';
+import type { BaseComponentProps, DisableableProps, CompactSize } from '../../types';
 
 /**
- * SegmentedControl size - only sm and md supported
+ * SegmentedControl size - uses compact 2-tier scale
  */
-export type SegmentedControlSize = 'sm' | 'md';
+export type SegmentedControlSize = CompactSize;
 
 export interface SegmentedControlOption<T extends string | number> extends DisableableProps {
   /** Option value */

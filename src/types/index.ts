@@ -12,6 +12,7 @@ export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 /**
  * Common 3-tier size scale (most components)
+ * Used by: Switch, CloseButton, Button, Input, Badge, Chip, RadioGroup, NumberInput, EmptyState, Autocomplete
  */
 export type ComponentSize = 'sm' | 'md' | 'lg';
 
@@ -24,6 +25,26 @@ export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
  * Modal/Drawer size scale (includes 'full')
  */
 export type OverlaySize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+
+/**
+ * Dialog size - subset of OverlaySize (excludes xl and full)
+ */
+export type DialogSize = Extract<OverlaySize, 'sm' | 'md' | 'lg'>;
+
+/**
+ * Drawer size - excludes 'full' since drawers slide from edges
+ */
+export type DrawerSize = Exclude<OverlaySize, 'full'>;
+
+/**
+ * Extended 4-tier size scale (Spinner)
+ */
+export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl';
+
+/**
+ * Compact 2-tier size scale (SegmentedControl)
+ */
+export type CompactSize = 'sm' | 'md';
 
 // =============================================================================
 // COLOR SYSTEM
@@ -113,6 +134,11 @@ export type DrawerPosition = 'left' | 'right';
  * Snackbar position (bottom row)
  */
 export type SnackbarPosition = 'bottom-left' | 'bottom-center' | 'bottom-right';
+
+/**
+ * Dropdown placement - vertical placements only (subset of Placement)
+ */
+export type DropdownPlacement = Extract<Placement, 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'bottom' | 'top'>;
 
 /**
  * Table column alignment

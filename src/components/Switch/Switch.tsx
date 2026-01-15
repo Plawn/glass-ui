@@ -71,6 +71,7 @@ export const Switch: Component<SwitchProps> = (props) => {
 
       {/* Hidden input for form submission */}
       <input
+        ref={props.ref}
         type="checkbox"
         id={props.id}
         name={props.name}

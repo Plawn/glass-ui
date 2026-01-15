@@ -1,8 +1,9 @@
 import type { JSX } from 'solid-js';
 import type { Placement, BaseComponentProps } from '../../types';
+import type { OverlayScrollBehavior } from '../../hooks';
 
 /**
- * Popover placement options - all 12 positions
+ * Popover placement options - all 12 positions (alias for Placement)
  */
 export type PopoverPlacement = Placement;
 
@@ -12,7 +13,7 @@ export interface PopoverProps extends BaseComponentProps {
   /** Content to display in the popover */
   children: JSX.Element;
   /** Popover placement relative to trigger */
-  placement?: PopoverPlacement;
+  placement?: Placement;
   /** Controlled open state */
   open?: boolean;
   /** Callback when open state changes */
@@ -25,4 +26,11 @@ export interface PopoverProps extends BaseComponentProps {
   contentClass?: string;
   /** Additional props to pass to the trigger button (e.g., keyboard handlers) */
   triggerProps?: Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'ref'>;
+  /**
+   * How to handle scroll when popover is open
+   * - 'close': Close on scroll (default)
+   * - 'lock': Prevent body scroll while open
+   * - 'none': Stay open and allow scroll
+   */
+  scrollBehavior?: OverlayScrollBehavior;
 }

@@ -46,6 +46,8 @@ export interface AutocompleteProps extends BaseComponentProps {
   id?: string;
   /** HTML name attribute */
   name?: string;
+  /** Ref to the input element */
+  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
 }
 
 /**

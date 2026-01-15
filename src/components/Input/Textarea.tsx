@@ -43,6 +43,7 @@ export const Textarea: Component<TextareaProps> = (props) => {
         </label>
       </Show>
       <textarea
+        ref={props.ref}
         id={props.id}
         name={props.name}
         class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''} ${props.class ?? ''}`}

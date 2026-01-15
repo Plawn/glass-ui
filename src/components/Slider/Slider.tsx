@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js';
-import { Show, For } from 'solid-js';
+import { For, Show } from 'solid-js';
+import { TEXT_SIZES } from '../../constants';
 import type { SliderProps, SliderSize } from './types';
 
 const trackHeights: Record<SliderSize, string> = {
@@ -14,12 +15,7 @@ const thumbSizes: Record<SliderSize, string> = {
   lg: '20px',
 };
 
-const labelSizes: Record<SliderSize, string> = {
-  sm: 'text-xs',
-  md: 'text-sm',
-  lg: 'text-base',
-};
-
+// Mark labels are intentionally smaller than standard text sizes
 const markLabelSizes: Record<SliderSize, string> = {
   sm: 'text-[10px]',
   md: 'text-xs',
@@ -57,14 +53,14 @@ export const Slider: Component<SliderProps> = (props) => {
           <Show when={props.label}>
             <label
               for={props.id}
-              class={`font-medium text-surface-700 dark:text-surface-300 ${labelSizes[size()]}`}
+              class={`font-medium text-surface-700 dark:text-surface-300 ${TEXT_SIZES[size()]}`}
             >
               {props.label}
             </label>
           </Show>
           <Show when={props.showValue}>
             <span
-              class={`font-medium text-surface-600 dark:text-surface-400 tabular-nums ${labelSizes[size()]}`}
+              class={`font-medium text-surface-600 dark:text-surface-400 tabular-nums ${TEXT_SIZES[size()]}`}
             >
               {props.value}
             </span>
@@ -74,6 +70,7 @@ export const Slider: Component<SliderProps> = (props) => {
 
       {/* Native range input with CSS-based fill */}
       <input
+        ref={props.ref}
         type="range"
         id={props.id}
         name={props.name}

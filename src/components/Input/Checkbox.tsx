@@ -25,6 +25,7 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
         }`}
       >
         <input
+          ref={props.ref}
           type="checkbox"
           id={props.id}
           name={props.name}

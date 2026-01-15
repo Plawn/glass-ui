@@ -2,7 +2,7 @@ import type { JSX } from 'solid-js';
 import type { Direction, BaseComponentProps } from '../../types';
 
 /**
- * HoverCard placement options
+ * HoverCard placement options - simple 4-direction (alias for Direction)
  */
 export type HoverCardPlacement = Direction;
 
@@ -12,7 +12,7 @@ export interface HoverCardProps extends BaseComponentProps {
   /** Rich content to display in the hover card */
   children: JSX.Element;
   /** Hover card placement relative to trigger */
-  placement?: HoverCardPlacement;
+  placement?: Direction;
   /** Delay before showing the hover card (ms) */
   openDelay?: number;
   /** Delay before hiding the hover card (ms) */

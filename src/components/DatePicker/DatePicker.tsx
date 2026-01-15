@@ -1,8 +1,6 @@
-import type { JSX } from 'solid-js';
-import { type Component, Show, createEffect, onCleanup, createSignal } from 'solid-js';
-import { useDisclosure } from '../../hooks';
+import { type Component, Show, createSignal } from 'solid-js';
 import type { ComponentSize } from '../../types';
-import { PortalWithDarkMode } from '../shared/PortalWithDarkMode';
+import { Popover } from '../Popover';
 import { CloseIcon } from '../shared/icons/CloseIcon';
 import { Calendar } from './Calendar';
 import type { DatePickerProps, DateFormat } from './types';
@@ -70,14 +68,6 @@ const formatDate = (date: Date, format: DateFormat): string => {
   }
 };
 
-/** Position styles for dropdown placement */
-type PositionStyles = Pick<JSX.CSSProperties, 'top' | 'bottom' | 'left' | 'right'>;
-
-/** Minimum space required between dropdown and viewport edge */
-const VIEWPORT_PADDING = 8;
-/** Gap between trigger and dropdown */
-const DROPDOWN_GAP = 4;
-
 /**
  * A glassmorphic date picker component with calendar popup.
  *
@@ -94,17 +84,13 @@ const DROPDOWN_GAP = 4;
  * ```
  */
 export const DatePicker: Component<DatePickerProps> = (props) => {
-  const disclosure = useDisclosure(false);
-  let inputContainerRef: HTMLDivElement | undefined;
-  let contentRef: HTMLDivElement | undefined;
+  const [isOpen, setIsOpen] = createSignal(false);
 
   const size = () => props.size ?? 'md';
   const format = () => props.format ?? 'yyyy-MM-dd';
   const weekStartsOn = () => props.weekStartsOn ?? 0;
   const clearable = () => props.clearable ?? false;
   const disabled = () => props.disabled ?? false;
-
-  const [position, setPosition] = createSignal<PositionStyles>({});
 
   const displayValue = () => {
     if (props.value) {
@@ -113,95 +99,22 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
     return '';
   };
 
-  const handleOpen = () => {
-    if (!disabled()) {
-      disclosure.onOpen();
-    }
-  };
-
-  const handleClose = () => {
-    disclosure.onClose();
-  };
-
   const handleDateSelect = (date: Date) => {
     props.onChange(date);
-    handleClose();
+    setIsOpen(false);
   };
 
   const handleClear = (e: MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     props.onChange(null);
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && disclosure.isOpen()) {
-      e.preventDefault();
-      handleClose();
-    } else if ((e.key === 'Enter' || e.key === ' ') && !disclosure.isOpen()) {
-      e.preventDefault();
-      handleOpen();
+  const handleOpenChange = (open: boolean) => {
+    if (!disabled()) {
+      setIsOpen(open);
     }
   };
-
-  // Calculate position when opening
-  const updatePosition = () => {
-    if (!inputContainerRef) return;
-
-    const rect = inputContainerRef.getBoundingClientRect();
-    const calendarHeight = 320; // Approximate calendar height
-    const calendarWidth = 280; // Approximate calendar width
-
-    const spaceBelow = window.innerHeight - rect.bottom - VIEWPORT_PADDING;
-    const spaceAbove = rect.top - VIEWPORT_PADDING;
-
-    const styles: PositionStyles = {};
-
-    // Vertical positioning
-    if (spaceBelow >= calendarHeight || spaceBelow >= spaceAbove) {
-      styles.top = `${rect.bottom + DROPDOWN_GAP}px`;
-    } else {
-      styles.bottom = `${window.innerHeight - rect.top + DROPDOWN_GAP}px`;
-    }
-
-    // Horizontal positioning - align to left of input, but keep in viewport
-    const leftPosition = rect.left;
-    const rightOverflow = leftPosition + calendarWidth - window.innerWidth + VIEWPORT_PADDING;
-
-    if (rightOverflow > 0) {
-      styles.left = `${Math.max(VIEWPORT_PADDING, leftPosition - rightOverflow)}px`;
-    } else {
-      styles.left = `${Math.max(VIEWPORT_PADDING, leftPosition)}px`;
-    }
-
-    setPosition(styles);
-  };
-
-  // Update position when opened
-  createEffect(() => {
-    if (disclosure.isOpen()) {
-      updatePosition();
-    }
-  });
-
-  // Close on click outside
-  createEffect(() => {
-    if (!disclosure.isOpen()) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (
-        contentRef &&
-        !contentRef.contains(target) &&
-        inputContainerRef &&
-        !inputContainerRef.contains(target)
-      ) {
-        handleClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    onCleanup(() => document.removeEventListener('mousedown', handleClickOutside));
-  });
 
   return (
     <div class={`w-full ${props.class ?? ''}`} style={props.style}>
@@ -214,68 +127,64 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
         </label>
       </Show>
 
-      {/* Input container */}
-      <div
-        ref={inputContainerRef}
-        onClick={handleOpen}
-        onKeyDown={handleKeyDown}
-        class={`
-          relative w-full glass-input cursor-pointer
-          text-surface-900 dark:text-surface-100
-          focus-within:outline-none
-          ${disabled() ? 'opacity-50 cursor-not-allowed' : ''}
-          ${props.error ? 'border-red-500 dark:border-red-400' : ''}
-          ${getSizeClasses(size())}
-        `}
-        tabIndex={disabled() ? -1 : 0}
-        role="combobox"
-        aria-expanded={disclosure.isOpen()}
-        aria-haspopup="dialog"
-      >
-        <div class="flex items-center gap-2">
-          <CalendarIcon size={size() === 'sm' ? 14 : size() === 'lg' ? 18 : 16} />
-          <span class={displayValue() ? '' : 'text-surface-400 dark:text-surface-500'}>
-            {displayValue() || props.placeholder || 'Select date'}
-          </span>
-        </div>
+      <Popover
+        open={isOpen()}
+        onOpenChange={handleOpenChange}
+        placement="bottom-start"
+        offset={4}
+        triggerProps={{
+          class: `
+            w-full glass-input cursor-pointer
+            text-surface-900 dark:text-surface-100
+            focus:outline-none
+            ${disabled() ? 'opacity-50 cursor-not-allowed' : ''}
+            ${props.error ? 'border-red-500 dark:border-red-400' : ''}
+            ${getSizeClasses(size())}
+          `,
+          'aria-haspopup': 'dialog',
+        }}
+        trigger={
+          <div class="flex items-center gap-2 w-full">
+            <CalendarIcon size={size() === 'sm' ? 14 : size() === 'lg' ? 18 : 16} />
+            <span class={`flex-1 text-left ${displayValue() ? '' : 'text-surface-400 dark:text-surface-500'}`}>
+              {displayValue() || props.placeholder || 'Select date'}
+            </span>
 
-        {/* Clear button */}
-        <Show when={clearable() && props.value && !disabled()}>
-          <button
-            type="button"
-            onClick={handleClear}
-            class="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-surface-200 dark:hover:bg-surface-600 text-surface-400 dark:text-surface-500 transition-colors"
-            aria-label="Clear date"
-          >
-            <CloseIcon size={14} />
-          </button>
-        </Show>
-      </div>
+            {/* Clear button */}
+            <Show when={clearable() && props.value && !disabled()}>
+              <span
+                onClick={handleClear}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    props.onChange(null);
+                  }
+                }}
+                class="p-1 rounded-full hover:bg-surface-200 dark:hover:bg-surface-600 text-surface-400 dark:text-surface-500 transition-colors"
+                role="button"
+                tabIndex={0}
+                aria-label="Clear date"
+              >
+                <CloseIcon size={14} />
+              </span>
+            </Show>
+          </div>
+        }
+        contentClass="p-0"
+      >
+        <Calendar
+          value={props.value}
+          onSelect={handleDateSelect}
+          min={props.min}
+          max={props.max}
+          weekStartsOn={weekStartsOn()}
+        />
+      </Popover>
 
       {/* Error message */}
       <Show when={props.error}>
         <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
-      </Show>
-
-      {/* Calendar popup */}
-      <Show when={disclosure.isOpen()}>
-        <PortalWithDarkMode>
-          <div
-            ref={contentRef}
-            class="fixed z-50 glass-card rounded-xl shadow-lg animate-in fade-in zoom-in-95 duration-150"
-            style={position()}
-            role="dialog"
-            aria-label="Date picker calendar"
-          >
-            <Calendar
-              value={props.value}
-              onSelect={handleDateSelect}
-              min={props.min}
-              max={props.max}
-              weekStartsOn={weekStartsOn()}
-            />
-          </div>
-        </PortalWithDarkMode>
       </Show>
     </div>
   );

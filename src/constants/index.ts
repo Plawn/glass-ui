@@ -31,3 +31,26 @@ export {
   getOutlinedClasses,
   getSemanticColorStyle,
 } from './colors';
+
+// Style constants
+export {
+  // Types
+  type OverlaySizeKey,
+  // Text sizes
+  TEXT_SIZES,
+  LABEL_TEXT_SIZES,
+  // Icon sizes
+  ICON_SIZES,
+  ICON_SIZES_SMALL,
+  // Overlay sizes
+  OVERLAY_MAX_WIDTHS,
+  DIALOG_MAX_WIDTHS,
+  DRAWER_MAX_WIDTHS,
+  // Spacing
+  GAP_SIZES,
+  INLINE_PADDING,
+  TAB_PADDING,
+  // Input sizes
+  INPUT_SIZE_CLASSES,
+  DROPDOWN_ITEM_SIZE_CLASSES,
+} from './styles';

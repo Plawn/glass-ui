@@ -1,8 +1,12 @@
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
 import {
+  GAP_SIZES,
+  ICON_SIZES_SMALL,
+  INLINE_PADDING,
   SEMANTIC_COLORS_FILLED,
   SEMANTIC_COLORS_OUTLINED,
+  TEXT_SIZES,
   getFilledClasses,
   getOutlinedClasses,
   type SemanticColor,
@@ -11,9 +15,9 @@ import { CloseIcon } from '../shared/icons';
 import type { ChipColor, ChipProps, ChipSize } from './types';
 
 const sizeStyles: Record<ChipSize, { container: string; icon: string }> = {
-  sm: { container: 'px-2 py-0.5 text-xs gap-1', icon: 'w-3 h-3' },
-  md: { container: 'px-2.5 py-1 text-sm gap-1.5', icon: 'w-3.5 h-3.5' },
-  lg: { container: 'px-3 py-1.5 text-base gap-2', icon: 'w-4 h-4' },
+  sm: { container: `${INLINE_PADDING.sm} ${TEXT_SIZES.sm} gap-1`, icon: ICON_SIZES_SMALL.sm },
+  md: { container: `${INLINE_PADDING.md} ${TEXT_SIZES.md} ${GAP_SIZES.sm}`, icon: ICON_SIZES_SMALL.md },
+  lg: { container: `${INLINE_PADDING.lg} ${TEXT_SIZES.lg} ${GAP_SIZES.md}`, icon: ICON_SIZES_SMALL.lg },
 };
 
 /** Map chip colors to semantic color keys */

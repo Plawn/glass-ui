@@ -21,6 +21,8 @@ export interface ButtonProps extends BaseComponentProps, DisableableProps, Loada
   type?: 'button' | 'submit' | 'reset';
   /** Whether the button should take full width of its container */
   fullWidth?: boolean;
+  /** Ref to the button element */
+  ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void);
 }
 
 export interface SpinnerProps extends BaseComponentProps {

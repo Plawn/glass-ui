@@ -1,9 +1,7 @@
-import type { DialogVariant, BaseComponentProps, OverlaySize } from '../../types';
+import type { DialogVariant, DialogSize, BaseComponentProps } from '../../types';
 
-/**
- * Dialog size variants - subset of OverlaySize most appropriate for dialogs
- */
-export type DialogSize = Extract<OverlaySize, 'sm' | 'md' | 'lg'>;
+// Re-export from central types for backwards compatibility
+export type { DialogSize } from '../../types';
 
 export interface DialogProps extends BaseComponentProps {
   /** Whether the dialog is open */

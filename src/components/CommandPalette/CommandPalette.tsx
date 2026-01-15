@@ -1,7 +1,7 @@
 import { type Component, For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
-import { Portal } from 'solid-js/web';
 import { BACKDROP_ENTER, COMMAND_PALETTE_PANEL_ENTER } from '../../constants';
-import { useIsDark } from '../../hooks';
+import { useControlled, useBodyScrollLock } from '../../hooks';
+import { PortalWithDarkMode } from '../shared';
 import { CommandPaletteItem } from './CommandPaletteItem';
 import type { CommandPaletteItem as ItemType, CommandPaletteProps, CommandPaletteSearchResult } from './types';
 
@@ -121,10 +121,7 @@ const Kbd: Component<{ children: string }> = (props) => (
  * ```
  */
 export const CommandPalette: Component<CommandPaletteProps> = (props) => {
-  const isDark = useIsDark();
-
   // State
-  const [internalOpen, setInternalOpen] = createSignal(false);
   const [query, setQuery] = createSignal('');
   const [selectedIndex, setSelectedIndex] = createSignal(0);
   const [mouseEnabled, setMouseEnabled] = createSignal(false);
@@ -132,12 +129,12 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   let inputRef: HTMLInputElement | undefined;
   let listRef: HTMLDivElement | undefined;
 
-  // Controlled vs uncontrolled
-  const isOpen = () => props.open ?? internalOpen();
-  const setOpen = (value: boolean) => {
-    setInternalOpen(value);
-    props.onOpenChange?.(value);
-  };
+  // Controlled/uncontrolled state management
+  const [isOpen, setOpen] = useControlled({
+    value: props.open,
+    defaultValue: false,
+    onChange: props.onOpenChange,
+  });
 
   // Config
   const shortcutKey = () => props.shortcutKey ?? 'k';
@@ -277,15 +274,8 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   });
 
   // Prevent body scroll
-  createEffect(() => {
-    if (isOpen()) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    onCleanup(() => {
-      document.body.style.overflow = '';
-    });
+  useBodyScrollLock({
+    enabled: isOpen,
   });
 
   const handleSelect = (item: ItemType) => {
@@ -334,10 +324,10 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
   return (
     <Show when={isOpen()}>
-      <Portal>
+      <PortalWithDarkMode>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled in input */}
         <div
-          class={`fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/20 dark:bg-black/40 backdrop-blur-md ${BACKDROP_ENTER} ${isDark() ? 'dark' : ''}`}
+          class={`fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/20 dark:bg-black/40 backdrop-blur-md ${BACKDROP_ENTER}`}
           onClick={handleBackdropClick}
           role="dialog"
           aria-modal="true"
@@ -451,7 +441,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
             </Show>
           </div>
         </div>
-      </Portal>
+      </PortalWithDarkMode>
     </Show>
   );
 };

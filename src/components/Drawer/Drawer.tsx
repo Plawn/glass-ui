@@ -5,19 +5,14 @@ import {
   BACKDROP_EXIT,
   DRAWER_ENTER,
   DRAWER_EXIT,
+  DRAWER_MAX_WIDTHS,
   DURATION_DEFAULT,
   DURATION_SLOW,
 } from '../../constants';
 import { useAnimationState, useDialogState } from '../../hooks';
+import { getAnimationClass, getDirectionalAnimationClass } from '../../utils';
 import { CloseButton, PortalWithDarkMode } from '../shared';
-import type { DrawerPosition, DrawerProps, DrawerSize } from './types';
-
-const sizeStyles: Record<DrawerSize, string> = {
-  sm: 'max-w-xs',
-  md: 'max-w-sm',
-  lg: 'max-w-md',
-  xl: 'max-w-lg',
-};
+import type { DrawerPosition, DrawerProps } from './types';
 
 const positionPanelStyles: Record<DrawerPosition, string> = {
   left: 'left-0',
@@ -45,12 +40,13 @@ export const Drawer: Component<DrawerProps> = (props) => {
 
   const panelStyle = () => positionPanelStyles[position()];
 
-  const backdropClasses = () => (isClosing() ? BACKDROP_EXIT : BACKDROP_ENTER);
+  const backdropClasses = () => getAnimationClass(isClosing(), BACKDROP_ENTER, BACKDROP_EXIT);
 
-  const drawerClasses = () =>
-    isClosing()
-      ? `${DRAWER_EXIT[position()]} ${DURATION_DEFAULT}`
-      : `${DRAWER_ENTER[position()]} ${DURATION_SLOW}`;
+  const drawerClasses = () => {
+    const animClass = getDirectionalAnimationClass(isClosing(), position(), DRAWER_ENTER, DRAWER_EXIT);
+    const durationClass = isClosing() ? DURATION_DEFAULT : DURATION_SLOW;
+    return `${animClass} ${durationClass}`;
+  };
 
   return (
     <Show when={visible()}>
@@ -63,7 +59,7 @@ export const Drawer: Component<DrawerProps> = (props) => {
           aria-labelledby={props.title ? 'drawer-title' : undefined}
         >
           <div
-            class={`absolute inset-y-0 ${panelStyle()} w-full ${sizeStyles[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()}`}
+            class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()}`}
           >
             <div class="flex flex-col h-full overflow-hidden">
               {/* Header */}

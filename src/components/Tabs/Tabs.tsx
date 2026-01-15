@@ -3,10 +3,11 @@ import {
   For,
   Show,
   createEffect,
-  createMemo,
   createSignal,
   onMount,
 } from 'solid-js';
+import { useControlled } from '../../hooks';
+import { GAP_SIZES, ICON_SIZES, TAB_PADDING, TEXT_SIZES } from '../../constants';
 import type { ComponentSize } from '../../types';
 import type { TabsProps } from './types';
 
@@ -16,18 +17,18 @@ import type { TabsProps } from './types';
 
 const sizeStyles: Record<ComponentSize, { tab: string; icon: string; badge: string }> = {
   sm: {
-    tab: 'px-3 py-1.5 text-xs gap-1.5',
-    icon: 'w-3.5 h-3.5',
+    tab: `${TAB_PADDING.sm} ${TEXT_SIZES.sm} ${GAP_SIZES.sm}`,
+    icon: ICON_SIZES.sm,
     badge: 'px-1.5 py-0.5 text-[0.625rem]',
   },
   md: {
-    tab: 'px-4 py-2 text-sm gap-2',
-    icon: 'w-4 h-4',
+    tab: `${TAB_PADDING.md} ${TEXT_SIZES.md} ${GAP_SIZES.md}`,
+    icon: ICON_SIZES.md,
     badge: 'px-2 py-0.5 text-xs',
   },
   lg: {
-    tab: 'px-5 py-2.5 text-base gap-2.5',
-    icon: 'w-5 h-5',
+    tab: `${TAB_PADDING.lg} ${TEXT_SIZES.lg} ${GAP_SIZES.lg}`,
+    icon: ICON_SIZES.lg,
     badge: 'px-2 py-1 text-xs',
   },
 };
@@ -54,17 +55,17 @@ export const Tabs: Component<TabsProps> = (props) => {
 
   const isVertical = () => orientation() === 'vertical';
 
-  // --- Internal state for uncontrolled mode ---
-  const [internalTab, setInternalTab] = createSignal(props.defaultTab || props.items[0]?.id);
+  // --- Controlled/uncontrolled state management ---
+  const [activeTab, setActiveTab] = useControlled({
+    value: props.activeTab,
+    defaultValue: props.defaultTab || props.items[0]?.id,
+    onChange: props.onTabChange,
+  });
 
   // Track which tabs have been visited (for lazy loading with keepMounted)
   const [visitedTabs, setVisitedTabs] = createSignal<Set<string>>(
     new Set([props.defaultTab || props.items[0]?.id]),
   );
-
-  // --- Controlled vs uncontrolled ---
-  const isControlled = createMemo(() => props.activeTab !== undefined);
-  const activeTab = createMemo(() => (isControlled() ? (props.activeTab as string) : internalTab()));
 
   // --- Indicator animation ---
   const updateIndicator = () => {
@@ -98,15 +99,11 @@ export const Tabs: Component<TabsProps> = (props) => {
     const tab = props.items.find((item) => item.id === tabId);
     if (tab?.disabled) return;
 
-    if (!isControlled()) {
-      setInternalTab(tabId);
-    }
+    setActiveTab(tabId);
 
     if (keepMounted()) {
       setVisitedTabs((prev) => new Set([...prev, tabId]));
     }
-
-    props.onTabChange?.(tabId);
   };
 
   // --- Computed styles ---

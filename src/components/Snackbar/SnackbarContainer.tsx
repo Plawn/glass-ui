@@ -1,7 +1,7 @@
 import { type Component, For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
-import { Portal } from 'solid-js/web';
-import { useIsDark } from '../../hooks';
+import { SNACKBAR_ENTER } from '../../constants';
 import { CloseIcon } from '../shared/icons';
+import { PortalWithDarkMode } from '../shared';
 import { type SnackbarItem, dismissSnackbar, getSnackbarStore } from './store';
 import type { SnackbarPosition } from './types';
 
@@ -42,16 +42,7 @@ const SnackbarItemComponent: Component<{
     handleDismiss();
   };
 
-  const enterAnimation = () => {
-    switch (props.position) {
-      case 'bottom-left':
-        return 'animate-in slide-in-from-left fade-in';
-      case 'bottom-right':
-        return 'animate-in slide-in-from-right fade-in';
-      default:
-        return 'animate-in slide-in-from-bottom fade-in';
-    }
-  };
+  const enterAnimation = () => SNACKBAR_ENTER[props.position];
 
   const exitAnimation = () => {
     switch (props.position) {
@@ -96,19 +87,18 @@ const SnackbarItemComponent: Component<{
 
 export const SnackbarContainer: Component<SnackbarContainerProps> = (props) => {
   const store = getSnackbarStore();
-  const isDark = useIsDark();
   const position = () => props.position ?? 'bottom-center';
 
   return (
-    <Portal>
+    <PortalWithDarkMode>
       <div
-        class={`fixed ${positionStyles[position()]} z-[100] flex flex-col gap-2 ${isDark() ? 'dark' : ''}`}
+        class={`fixed ${positionStyles[position()]} z-[100] flex flex-col gap-2`}
         aria-live="polite"
       >
         <For each={store.snackbars}>
           {(snackbar) => <SnackbarItemComponent snackbar={snackbar} position={position()} />}
         </For>
       </div>
-    </Portal>
+    </PortalWithDarkMode>
   );
 };

@@ -1,4 +1,6 @@
-import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import { type Accessor } from 'solid-js';
+import { useEscapeKey } from './useEscapeKey';
+import { useBodyScrollLock } from './useBodyScrollLock';
 
 export interface UseDialogStateOptions {
   open: Accessor<boolean>;
@@ -25,31 +27,14 @@ export function useDialogState(options: UseDialogStateOptions): UseDialogStateRe
   const shouldCloseOnBackdrop = () => closeOnBackdrop?.() ?? true;
 
   // Handle escape key (for non-dialog elements like Drawer)
-  createEffect(() => {
-    if (!open() || !shouldCloseOnEscape()) {
-      return;
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+  useEscapeKey({
+    onEscape: onClose,
+    enabled: () => open() && shouldCloseOnEscape(),
   });
 
   // Prevent body scroll when dialog is open
-  createEffect(() => {
-    if (open()) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    onCleanup(() => {
-      document.body.style.overflow = '';
-    });
+  useBodyScrollLock({
+    enabled: open,
   });
 
   const handleBackdropClick = (

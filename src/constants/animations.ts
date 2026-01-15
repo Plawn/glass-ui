@@ -3,6 +3,11 @@
  * These constants ensure consistent animation behavior across all components
  */
 
+import type { DrawerPosition, SnackbarPosition } from '../types';
+
+// Re-export position types for backwards compatibility
+export type { DrawerPosition, SnackbarPosition } from '../types';
+
 // ============================================================================
 // DURATION CONSTANTS
 // ============================================================================
@@ -148,13 +153,13 @@ export const SNACKBAR_ENTER = {
   'bottom-left': 'animate-in slide-in-from-left-4 fade-in',
   'bottom-center': 'animate-in slide-in-from-bottom-4 fade-in',
   'bottom-right': 'animate-in slide-in-from-right-4 fade-in',
-} as const;
+} as const satisfies Record<SnackbarPosition, string>;
 
 export const SNACKBAR_EXIT = {
   'bottom-left': 'animate-out slide-out-to-left-4 fade-out',
   'bottom-center': 'animate-out slide-out-to-bottom-4 fade-out',
   'bottom-right': 'animate-out slide-out-to-right-4 fade-out',
-} as const;
+} as const satisfies Record<SnackbarPosition, string>;
 
 // ============================================================================
 // DRAWER ANIMATIONS (position-based)
@@ -163,16 +168,9 @@ export const SNACKBAR_EXIT = {
 export const DRAWER_ENTER = {
   left: 'animate-in slide-in-from-left',
   right: 'animate-in slide-in-from-right',
-} as const;
+} as const satisfies Record<DrawerPosition, string>;
 
 export const DRAWER_EXIT = {
   left: 'animate-out slide-out-to-left',
   right: 'animate-out slide-out-to-right',
-} as const;
-
-// ============================================================================
-// TYPE EXPORTS
-// ============================================================================
-
-export type SnackbarPosition = keyof typeof SNACKBAR_ENTER;
-export type DrawerPosition = keyof typeof DRAWER_ENTER;
+} as const satisfies Record<DrawerPosition, string>;

@@ -1,6 +1,9 @@
-import type { BaseComponentProps } from '../../types';
+import type { BaseComponentProps, ComponentSize } from '../../types';
 
-export type SwitchSize = 'sm' | 'md' | 'lg';
+/**
+ * Switch size - uses standard 3-tier scale
+ */
+export type SwitchSize = ComponentSize;
 export type SwitchLabelPosition = 'left' | 'right';
 
 export interface SwitchProps extends BaseComponentProps {
@@ -20,4 +23,6 @@ export interface SwitchProps extends BaseComponentProps {
   id?: string;
   /** HTML name attribute for form submission */
   name?: string;
+  /** Ref to the hidden checkbox input element */
+  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
 }

@@ -1,5 +1,6 @@
 import type { Accessor, JSX } from 'solid-js';
 import type { BaseComponentProps } from '../../types';
+import type { OverlayScrollBehavior } from '../../hooks';
 
 // =============================================================================
 // HOOK RETURN TYPE
@@ -52,6 +53,13 @@ export interface ContextMenuTriggerProps<T = unknown> extends BaseComponentProps
  */
 export interface ContextMenuContentProps extends BaseComponentProps {
   children: JSX.Element;
+  /**
+   * How to handle scroll when context menu is open
+   * - 'close': Close on scroll (default)
+   * - 'lock': Prevent body scroll while open
+   * - 'none': Stay open and allow scroll
+   */
+  scrollBehavior?: OverlayScrollBehavior;
 }
 
 /**

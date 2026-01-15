@@ -1,4 +1,5 @@
 import { type Component, Show, createEffect, createSignal, onCleanup } from 'solid-js';
+import { POPOVER_ENTER } from '../../constants';
 import type { TooltipPosition, TooltipProps } from './types';
 
 const positionStyles: Record<TooltipPosition, string> = {
@@ -48,7 +49,7 @@ export const Tooltip: Component<TooltipProps> = (props) => {
       {props.children}
       <Show when={visible()}>
         <div
-          class={`absolute z-50 ${positionStyles[position()]} animate-in fade-in zoom-in-95 duration-150`}
+          class={`absolute z-50 ${positionStyles[position()]} ${POPOVER_ENTER}`}
           role="tooltip"
         >
           <div class="px-3 py-1.5 text-xs font-medium glass-tooltip rounded-lg whitespace-nowrap">

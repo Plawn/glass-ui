@@ -1,18 +1,10 @@
-import type { Component, JSX } from 'solid-js';
-import { Show, createEffect, onCleanup } from 'solid-js';
+import type { Component } from 'solid-js';
+import { Show } from 'solid-js';
 import { PortalWithDarkMode } from '../shared';
+import { useClickOutside, useEscapeKey, useContextMenuPositioning, useScrollBehavior } from '../../hooks';
 import { useContextMenuContext } from './ContextMenuContext';
 import { POPOVER_ENTER } from '../../constants/animations';
 import type { ContextMenuContentProps } from './types';
-
-/** Minimum space between menu and viewport edge */
-const VIEWPORT_PADDING = 8;
-/** Default estimated menu height for viewport calculations */
-const ESTIMATED_HEIGHT = 200;
-/** Default estimated menu width for viewport calculations */
-const ESTIMATED_WIDTH = 200;
-
-type PositionStyles = Pick<JSX.CSSProperties, 'top' | 'bottom' | 'left' | 'right'>;
 
 /**
  * Content panel of the context menu.
@@ -31,71 +23,35 @@ export const ContextMenuContent: Component<ContextMenuContentProps> = (props) =>
   const context = useContextMenuContext();
   let contentRef: HTMLDivElement | undefined;
 
-  // Close on click outside
-  createEffect(() => {
-    if (!context.open()) {
-      return;
-    }
+  // Use the shared context menu positioning hook
+  const { getPositionStyles } = useContextMenuPositioning({
+    contentRef: () => contentRef,
+    position: context.position,
+  });
 
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (contentRef && !contentRef.contains(target)) {
-        context.close();
-      }
-    };
-
-    // Use setTimeout to avoid closing immediately on the same click
-    const timeoutId = setTimeout(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-    }, 0);
-
-    onCleanup(() => {
-      clearTimeout(timeoutId);
-      document.removeEventListener('mousedown', handleClickOutside);
-    });
+  // Close on click outside (delay to avoid closing on the triggering right-click)
+  useClickOutside({
+    refs: () => [contentRef],
+    onClickOutside: () => context.close(),
+    enabled: context.open,
+    delay: 0,
   });
 
   // Close on Escape key
-  createEffect(() => {
-    if (!context.open()) {
-      return;
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        context.close();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+  useEscapeKey({
+    onEscape: () => context.close(),
+    enabled: context.open,
   });
 
-  // Calculate position with viewport boundary detection
-  const getPositionStyles = (): PositionStyles => {
-    const pos = context.position();
-    const menuHeight = contentRef?.offsetHeight || ESTIMATED_HEIGHT;
-    const menuWidth = contentRef?.offsetWidth || ESTIMATED_WIDTH;
+  const scrollBehavior = () => props.scrollBehavior ?? 'close';
 
-    const styles: PositionStyles = {};
-
-    // Vertical: prefer below cursor, flip if not enough space
-    if (pos.y + menuHeight + VIEWPORT_PADDING > window.innerHeight) {
-      styles.bottom = `${window.innerHeight - pos.y}px`;
-    } else {
-      styles.top = `${pos.y}px`;
-    }
-
-    // Horizontal: prefer right of cursor, flip if not enough space
-    if (pos.x + menuWidth + VIEWPORT_PADDING > window.innerWidth) {
-      styles.right = `${window.innerWidth - pos.x}px`;
-    } else {
-      styles.left = `${pos.x}px`;
-    }
-
-    return styles;
-  };
+  // Handle scroll behavior (close, lock, or none)
+  useScrollBehavior({
+    enabled: context.open,
+    behavior: scrollBehavior,
+    onClose: () => context.close(),
+    ignoreRef: () => contentRef,
+  });
 
   return (
     <Show when={context.open()}>

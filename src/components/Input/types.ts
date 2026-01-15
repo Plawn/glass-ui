@@ -22,6 +22,8 @@ export interface InputProps extends BaseInputProps {
   autocomplete?: string;
   /** Whether the input is readonly */
   readonly?: boolean;
+  /** Ref to the input element */
+  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
 }
 
 /**
@@ -36,6 +38,8 @@ export interface TextareaProps extends BaseInputProps {
   rows?: number;
   /** Whether the textarea is readonly */
   readonly?: boolean;
+  /** Ref to the textarea element */
+  ref?: HTMLTextAreaElement | ((el: HTMLTextAreaElement) => void);
 }
 
 /**
@@ -48,6 +52,8 @@ export interface SelectProps extends BaseInputProps {
   onChange: (value: string) => void;
   /** Option elements */
   children: JSX.Element;
+  /** Ref to the select element */
+  ref?: HTMLSelectElement | ((el: HTMLSelectElement) => void);
 }
 
 /**
@@ -58,6 +64,8 @@ export interface CheckboxProps extends Omit<BaseInputProps, 'placeholder' | 'siz
   checked: boolean;
   /** Callback when checked state changes */
   onChange?: (checked: boolean) => void;
+  /** Ref to the checkbox input element */
+  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
 }
 
 // Re-export shared types for convenience

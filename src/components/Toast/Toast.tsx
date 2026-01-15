@@ -1,5 +1,6 @@
 import { type Component, For, createSignal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
+import { TOAST_ENTER } from '../../constants';
 import { CheckIcon, CloseIcon, ErrorIcon, InfoIcon, WarningIcon } from '../shared/icons';
 import { dismissToast, getToastStore } from './store';
 import type { Toast, ToastType } from './types';
@@ -50,7 +51,7 @@ const ToastItem: Component<{ toast: Toast }> = (props) => {
 
   return (
     <div
-      class={`flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm transition-all duration-200 ${styles().bg} ${exiting() ? 'opacity-0 translate-x-4' : 'animate-in slide-in-from-right-4 fade-in'}`}
+      class={`flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm transition-all duration-200 ${styles().bg} ${exiting() ? 'opacity-0 translate-x-4' : TOAST_ENTER}`}
       role="alert"
     >
       <div

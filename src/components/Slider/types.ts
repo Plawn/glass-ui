@@ -36,6 +36,8 @@ export interface SliderProps extends BaseComponentProps, DisableableProps {
   id?: string;
   /** HTML name attribute */
   name?: string;
+  /** Ref to the range input element */
+  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
 }
 
 // Re-export for convenience
