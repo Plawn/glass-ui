@@ -90,10 +90,10 @@ export default function VirtualTablePage() {
                 <td class="p-3 font-medium text-surface-900 dark:text-white">{user.name}</td>
                 <td class="p-3 text-surface-600 dark:text-surface-400">{user.email}</td>
                 <td class="p-3">
-                  <Badge variant={roleColors[user.role]} size="sm">{user.role}</Badge>
+                  <Badge size="sm">{user.role}</Badge>
                 </td>
                 <td class="p-3">
-                  <Badge variant={statusColors[user.status]} size="sm">{user.status}</Badge>
+                  <Badge size="sm">{user.status}</Badge>
                 </td>
               </>
             )}

@@ -70,7 +70,7 @@ export default function VirtualListPage() {
                     {item.email}
                   </div>
                 </div>
-                <Badge variant={statusColors[item.status]} size="sm">
+                <Badge size="sm">
                   {item.status}
                 </Badge>
               </div>
