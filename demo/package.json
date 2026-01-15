@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "solid-js": "^1.8.0",
-    "glass-ui-solid": "link:.."
+    "@solidjs/router": "^0.15.4",
+    "glass-ui-solid": "link:..",
+    "solid-js": "^1.8.0"
   },
   "devDependencies": {
     "vite": "^7",
