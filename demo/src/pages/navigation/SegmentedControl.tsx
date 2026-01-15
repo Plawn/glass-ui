@@ -7,6 +7,7 @@ export default function SegmentedControlPage() {
   const [plan, setPlan] = createSignal('pro');
   const [count, setCount] = createSignal(10);
   const [dataView, setDataView] = createSignal<'table' | 'json'>('table');
+  const [verticalOption, setVerticalOption] = createSignal<'top' | 'middle' | 'bottom'>('middle');
 
   return (
     <div class="space-y-8">
@@ -95,6 +96,56 @@ export default function SegmentedControlPage() {
           <CodeBlock
             code={`<SegmentedControl size="sm" options={options} value={value()} onChange={setValue} />
 <SegmentedControl size="md" options={options} value={value()} onChange={setValue} />`}
+            language="tsx"
+          />
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Orientation</h2>
+        <Card class="p-6">
+          <div class="flex gap-8 items-start">
+            <div>
+              <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">Horizontal (default)</p>
+              <SegmentedControl
+                value={verticalOption()}
+                onChange={setVerticalOption}
+                options={[
+                  { value: 'top', label: 'Top' },
+                  { value: 'middle', label: 'Middle' },
+                  { value: 'bottom', label: 'Bottom' },
+                ]}
+                aria-label="Position selector horizontal"
+              />
+            </div>
+            <div>
+              <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">Vertical</p>
+              <SegmentedControl
+                orientation="vertical"
+                value={verticalOption()}
+                onChange={setVerticalOption}
+                options={[
+                  { value: 'top', label: 'Top' },
+                  { value: 'middle', label: 'Middle' },
+                  { value: 'bottom', label: 'Bottom' },
+                ]}
+                aria-label="Position selector vertical"
+              />
+            </div>
+          </div>
+        </Card>
+        <div class="mt-4">
+          <CodeBlock
+            code={`<SegmentedControl
+  orientation="vertical"
+  value={position()}
+  onChange={setPosition}
+  options={[
+    { value: 'top', label: 'Top' },
+    { value: 'middle', label: 'Middle' },
+    { value: 'bottom', label: 'Bottom' },
+  ]}
+/>`}
             language="tsx"
           />
         </div>
@@ -282,6 +333,12 @@ export default function SegmentedControlPage() {
                 <td class="py-2 pr-4 font-mono text-xs">'sm' | 'md'</td>
                 <td class="py-2 pr-4">'md'</td>
                 <td class="py-2">Control size</td>
+              </tr>
+              <tr class="border-b border-surface-200 dark:border-surface-700">
+                <td class="py-2 pr-4 font-mono text-xs">orientation</td>
+                <td class="py-2 pr-4 font-mono text-xs">'horizontal' | 'vertical'</td>
+                <td class="py-2 pr-4">'horizontal'</td>
+                <td class="py-2">Control orientation</td>
               </tr>
               <tr class="border-b border-surface-200 dark:border-surface-700">
                 <td class="py-2 pr-4 font-mono text-xs">aria-label</td>

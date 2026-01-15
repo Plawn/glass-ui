@@ -2,10 +2,12 @@ import { For, createSignal, createEffect, onMount } from 'solid-js';
 import type { SegmentedControlProps } from './types';
 
 export function SegmentedControl<T extends string | number>(props: SegmentedControlProps<T>) {
-  const [indicatorStyle, setIndicatorStyle] = createSignal({ left: 0, width: 0 });
+  const [indicatorStyle, setIndicatorStyle] = createSignal({ left: 0, top: 0, width: 0, height: 0 });
   const [isInitialized, setIsInitialized] = createSignal(false);
   let containerRef: HTMLDivElement | undefined;
   const buttonRefs: Map<T, HTMLButtonElement> = new Map();
+
+  const isVertical = () => props.orientation === 'vertical';
 
   const sizeClasses = () =>
     props.size === 'sm' ? 'px-2 py-1 text-[0.625rem]' : 'px-3 py-1.5 text-xs';
@@ -17,7 +19,9 @@ export function SegmentedControl<T extends string | number>(props: SegmentedCont
       const buttonRect = activeButton.getBoundingClientRect();
       setIndicatorStyle({
         left: buttonRect.left - containerRect.left,
+        top: buttonRect.top - containerRect.top,
         width: buttonRect.width,
+        height: buttonRect.height,
       });
     }
   };
@@ -43,7 +47,7 @@ export function SegmentedControl<T extends string | number>(props: SegmentedCont
       ref={containerRef}
       role="group"
       aria-label={props['aria-label']}
-      class={`relative flex items-center gap-1 p-1 bg-surface-200/80 dark:bg-surface-800/80 rounded-xl w-fit ${
+      class={`relative flex ${isVertical() ? 'flex-col' : 'items-center'} gap-1 p-1 bg-surface-200/80 dark:bg-surface-800/80 rounded-xl w-fit ${
         props.class ?? ''
       }`}
     >
@@ -54,9 +58,9 @@ export function SegmentedControl<T extends string | number>(props: SegmentedCont
         }`}
         style={{
           left: `${indicatorStyle().left}px`,
+          top: `${indicatorStyle().top}px`,
           width: `${indicatorStyle().width}px`,
-          top: '4px',
-          bottom: '4px',
+          height: `${indicatorStyle().height}px`,
           'transition-timing-function': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
       />

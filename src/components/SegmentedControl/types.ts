@@ -22,6 +22,8 @@ export interface SegmentedControlProps<T extends string | number> extends BaseCo
   onChange: (value: T) => void;
   /** Size variant */
   size?: SegmentedControlSize;
+  /** Orientation - horizontal or vertical */
+  orientation?: 'horizontal' | 'vertical';
   /** Accessible label for the group */
   'aria-label'?: string;
 }
