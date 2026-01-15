@@ -5,7 +5,7 @@ import type { CollapsibleProps } from './types';
 export const Collapsible: Component<CollapsibleProps> = (props) => {
   // Controlled/uncontrolled state management
   const [isOpen, setIsOpen] = useControlled({
-    value: props.open,
+    value: () => props.open,
     defaultValue: props.defaultOpen ?? false,
     onChange: props.onOpenChange,
   });

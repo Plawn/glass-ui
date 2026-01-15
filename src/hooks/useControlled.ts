@@ -5,9 +5,10 @@ import { type Accessor, createMemo, createSignal } from 'solid-js';
  */
 export interface UseControlledOptions<T> {
   /**
-   * The controlled value from props (if undefined, component is uncontrolled)
+   * The controlled value from props (if undefined, component is uncontrolled).
+   * Can be a direct value or an accessor function for reactivity.
    */
-  value: T | undefined;
+  value: T | undefined | (() => T | undefined);
 
   /**
    * The default value for uncontrolled mode
@@ -37,7 +38,7 @@ export type UseControlledReturn<T> = [value: Accessor<T>, setValue: (value: T) =
  * @example
  * ```tsx
  * const [isOpen, setIsOpen] = useControlled({
- *   value: props.open,
+ *   value: () => props.open,
  *   defaultValue: props.defaultOpen ?? false,
  *   onChange: props.onOpenChange,
  * });
@@ -49,9 +50,15 @@ export type UseControlledReturn<T> = [value: Accessor<T>, setValue: (value: T) =
 export function useControlled<T>(options: UseControlledOptions<T>): UseControlledReturn<T> {
   const [internal, setInternal] = createSignal<T>(options.defaultValue);
 
-  const isControlled = createMemo(() => options.value !== undefined);
+  // Resolve value - support both direct values and accessor functions
+  const getValue = () => {
+    const v = options.value;
+    return typeof v === 'function' ? (v as () => T | undefined)() : v;
+  };
 
-  const value = createMemo(() => (isControlled() ? (options.value as T) : internal()));
+  const isControlled = createMemo(() => getValue() !== undefined);
+
+  const value = createMemo(() => (isControlled() ? (getValue() as T) : internal()));
 
   const setValue = (newValue: T) => {
     if (!isControlled()) {

@@ -18,7 +18,7 @@ export const Popover: Component<PopoverProps> = (props) => {
 
   // Controlled/uncontrolled state management
   const [isOpen, setOpen] = useControlled({
-    value: props.open,
+    value: () => props.open,
     defaultValue: false,
     onChange: props.onOpenChange,
   });

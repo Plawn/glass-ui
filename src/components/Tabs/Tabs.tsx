@@ -57,7 +57,7 @@ export const Tabs: Component<TabsProps> = (props) => {
 
   // --- Controlled/uncontrolled state management ---
   const [activeTab, setActiveTab] = useControlled({
-    value: props.activeTab,
+    value: () => props.activeTab,
     defaultValue: props.defaultTab || props.items[0]?.id,
     onChange: props.onTabChange,
   });

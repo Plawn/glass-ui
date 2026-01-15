@@ -28,6 +28,7 @@ const generateUsers = (count: number): User[] =>
     joinDate: new Date(2020 + Math.floor(i / 365), i % 12, (i % 28) + 1).toLocaleDateString(),
   }));
 
+  
 export default function VirtualTablePage() {
   const users = generateUsers(10000);
   let tableRef: VirtualHandle | undefined;
