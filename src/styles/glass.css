@@ -3,6 +3,22 @@
  * iOS 26-inspired glass effects
  */
 
+/* ============================================
+   GLASS CUSTOM PROPERTIES
+   ============================================ */
+
+:root {
+  /* Blur values */
+  --glass-blur-thin: 1rem;
+  --glass-blur-standard: 2rem;
+  --glass-blur-thick: 3rem;
+  --glass-blur-ultra: 4rem;
+
+  /* Saturate values */
+  --glass-saturate-standard: 180%;
+  --glass-saturate-high: 200%;
+}
+
 /* Smooth theme transition for all glass elements */
 .glass,
 .glass-thick,
@@ -27,8 +43,8 @@
 /* iOS 26 Glass Effect - Primary */
 .glass {
   background: oklch(1 0 0 / 0.45);
-  backdrop-filter: blur(2rem) saturate(180%);
-  -webkit-backdrop-filter: blur(2rem) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
   border: 0.0625rem solid oklch(1 0 0 / 0.3);
   box-shadow: 0 4px 6px -1px oklch(0 0 0 / 0.02), 0 2px 4px -2px oklch(0 0 0 / 0.02);
 }
@@ -43,8 +59,8 @@
 /* iOS 26 Glass - Thick (more opaque) */
 .glass-thick {
   background: oklch(1 0 0 / 0.65);
-  backdrop-filter: blur(3rem) saturate(200%);
-  -webkit-backdrop-filter: blur(3rem) saturate(200%);
+  backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate-high));
+  -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate-high));
   border: 0.0625rem solid oklch(1 0 0 / 0.4);
 }
 
@@ -56,8 +72,8 @@
 /* iOS 26 Glass - Thin (more transparent) */
 .glass-thin {
   background: oklch(1 0 0 / 0.3);
-  backdrop-filter: blur(1.5rem) saturate(140%);
-  -webkit-backdrop-filter: blur(1.5rem) saturate(140%);
+  backdrop-filter: blur(var(--glass-blur-thin)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(140%);
   border: 0.0625rem solid oklch(1 0 0 / 0.2);
 }
 
@@ -69,8 +85,8 @@
 /* iOS 26 Glass - Ultra (very transparent, for overlays) */
 .glass-ultra {
   background: oklch(1 0 0 / 0.15);
-  backdrop-filter: blur(1rem) saturate(120%);
-  -webkit-backdrop-filter: blur(1rem) saturate(120%);
+  backdrop-filter: blur(var(--glass-blur-ultra)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-ultra)) saturate(120%);
   border: 0.0625rem solid oklch(1 0 0 / 0.1);
 }
 
@@ -86,15 +102,15 @@
 /* iOS 26 Glass - Sidebar specific */
 .glass-sidebar {
   background: oklch(1 0 0 / 0.5);
-  backdrop-filter: blur(2.5rem) saturate(180%);
-  -webkit-backdrop-filter: blur(2.5rem) saturate(180%);
+  backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
   border-right: 0.0625rem solid oklch(0 0 0 / 0.06);
 }
 
 .dark .glass-sidebar {
   background: oklch(0.13 0.015 260 / 0.85);
-  backdrop-filter: blur(2.5rem) saturate(150%);
-  -webkit-backdrop-filter: blur(2.5rem) saturate(150%);
+  backdrop-filter: blur(var(--glass-blur-standard)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(150%);
   border-right-color: oklch(1 0 0 / 0.05);
 }
 
@@ -153,7 +169,7 @@
   border: 1px solid oklch(0 0 0 / 0.08);
   border-radius: 0.75rem;
   padding: 0.625rem 1rem;
-  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all var(--transition-normal) var(--ease-out-smooth);
   color: var(--color-surface-900);
 }
 
@@ -271,7 +287,7 @@ select.glass-input {
   background: oklch(0 0 0 / 0.04);
   border: 1.5px solid oklch(0 0 0 / 0.2);
   border-radius: 0.375rem;
-  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all var(--transition-normal) var(--ease-out-smooth);
 }
 
 .dark .glass-checkbox {

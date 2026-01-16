@@ -1,7 +1,11 @@
 // Shared icon components for glass-ui
 // These icons follow a consistent API with optional class and size props
 
-export type { IconProps } from './CloseIcon';
+// Icon factory and types
+export { createIcon } from './createIcon';
+export type { IconProps, CreateIconOptions } from './createIcon';
+
+// Icons
 export { CloseIcon } from './CloseIcon';
 
 export type { ChevronDirection, ChevronIconProps } from './ChevronIcon';

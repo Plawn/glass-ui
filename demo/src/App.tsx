@@ -44,6 +44,7 @@ const DatePickerPage = lazy(() => import('./pages/forms/DatePicker'));
 const NumberInputPage = lazy(() => import('./pages/forms/NumberInput'));
 const FileUploadPage = lazy(() => import('./pages/forms/FileUpload'));
 const StepperPage = lazy(() => import('./pages/forms/Stepper'));
+const JsonSchemaFormPage = lazy(() => import('./pages/forms/JsonSchemaForm'));
 
 // Feedback pages
 const AlertPage = lazy(() => import('./pages/feedback/Alert'));
@@ -213,6 +214,7 @@ export default function App() {
       <Route path="/forms/number-input" component={NumberInputPage} />
       <Route path="/forms/file-upload" component={FileUploadPage} />
       <Route path="/forms/stepper" component={StepperPage} />
+      <Route path="/forms/json-schema-form" component={JsonSchemaFormPage} />
 
       {/* Feedback */}
       <Route path="/feedback/alert" component={AlertPage} />

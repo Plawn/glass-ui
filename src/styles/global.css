@@ -55,7 +55,26 @@
   }
 }
 
-/* CSS Custom Properties for runtime access (theme transition only, colors come from @theme) */
+/* CSS Custom Properties for runtime access */
 :root {
   --theme-transition: 0.4s ease;
+
+  /* Transition timing custom properties */
+  --ease-out-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-fast: 0.15s;
+  --transition-normal: 0.2s;
+  --transition-slow: 0.3s;
+
+  /* Color variables for CSS (mirrors @theme for non-Tailwind usage) */
+  --color-surface-50: oklch(0.99 0.002 240);
+  --color-surface-100: oklch(0.97 0.004 240);
+  --color-surface-200: oklch(0.92 0.01 240);
+  --color-surface-300: oklch(0.8 0.02 240);
+  --color-surface-400: oklch(0.6 0.025 240);
+  --color-surface-500: oklch(0.4 0.03 240);
+  --color-surface-600: oklch(0.3 0.03 250);
+  --color-surface-700: oklch(0.2 0.03 260);
+  --color-surface-800: oklch(0.15 0.03 260);
+  --color-surface-900: oklch(0.1 0.03 260);
+  --color-surface-950: oklch(0.05 0.03 260);
 }

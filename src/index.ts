@@ -7,8 +7,8 @@ import './styles/global.css';
 export type {
   // Size system
   Size,
-  ComponentSize as Size3,
-  AvatarSize as Size5,
+  ComponentSize,
+  AvatarSize,
   OverlaySize,
   // Color system
   StatusColor,

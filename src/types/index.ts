@@ -3,21 +3,47 @@ import type { JSX } from 'solid-js';
 // =============================================================================
 // SIZE SYSTEM
 // =============================================================================
+//
+// Size Type Hierarchy:
+//
+//   Size (full 5-tier scale)
+//   ├── 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+//   │
+//   ├── ComponentSize (3-tier, most common)
+//   │   └── 'sm' | 'md' | 'lg'
+//   │
+//   ├── AvatarSize (same as Size, for semantic clarity)
+//   │   └── 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+//   │
+//   ├── SpinnerSize (4-tier)
+//   │   └── 'sm' | 'md' | 'lg' | 'xl'
+//   │
+//   ├── CompactSize (2-tier)
+//   │   └── 'sm' | 'md'
+//   │
+//   └── OverlaySize (includes 'full')
+//       └── 'sm' | 'md' | 'lg' | 'xl' | 'full'
+//           ├── DialogSize (subset: 'sm' | 'md' | 'lg')
+//           └── DrawerSize (excludes 'full')
+//
+// =============================================================================
 
 /**
- * Standard size scale for components.
- * Components should pick the subset they support.
+ * Full 5-tier size scale - the base size type.
+ * Use this when you need the complete range of sizes.
  */
 export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 /**
- * Common 3-tier size scale (most components)
- * Used by: Switch, CloseButton, Button, Input, Badge, Chip, RadioGroup, NumberInput, EmptyState, Autocomplete
+ * Standard 3-tier size scale used by most components.
+ * Used by: Switch, CloseButton, Button, Input, Badge, Chip, RadioGroup,
+ * NumberInput, EmptyState, Autocomplete, and many others.
  */
 export type ComponentSize = 'sm' | 'md' | 'lg';
 
 /**
- * Extended 5-tier size scale (Avatar, Modal)
+ * 5-tier size scale for Avatar component.
+ * Equivalent to Size but named for semantic clarity in component APIs.
  */
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 

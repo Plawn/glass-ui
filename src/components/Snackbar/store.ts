@@ -1,4 +1,4 @@
-import { createStore } from 'solid-js/store';
+import { createNotificationStore } from '../shared/createNotificationStore';
 
 export interface SnackbarItem {
   id: string;
@@ -12,39 +12,43 @@ export interface SnackbarStore {
   snackbars: SnackbarItem[];
 }
 
-const [store, setStore] = createStore<SnackbarStore>({
-  snackbars: [],
-});
+// Create the snackbar notification store using the factory
+const { store: internalStore, add, dismiss, clear } =
+  createNotificationStore<SnackbarItem>({
+    defaultDuration: 4000,
+    idPrefix: 'snackbar',
+  });
 
-let idCounter = 0;
+// Adapt the internal store shape to match the expected SnackbarStore interface
+// The factory uses { items: T[] } but Snackbar expects { snackbars: SnackbarItem[] }
+const snackbarStore: SnackbarStore = {
+  get snackbars() {
+    return internalStore.items;
+  },
+};
 
 export function showSnackbar(
   message: string,
-  options?: { action?: string; onAction?: () => void; duration?: number }
+  options?: { action?: string; onAction?: () => void; duration?: number },
 ): string {
-  const id = `snackbar-${++idCounter}`;
-  const snackbar: SnackbarItem = {
-    id,
+  return add({
     message,
     action: options?.action,
     onAction: options?.onAction,
-    duration: options?.duration ?? 4000,
-  };
-
-  setStore('snackbars', (prev) => [...prev, snackbar]);
-  return id;
+    duration: options?.duration,
+  });
 }
 
 export function dismissSnackbar(id: string): void {
-  setStore('snackbars', (prev) => prev.filter((s) => s.id !== id));
+  dismiss(id);
 }
 
 export function clearSnackbars(): void {
-  setStore('snackbars', []);
+  clear();
 }
 
-export function getSnackbarStore() {
-  return store;
+export function getSnackbarStore(): SnackbarStore {
+  return snackbarStore;
 }
 
 // Convenience API

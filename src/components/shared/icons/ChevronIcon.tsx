@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import type { IconProps } from './CloseIcon';
+import type { IconProps } from './createIcon';
 
 export type ChevronDirection = 'up' | 'down' | 'left' | 'right';
 

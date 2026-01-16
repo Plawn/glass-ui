@@ -45,6 +45,7 @@ export const navigation: NavGroup[] = [
       { id: 'number-input', label: 'NumberInput', path: '/forms/number-input' },
       { id: 'file-upload', label: 'FileUpload', path: '/forms/file-upload' },
       { id: 'stepper', label: 'Stepper', path: '/forms/stepper' },
+      { id: 'json-schema-form', label: 'JsonSchemaForm', path: '/forms/json-schema-form' },
     ],
   },
   {

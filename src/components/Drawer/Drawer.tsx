@@ -11,7 +11,7 @@ import {
 } from '../../constants';
 import { useAnimationState, useDialogState } from '../../hooks';
 import { getAnimationClass, getDirectionalAnimationClass } from '../../utils';
-import { CloseButton, PortalWithDarkMode } from '../shared';
+import { OverlayContent, PortalWithDarkMode } from '../shared';
 import type { DrawerPosition, DrawerProps } from './types';
 
 const positionPanelStyles: Record<DrawerPosition, string> = {
@@ -62,36 +62,17 @@ export const Drawer: Component<DrawerProps> = (props) => {
             class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()}`}
           >
             <div class="flex flex-col h-full overflow-hidden">
-              {/* Header */}
-              <Show when={props.title || showClose()}>
-                <div class="flex items-center justify-between px-6 py-4 border-b border-surface-200 dark:border-white/5">
-                  <Show when={props.title}>
-                    <h2
-                      id="drawer-title"
-                      class="text-lg font-semibold text-surface-900 dark:text-surface-100"
-                    >
-                      {props.title}
-                    </h2>
-                  </Show>
-                  <Show when={showClose()}>
-                    <CloseButton onClick={props.onClose} class="ml-auto" />
-                  </Show>
-                </div>
-              </Show>
-
-              {/* Content */}
-              <div
-                class={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden flex flex-col scrollbar-thin ${props.noPadding ? '' : 'p-6'}`}
+              <OverlayContent
+                title={props.title}
+                titleId="drawer-title"
+                showClose={showClose()}
+                onClose={props.onClose}
+                footer={props.footer}
+                noPadding={props.noPadding}
+                flexContent
               >
                 {props.children}
-              </div>
-
-              {/* Footer */}
-              <Show when={props.footer}>
-                <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-surface-200 dark:border-white/5">
-                  {props.footer}
-                </div>
-              </Show>
+              </OverlayContent>
             </div>
           </div>
         </div>

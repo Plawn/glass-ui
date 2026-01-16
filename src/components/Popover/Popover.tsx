@@ -1,7 +1,9 @@
-import { type Component, Show } from 'solid-js';
-import { useClickOutside, useControlled, useEscapeKey, usePositioning, useScrollBehavior } from '../../hooks';
-import { PortalWithDarkMode } from '../shared/PortalWithDarkMode';
-import { POPOVER_ENTER } from '../../constants/animations';
+import { type Component } from 'solid-js';
+import { useClickOutside } from '../../hooks/useClickOutside';
+import { useControlled } from '../../hooks/useControlled';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
+import { useFloatingContent } from '../../hooks/useFloatingContent';
+import { useScrollBehavior } from '../../hooks/useScrollBehavior';
 import type { PopoverProps } from './types';
 
 /** Default offset between trigger and popover */
@@ -23,12 +25,17 @@ export const Popover: Component<PopoverProps> = (props) => {
     onChange: props.onOpenChange,
   });
 
-  // Use the shared positioning hook
-  const { getPositionStyles, getArrowStyles } = usePositioning({
+  // Use the shared floating content hook
+  const { FloatingContent } = useFloatingContent({
     triggerRef: () => triggerRef,
     contentRef: () => contentRef,
+    isOpen,
     placement,
     offset: offset(),
+    showArrow,
+    contentClass: () => props.contentClass,
+    role: 'dialog',
+    ariaModal: false,
   });
 
   const handleToggle = () => {
@@ -91,26 +98,9 @@ export const Popover: Component<PopoverProps> = (props) => {
       >
         {props.trigger}
       </button>
-      <Show when={isOpen()}>
-        <PortalWithDarkMode>
-          <div
-            ref={contentRef}
-            class={`fixed z-50 glass-card rounded-xl shadow-lg ${POPOVER_ENTER} ${props.contentClass ?? ''}`}
-            style={getPositionStyles()}
-            role="dialog"
-            aria-modal="false"
-          >
-            {props.children}
-            <Show when={showArrow()}>
-              <div
-                class="glass-card"
-                style={getArrowStyles()}
-                aria-hidden="true"
-              />
-            </Show>
-          </div>
-        </PortalWithDarkMode>
-      </Show>
+      <FloatingContent ref={(el) => (contentRef = el)}>
+        {props.children}
+      </FloatingContent>
     </div>
   );
 };

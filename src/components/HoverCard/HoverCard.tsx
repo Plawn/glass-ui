@@ -1,7 +1,5 @@
-import { type Component, Show, createEffect, createSignal, onCleanup } from 'solid-js';
-import { PortalWithDarkMode } from '../shared/PortalWithDarkMode';
-import { POPOVER_ENTER } from '../../constants/animations';
-import { usePositioning } from '../../hooks';
+import { type Component, createEffect, createSignal, onCleanup } from 'solid-js';
+import { useFloatingContent } from '../../hooks/useFloatingContent';
 import type { HoverCardProps } from './types';
 
 /** Default offset between trigger and hover card */
@@ -21,12 +19,18 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
   const showArrow = () => props.showArrow ?? false;
   const disabled = () => props.disabled ?? false;
 
-  // Use the shared positioning hook
-  const { getPositionStyles, getArrowStyles } = usePositioning({
+  // Use the shared floating content hook
+  const { FloatingContent } = useFloatingContent({
     triggerRef: () => triggerRef,
     contentRef: () => contentRef,
+    isOpen,
     direction: placement,
     offset: DEFAULT_OFFSET,
+    showArrow,
+    contentClass: () => props.contentClass,
+    role: 'tooltip',
+    onMouseEnter: handleContentMouseEnter,
+    onMouseLeave: handleContentMouseLeave,
   });
 
   // Handle delayed open with proper cleanup
@@ -57,15 +61,15 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
     setIsHoveringTrigger(false);
   };
 
-  const handleContentMouseEnter = () => {
+  function handleContentMouseEnter() {
     if (!disabled()) {
       setIsHoveringContent(true);
     }
-  };
+  }
 
-  const handleContentMouseLeave = () => {
+  function handleContentMouseLeave() {
     setIsHoveringContent(false);
-  };
+  }
 
   return (
     <div
@@ -76,27 +80,9 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
       onMouseLeave={handleTriggerMouseLeave}
     >
       {props.trigger}
-      <Show when={isOpen()}>
-        <PortalWithDarkMode>
-          <div
-            ref={contentRef}
-            class={`fixed z-50 glass-card rounded-xl shadow-lg ${POPOVER_ENTER} ${props.contentClass ?? ''}`}
-            style={getPositionStyles()}
-            onMouseEnter={handleContentMouseEnter}
-            onMouseLeave={handleContentMouseLeave}
-            role="tooltip"
-          >
-            {props.children}
-            <Show when={showArrow()}>
-              <div
-                class="glass-card"
-                style={getArrowStyles()}
-                aria-hidden="true"
-              />
-            </Show>
-          </div>
-        </PortalWithDarkMode>
-      </Show>
+      <FloatingContent ref={(el) => (contentRef = el)}>
+        {props.children}
+      </FloatingContent>
     </div>
   );
 };

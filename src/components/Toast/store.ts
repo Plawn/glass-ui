@@ -1,54 +1,44 @@
-import { createStore, produce } from 'solid-js/store';
-import type { ToastStore, ToastType } from './types';
+import { createTypedNotificationStore } from '../shared/createNotificationStore';
+import type { Toast, ToastStore, ToastType } from './types';
 
-const [store, setStore] = createStore<ToastStore>({ toasts: [] });
+// Create the toast notification store using the factory
+const { store: internalStore, success, error, warning, info, add, dismiss, clear } =
+  createTypedNotificationStore<Toast>({
+    defaultDuration: 4000,
+    idPrefix: 'toast',
+  });
 
-let toastId = 0;
-
-/** Add a toast notification */
-function addToast(message: string, type: ToastType = 'info', duration = 4000) {
-  const id = `toast-${++toastId}`;
-  setStore(
-    produce((s) => {
-      s.toasts.push({ id, type, message, duration });
-    }),
-  );
-
-  if (duration > 0) {
-    setTimeout(() => {
-      dismissToast(id);
-    }, duration);
-  }
-
-  return id;
-}
+// Adapt the internal store shape to match the expected ToastStore interface
+// The factory uses { items: T[] } but Toast expects { toasts: Toast[] }
+const toastStore: ToastStore = {
+  get toasts() {
+    return internalStore.items;
+  },
+};
 
 /** Toast API with helper methods */
 export const toast = Object.assign(
-  (message: string, type: ToastType = 'info', duration = 4000) => addToast(message, type, duration),
+  (message: string, type: ToastType = 'info', duration = 4000) =>
+    add({ message, type, duration }),
   {
-    success: (message: string, duration = 4000) => addToast(message, 'success', duration),
-    error: (message: string, duration = 4000) => addToast(message, 'error', duration),
-    warning: (message: string, duration = 4000) => addToast(message, 'warning', duration),
-    info: (message: string, duration = 4000) => addToast(message, 'info', duration),
-  }
+    success,
+    error,
+    warning,
+    info,
+  },
 );
 
 /** Dismiss a toast by ID */
 export function dismissToast(id: string) {
-  setStore(
-    produce((s) => {
-      s.toasts = s.toasts.filter((t) => t.id !== id);
-    }),
-  );
+  dismiss(id);
 }
 
 /** Clear all toasts */
 export function clearToasts() {
-  setStore('toasts', []);
+  clear();
 }
 
 /** Get the toast store (read-only) */
-export function getToastStore() {
-  return store;
+export function getToastStore(): ToastStore {
+  return toastStore;
 }

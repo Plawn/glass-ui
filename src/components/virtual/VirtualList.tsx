@@ -14,7 +14,7 @@ const DefaultScroller: Component<{
   <div
     ref={props.ref}
     style={props.style}
-    class="glass-card rounded-xl overflow-hidden"
+    class="glass-card rounded-xl overflow-hidden scrollbar-thin"
     data-virtual-scroller
     tabIndex={0}
   >
@@ -50,7 +50,7 @@ interface ItemWrapperProps<D, C> {
   fixedItemHeight?: number;
 }
 
-function ItemWrapper<D, C>(props: ItemWrapperProps<D, C>) {
+function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
   let itemRef: HTMLDivElement | undefined;
   
   const itemData = createMemo(() => {

@@ -36,3 +36,8 @@ export type {
 
 export { useScrollBehavior } from './useScrollBehavior';
 export type { OverlayScrollBehavior, UseScrollBehaviorOptions } from './useScrollBehavior';
+
+export { useDefaultProps } from './useDefaultProps';
+
+export { useFloatingContent } from './useFloatingContent';
+export type { UseFloatingContentOptions, UseFloatingContentReturn, FloatingContentProps } from './useFloatingContent';

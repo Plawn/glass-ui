@@ -14,4 +14,4 @@ export interface AvatarProps extends BaseComponentProps {
 }
 
 // Re-export shared types for convenience
-export type { AvatarSize as AvatarSize } from '../../types';
+export type { AvatarSize } from '../../types';

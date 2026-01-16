@@ -1,1 +1,11 @@
-- virer le padding dans table et virtual list
+## to fix
+
+### dark mode
+
+- accordion, first open has no visible data
+- modal, lg is larger than xl
+- divider trop légé
+- sidebar moche
+- text input required
+## new
+- date range picker
