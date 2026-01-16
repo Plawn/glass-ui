@@ -98,6 +98,57 @@
   border-right-color: oklch(1 0 0 / 0.05);
 }
 
+/* iOS 26 Glass - Navbar specific */
+.glass-navbar {
+  background: oklch(1 0 0 / 0.65);
+  backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
+  border-bottom: 0.0625rem solid oklch(0 0 0 / 0.05);
+  box-shadow: 0 4px 20px -5px oklch(0 0 0 / 0.03);
+  transition: all var(--theme-transition);
+}
+
+.dark .glass-navbar {
+  background: oklch(0.12 0.02 260 / 0.75);
+  border-bottom-color: oklch(1 0 0 / 0.05);
+  box-shadow: 0 4px 20px -5px oklch(0 0 0 / 0.1);
+}
+
+/* Navbar Items */
+.glass-nav-item {
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px; /* Pill shape */
+  color: var(--color-surface-600);
+  transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.dark .glass-nav-item {
+  color: var(--color-surface-400);
+}
+
+.glass-nav-item:hover {
+  color: var(--color-surface-900);
+  background: oklch(0 0 0 / 0.05);
+}
+
+.dark .glass-nav-item:hover {
+  color: var(--color-surface-100);
+  background: oklch(1 0 0 / 0.1);
+}
+
+.glass-nav-item.active {
+  color: var(--color-accent-600);
+  background: oklch(0.55 0.2 250 / 0.1);
+}
+
+.dark .glass-nav-item.active {
+  color: var(--color-accent-400);
+  background: oklch(0.55 0.2 250 / 0.2);
+}
+
 /* iOS 26 Glass - Card/Surface */
 .glass-card {
   background: oklch(1 0 0 / 0.55);
@@ -193,15 +244,20 @@ select.glass-input {
 
 /* Error state for inputs */
 .glass-input-error {
-  border-color: var(--color-red-500) !important;
+  border-color: oklch(0.65 0.25 25) !important;
+}
+
+.dark .glass-input-error {
+  border-color: oklch(0.65 0.25 25) !important;
 }
 
 .glass-input-error:focus {
-  border-color: var(--color-red-500) !important;
+  border-color: oklch(0.65 0.25 25) !important;
   box-shadow: 0 0 0 3px oklch(0.65 0.25 25 / 0.15) !important;
 }
 
 .dark .glass-input-error:focus {
+  border-color: oklch(0.65 0.25 25) !important;
   box-shadow: 0 0 0 3px oklch(0.65 0.25 25 / 0.25) !important;
 }
 

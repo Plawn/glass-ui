@@ -31,10 +31,7 @@ const HamburgerIcon: Component<{ open: boolean; class?: string }> = (props) => {
  */
 const NavItem: Component<{ item: NavbarItem }> = (props) => {
   const baseClasses =
-    'px-3 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
-  const activeClasses = 'text-accent-600 dark:text-accent-400 bg-accent-500/10';
-  const inactiveClasses =
-    'text-surface-600 dark:text-surface-300 hover:text-surface-900 dark:hover:text-surface-100 hover:bg-black/5 dark:hover:bg-white/5';
+    'glass-nav-item focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
 
   const handleClick = () => {
     if (props.item.onClick) {
@@ -49,7 +46,7 @@ const NavItem: Component<{ item: NavbarItem }> = (props) => {
         <button
           type="button"
           onClick={handleClick}
-          class={`${baseClasses} ${props.item.active ? activeClasses : inactiveClasses}`}
+          class={`${baseClasses} ${props.item.active ? 'active' : ''}`}
         >
           {props.item.label}
         </button>
@@ -58,7 +55,7 @@ const NavItem: Component<{ item: NavbarItem }> = (props) => {
       <a
         href={props.item.href}
         onClick={props.item.onClick}
-        class={`${baseClasses} ${props.item.active ? activeClasses : inactiveClasses}`}
+        class={`${baseClasses} ${props.item.active ? 'active' : ''}`}
       >
         {props.item.label}
       </a>
@@ -175,7 +172,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
     const baseClasses = 'w-full h-16 z-40 transition-all duration-200';
     const positionClasses = sticky() ? 'sticky top-0' : 'relative';
     const backgroundClasses = showBackground()
-      ? 'glass border-b border-surface-200/50 dark:border-white/5'
+      ? 'glass-navbar'
       : 'bg-transparent border-b border-transparent';
 
     return `${baseClasses} ${positionClasses} ${backgroundClasses} ${props.class ?? ''}`;
@@ -183,7 +180,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
 
   const mobileMenuClasses = () => {
     const baseClasses =
-      'absolute top-full left-0 right-0 glass border-b border-surface-200/50 dark:border-white/5 shadow-lg overflow-hidden transition-all duration-200';
+      'absolute top-full left-0 right-0 glass-navbar shadow-lg overflow-hidden transition-all duration-200';
 
     return mobileMenu.isOpen()
       ? `${baseClasses} opacity-100 translate-y-0`

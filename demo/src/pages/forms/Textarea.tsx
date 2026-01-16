@@ -4,7 +4,7 @@ import { createSignal } from 'solid-js';
 export default function TextareaPage() {
   const [value, setValue] = createSignal('');
   const [bioValue, setBioValue] = createSignal('');
-  const [feedbackValue, setFeedbackValue] = createSignal('');
+  const [feedbackValue, setFeedbackValue] = createSignal('Too short');
 
   return (
     <div class="space-y-8">
@@ -133,6 +133,32 @@ export default function TextareaPage() {
   placeholder="Please provide your feedback..."
   rows={3}
   error={feedback().length < 10 ? 'Feedback must be at least 10 characters' : undefined}
+/>`}
+            language="tsx"
+          />
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Required Field</h2>
+        <Card class="p-6">
+          <Textarea
+            value=""
+            onInput={() => {}}
+            label="Required Description"
+            placeholder="This field is required..."
+            required
+            rows={3}
+          />
+        </Card>
+        <div class="mt-4">
+          <CodeBlock
+            code={`<Textarea
+  value={description()}
+  onInput={setDescription}
+  label="Description"
+  required
+  rows={3}
 />`}
             language="tsx"
           />

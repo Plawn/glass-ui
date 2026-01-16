@@ -4,7 +4,7 @@ import { Input, Button, CodeBlock, Card } from 'glass-ui-solid';
 export default function InputPage() {
   const [basicValue, setBasicValue] = createSignal('');
   const [email, setEmail] = createSignal('');
-  const [username, setUsername] = createSignal('');
+  const [username, setUsername] = createSignal('ab');
   const [password, setPassword] = createSignal('');
   const [searchValue, setSearchValue] = createSignal('');
 

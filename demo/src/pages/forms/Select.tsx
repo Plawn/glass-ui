@@ -164,6 +164,39 @@ export default function SelectPage() {
       </section>
 
       <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Required Field</h2>
+        <Card class="p-6">
+          <div class="max-w-xs">
+            <Select
+              value=""
+              onChange={() => {}}
+              label="Required Category"
+              required
+            >
+              <option value="">Select a category...</option>
+              <option value="tech">Technology</option>
+              <option value="design">Design</option>
+              <option value="marketing">Marketing</option>
+            </Select>
+          </div>
+        </Card>
+        <div class="mt-4">
+          <CodeBlock
+            code={`<Select
+  value={category()}
+  onChange={setCategory}
+  label="Category"
+  required
+>
+  <option value="">Select a category...</option>
+  ...
+</Select>`}
+            language="tsx"
+          />
+        </div>
+      </section>
+
+      <section>
         <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Disabled State</h2>
         <Card class="p-6">
           <div class="max-w-xs">

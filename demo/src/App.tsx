@@ -152,18 +152,29 @@ function Layout(props: { children: any }) {
       />
 
       {/* Header */}
-      <header class="sticky top-0 z-40 bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border-b border-surface-200 dark:border-surface-800">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 class="text-xl font-bold text-surface-900 dark:text-white">
-            Glass UI Docs
-          </h1>
+      <header class="glass-navbar sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg bg-accent-500 flex items-center justify-center shadow-lg shadow-accent-500/20">
+              <span class="text-white font-black text-xl leading-none">G</span>
+            </div>
+            <h1 class="text-lg font-bold text-surface-900 dark:text-white tracking-tight">
+              Glass UI
+            </h1>
+          </div>
           <div class="flex items-center gap-4">
-            <kbd class="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 rounded border border-surface-200 dark:border-surface-700">
-              <span class="text-base">⌘</span>K
-            </kbd>
-            <span class="text-sm text-surface-600 dark:text-surface-400">v{version}</span>
-            <Button variant="ghost" size="sm" onClick={toggleDarkMode}>
-              {darkMode() ? 'Light' : 'Dark'}
+            <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 glass-button rounded-lg text-[10px] font-bold">
+              <span class="opacity-50">COMMAND</span>
+              <span class="text-xs">K</span>
+            </div>
+            <span class="text-xs font-medium text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded-md">v{version}</span>
+            <div class="h-6 w-[1px] bg-surface-200 dark:bg-surface-800 mx-1"></div>
+            <Button variant="ghost" size="sm" onClick={toggleDarkMode} class="rounded-full w-9 h-9 p-0 flex items-center justify-center">
+              {darkMode() ? (
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+              ) : (
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+              )}
             </Button>
           </div>
         </div>

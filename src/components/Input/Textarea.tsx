@@ -40,6 +40,9 @@ export const Textarea: Component<TextareaProps> = (props) => {
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
           {props.label}
+          <Show when={props.required}>
+            <span class="text-red-500 ml-0.5">*</span>
+          </Show>
         </label>
       </Show>
       <textarea
