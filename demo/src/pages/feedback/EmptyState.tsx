@@ -1,51 +1,53 @@
-import { Button, CodeBlock, EmptyState } from 'glass-ui-solid';
+import { Button, EmptyState } from 'glass-ui-solid';
+import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
 export default function EmptyStatePage() {
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">EmptyState</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Placeholder content displayed when there is no data to show, with optional icons and actions.
-        </p>
-      </div>
+      <PageHeader
+        title="EmptyState"
+        description="Placeholder content displayed when there is no data to show, with optional icons and actions."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code={`import { EmptyState } from 'glass-ui-solid';`} language="tsx" />
-      </section>
+      <DemoSection title="Import" code={`import { EmptyState } from 'glass-ui-solid';`} />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <div class="border border-surface-200 dark:border-surface-700 rounded-xl mb-4">
+      <DemoSection
+        title="Basic Usage"
+        code={`<EmptyState title="No items found" />`}
+        card={false}
+      >
+        <div class="border border-surface-200 dark:border-surface-700 rounded-xl">
           <EmptyState title="No items found" />
         </div>
-        <CodeBlock code={`<EmptyState title="No items found" />`} language="tsx" />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Description</h2>
-        <div class="border border-surface-200 dark:border-surface-700 rounded-xl mb-4">
+      <DemoSection
+        title="With Description"
+        code={`<EmptyState
+  title="No messages"
+  description="You don't have any messages yet. Start a conversation to see them here."
+/>`}
+        card={false}
+      >
+        <div class="border border-surface-200 dark:border-surface-700 rounded-xl">
           <EmptyState
             title="No messages"
             description="You don't have any messages yet. Start a conversation to see them here."
           />
         </div>
-        <CodeBlock
-          code={`<EmptyState
-  title="No messages"
-  description="You don't have any messages yet. Start a conversation to see them here."
-/>`}
-          language="tsx"
-        />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Icon</h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Add a visual icon to make the empty state more recognizable.
-        </p>
-        <div class="border border-surface-200 dark:border-surface-700 rounded-xl mb-4">
+      <DemoSection
+        title="With Icon"
+        description="Add a visual icon to make the empty state more recognizable."
+        code={`<EmptyState
+  icon={<InboxIcon />}
+  title="Inbox is empty"
+  description="No new messages to display."
+/>`}
+        card={false}
+      >
+        <div class="border border-surface-200 dark:border-surface-700 rounded-xl">
           <EmptyState
             icon={
               <svg
@@ -67,22 +69,20 @@ export default function EmptyStatePage() {
             description="No new messages to display."
           />
         </div>
-        <CodeBlock
-          code={`<EmptyState
-  icon={<InboxIcon />}
-  title="Inbox is empty"
-  description="No new messages to display."
-/>`}
-          language="tsx"
-        />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Action</h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Include an action button to guide users toward resolving the empty state.
-        </p>
-        <div class="border border-surface-200 dark:border-surface-700 rounded-xl mb-4">
+      <DemoSection
+        title="With Action"
+        description="Include an action button to guide users toward resolving the empty state."
+        code={`<EmptyState
+  icon={<DocumentIcon />}
+  title="No documents"
+  description="Get started by creating your first document."
+  action={<Button>Create Document</Button>}
+/>`}
+        card={false}
+      >
+        <div class="border border-surface-200 dark:border-surface-700 rounded-xl">
           <EmptyState
             icon={
               <svg
@@ -105,23 +105,17 @@ export default function EmptyStatePage() {
             action={<Button>Create Document</Button>}
           />
         </div>
-        <CodeBlock
-          code={`<EmptyState
-  icon={<DocumentIcon />}
-  title="No documents"
-  description="Get started by creating your first document."
-  action={<Button>Create Document</Button>}
-/>`}
-          language="tsx"
-        />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Sizes</h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Three size variants are available to fit different contexts.
-        </p>
-        <div class="space-y-4 mb-4">
+      <DemoSection
+        title="Sizes"
+        description="Three size variants are available to fit different contexts."
+        code={`<EmptyState size="sm" title="Small" description="Compact size" />
+<EmptyState size="md" title="Medium" description="Default size" />
+<EmptyState size="lg" title="Large" description="Prominent size" />`}
+        card={false}
+      >
+        <div class="space-y-4">
           <div class="border border-surface-200 dark:border-surface-700 rounded-xl">
             <EmptyState
               size="sm"
@@ -147,17 +141,19 @@ export default function EmptyStatePage() {
             />
           </div>
         </div>
-        <CodeBlock
-          code={`<EmptyState size="sm" title="Small" description="Compact size" />
-<EmptyState size="md" title="Medium" description="Default size" />
-<EmptyState size="lg" title="Large" description="Prominent size" />`}
-          language="tsx"
-        />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Search Results Example</h2>
-        <div class="border border-surface-200 dark:border-surface-700 rounded-xl mb-4">
+      <DemoSection
+        title="Search Results Example"
+        code={`<EmptyState
+  icon={<SearchIcon />}
+  title="No results found"
+  description="Try adjusting your search or filter criteria."
+  action={<Button variant="secondary">Clear filters</Button>}
+/>`}
+        card={false}
+      >
+        <div class="border border-surface-200 dark:border-surface-700 rounded-xl">
           <EmptyState
             icon={
               <svg
@@ -180,76 +176,21 @@ export default function EmptyStatePage() {
             action={<Button variant="secondary">Clear filters</Button>}
           />
         </div>
-        <CodeBlock
-          code={`<EmptyState
-  icon={<SearchIcon />}
-  title="No results found"
-  description="Try adjusting your search or filter criteria."
-  action={<Button variant="secondary">Clear filters</Button>}
-/>`}
-          language="tsx"
-        />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm text-left">
-            <thead class="text-surface-600 dark:text-surface-400 border-b border-surface-200 dark:border-surface-700">
-              <tr>
-                <th class="py-2 pr-4">Prop</th>
-                <th class="py-2 pr-4">Type</th>
-                <th class="py-2 pr-4">Default</th>
-                <th class="py-2">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-700 dark:text-surface-300">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-2 pr-4 font-mono text-xs">title</td>
-                <td class="py-2 pr-4 font-mono text-xs">string</td>
-                <td class="py-2 pr-4">required</td>
-                <td class="py-2">Title text displayed prominently</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-2 pr-4 font-mono text-xs">description</td>
-                <td class="py-2 pr-4 font-mono text-xs">string</td>
-                <td class="py-2 pr-4">-</td>
-                <td class="py-2">Optional description text below the title</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-2 pr-4 font-mono text-xs">icon</td>
-                <td class="py-2 pr-4 font-mono text-xs">JSX.Element</td>
-                <td class="py-2 pr-4">-</td>
-                <td class="py-2">Optional icon element displayed at the top</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-2 pr-4 font-mono text-xs">action</td>
-                <td class="py-2 pr-4 font-mono text-xs">JSX.Element</td>
-                <td class="py-2 pr-4">-</td>
-                <td class="py-2">Optional action element (e.g., a Button)</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-2 pr-4 font-mono text-xs">size</td>
-                <td class="py-2 pr-4 font-mono text-xs">'sm' | 'md' | 'lg'</td>
-                <td class="py-2 pr-4">'md'</td>
-                <td class="py-2">Size variant affecting icon and text sizes</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-2 pr-4 font-mono text-xs">class</td>
-                <td class="py-2 pr-4 font-mono text-xs">string</td>
-                <td class="py-2 pr-4">-</td>
-                <td class="py-2">Additional CSS classes</td>
-              </tr>
-              <tr>
-                <td class="py-2 pr-4 font-mono text-xs">style</td>
-                <td class="py-2 pr-4 font-mono text-xs">JSX.CSSProperties</td>
-                <td class="py-2 pr-4">-</td>
-                <td class="py-2">Inline styles</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props">
+        <PropsTable
+          props={[
+            { name: 'title', type: 'string', description: 'Title text displayed prominently' },
+            { name: 'description', type: 'string', description: 'Optional description text below the title' },
+            { name: 'icon', type: 'JSX.Element', description: 'Optional icon element displayed at the top' },
+            { name: 'action', type: 'JSX.Element', description: 'Optional action element (e.g., a Button)' },
+            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant affecting icon and text sizes' },
+            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            { name: 'style', type: 'JSX.CSSProperties', description: 'Inline styles' },
+          ]}
+        />
+      </DemoSection>
     </div>
   );
 }

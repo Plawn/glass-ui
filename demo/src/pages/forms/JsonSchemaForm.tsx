@@ -1,5 +1,6 @@
 import { JsonSchemaForm, CodeBlock, Card, type Schema } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
+import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
 
 // Simple user schema
 const simpleUserSchema: Schema = {
@@ -192,48 +193,20 @@ export default function JsonSchemaFormPage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">
-          JsonSchemaForm
-        </h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          A recursive form renderer that generates form fields from JSON Schema definitions.
-          Supports primitive types, nested objects, arrays, enums, and union types (oneOf/anyOf).
-        </p>
-      </div>
+      <PageHeader
+        title="JsonSchemaForm"
+        description="A recursive form renderer that generates form fields from JSON Schema definitions. Supports primitive types, nested objects, arrays, enums, and union types (oneOf/anyOf)."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Import
-        </h2>
-        <CodeBlock
-          code={`import { JsonSchemaForm, type Schema } from 'glass-ui-solid';`}
-          language="tsx"
-        />
-      </section>
+      <DemoSection
+        title="Import"
+        code="import { JsonSchemaForm, type Schema } from 'glass-ui-solid';"
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Basic Usage
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Define a JSON Schema and the form will automatically render appropriate input fields.
-        </p>
-        <Card class="p-6 space-y-4">
-          <JsonSchemaForm
-            schema={simpleUserSchema}
-            value={simpleValue()}
-            onChange={(v) => setSimpleValue(v as Record<string, unknown>)}
-          />
-          <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
-            <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
-              Value: {JSON.stringify(simpleValue(), null, 2)}
-            </p>
-          </div>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const schema: Schema = {
+      <DemoSection
+        title="Basic Usage"
+        description="Define a JSON Schema and the form will automatically render appropriate input fields."
+        code={`const schema: Schema = {
   type: 'object',
   properties: {
     name: { type: 'string', title: 'Name' },
@@ -250,33 +223,23 @@ const [value, setValue] = createSignal({});
   value={value()}
   onChange={setValue}
 />`}
-          language="tsx"
+      >
+        <JsonSchemaForm
+          schema={simpleUserSchema}
+          value={simpleValue()}
+          onChange={(v) => setSimpleValue(v as Record<string, unknown>)}
         />
-      </section>
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
+            Value: {JSON.stringify(simpleValue(), null, 2)}
+          </p>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Enum Fields
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Use <code class="text-primary-600 dark:text-primary-400">enum</code> in the schema
-          to render a select dropdown.
-        </p>
-        <Card class="p-6 space-y-4">
-          <JsonSchemaForm
-            schema={enumSchema}
-            value={enumValue()}
-            onChange={(v) => setEnumValue(v as Record<string, unknown>)}
-          />
-          <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
-            <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
-              Value: {JSON.stringify(enumValue())}
-            </p>
-          </div>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const schema: Schema = {
+      <DemoSection
+        title="Enum Fields"
+        description={<>Use <CodePill>enum</CodePill> in the schema to render a select dropdown.</>}
+        code={`const schema: Schema = {
   type: 'object',
   properties: {
     status: {
@@ -291,32 +254,23 @@ const [value, setValue] = createSignal({});
     },
   },
 };`}
-          language="tsx"
+      >
+        <JsonSchemaForm
+          schema={enumSchema}
+          value={enumValue()}
+          onChange={(v) => setEnumValue(v as Record<string, unknown>)}
         />
-      </section>
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
+            Value: {JSON.stringify(enumValue())}
+          </p>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Boolean Fields
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Boolean types are rendered as toggle switches.
-        </p>
-        <Card class="p-6 space-y-4">
-          <JsonSchemaForm
-            schema={settingsSchema}
-            value={settingsValue()}
-            onChange={(v) => setSettingsValue(v as Record<string, unknown>)}
-          />
-          <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
-            <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
-              Value: {JSON.stringify(settingsValue())}
-            </p>
-          </div>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const schema: Schema = {
+      <DemoSection
+        title="Boolean Fields"
+        description="Boolean types are rendered as toggle switches."
+        code={`const schema: Schema = {
   type: 'object',
   properties: {
     notifications: { type: 'boolean', title: 'Enable Notifications' },
@@ -324,32 +278,23 @@ const [value, setValue] = createSignal({});
     newsletter: { type: 'boolean', title: 'Subscribe to Newsletter' },
   },
 };`}
-          language="tsx"
+      >
+        <JsonSchemaForm
+          schema={settingsSchema}
+          value={settingsValue()}
+          onChange={(v) => setSettingsValue(v as Record<string, unknown>)}
         />
-      </section>
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
+            Value: {JSON.stringify(settingsValue())}
+          </p>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Array Fields
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Arrays render with add/remove buttons for dynamic list management.
-        </p>
-        <Card class="p-6 space-y-4">
-          <JsonSchemaForm
-            schema={tagsSchema}
-            value={tagsValue()}
-            onChange={(v) => setTagsValue(v as Record<string, unknown>)}
-          />
-          <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
-            <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
-              Value: {JSON.stringify(tagsValue())}
-            </p>
-          </div>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const schema: Schema = {
+      <DemoSection
+        title="Array Fields"
+        description="Arrays render with add/remove buttons for dynamic list management."
+        code={`const schema: Schema = {
   type: 'object',
   properties: {
     title: { type: 'string', title: 'Title' },
@@ -360,32 +305,23 @@ const [value, setValue] = createSignal({});
     },
   },
 };`}
-          language="tsx"
+      >
+        <JsonSchemaForm
+          schema={tagsSchema}
+          value={tagsValue()}
+          onChange={(v) => setTagsValue(v as Record<string, unknown>)}
         />
-      </section>
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
+            Value: {JSON.stringify(tagsValue())}
+          </p>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Nested Objects
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Objects can be nested to any depth. Each nested object gets its own fieldset.
-        </p>
-        <Card class="p-6 space-y-4">
-          <JsonSchemaForm
-            schema={addressSchema}
-            value={addressValue()}
-            onChange={(v) => setAddressValue(v as Record<string, unknown>)}
-          />
-          <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
-            <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
-              Value: {JSON.stringify(addressValue(), null, 2)}
-            </p>
-          </div>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const schema: Schema = {
+      <DemoSection
+        title="Nested Objects"
+        description="Objects can be nested to any depth. Each nested object gets its own fieldset."
+        code={`const schema: Schema = {
   type: 'object',
   properties: {
     name: { type: 'string', title: 'Full Name' },
@@ -406,33 +342,23 @@ const [value, setValue] = createSignal({});
     },
   },
 };`}
-          language="tsx"
+      >
+        <JsonSchemaForm
+          schema={addressSchema}
+          value={addressValue()}
+          onChange={(v) => setAddressValue(v as Record<string, unknown>)}
         />
-      </section>
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(addressValue(), null, 2)}
+          </p>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Union Types (oneOf)
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Use <code class="text-primary-600 dark:text-primary-400">oneOf</code> to allow
-          selecting between different schema variants.
-        </p>
-        <Card class="p-6 space-y-4">
-          <JsonSchemaForm
-            schema={oneOfSchema}
-            value={oneOfValue()}
-            onChange={(v) => setOneOfValue(v as Record<string, unknown>)}
-          />
-          <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
-            <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
-              Value: {JSON.stringify(oneOfValue(), null, 2)}
-            </p>
-          </div>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const schema: Schema = {
+      <DemoSection
+        title="Union Types (oneOf)"
+        description={<>Use <CodePill>oneOf</CodePill> to allow selecting between different schema variants.</>}
+        code={`const schema: Schema = {
   type: 'object',
   properties: {
     paymentMethod: {
@@ -459,32 +385,23 @@ const [value, setValue] = createSignal({});
     },
   },
 };`}
-          language="tsx"
+      >
+        <JsonSchemaForm
+          schema={oneOfSchema}
+          value={oneOfValue()}
+          onChange={(v) => setOneOfValue(v as Record<string, unknown>)}
         />
-      </section>
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(oneOfValue(), null, 2)}
+          </p>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Complex Example
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Combining arrays of objects with nested properties.
-        </p>
-        <Card class="p-6 space-y-4">
-          <JsonSchemaForm
-            schema={complexSchema}
-            value={complexValue()}
-            onChange={(v) => setComplexValue(v as Record<string, unknown>)}
-          />
-          <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
-            <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
-              Value: {JSON.stringify(complexValue(), null, 2)}
-            </p>
-          </div>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const schema: Schema = {
+      <DemoSection
+        title="Complex Example"
+        description="Combining arrays of objects with nested properties."
+        code={`const schema: Schema = {
   type: 'object',
   properties: {
     projectName: { type: 'string', title: 'Project Name' },
@@ -510,66 +427,38 @@ const [value, setValue] = createSignal({});
   },
   required: ['projectName'],
 };`}
-          language="tsx"
+      >
+        <JsonSchemaForm
+          schema={complexSchema}
+          value={complexValue()}
+          onChange={(v) => setComplexValue(v as Record<string, unknown>)}
         />
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Props
-        </h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Prop</th>
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Type</th>
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Default</th>
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">schema</td>
-                <td class="py-3 px-4 font-mono text-xs">Schema</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">The JSON Schema definition to render</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">value</td>
-                <td class="py-3 px-4 font-mono text-xs">unknown</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">Current form value</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">onChange</td>
-                <td class="py-3 px-4 font-mono text-xs">(value: unknown) =&gt; void</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">Callback when value changes</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">required</td>
-                <td class="py-3 px-4 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4">false</td>
-                <td class="py-3 px-4">Whether the root field is required</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">path</td>
-                <td class="py-3 px-4 font-mono text-xs">string[]</td>
-                <td class="py-3 px-4">[]</td>
-                <td class="py-3 px-4">Path to this field (for nested forms)</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(complexValue(), null, 2)}
+          </p>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Schema Interface
-        </h2>
-        <CodeBlock
-          code={`interface Schema {
+      <DemoSection title="Props">
+        <PropsTable
+          props={[
+            { name: 'schema', type: 'Schema', default: 'required', description: 'The JSON Schema definition to render' },
+            { name: 'value', type: 'unknown', default: 'required', description: 'Current form value' },
+            { name: 'onChange', type: '(value: unknown) => void', default: 'required', description: 'Callback when value changes' },
+            { name: 'required', type: 'boolean', default: 'false', description: 'Whether the root field is required' },
+            { name: 'path', type: 'string[]', default: '[]', description: 'Path to this field (for nested forms)' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection
+        title="Schema Interface"
+        card={false}
+      >
+        <Card class="p-6">
+          <CodeBlock
+            code={`interface Schema {
   type?: 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object' | 'null';
   format?: string;
   title?: string;
@@ -599,19 +488,19 @@ const [value, setValue] = createSignal({});
   oneOf?: Schema[];
   anyOf?: Schema[];
 }`}
-          language="tsx"
-        />
-      </section>
+            language="tsx"
+          />
+        </Card>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Exported Field Components
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          For advanced usage, individual field components are exported:
-        </p>
-        <CodeBlock
-          code={`import {
+      <DemoSection
+        title="Exported Field Components"
+        description="For advanced usage, individual field components are exported:"
+        card={false}
+      >
+        <Card class="p-6">
+          <CodeBlock
+            code={`import {
   StringField,
   NumberField,
   BooleanField,
@@ -621,19 +510,19 @@ const [value, setValue] = createSignal({});
   ArrayField,
   SchemaField,
 } from 'glass-ui-solid';`}
-          language="tsx"
-        />
-      </section>
+            language="tsx"
+          />
+        </Card>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Utility Functions
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Helper functions are available for working with schema values:
-        </p>
-        <CodeBlock
-          code={`import { getDefaultValue, toDisplayString, toDisplayStringJson } from 'glass-ui-solid';
+      <DemoSection
+        title="Utility Functions"
+        description="Helper functions are available for working with schema values:"
+        card={false}
+      >
+        <Card class="p-6">
+          <CodeBlock
+            code={`import { getDefaultValue, toDisplayString, toDisplayStringJson } from 'glass-ui-solid';
 
 // Get default value from schema
 const defaultValue = getDefaultValue(schema);
@@ -643,9 +532,10 @@ const display = toDisplayString(value);
 
 // Convert value to formatted JSON string
 const json = toDisplayStringJson(value);`}
-          language="tsx"
-        />
-      </section>
+            language="tsx"
+          />
+        </Card>
+      </DemoSection>
     </div>
   );
 }

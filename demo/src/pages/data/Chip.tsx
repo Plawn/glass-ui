@@ -1,5 +1,6 @@
-import { Chip, CodeBlock } from 'glass-ui-solid';
+import { Chip } from 'glass-ui-solid';
 import { createSignal, For } from 'solid-js';
+import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
 export default function ChipPage() {
   const [tags, setTags] = createSignal(['React', 'Solid', 'Vue', 'Angular']);
@@ -31,45 +32,38 @@ export default function ChipPage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Chip</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Compact elements for tags, filters, and selections.
-        </p>
-      </div>
+      <PageHeader
+        title="Chip"
+        description="Compact elements for tags, filters, and selections."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code="import { Chip } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection title="Import" code="import { Chip } from 'glass-ui-solid';" />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Chip>Label</Chip>
-          </div>
-          <CodeBlock code="<Chip>Label</Chip>" language="tsx" />
+      <DemoSection title="Basic Usage" code="<Chip>Label</Chip>">
+        <div class="flex flex-wrap items-center gap-2">
+          <Chip>Label</Chip>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Variants</h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Chip variant="filled">Filled</Chip>
-            <Chip variant="outlined">Outlined</Chip>
-          </div>
-          <CodeBlock
-            code={`<Chip variant="filled">Filled</Chip>
+      <DemoSection
+        title="Variants"
+        code={`<Chip variant="filled">Filled</Chip>
 <Chip variant="outlined">Outlined</Chip>`}
-            language="tsx"
-          />
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <Chip variant="filled">Filled</Chip>
+          <Chip variant="outlined">Outlined</Chip>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Colors</h2>
+      <DemoSection
+        title="Colors"
+        code={`<Chip color="default">Default</Chip>
+<Chip color="primary">Primary</Chip>
+<Chip color="success">Success</Chip>
+<Chip color="warning">Warning</Chip>
+<Chip color="error">Error</Chip>`}
+      >
         <div class="space-y-6">
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
@@ -95,52 +89,25 @@ export default function ChipPage() {
               <Chip color="error" variant="outlined">Error</Chip>
             </div>
           </div>
-          <CodeBlock
-            code={`<Chip color="default">Default</Chip>
-<Chip color="primary">Primary</Chip>
-<Chip color="success">Success</Chip>
-<Chip color="warning">Warning</Chip>
-<Chip color="error">Error</Chip>`}
-            language="tsx"
-          />
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Sizes</h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Chip size="sm">Small</Chip>
-            <Chip size="md">Medium</Chip>
-            <Chip size="lg">Large</Chip>
-          </div>
-          <CodeBlock
-            code={`<Chip size="sm">Small</Chip>
+      <DemoSection
+        title="Sizes"
+        code={`<Chip size="sm">Small</Chip>
 <Chip size="md">Medium</Chip>
 <Chip size="lg">Large</Chip>`}
-            language="tsx"
-          />
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <Chip size="sm">Small</Chip>
+          <Chip size="md">Medium</Chip>
+          <Chip size="lg">Large</Chip>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Removable</h2>
-        <div class="space-y-4">
-          <div class="space-y-2">
-            <div class="flex flex-wrap items-center gap-2">
-              <For each={tags()}>
-                {(tag) => <Chip onRemove={() => removeTag(tag)}>{tag}</Chip>}
-              </For>
-            </div>
-            <button
-              class="text-sm text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-              onClick={resetTags}
-            >
-              Reset tags
-            </button>
-          </div>
-          <CodeBlock
-            code={`const [tags, setTags] = createSignal(['React', 'Solid', 'Vue']);
+      <DemoSection
+        title="Removable"
+        code={`const [tags, setTags] = createSignal(['React', 'Solid', 'Vue']);
 
 <For each={tags()}>
   {(tag) => (
@@ -149,47 +116,35 @@ export default function ChipPage() {
     </Chip>
   )}
 </For>`}
-            language="tsx"
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Disabled</h2>
-        <div class="space-y-4">
+      >
+        <div class="space-y-2">
           <div class="flex flex-wrap items-center gap-2">
-            <Chip disabled>Disabled</Chip>
-            <Chip disabled variant="outlined">Disabled Outlined</Chip>
-            <Chip disabled onRemove={() => {}}>
-              Disabled Removable
-            </Chip>
+            <For each={tags()}>
+              {(tag) => <Chip onRemove={() => removeTag(tag)}>{tag}</Chip>}
+            </For>
           </div>
-          <CodeBlock code="<Chip disabled>Disabled</Chip>" language="tsx" />
+          <button
+            class="text-sm text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            onClick={resetTags}
+          >
+            Reset tags
+          </button>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">As Filter Tags</h2>
-        <div class="space-y-4">
-          <div class="space-y-2">
-            <div class="flex flex-wrap gap-2">
-              <For each={filters()}>
-                {(filter) => (
-                  <Chip variant="outlined" size="sm" onRemove={() => removeFilter(filter.id)}>
-                    {filter.label}
-                  </Chip>
-                )}
-              </For>
-            </div>
-            <button
-              class="text-sm text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-              onClick={resetFilters}
-            >
-              Reset filters
-            </button>
-          </div>
-          <CodeBlock
-            code={`function FilterTags() {
+      <DemoSection title="Disabled" code="<Chip disabled>Disabled</Chip>">
+        <div class="flex flex-wrap items-center gap-2">
+          <Chip disabled>Disabled</Chip>
+          <Chip disabled variant="outlined">Disabled Outlined</Chip>
+          <Chip disabled onRemove={() => {}}>
+            Disabled Removable
+          </Chip>
+        </div>
+      </DemoSection>
+
+      <DemoSection
+        title="As Filter Tags"
+        code={`function FilterTags() {
   const [filters, setFilters] = createSignal([
     { id: '1', label: 'Status: Active' },
     { id: '2', label: 'Type: User' },
@@ -215,32 +170,29 @@ export default function ChipPage() {
     </div>
   );
 }`}
-            language="tsx"
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Combining Options
-        </h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Chip variant="filled" color="success" size="sm">
-              Small Success
-            </Chip>
-            <Chip variant="outlined" color="warning" size="md">
-              Medium Warning
-            </Chip>
-            <Chip variant="filled" color="error" size="lg">
-              Large Error
-            </Chip>
-            <Chip variant="outlined" color="primary" size="sm" onRemove={() => {}}>
-              Removable Primary
-            </Chip>
+      >
+        <div class="space-y-2">
+          <div class="flex flex-wrap gap-2">
+            <For each={filters()}>
+              {(filter) => (
+                <Chip variant="outlined" size="sm" onRemove={() => removeFilter(filter.id)}>
+                  {filter.label}
+                </Chip>
+              )}
+            </For>
           </div>
-          <CodeBlock
-            code={`<Chip variant="filled" color="success" size="sm">
+          <button
+            class="text-sm text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
+            onClick={resetFilters}
+          >
+            Reset filters
+          </button>
+        </div>
+      </DemoSection>
+
+      <DemoSection
+        title="Combining Options"
+        code={`<Chip variant="filled" color="success" size="sm">
   Small Success
 </Chip>
 <Chip variant="outlined" color="warning" size="md">
@@ -252,72 +204,36 @@ export default function ChipPage() {
 <Chip variant="outlined" color="primary" size="sm" onRemove={() => {}}>
   Removable Primary
 </Chip>`}
-            language="tsx"
-          />
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <Chip variant="filled" color="success" size="sm">
+            Small Success
+          </Chip>
+          <Chip variant="outlined" color="warning" size="md">
+            Medium Warning
+          </Chip>
+          <Chip variant="filled" color="error" size="lg">
+            Large Error
+          </Chip>
+          <Chip variant="outlined" color="primary" size="sm" onRemove={() => {}}>
+            Removable Primary
+          </Chip>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Props Reference
-        </h2>
-        <div class="overflow-x-auto">
-          <table class="text-sm w-full">
-            <thead>
-              <tr class="text-left text-surface-600 dark:text-surface-400 border-b border-surface-200 dark:border-surface-700">
-                <th class="pr-4 pb-2">Prop</th>
-                <th class="pr-4 pb-2">Type</th>
-                <th class="pr-4 pb-2">Default</th>
-                <th class="pb-2">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-800 dark:text-surface-200">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="pr-4 py-2 font-mono text-xs">children</td>
-                <td class="pr-4 py-2 font-mono text-xs">JSX.Element</td>
-                <td class="pr-4 py-2">required</td>
-                <td class="py-2">Chip content</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="pr-4 py-2 font-mono text-xs">variant</td>
-                <td class="pr-4 py-2 font-mono text-xs">'filled' | 'outlined'</td>
-                <td class="pr-4 py-2">'filled'</td>
-                <td class="py-2">Visual variant</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="pr-4 py-2 font-mono text-xs">color</td>
-                <td class="pr-4 py-2 font-mono text-xs">'default' | 'primary' | 'success' | 'warning' | 'error'</td>
-                <td class="pr-4 py-2">'default'</td>
-                <td class="py-2">Color theme</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="pr-4 py-2 font-mono text-xs">size</td>
-                <td class="pr-4 py-2 font-mono text-xs">'sm' | 'md' | 'lg'</td>
-                <td class="pr-4 py-2">'md'</td>
-                <td class="py-2">Chip size</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="pr-4 py-2 font-mono text-xs">onRemove</td>
-                <td class="pr-4 py-2 font-mono text-xs">() =&gt; void</td>
-                <td class="pr-4 py-2">-</td>
-                <td class="py-2">Show remove button and handle click</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="pr-4 py-2 font-mono text-xs">disabled</td>
-                <td class="pr-4 py-2 font-mono text-xs">boolean</td>
-                <td class="pr-4 py-2">false</td>
-                <td class="py-2">Disable the chip</td>
-              </tr>
-              <tr>
-                <td class="pr-4 py-2 font-mono text-xs">class</td>
-                <td class="pr-4 py-2 font-mono text-xs">string</td>
-                <td class="pr-4 py-2">-</td>
-                <td class="py-2">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props Reference" card={false}>
+        <PropsTable
+          props={[
+            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Chip content' },
+            { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual variant' },
+            { name: 'color', type: "'default' | 'primary' | 'success' | 'warning' | 'error'", default: "'default'", description: 'Color theme' },
+            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Chip size' },
+            { name: 'onRemove', type: '() => void', default: '-', description: 'Show remove button and handle click' },
+            { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the chip' },
+            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
     </div>
   );
 }

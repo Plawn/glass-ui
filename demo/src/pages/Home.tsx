@@ -2,18 +2,15 @@ import { Card, Button } from 'glass-ui-solid';
 import { A } from '@solidjs/router';
 import { navigation } from '../config/navigation';
 import { For } from 'solid-js';
+import { PageHeader } from '../components/demo';
 
 export default function Home() {
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-3xl font-bold text-surface-900 dark:text-white mb-2">
-          Glass UI
-        </h1>
-        <p class="text-lg text-surface-600 dark:text-surface-400">
-          iOS 26-inspired glassmorphism UI components for SolidJS.
-        </p>
-      </div>
+      <PageHeader
+        title="Glass UI"
+        description="iOS 26-inspired glassmorphism UI components for SolidJS."
+      />
 
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <For each={navigation}>

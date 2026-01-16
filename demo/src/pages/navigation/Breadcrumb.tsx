@@ -1,5 +1,6 @@
-import { Breadcrumb, CodeBlock, Card } from 'glass-ui-solid';
+import { Breadcrumb } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
+import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
 
 // Simple icon components for demo
 const HomeIcon = () => (
@@ -25,36 +26,19 @@ export default function BreadcrumbPage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Breadcrumb</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Navigation breadcrumbs showing the current location within a hierarchy. The last item is displayed as the current page.
-        </p>
-      </div>
+      <PageHeader
+        title="Breadcrumb"
+        description="Navigation breadcrumbs showing the current location within a hierarchy. The last item is displayed as the current page."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock
-          code={`import { Breadcrumb } from 'glass-ui-solid';`}
-          language="tsx"
-        />
-      </section>
+      <DemoSection
+        title="Import"
+        code={`import { Breadcrumb } from 'glass-ui-solid';`}
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <Card class="p-6">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/' },
-              { label: 'Products', href: '/products' },
-              { label: 'Electronics', href: '/products/electronics' },
-              { label: 'Laptops' },
-            ]}
-          />
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`<Breadcrumb
+      <DemoSection
+        title="Basic Usage"
+        code={`<Breadcrumb
   items={[
     { label: 'Home', href: '/' },
     { label: 'Products', href: '/products' },
@@ -62,67 +46,66 @@ export default function BreadcrumbPage() {
     { label: 'Laptops' },
   ]}
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+      >
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Products', href: '/products' },
+            { label: 'Electronics', href: '/products/electronics' },
+            { label: 'Laptops' },
+          ]}
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Click Handlers</h2>
-        <Card class="p-6">
-          <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
-            Last clicked: <span class="font-mono">{lastClicked() ?? 'None'}</span>
-          </p>
-          <Breadcrumb
-            items={[
-              { label: 'Home', onClick: () => setLastClicked('Home') },
-              { label: 'Settings', onClick: () => setLastClicked('Settings') },
-              { label: 'Profile' },
-            ]}
-          />
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`<Breadcrumb
+      <DemoSection
+        title="With Click Handlers"
+        code={`<Breadcrumb
   items={[
     { label: 'Home', onClick: () => navigate('/') },
     { label: 'Settings', onClick: () => navigate('/settings') },
     { label: 'Profile' },
   ]}
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+      >
+        <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
+          Last clicked: <span class="font-mono">{lastClicked() ?? 'None'}</span>
+        </p>
+        <Breadcrumb
+          items={[
+            { label: 'Home', onClick: () => setLastClicked('Home') },
+            { label: 'Settings', onClick: () => setLastClicked('Settings') },
+            { label: 'Profile' },
+          ]}
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Icons</h2>
-        <Card class="p-6">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', icon: <HomeIcon /> },
-              { label: 'Documents', href: '/documents', icon: <FolderIcon /> },
-              { label: 'Project Files' },
-            ]}
-          />
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`<Breadcrumb
+      <DemoSection
+        title="With Icons"
+        code={`<Breadcrumb
   items={[
     { label: 'Home', href: '/', icon: <HomeIcon class="w-4 h-4" /> },
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'Analytics' },
   ]}
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+      >
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/', icon: <HomeIcon /> },
+            { label: 'Documents', href: '/documents', icon: <FolderIcon /> },
+            { label: 'Project Files' },
+          ]}
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Custom Separator</h2>
-        <Card class="p-6 space-y-4">
+      <DemoSection
+        title="Custom Separator"
+        code={`<Breadcrumb
+  items={items}
+  separator={<ChevronRightIcon class="w-4 h-4 text-surface-400" />}
+/>`}
+      >
+        <div class="space-y-4">
           <div>
             <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">Chevron separator:</p>
             <Breadcrumb
@@ -145,36 +128,12 @@ export default function BreadcrumbPage() {
               separator={<span class="mx-2 text-surface-400" aria-hidden="true">-&gt;</span>}
             />
           </div>
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`<Breadcrumb
-  items={items}
-  separator={<ChevronRightIcon class="w-4 h-4 text-surface-400" />}
-/>`}
-            language="tsx"
-          />
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">In Page Header</h2>
-        <Card class="p-6">
-          <div class="space-y-2">
-            <Breadcrumb
-              items={[
-                { label: 'Dashboard', href: '/dashboard' },
-                { label: 'Users', href: '/dashboard/users' },
-                { label: 'Edit User' },
-              ]}
-            />
-            <h1 class="text-2xl font-semibold text-surface-900 dark:text-white">Edit User</h1>
-            <p class="text-surface-600 dark:text-surface-400">Update user information and permissions.</p>
-          </div>
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`<div class="space-y-2">
+      <DemoSection
+        title="In Page Header"
+        code={`<div class="space-y-2">
   <Breadcrumb
     items={[
       { label: 'Dashboard', href: '/dashboard' },
@@ -184,119 +143,72 @@ export default function BreadcrumbPage() {
   />
   <h1 class="text-2xl font-semibold">Edit User</h1>
 </div>`}
-            language="tsx"
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Long Path</h2>
-        <Card class="p-6">
+      >
+        <div class="space-y-2">
           <Breadcrumb
             items={[
-              { label: 'Home', href: '/' },
-              { label: 'Documents', href: '/documents' },
-              { label: 'Work', href: '/documents/work' },
-              { label: 'Projects', href: '/documents/work/projects' },
-              { label: '2024', href: '/documents/work/projects/2024' },
-              { label: 'Q4 Report' },
+              { label: 'Dashboard', href: '/dashboard' },
+              { label: 'Users', href: '/dashboard/users' },
+              { label: 'Edit User' },
             ]}
           />
-        </Card>
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="text-left py-2 pr-4 font-semibold text-surface-900 dark:text-white">Prop</th>
-                <th class="text-left py-2 pr-4 font-semibold text-surface-900 dark:text-white">Type</th>
-                <th class="text-left py-2 pr-4 font-semibold text-surface-900 dark:text-white">Default</th>
-                <th class="text-left py-2 font-semibold text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <td class="py-2 pr-4 font-mono text-xs">items</td>
-                <td class="py-2 pr-4 font-mono text-xs">BreadcrumbItem[]</td>
-                <td class="py-2 pr-4">required</td>
-                <td class="py-2">Breadcrumb items to display</td>
-              </tr>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <td class="py-2 pr-4 font-mono text-xs">separator</td>
-                <td class="py-2 pr-4 font-mono text-xs">JSX.Element</td>
-                <td class="py-2 pr-4">/</td>
-                <td class="py-2">Custom separator element</td>
-              </tr>
-              <tr>
-                <td class="py-2 pr-4 font-mono text-xs">class</td>
-                <td class="py-2 pr-4 font-mono text-xs">string</td>
-                <td class="py-2 pr-4">-</td>
-                <td class="py-2">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
+          <h1 class="text-2xl font-semibold text-surface-900 dark:text-white">Edit User</h1>
+          <p class="text-surface-600 dark:text-surface-400">Update user information and permissions.</p>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">BreadcrumbItem</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="text-left py-2 pr-4 font-semibold text-surface-900 dark:text-white">Prop</th>
-                <th class="text-left py-2 pr-4 font-semibold text-surface-900 dark:text-white">Type</th>
-                <th class="text-left py-2 font-semibold text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <td class="py-2 pr-4 font-mono text-xs">label</td>
-                <td class="py-2 pr-4 font-mono text-xs">string</td>
-                <td class="py-2">Display label (required)</td>
-              </tr>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <td class="py-2 pr-4 font-mono text-xs">href</td>
-                <td class="py-2 pr-4 font-mono text-xs">string</td>
-                <td class="py-2">Link URL</td>
-              </tr>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <td class="py-2 pr-4 font-mono text-xs">onClick</td>
-                <td class="py-2 pr-4 font-mono text-xs">() =&gt; void</td>
-                <td class="py-2">Click handler for programmatic navigation</td>
-              </tr>
-              <tr>
-                <td class="py-2 pr-4 font-mono text-xs">icon</td>
-                <td class="py-2 pr-4 font-mono text-xs">JSX.Element</td>
-                <td class="py-2">Optional icon before the label</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Long Path">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Documents', href: '/documents' },
+            { label: 'Work', href: '/documents/work' },
+            { label: 'Projects', href: '/documents/work/projects' },
+            { label: '2024', href: '/documents/work/projects/2024' },
+            { label: 'Q4 Report' },
+          ]}
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Behavior</h2>
+      <DemoSection title="Props">
+        <PropsTable
+          props={[
+            { name: 'items', type: 'BreadcrumbItem[]', default: 'required', description: 'Breadcrumb items to display' },
+            { name: 'separator', type: 'JSX.Element', default: '/', description: 'Custom separator element' },
+            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="BreadcrumbItem">
+        <PropsTable
+          compact
+          props={[
+            { name: 'label', type: 'string', description: 'Display label (required)' },
+            { name: 'href', type: 'string', description: 'Link URL' },
+            { name: 'onClick', type: '() => void', description: 'Click handler for programmatic navigation' },
+            { name: 'icon', type: 'JSX.Element', description: 'Optional icon before the label' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="Behavior" card={false}>
         <ul class="list-disc list-inside text-surface-600 dark:text-surface-400 space-y-2">
           <li>The last item is automatically displayed as the current page (non-clickable)</li>
-          <li>Previous items are rendered as links (if <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">href</code> is provided) or buttons (if <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">onClick</code> is provided)</li>
-          <li>Items with both <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">href</code> and <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">onClick</code> will prevent default link behavior and call the handler</li>
+          <li>Previous items are rendered as links (if <CodePill>href</CodePill> is provided) or buttons (if <CodePill>onClick</CodePill> is provided)</li>
+          <li>Items with both <CodePill>href</CodePill> and <CodePill>onClick</CodePill> will prevent default link behavior and call the handler</li>
           <li>Icons appear before the label with proper spacing</li>
         </ul>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Accessibility</h2>
+      <DemoSection title="Accessibility" card={false}>
         <ul class="list-disc list-inside text-surface-600 dark:text-surface-400 space-y-2">
-          <li>Uses semantic <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">&lt;nav&gt;</code> element with <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">aria-label="Breadcrumb"</code></li>
-          <li>Ordered list (<code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">&lt;ol&gt;</code>) for proper hierarchy</li>
-          <li>Current page marked with <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">aria-current="page"</code></li>
-          <li>Separator elements are hidden from screen readers with <code class="px-1.5 py-0.5 bg-surface-200 dark:bg-surface-700 rounded text-sm">aria-hidden="true"</code></li>
+          <li>Uses semantic <CodePill>&lt;nav&gt;</CodePill> element with <CodePill>aria-label="Breadcrumb"</CodePill></li>
+          <li>Ordered list (<CodePill>&lt;ol&gt;</CodePill>) for proper hierarchy</li>
+          <li>Current page marked with <CodePill>aria-current="page"</CodePill></li>
+          <li>Separator elements are hidden from screen readers with <CodePill>aria-hidden="true"</CodePill></li>
         </ul>
-      </section>
+      </DemoSection>
     </div>
   );
 }

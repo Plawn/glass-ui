@@ -1,23 +1,17 @@
-import { Card, CodeBlock, Button } from 'glass-ui-solid';
+import { Card, Button } from 'glass-ui-solid';
+import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
 export default function CardPage() {
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Card</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Container with glass effect and optional header/footer.
-        </p>
-      </div>
+      <PageHeader
+        title="Card"
+        description="Container with glass effect and optional header/footer."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code="import { Card } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection title="Import" code="import { Card } from 'glass-ui-solid';" />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Examples</h2>
-
+      <DemoSection title="Examples" card={false}>
         <div class="space-y-6">
           {/* Basic */}
           <div>
@@ -73,55 +67,19 @@ export default function CardPage() {
             </Card>
           </div>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Prop</th>
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Type</th>
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Default</th>
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">children</td>
-                <td class="py-2 px-3 font-mono text-xs">JSX.Element</td>
-                <td class="py-2 px-3">required</td>
-                <td class="py-2 px-3">Card body content</td>
-              </tr>
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">header</td>
-                <td class="py-2 px-3 font-mono text-xs">JSX.Element</td>
-                <td class="py-2 px-3">-</td>
-                <td class="py-2 px-3">Header content</td>
-              </tr>
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">footer</td>
-                <td class="py-2 px-3 font-mono text-xs">JSX.Element</td>
-                <td class="py-2 px-3">-</td>
-                <td class="py-2 px-3">Footer content</td>
-              </tr>
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">variant</td>
-                <td class="py-2 px-3 font-mono text-xs">'default' | 'elevated' | 'outlined'</td>
-                <td class="py-2 px-3">'default'</td>
-                <td class="py-2 px-3">Visual variant</td>
-              </tr>
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">class</td>
-                <td class="py-2 px-3 font-mono text-xs">string</td>
-                <td class="py-2 px-3">-</td>
-                <td class="py-2 px-3">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props">
+        <PropsTable
+          props={[
+            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Card body content' },
+            { name: 'header', type: 'JSX.Element', description: 'Header content' },
+            { name: 'footer', type: 'JSX.Element', description: 'Footer content' },
+            { name: 'variant', type: "'default' | 'elevated' | 'outlined'", default: "'default'", description: 'Visual variant' },
+            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
     </div>
   );
 }

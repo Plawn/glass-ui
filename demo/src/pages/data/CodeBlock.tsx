@@ -1,4 +1,5 @@
 import { CodeBlock as CB, Card } from 'glass-ui-solid';
+import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
 export default function CodeBlockPage() {
   const jsCode = `function greet(name) {
@@ -43,45 +44,38 @@ bun run dev`;
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">CodeBlock</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Syntax-highlighted code display with copy functionality. Uses PrismJS for syntax highlighting
-          and includes a built-in copy button.
-        </p>
-      </div>
+      <PageHeader
+        title="CodeBlock"
+        description="Syntax-highlighted code display with copy functionality. Uses PrismJS for syntax highlighting and includes a built-in copy button."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CB code="import { CodeBlock } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection title="Import" code="import { CodeBlock } from 'glass-ui-solid';" />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <Card class="p-6 space-y-4">
-          <CB
-            code={`function hello() {
-  console.log("Hello, World!");
-}`}
-            language="javascript"
-          />
-        </Card>
-        <div class="mt-4">
-          <CB
-            code={`<CodeBlock
+      <DemoSection
+        title="Basic Usage"
+        code={`<CodeBlock
   code={\`function hello() {
   console.log("Hello, World!");
 }\`}
   language="javascript"
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+      >
+        <CB
+          code={`function hello() {
+  console.log("Hello, World!");
+}`}
+          language="javascript"
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Different Languages</h2>
-
+      <DemoSection
+        title="Different Languages"
+        code={`<CodeBlock code={jsonData} language="json" />
+<CodeBlock code={pythonCode} language="python" />
+<CodeBlock code={bashScript} language="bash" />
+<CodeBlock code={htmlMarkup} language="html" />`}
+        card={false}
+      >
         <div class="space-y-6">
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">JavaScript</h3>
@@ -103,24 +97,18 @@ bun run dev`;
             <CB code={bashCode} language="bash" />
           </div>
         </div>
+      </DemoSection>
 
-        <div class="mt-4">
-          <CB
-            code={`<CodeBlock code={jsonData} language="json" />
-<CodeBlock code={pythonCode} language="python" />
-<CodeBlock code={bashScript} language="bash" />
-<CodeBlock code={htmlMarkup} language="html" />`}
-            language="tsx"
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Line Wrapping</h2>
-        <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
-          Enable line wrapping for long lines that would otherwise require horizontal scrolling.
-        </p>
-
+      <DemoSection
+        title="With Line Wrapping"
+        description="Enable line wrapping for long lines that would otherwise require horizontal scrolling."
+        code={`<CodeBlock
+  code={longLineCode}
+  language="json"
+  wrap
+/>`}
+        card={false}
+      >
         <div class="space-y-4">
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Without wrapping (default)</h3>
@@ -132,84 +120,58 @@ bun run dev`;
             <CB code={longLineCode} language="json" wrap />
           </div>
         </div>
+      </DemoSection>
 
-        <div class="mt-4">
-          <CB
-            code={`<CodeBlock
-  code={longLineCode}
-  language="json"
-  wrap
-/>`}
-            language="tsx"
-          />
-        </div>
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Custom Max Height</h2>
-        <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
-          Control the maximum height of the code block. Content exceeding this height will be scrollable.
-        </p>
-        <CB code={tsCode} language="typescript" maxHeight="150px" />
-        <div class="mt-4">
-          <CB
-            code={`<CodeBlock
+      <DemoSection
+        title="Custom Max Height"
+        description="Control the maximum height of the code block. Content exceeding this height will be scrollable."
+        code={`<CodeBlock
   code={longCode}
   language="typescript"
   maxHeight="150px"
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <CB code={tsCode} language="typescript" maxHeight="150px" />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Hide Copy Button</h2>
-        <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
-          Hide the copy button for read-only displays or when copying is not desired.
-        </p>
-        <CB code={`const message = "No copy button here";`} language="javascript" hideCopyButton />
-        <div class="mt-4">
-          <CB
-            code={`<CodeBlock
+      <DemoSection
+        title="Hide Copy Button"
+        description="Hide the copy button for read-only displays or when copying is not desired."
+        code={`<CodeBlock
   code={code}
   language="javascript"
   hideCopyButton
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <CB code={`const message = "No copy button here";`} language="javascript" hideCopyButton />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Custom Labels</h2>
-        <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
-          Customize the copy and copied button labels for internationalization.
-        </p>
+      <DemoSection
+        title="Custom Labels"
+        description="Customize the copy and copied button labels for internationalization."
+        code={`<CodeBlock
+  code={code}
+  language="javascript"
+  copyLabel="Copier"
+  copiedLabel="Copie!"
+/>`}
+        card={false}
+      >
         <CB
           code={`console.log("Bonjour le monde!");`}
           language="javascript"
           copyLabel="Copier"
           copiedLabel="Copie!"
         />
-        <div class="mt-4">
-          <CB
-            code={`<CodeBlock
-  code={code}
-  language="javascript"
-  copyLabel="Copier"
-  copiedLabel="Copie!"
-/>`}
-            language="tsx"
-          />
-        </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Supported Languages</h2>
-        <p class="text-sm text-surface-600 dark:text-surface-400 mb-4">
-          CodeBlock uses PrismJS for syntax highlighting. Common supported languages include:
-        </p>
+      <DemoSection
+        title="Supported Languages"
+        description="CodeBlock uses PrismJS for syntax highlighting. Common supported languages include:"
+        card={false}
+      >
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-sm">
           {[
             'javascript', 'typescript', 'jsx', 'tsx',
@@ -224,73 +186,22 @@ bun run dev`;
             </Card>
           ))}
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="text-left py-3 px-4 font-semibold text-surface-900 dark:text-white">Prop</th>
-                <th class="text-left py-3 px-4 font-semibold text-surface-900 dark:text-white">Type</th>
-                <th class="text-left py-3 px-4 font-semibold text-surface-900 dark:text-white">Default</th>
-                <th class="text-left py-3 px-4 font-semibold text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">code</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">The code to display</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">language</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">'json'</td>
-                <td class="py-3 px-4">Programming language for syntax highlighting</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">maxHeight</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">'31.25rem'</td>
-                <td class="py-3 px-4">Maximum height of the code block</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">wrap</td>
-                <td class="py-3 px-4 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4">false</td>
-                <td class="py-3 px-4">Whether to wrap long lines</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">hideCopyButton</td>
-                <td class="py-3 px-4 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4">false</td>
-                <td class="py-3 px-4">Hide the copy button</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">copyLabel</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">'Copy'</td>
-                <td class="py-3 px-4">Label for the copy button</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">copiedLabel</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">'Copied'</td>
-                <td class="py-3 px-4">Label shown after copying</td>
-              </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-xs">class</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props" card={false}>
+        <PropsTable
+          props={[
+            { name: 'code', type: 'string', default: 'required', description: 'The code to display' },
+            { name: 'language', type: 'string', default: "'json'", description: 'Programming language for syntax highlighting' },
+            { name: 'maxHeight', type: 'string', default: "'31.25rem'", description: 'Maximum height of the code block' },
+            { name: 'wrap', type: 'boolean', default: 'false', description: 'Whether to wrap long lines' },
+            { name: 'hideCopyButton', type: 'boolean', default: 'false', description: 'Hide the copy button' },
+            { name: 'copyLabel', type: 'string', default: "'Copy'", description: 'Label for the copy button' },
+            { name: 'copiedLabel', type: 'string', default: "'Copied'", description: 'Label shown after copying' },
+            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
     </div>
   );
 }

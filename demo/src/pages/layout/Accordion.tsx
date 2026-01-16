@@ -1,4 +1,5 @@
-import { Accordion, AccordionPanel, CodeBlock, Card } from 'glass-ui-solid';
+import { Accordion, AccordionPanel } from 'glass-ui-solid';
+import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
 
 export default function AccordionPage() {
   const basicItems = [
@@ -74,21 +75,14 @@ export default function AccordionPage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Accordion</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Collapsible panels for organizing content into expandable sections.
-        </p>
-      </div>
+      <PageHeader
+        title="Accordion"
+        description="Collapsible panels for organizing content into expandable sections."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code="import { Accordion, AccordionPanel } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection title="Import" code="import { Accordion, AccordionPanel } from 'glass-ui-solid';" />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Examples</h2>
-
+      <DemoSection title="Examples" card={false}>
         <div class="space-y-6">
           {/* Basic with Items Array */}
           <div>
@@ -100,7 +94,7 @@ export default function AccordionPage() {
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Multiple Open</h3>
             <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
-              Use the <code class="bg-surface-100 dark:bg-surface-800 px-1 rounded">multiple</code> prop to allow multiple panels to be open simultaneously.
+              Use the <CodePill>multiple</CodePill> prop to allow multiple panels to be open simultaneously.
             </p>
             <Accordion items={multipleItems} multiple />
           </div>
@@ -130,134 +124,47 @@ export default function AccordionPage() {
             <Accordion items={faqItems} />
           </div>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-
+      <DemoSection title="Props" card={false}>
         {/* Accordion Props */}
         <div class="mb-6">
           <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Accordion</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-surface-200 dark:border-surface-700">
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Prop</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Type</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Default</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Description</th>
-                </tr>
-              </thead>
-              <tbody class="text-surface-600 dark:text-surface-400">
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">items</td>
-                  <td class="py-2 px-3 font-mono text-xs">AccordionItem[]</td>
-                  <td class="py-2 px-3">required</td>
-                  <td class="py-2 px-3">Array of accordion items</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">multiple</td>
-                  <td class="py-2 px-3 font-mono text-xs">boolean</td>
-                  <td class="py-2 px-3">false</td>
-                  <td class="py-2 px-3">Allow multiple panels open</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">class</td>
-                  <td class="py-2 px-3 font-mono text-xs">string</td>
-                  <td class="py-2 px-3">-</td>
-                  <td class="py-2 px-3">Additional CSS classes</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <PropsTable
+            props={[
+              { name: 'items', type: 'AccordionItem[]', default: 'required', description: 'Array of accordion items' },
+              { name: 'multiple', type: 'boolean', default: 'false', description: 'Allow multiple panels open' },
+              { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            ]}
+          />
         </div>
 
         {/* AccordionItem Props */}
         <div class="mb-6">
           <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">AccordionItem</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-surface-200 dark:border-surface-700">
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Prop</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Type</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Default</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Description</th>
-                </tr>
-              </thead>
-              <tbody class="text-surface-600 dark:text-surface-400">
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">id</td>
-                  <td class="py-2 px-3 font-mono text-xs">string</td>
-                  <td class="py-2 px-3">required</td>
-                  <td class="py-2 px-3">Unique identifier</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">title</td>
-                  <td class="py-2 px-3 font-mono text-xs">string | JSX.Element</td>
-                  <td class="py-2 px-3">required</td>
-                  <td class="py-2 px-3">Panel title</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">content</td>
-                  <td class="py-2 px-3 font-mono text-xs">JSX.Element</td>
-                  <td class="py-2 px-3">required</td>
-                  <td class="py-2 px-3">Panel content</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">defaultOpen</td>
-                  <td class="py-2 px-3 font-mono text-xs">boolean</td>
-                  <td class="py-2 px-3">false</td>
-                  <td class="py-2 px-3">Open by default</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <PropsTable
+            props={[
+              { name: 'id', type: 'string', default: 'required', description: 'Unique identifier' },
+              { name: 'title', type: 'string | JSX.Element', default: 'required', description: 'Panel title' },
+              { name: 'content', type: 'JSX.Element', default: 'required', description: 'Panel content' },
+              { name: 'defaultOpen', type: 'boolean', default: 'false', description: 'Open by default' },
+            ]}
+          />
         </div>
 
         {/* AccordionPanel Props */}
         <div>
           <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">AccordionPanel</h3>
-          <div class="overflow-x-auto">
-            <table class="w-full text-sm">
-              <thead>
-                <tr class="border-b border-surface-200 dark:border-surface-700">
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Prop</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Type</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Default</th>
-                  <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Description</th>
-                </tr>
-              </thead>
-              <tbody class="text-surface-600 dark:text-surface-400">
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">title</td>
-                  <td class="py-2 px-3 font-mono text-xs">string | JSX.Element</td>
-                  <td class="py-2 px-3">required</td>
-                  <td class="py-2 px-3">Panel title</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">children</td>
-                  <td class="py-2 px-3 font-mono text-xs">JSX.Element</td>
-                  <td class="py-2 px-3">required</td>
-                  <td class="py-2 px-3">Panel content</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">defaultOpen</td>
-                  <td class="py-2 px-3 font-mono text-xs">boolean</td>
-                  <td class="py-2 px-3">false</td>
-                  <td class="py-2 px-3">Open by default</td>
-                </tr>
-                <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                  <td class="py-2 px-3 font-mono text-xs">class</td>
-                  <td class="py-2 px-3 font-mono text-xs">string</td>
-                  <td class="py-2 px-3">-</td>
-                  <td class="py-2 px-3">Additional CSS classes</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <PropsTable
+            props={[
+              { name: 'title', type: 'string | JSX.Element', default: 'required', description: 'Panel title' },
+              { name: 'children', type: 'JSX.Element', default: 'required', description: 'Panel content' },
+              { name: 'defaultOpen', type: 'boolean', default: 'false', description: 'Open by default' },
+              { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            ]}
+          />
         </div>
-      </section>
+      </DemoSection>
     </div>
   );
 }

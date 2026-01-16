@@ -1,6 +1,7 @@
-import { Table, CodeBlock, Badge } from 'glass-ui-solid';
+import { Table, Badge } from 'glass-ui-solid';
 import type { TableColumn } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
+import { PageHeader, DemoSection } from '../../components/demo';
 
 interface User {
   id: number;
@@ -52,28 +53,20 @@ export default function TablePage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Table</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Data table with sorting, selection, and sticky headers.
-        </p>
-      </div>
+      <PageHeader
+        title="Table"
+        description="Data table with sorting, selection, and sticky headers."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock
-          code={`import { Table } from 'glass-ui-solid';
+      <DemoSection
+        title="Import"
+        code={`import { Table } from 'glass-ui-solid';
 import type { TableColumn, SortState } from 'glass-ui-solid';`}
-          language="tsx"
-        />
-      </section>
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <div class="space-y-4">
-          <Table columns={basicColumns} data={sampleData} />
-          <CodeBlock
-            code={`const columns = [
+      <DemoSection
+        title="Basic Usage"
+        code={`const columns = [
   { key: 'name', header: 'Name' },
   { key: 'email', header: 'Email' },
   { key: 'role', header: 'Role' },
@@ -85,19 +78,14 @@ const data = [
 ];
 
 <Table columns={columns} data={data} />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <Table columns={basicColumns} data={sampleData} />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Sortable Columns
-        </h2>
-        <div class="space-y-4">
-          <Table columns={sortableColumns} data={sampleData} sortable />
-          <CodeBlock
-            code={`<Table
+      <DemoSection
+        title="Sortable Columns"
+        code={`<Table
   columns={[
     { key: 'name', header: 'Name', sortable: true },
     { key: 'email', header: 'Email' },
@@ -106,28 +94,14 @@ const data = [
   data={data}
   sortable
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <Table columns={sortableColumns} data={sampleData} sortable />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Row Selection (Multiple)
-        </h2>
-        <div class="space-y-4">
-          <p class="text-sm text-surface-600 dark:text-surface-400">
-            Selected: {selectedKeys().size} row(s)
-          </p>
-          <Table
-            columns={basicColumns}
-            data={sampleData}
-            selectable="multiple"
-            selectedKeys={selectedKeys()}
-            onSelectionChange={(keys) => setSelectedKeys(keys as Set<number>)}
-          />
-          <CodeBlock
-            code={`const [selected, setSelected] = createSignal<Set<number>>(new Set());
+      <DemoSection
+        title="Row Selection (Multiple)"
+        code={`const [selected, setSelected] = createSignal<Set<number>>(new Set());
 
 <Table
   columns={columns}
@@ -139,19 +113,25 @@ const data = [
     console.log('Selected rows:', rows);
   }}
 />`}
-            language="tsx"
+        card={false}
+      >
+        <div class="space-y-4">
+          <p class="text-sm text-surface-600 dark:text-surface-400">
+            Selected: {selectedKeys().size} row(s)
+          </p>
+          <Table
+            columns={basicColumns}
+            data={sampleData}
+            selectable="multiple"
+            selectedKeys={selectedKeys()}
+            onSelectionChange={(keys) => setSelectedKeys(keys as Set<number>)}
           />
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Custom Cell Rendering
-        </h2>
-        <div class="space-y-4">
-          <Table columns={columnsWithStatus} data={sampleData} />
-          <CodeBlock
-            code={`<Table
+      <DemoSection
+        title="Custom Cell Rendering"
+        code={`<Table
   columns={[
     { key: 'name', header: 'Name' },
     {
@@ -166,13 +146,18 @@ const data = [
   ]}
   data={data}
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <Table columns={columnsWithStatus} data={sampleData} />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Variants</h2>
+      <DemoSection
+        title="Variants"
+        code={`<Table variant="default" {...props} />
+<Table variant="bordered" {...props} />
+<Table variant="striped" {...props} />`}
+        card={false}
+      >
         <div class="space-y-6">
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
@@ -192,17 +177,16 @@ const data = [
             </h3>
             <Table columns={basicColumns} data={sampleData.slice(0, 3)} variant="striped" />
           </div>
-          <CodeBlock
-            code={`<Table variant="default" {...props} />
-<Table variant="bordered" {...props} />
-<Table variant="striped" {...props} />`}
-            language="tsx"
-          />
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Sizes</h2>
+      <DemoSection
+        title="Sizes"
+        code={`<Table size="sm" {...props} />
+<Table size="md" {...props} />
+<Table size="lg" {...props} />`}
+        card={false}
+      >
         <div class="space-y-6">
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Small</h3>
@@ -216,37 +200,25 @@ const data = [
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Large</h3>
             <Table columns={basicColumns} data={sampleData.slice(0, 2)} size="lg" />
           </div>
-          <CodeBlock
-            code={`<Table size="sm" {...props} />
-<Table size="md" {...props} />
-<Table size="lg" {...props} />`}
-            language="tsx"
-          />
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Loading State</h2>
-        <div class="space-y-4">
-          <Table columns={basicColumns} data={[]} loading loadingRows={3} />
-          <CodeBlock
-            code={`<Table
+      <DemoSection
+        title="Loading State"
+        code={`<Table
   columns={columns}
   data={data}
   loading={isLoading()}
   loadingRows={5}
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <Table columns={basicColumns} data={[]} loading loadingRows={3} />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Empty State</h2>
-        <div class="space-y-4">
-          <Table columns={basicColumns} data={[]} emptyMessage="No users found." />
-          <CodeBlock
-            code={`<Table
+      <DemoSection
+        title="Empty State"
+        code={`<Table
   columns={columns}
   data={[]}
   emptyMessage="No users found."
@@ -257,28 +229,23 @@ const data = [
     </div>
   )}
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <Table columns={basicColumns} data={[]} emptyMessage="No users found." />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Sticky Header with Max Height
-        </h2>
-        <div class="space-y-4">
-          <Table columns={basicColumns} data={sampleData} maxHeight="200px" stickyHeader />
-          <CodeBlock
-            code={`<Table
+      <DemoSection
+        title="Sticky Header with Max Height"
+        code={`<Table
   columns={columns}
   data={largeDataset}
   maxHeight="400px"
   stickyHeader
 />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        card={false}
+      >
+        <Table columns={basicColumns} data={sampleData} maxHeight="200px" stickyHeader />
+      </DemoSection>
     </div>
   );
 }

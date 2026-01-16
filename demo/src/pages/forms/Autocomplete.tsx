@@ -1,5 +1,6 @@
 import { Autocomplete, CodeBlock, Card } from 'glass-ui-solid';
-import { createSignal, For } from 'solid-js';
+import { createSignal } from 'solid-js';
+import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
 
 const fruits = [
   { value: 'apple', label: 'Apple' },
@@ -48,44 +49,19 @@ export default function AutocompletePage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">
-          Autocomplete
-        </h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          A combobox component that provides suggestions as users type, with support for
-          keyboard navigation, custom filtering, and async data loading.
-        </p>
-      </div>
+      <PageHeader
+        title="Autocomplete"
+        description="A combobox component that provides suggestions as users type, with support for keyboard navigation, custom filtering, and async data loading."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Import
-        </h2>
-        <CodeBlock
-          code={`import { Autocomplete } from 'glass-ui-solid';`}
-          language="tsx"
-        />
-      </section>
+      <DemoSection
+        title="Import"
+        code="import { Autocomplete } from 'glass-ui-solid';"
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Basic Usage
-        </h2>
-        <Card class="p-6 space-y-4">
-          <Autocomplete
-            options={fruits}
-            value={basicValue()}
-            onChange={setBasicValue}
-            placeholder="Select a fruit..."
-          />
-          <p class="text-sm text-surface-500 dark:text-surface-400">
-            Selected: {basicValue() || 'None'}
-          </p>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const [value, setValue] = createSignal('');
+      <DemoSection
+        title="Basic Usage"
+        code={`const [value, setValue] = createSignal('');
 
 <Autocomplete
   options={[
@@ -97,60 +73,41 @@ export default function AutocompletePage() {
   onChange={setValue}
   placeholder="Select a fruit..."
 />`}
-          language="tsx"
+      >
+        <Autocomplete
+          options={fruits}
+          value={basicValue()}
+          onChange={setBasicValue}
+          placeholder="Select a fruit..."
         />
-      </section>
+        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
+          Selected: {basicValue() || 'None'}
+        </p>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          With Label
-        </h2>
-        <Card class="p-6 space-y-4">
-          <Autocomplete
-            options={countries}
-            value={labeledValue()}
-            onChange={setLabeledValue}
-            label="Country"
-            placeholder="Search countries..."
-          />
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`<Autocomplete
+      <DemoSection
+        title="With Label"
+        code={`<Autocomplete
   options={countries}
   value={value()}
   onChange={setValue}
   label="Country"
   placeholder="Search countries..."
 />`}
-          language="tsx"
+      >
+        <Autocomplete
+          options={countries}
+          value={labeledValue()}
+          onChange={setLabeledValue}
+          label="Country"
+          placeholder="Search countries..."
         />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Allow Custom Values
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Enable <code class="text-primary-600 dark:text-primary-400">allowCustomValue</code> to
-          accept values not in the options list.
-        </p>
-        <Card class="p-6 space-y-4">
-          <Autocomplete
-            options={fruits}
-            value={customValue()}
-            onChange={setCustomValue}
-            label="Favorite Fruit"
-            placeholder="Type or select a fruit..."
-            allowCustomValue
-          />
-          <p class="text-sm text-surface-500 dark:text-surface-400">
-            Value: {customValue() || 'None'}
-          </p>
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`<Autocomplete
+      <DemoSection
+        title="Allow Custom Values"
+        description={<>Enable <CodePill>allowCustomValue</CodePill> to accept values not in the options list.</>}
+        code={`<Autocomplete
   options={fruits}
   value={value()}
   onChange={setValue}
@@ -158,15 +115,27 @@ export default function AutocompletePage() {
   placeholder="Type or select a fruit..."
   allowCustomValue
 />`}
-          language="tsx"
+      >
+        <Autocomplete
+          options={fruits}
+          value={customValue()}
+          onChange={setCustomValue}
+          label="Favorite Fruit"
+          placeholder="Type or select a fruit..."
+          allowCustomValue
         />
-      </section>
+        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
+          Value: {customValue() || 'None'}
+        </p>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Sizes
-        </h2>
-        <Card class="p-6 space-y-4">
+      <DemoSection
+        title="Sizes"
+        code={`<Autocomplete size="sm" ... />
+<Autocomplete size="md" ... />
+<Autocomplete size="lg" ... />`}
+      >
+        <div class="space-y-4">
           <Autocomplete
             options={fruits}
             value={sizeSmValue()}
@@ -191,66 +160,33 @@ export default function AutocompletePage() {
             size="lg"
             placeholder="Large size..."
           />
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`<Autocomplete size="sm" ... />
-<Autocomplete size="md" ... />
-<Autocomplete size="lg" ... />`}
-          language="tsx"
-        />
-      </section>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          With Error
-        </h2>
-        <Card class="p-6 space-y-4">
-          <Autocomplete
-            options={fruits}
-            value={errorValue()}
-            onChange={setErrorValue}
-            label="Required Field"
-            placeholder="Select a fruit..."
-            error={!errorValue() ? 'Please select a fruit' : undefined}
-          />
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`<Autocomplete
+      <DemoSection
+        title="With Error"
+        code={`<Autocomplete
   options={fruits}
   value={value()}
   onChange={setValue}
   label="Required Field"
   error={!value() ? 'Please select a fruit' : undefined}
 />`}
-          language="tsx"
+      >
+        <Autocomplete
+          options={fruits}
+          value={errorValue()}
+          onChange={setErrorValue}
+          label="Required Field"
+          placeholder="Select a fruit..."
+          error={!errorValue() ? 'Please select a fruit' : undefined}
         />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Async Loading
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Use <code class="text-primary-600 dark:text-primary-400">onInputChange</code> and{' '}
-          <code class="text-primary-600 dark:text-primary-400">loading</code> props for
-          async data fetching.
-        </p>
-        <Card class="p-6 space-y-4">
-          <Autocomplete
-            options={asyncOptions()}
-            value={loadingValue()}
-            onChange={setLoadingValue}
-            onInputChange={handleAsyncInputChange}
-            loading={isLoading()}
-            label="Async Search"
-            placeholder="Type to search..."
-          />
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const [isLoading, setIsLoading] = createSignal(false);
+      <DemoSection
+        title="Async Loading"
+        description={<>Use <CodePill>onInputChange</CodePill> and <CodePill>loading</CodePill> props for async data fetching.</>}
+        code={`const [isLoading, setIsLoading] = createSignal(false);
 const [options, setOptions] = createSignal([]);
 
 const handleInputChange = async (input: string) => {
@@ -269,29 +205,22 @@ const handleInputChange = async (input: string) => {
   label="Async Search"
   placeholder="Type to search..."
 />`}
-          language="tsx"
+      >
+        <Autocomplete
+          options={asyncOptions()}
+          value={loadingValue()}
+          onChange={setLoadingValue}
+          onInputChange={handleAsyncInputChange}
+          loading={isLoading()}
+          label="Async Search"
+          placeholder="Type to search..."
         />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Disabled Options
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Individual options can be disabled by setting <code class="text-primary-600 dark:text-primary-400">disabled: true</code>.
-        </p>
-        <Card class="p-6 space-y-4">
-          <Autocomplete
-            options={countries}
-            value={labeledValue()}
-            onChange={setLabeledValue}
-            label="Country"
-            placeholder="Brazil is disabled..."
-          />
-        </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`const options = [
+      <DemoSection
+        title="Disabled Options"
+        description={<>Individual options can be disabled by setting <CodePill>disabled: true</CodePill>.</>}
+        code={`const options = [
   { value: 'us', label: 'United States' },
   { value: 'uk', label: 'United Kingdom' },
   { value: 'br', label: 'Brazil', disabled: true },
@@ -302,19 +231,24 @@ const handleInputChange = async (input: string) => {
   value={value()}
   onChange={setValue}
 />`}
-          language="tsx"
+      >
+        <Autocomplete
+          options={countries}
+          value={labeledValue()}
+          onChange={setLabeledValue}
+          label="Country"
+          placeholder="Brazil is disabled..."
         />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Custom Filter Function
-        </h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Provide a custom filter function for advanced filtering logic.
-        </p>
-        <CodeBlock
-          code={`// Filter by value instead of label
+      <DemoSection
+        title="Custom Filter Function"
+        description="Provide a custom filter function for advanced filtering logic."
+        card={false}
+      >
+        <Card class="p-6">
+          <CodeBlock
+            code={`// Filter by value instead of label
 const customFilter = (option, input) =>
   option.value.toLowerCase().includes(input.toLowerCase());
 
@@ -324,158 +258,60 @@ const customFilter = (option, input) =>
   onChange={setValue}
   filterFn={customFilter}
 />`}
-          language="tsx"
-        />
-      </section>
-
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Disabled State
-        </h2>
-        <Card class="p-6">
-          <Autocomplete
-            options={fruits}
-            value="apple"
-            onChange={() => {}}
-            label="Disabled Autocomplete"
-            disabled
+            language="tsx"
           />
         </Card>
-        <CodeBlock
-          class="mt-4"
-          code={`<Autocomplete
+      </DemoSection>
+
+      <DemoSection
+        title="Disabled State"
+        code={`<Autocomplete
   options={fruits}
   value={value()}
   onChange={setValue}
   label="Disabled Autocomplete"
   disabled
 />`}
-          language="tsx"
+      >
+        <Autocomplete
+          options={fruits}
+          value="apple"
+          onChange={() => {}}
+          label="Disabled Autocomplete"
+          disabled
         />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Props
-        </h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Prop</th>
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Type</th>
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Default</th>
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">options</td>
-                <td class="py-3 px-4 font-mono text-xs">AutocompleteOption[]</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">List of available options</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">value</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">Currently selected value</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">onChange</td>
-                <td class="py-3 px-4 font-mono text-xs">(value: string) =&gt; void</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">Callback when selection changes</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">onInputChange</td>
-                <td class="py-3 px-4 font-mono text-xs">(input: string) =&gt; void</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Callback when input text changes (for async loading)</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">label</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Label displayed above the input</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">placeholder</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Placeholder text for the input</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">size</td>
-                <td class="py-3 px-4 font-mono text-xs">'sm' | 'md' | 'lg'</td>
-                <td class="py-3 px-4">'md'</td>
-                <td class="py-3 px-4">Size variant</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">disabled</td>
-                <td class="py-3 px-4 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4">false</td>
-                <td class="py-3 px-4">Whether the component is disabled</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">error</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Error message displayed below the input</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">loading</td>
-                <td class="py-3 px-4 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4">false</td>
-                <td class="py-3 px-4">Whether the component is in loading state</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">emptyText</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">'No options found'</td>
-                <td class="py-3 px-4">Text to display when no options match</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">allowCustomValue</td>
-                <td class="py-3 px-4 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4">false</td>
-                <td class="py-3 px-4">Allow custom values not in options list</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">filterFn</td>
-                <td class="py-3 px-4 font-mono text-xs">(option, input) =&gt; boolean</td>
-                <td class="py-3 px-4">case-insensitive substring match</td>
-                <td class="py-3 px-4">Custom filter function for options</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">id</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">HTML id attribute</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">name</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">HTML name attribute</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">class</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props">
+        <PropsTable
+          props={[
+            { name: 'options', type: 'AutocompleteOption[]', default: 'required', description: 'List of available options' },
+            { name: 'value', type: 'string', default: 'required', description: 'Currently selected value' },
+            { name: 'onChange', type: '(value: string) => void', default: 'required', description: 'Callback when selection changes' },
+            { name: 'onInputChange', type: '(input: string) => void', description: 'Callback when input text changes (for async loading)' },
+            { name: 'label', type: 'string', description: 'Label displayed above the input' },
+            { name: 'placeholder', type: 'string', description: 'Placeholder text for the input' },
+            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
+            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the component is disabled' },
+            { name: 'error', type: 'string', description: 'Error message displayed below the input' },
+            { name: 'loading', type: 'boolean', default: 'false', description: 'Whether the component is in loading state' },
+            { name: 'emptyText', type: 'string', default: "'No options found'", description: 'Text to display when no options match' },
+            { name: 'allowCustomValue', type: 'boolean', default: 'false', description: 'Allow custom values not in options list' },
+            { name: 'filterFn', type: '(option, input) => boolean', description: 'Custom filter function for options' },
+            { name: 'id', type: 'string', description: 'HTML id attribute' },
+            { name: 'name', type: 'string', description: 'HTML name attribute' },
+            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          AutocompleteOption Interface
-        </h2>
-        <CodeBlock
-          code={`interface AutocompleteOption {
+      <DemoSection
+        title="AutocompleteOption Interface"
+        card={false}
+      >
+        <Card class="p-6">
+          <CodeBlock
+            code={`interface AutocompleteOption {
   /** Unique value for the option */
   value: string;
   /** Display label for the option */
@@ -483,55 +319,58 @@ const customFilter = (option, input) =>
   /** Whether this option is disabled */
   disabled?: boolean;
 }`}
-          language="tsx"
-        />
-      </section>
+            language="tsx"
+          />
+        </Card>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Keyboard Navigation
-        </h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Key</th>
-                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Action</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">Arrow Down</td>
-                <td class="py-3 px-4">Open dropdown / Move to next option</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">Arrow Up</td>
-                <td class="py-3 px-4">Move to previous option</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">Enter</td>
-                <td class="py-3 px-4">Select focused option</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">Escape</td>
-                <td class="py-3 px-4">Close dropdown and reset input</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">Home</td>
-                <td class="py-3 px-4">Move to first option</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">End</td>
-                <td class="py-3 px-4">Move to last option</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">Tab</td>
-                <td class="py-3 px-4">Close dropdown and move focus</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection
+        title="Keyboard Navigation"
+        card={false}
+      >
+        <Card class="p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead>
+                <tr class="border-b border-surface-200 dark:border-surface-700">
+                  <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Key</th>
+                  <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Action</th>
+                </tr>
+              </thead>
+              <tbody class="text-surface-600 dark:text-surface-400">
+                <tr class="border-b border-surface-100 dark:border-surface-800">
+                  <td class="py-3 px-4 font-mono text-xs">Arrow Down</td>
+                  <td class="py-3 px-4">Open dropdown / Move to next option</td>
+                </tr>
+                <tr class="border-b border-surface-100 dark:border-surface-800">
+                  <td class="py-3 px-4 font-mono text-xs">Arrow Up</td>
+                  <td class="py-3 px-4">Move to previous option</td>
+                </tr>
+                <tr class="border-b border-surface-100 dark:border-surface-800">
+                  <td class="py-3 px-4 font-mono text-xs">Enter</td>
+                  <td class="py-3 px-4">Select focused option</td>
+                </tr>
+                <tr class="border-b border-surface-100 dark:border-surface-800">
+                  <td class="py-3 px-4 font-mono text-xs">Escape</td>
+                  <td class="py-3 px-4">Close dropdown and reset input</td>
+                </tr>
+                <tr class="border-b border-surface-100 dark:border-surface-800">
+                  <td class="py-3 px-4 font-mono text-xs">Home</td>
+                  <td class="py-3 px-4">Move to first option</td>
+                </tr>
+                <tr class="border-b border-surface-100 dark:border-surface-800">
+                  <td class="py-3 px-4 font-mono text-xs">End</td>
+                  <td class="py-3 px-4">Move to last option</td>
+                </tr>
+                <tr class="border-b border-surface-100 dark:border-surface-800">
+                  <td class="py-3 px-4 font-mono text-xs">Tab</td>
+                  <td class="py-3 px-4">Close dropdown and move focus</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </DemoSection>
     </div>
   );
 }

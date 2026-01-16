@@ -1,5 +1,6 @@
 import { Stepper, CodeBlock, Card, Button } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
+import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
 export default function StepperPage() {
   const [currentStep, setCurrentStep] = createSignal(1);
@@ -29,48 +30,19 @@ export default function StepperPage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Stepper</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          A multi-step progress indicator component. Displays the current step in a sequence, with support for horizontal and vertical layouts, clickable navigation, and custom icons.
-        </p>
-      </div>
+      <PageHeader
+        title="Stepper"
+        description="A multi-step progress indicator component. Displays the current step in a sequence, with support for horizontal and vertical layouts, clickable navigation, and custom icons."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code="import { Stepper } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection
+        title="Import"
+        code="import { Stepper } from 'glass-ui-solid';"
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <Card class="p-6 mb-4">
-          <Stepper
-            steps={basicSteps}
-            currentStep={currentStep()}
-          />
-          <div class="flex gap-2 mt-6 justify-center">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
-              disabled={currentStep() === 0}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => setCurrentStep((s) => Math.min(basicSteps.length - 1, s + 1))}
-              disabled={currentStep() === basicSteps.length - 1}
-            >
-              Next
-            </Button>
-          </div>
-          <p class="mt-4 text-center text-sm text-surface-500 dark:text-surface-400">
-            Step {currentStep() + 1} of {basicSteps.length}
-          </p>
-        </Card>
-        <CodeBlock
-          code={`const [currentStep, setCurrentStep] = createSignal(1);
+      <DemoSection
+        title="Basic Usage"
+        code={`const [currentStep, setCurrentStep] = createSignal(1);
 
 const steps = [
   { label: 'Account' },
@@ -83,20 +55,36 @@ const steps = [
   steps={steps}
   currentStep={currentStep()}
 />`}
-          language="tsx"
+      >
+        <Stepper
+          steps={basicSteps}
+          currentStep={currentStep()}
         />
-      </section>
+        <div class="flex gap-2 mt-6 justify-center">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
+            disabled={currentStep() === 0}
+          >
+            Previous
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => setCurrentStep((s) => Math.min(basicSteps.length - 1, s + 1))}
+            disabled={currentStep() === basicSteps.length - 1}
+          >
+            Next
+          </Button>
+        </div>
+        <p class="mt-4 text-center text-sm text-surface-500 dark:text-surface-400">
+          Step {currentStep() + 1} of {basicSteps.length}
+        </p>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Descriptions</h2>
-        <Card class="p-6 mb-4">
-          <Stepper
-            steps={detailedSteps}
-            currentStep={1}
-          />
-        </Card>
-        <CodeBlock
-          code={`const steps = [
+      <DemoSection
+        title="With Descriptions"
+        code={`const steps = [
   { label: 'Account Setup', description: 'Create your account credentials' },
   { label: 'Personal Info', description: 'Add your personal details' },
   { label: 'Preferences', description: 'Customize your experience' },
@@ -107,73 +95,72 @@ const steps = [
   steps={steps}
   currentStep={1}
 />`}
-          language="tsx"
+      >
+        <Stepper
+          steps={detailedSteps}
+          currentStep={1}
         />
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Vertical Orientation</h2>
-        <Card class="p-6 mb-4">
-          <Stepper
-            steps={checkoutSteps}
-            currentStep={verticalStep()}
-            orientation="vertical"
-          />
-          <div class="flex gap-2 mt-6">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setVerticalStep((s) => Math.max(0, s - 1))}
-              disabled={verticalStep() === 0}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => setVerticalStep((s) => Math.min(checkoutSteps.length - 1, s + 1))}
-              disabled={verticalStep() === checkoutSteps.length - 1}
-            >
-              Next
-            </Button>
-          </div>
-        </Card>
-        <CodeBlock
-          code={`<Stepper
+      <DemoSection
+        title="Vertical Orientation"
+        code={`<Stepper
   steps={steps}
   currentStep={currentStep()}
   orientation="vertical"
 />`}
-          language="tsx"
+      >
+        <Stepper
+          steps={checkoutSteps}
+          currentStep={verticalStep()}
+          orientation="vertical"
         />
-      </section>
+        <div class="flex gap-2 mt-6">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => setVerticalStep((s) => Math.max(0, s - 1))}
+            disabled={verticalStep() === 0}
+          >
+            Previous
+          </Button>
+          <Button
+            size="sm"
+            onClick={() => setVerticalStep((s) => Math.min(checkoutSteps.length - 1, s + 1))}
+            disabled={verticalStep() === checkoutSteps.length - 1}
+          >
+            Next
+          </Button>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Clickable Steps</h2>
-        <Card class="p-6 mb-4">
-          <Stepper
-            steps={detailedSteps}
-            currentStep={clickableStep()}
-            onStepClick={setClickableStep}
-            allowClickPrevious
-          />
-          <p class="mt-4 text-center text-sm text-surface-500 dark:text-surface-400">
-            Click on completed steps to navigate back
-          </p>
-        </Card>
-        <CodeBlock
-          code={`<Stepper
+      <DemoSection
+        title="Clickable Steps"
+        code={`<Stepper
   steps={steps}
   currentStep={currentStep()}
   onStepClick={setCurrentStep}
   allowClickPrevious
 />`}
-          language="tsx"
+      >
+        <Stepper
+          steps={detailedSteps}
+          currentStep={clickableStep()}
+          onStepClick={setClickableStep}
+          allowClickPrevious
         />
-      </section>
+        <p class="mt-4 text-center text-sm text-surface-500 dark:text-surface-400">
+          Click on completed steps to navigate back
+        </p>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Sizes</h2>
-        <Card class="p-6 mb-4 space-y-8">
+      <DemoSection
+        title="Sizes"
+        code={`<Stepper steps={steps} currentStep={1} size="sm" />
+<Stepper steps={steps} currentStep={1} size="md" />
+<Stepper steps={steps} currentStep={1} size="lg" />`}
+      >
+        <div class="space-y-8">
           <div>
             <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">Small</p>
             <Stepper
@@ -198,18 +185,14 @@ const steps = [
               size="lg"
             />
           </div>
-        </Card>
-        <CodeBlock
-          code={`<Stepper steps={steps} currentStep={1} size="sm" />
-<Stepper steps={steps} currentStep={1} size="md" />
-<Stepper steps={steps} currentStep={1} size="lg" />`}
-          language="tsx"
-        />
-      </section>
+        </div>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Step States</h2>
-        <Card class="p-6 mb-4 space-y-6">
+      <DemoSection
+        title="Step States"
+        card={false}
+      >
+        <Card class="p-6 space-y-6">
           <div>
             <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">All completed</p>
             <Stepper steps={basicSteps} currentStep={4} />
@@ -223,72 +206,29 @@ const steps = [
             <Stepper steps={basicSteps} currentStep={2} />
           </div>
         </Card>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm text-left">
-            <thead class="text-surface-700 dark:text-surface-300 border-b border-surface-200 dark:border-surface-700">
-              <tr>
-                <th class="py-3 px-4 font-semibold">Prop</th>
-                <th class="py-3 px-4 font-semibold">Type</th>
-                <th class="py-3 px-4 font-semibold">Default</th>
-                <th class="py-3 px-4 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">steps</td>
-                <td class="py-3 px-4 font-mono text-xs">StepperStep[]</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">Array of step configurations</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">currentStep</td>
-                <td class="py-3 px-4 font-mono text-xs">number</td>
-                <td class="py-3 px-4">required</td>
-                <td class="py-3 px-4">Current active step index (0-based)</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">onStepClick</td>
-                <td class="py-3 px-4 font-mono text-xs">(step: number) =&gt; void</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Callback when a step is clicked</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">orientation</td>
-                <td class="py-3 px-4 font-mono text-xs">'horizontal' | 'vertical'</td>
-                <td class="py-3 px-4">'horizontal'</td>
-                <td class="py-3 px-4">Layout orientation</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">size</td>
-                <td class="py-3 px-4 font-mono text-xs">'sm' | 'md' | 'lg'</td>
-                <td class="py-3 px-4">'md'</td>
-                <td class="py-3 px-4">Size variant</td>
-              </tr>
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-3 px-4 font-mono text-xs">allowClickPrevious</td>
-                <td class="py-3 px-4 font-mono text-xs">boolean</td>
-                <td class="py-3 px-4">false</td>
-                <td class="py-3 px-4">Allow clicking on completed steps</td>
-              </tr>
-              <tr>
-                <td class="py-3 px-4 font-mono text-xs">class</td>
-                <td class="py-3 px-4 font-mono text-xs">string</td>
-                <td class="py-3 px-4">-</td>
-                <td class="py-3 px-4">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props">
+        <PropsTable
+          props={[
+            { name: 'steps', type: 'StepperStep[]', default: 'required', description: 'Array of step configurations' },
+            { name: 'currentStep', type: 'number', default: 'required', description: 'Current active step index (0-based)' },
+            { name: 'onStepClick', type: '(step: number) => void', description: 'Callback when a step is clicked' },
+            { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Layout orientation' },
+            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
+            { name: 'allowClickPrevious', type: 'boolean', default: 'false', description: 'Allow clicking on completed steps' },
+            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">StepperStep Interface</h2>
-        <CodeBlock
-          code={`interface StepperStep {
+      <DemoSection
+        title="StepperStep Interface"
+        card={false}
+      >
+        <Card class="p-6">
+          <CodeBlock
+            code={`interface StepperStep {
   /** Label text for the step */
   label: string;
   /** Optional description text displayed below the label */
@@ -296,14 +236,18 @@ const steps = [
   /** Optional custom icon for the step */
   icon?: JSX.Element;
 }`}
-          language="tsx"
-        />
-      </section>
+            language="tsx"
+          />
+        </Card>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Multi-Step Form Example</h2>
-        <CodeBlock
-          code={`function MultiStepForm() {
+      <DemoSection
+        title="Multi-Step Form Example"
+        card={false}
+      >
+        <Card class="p-6">
+          <CodeBlock
+            code={`function MultiStepForm() {
   const [currentStep, setCurrentStep] = createSignal(0);
   const [formData, setFormData] = createSignal({
     email: '',
@@ -353,7 +297,7 @@ const steps = [
       {/* Navigation */}
       <div class="flex justify-between">
         <Button
-          variant="outline"
+          variant="secondary"
           onClick={prevStep}
           disabled={currentStep() === 0}
         >
@@ -369,9 +313,10 @@ const steps = [
     </div>
   );
 }`}
-          language="tsx"
-        />
-      </section>
+            language="tsx"
+          />
+        </Card>
+      </DemoSection>
     </div>
   );
 }

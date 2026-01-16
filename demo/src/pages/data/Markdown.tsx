@@ -1,4 +1,5 @@
-import { Markdown, CodeBlock, Card } from 'glass-ui-solid';
+import { Markdown, Card } from 'glass-ui-solid';
+import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
 const basicMarkdown = `# Hello World
 
@@ -82,42 +83,24 @@ const releaseNotes = `## Version 2.0.0
 export default function MarkdownPage() {
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Markdown</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Render markdown content with automatic sanitization for safe display of user-generated content.
-        </p>
-      </div>
+      <PageHeader
+        title="Markdown"
+        description="Render markdown content with automatic sanitization for safe display of user-generated content."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code="import { Markdown } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection title="Import" code="import { Markdown } from 'glass-ui-solid';" />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <Card class="p-6">
-          <Markdown content={basicMarkdown} />
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`<Markdown content="# Hello World\\n\\nThis is **bold** and *italic* text." />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+      <DemoSection
+        title="Basic Usage"
+        code={`<Markdown content="# Hello World\\n\\nThis is **bold** and *italic* text." />`}
+      >
+        <Markdown content={basicMarkdown} />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Full Featured Example</h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Markdown supports headers, lists, code blocks, tables, blockquotes, and more.
-        </p>
-        <Card class="p-6">
-          <Markdown content={fullFeaturedMarkdown} />
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`const markdown = \`
+      <DemoSection
+        title="Full Featured Example"
+        description="Markdown supports headers, lists, code blocks, tables, blockquotes, and more."
+        code={`const markdown = \`
 # Documentation
 
 This is a paragraph with **bold** and *italic* text.
@@ -137,84 +120,50 @@ console.log(greeting);
 \`;
 
 <Markdown content={markdown} />`}
-            language="tsx"
-          />
-        </div>
-      </section>
+      >
+        <Markdown content={fullFeaturedMarkdown} />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Chat Messages</h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Perfect for rendering AI chat responses or user messages with formatting.
-        </p>
-        <Card class="p-6 bg-surface-50 dark:bg-surface-800/50">
-          <Markdown content={chatMessage} />
-        </Card>
-        <div class="mt-4">
-          <CodeBlock
-            code={`function ChatMessage(props: { message: string }) {
+      <DemoSection
+        title="Chat Messages"
+        description="Perfect for rendering AI chat responses or user messages with formatting."
+        code={`function ChatMessage(props: { message: string }) {
   return (
     <div class="p-4 rounded-lg bg-surface-100">
       <Markdown content={props.message} />
     </div>
   );
 }`}
-            language="tsx"
-          />
-        </div>
-      </section>
+        cardClass="p-6 bg-surface-50 dark:bg-surface-800/50"
+      >
+        <Markdown content={chatMessage} />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Release Notes</h2>
-        <p class="text-surface-600 dark:text-surface-400 mb-4">
-          Great for displaying changelogs and release notes.
-        </p>
-        <Card class="p-6">
-          <Markdown content={releaseNotes} />
-        </Card>
-      </section>
+      <DemoSection
+        title="Release Notes"
+        description="Great for displaying changelogs and release notes."
+      >
+        <Markdown content={releaseNotes} />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="text-left py-2 px-4 font-semibold text-surface-900 dark:text-white">Prop</th>
-                <th class="text-left py-2 px-4 font-semibold text-surface-900 dark:text-white">Type</th>
-                <th class="text-left py-2 px-4 font-semibold text-surface-900 dark:text-white">Default</th>
-                <th class="text-left py-2 px-4 font-semibold text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="py-2 px-4 font-mono text-xs">content</td>
-                <td class="py-2 px-4 font-mono text-xs">string | undefined</td>
-                <td class="py-2 px-4">required</td>
-                <td class="py-2 px-4">Markdown content to render</td>
-              </tr>
-              <tr>
-                <td class="py-2 px-4 font-mono text-xs">class</td>
-                <td class="py-2 px-4 font-mono text-xs">string</td>
-                <td class="py-2 px-4">-</td>
-                <td class="py-2 px-4">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props" card={false}>
+        <PropsTable
+          props={[
+            { name: 'content', type: 'string | undefined', default: 'required', description: 'Markdown content to render' },
+            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Security</h2>
+      <DemoSection title="Security" card={false}>
         <ul class="list-disc list-inside space-y-2 text-surface-600 dark:text-surface-400">
           <li>Content is sanitized using DOMPurify</li>
           <li>Safe from XSS attacks</li>
           <li>Unsafe HTML is automatically stripped</li>
         </ul>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Supported Syntax</h2>
+      <DemoSection title="Supported Syntax" card={false}>
         <div class="grid gap-4 md:grid-cols-2">
           <Card class="p-4">
             <h3 class="font-semibold text-surface-900 dark:text-white mb-2">Text Formatting</h3>
@@ -249,7 +198,7 @@ console.log(greeting);
             </ul>
           </Card>
         </div>
-      </section>
+      </DemoSection>
     </div>
   );
 }

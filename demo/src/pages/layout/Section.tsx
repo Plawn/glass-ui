@@ -1,5 +1,6 @@
-import { Section, CodeBlock, Card, Input, Checkbox, Button } from 'glass-ui-solid';
+import { Section, Card, Input, Checkbox, Button } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
+import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
 export default function SectionPage() {
   const [name, setName] = createSignal('');
@@ -9,21 +10,14 @@ export default function SectionPage() {
 
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Section</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Content section with title for organizing page content.
-        </p>
-      </div>
+      <PageHeader
+        title="Section"
+        description="Content section with title for organizing page content."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code="import { Section } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection title="Import" code="import { Section } from 'glass-ui-solid';" />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Examples</h2>
-
+      <DemoSection title="Examples" card={false}>
         <div class="space-y-6">
           {/* Basic */}
           <div>
@@ -109,43 +103,17 @@ export default function SectionPage() {
             </div>
           </div>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Props</h2>
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm">
-            <thead>
-              <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Prop</th>
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Type</th>
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Default</th>
-                <th class="text-left py-2 px-3 font-medium text-surface-900 dark:text-white">Description</th>
-              </tr>
-            </thead>
-            <tbody class="text-surface-600 dark:text-surface-400">
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">title</td>
-                <td class="py-2 px-3 font-mono text-xs">string</td>
-                <td class="py-2 px-3">required</td>
-                <td class="py-2 px-3">Section title</td>
-              </tr>
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">children</td>
-                <td class="py-2 px-3 font-mono text-xs">JSX.Element</td>
-                <td class="py-2 px-3">required</td>
-                <td class="py-2 px-3">Section content</td>
-              </tr>
-              <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
-                <td class="py-2 px-3 font-mono text-xs">class</td>
-                <td class="py-2 px-3 font-mono text-xs">string</td>
-                <td class="py-2 px-3">-</td>
-                <td class="py-2 px-3">Additional CSS classes</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <DemoSection title="Props">
+        <PropsTable
+          props={[
+            { name: 'title', type: 'string', default: 'required', description: 'Section title' },
+            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Section content' },
+            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+          ]}
+        />
+      </DemoSection>
     </div>
   );
 }

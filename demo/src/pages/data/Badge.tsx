@@ -1,120 +1,87 @@
-import { Badge, CodeBlock } from 'glass-ui-solid';
+import { Badge } from 'glass-ui-solid';
+import { PageHeader, DemoSection } from '../../components/demo';
 
 export default function BadgePage() {
   return (
     <div class="space-y-8">
-      <div>
-        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">Badge</h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          Status badges and labels with multiple variants for displaying status, labels, and HTTP methods.
-        </p>
-      </div>
+      <PageHeader
+        title="Badge"
+        description="Status badges and labels with multiple variants for displaying status, labels, and HTTP methods."
+      />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Import</h2>
-        <CodeBlock code="import { Badge } from 'glass-ui-solid';" language="tsx" />
-      </section>
+      <DemoSection title="Import" code="import { Badge } from 'glass-ui-solid';" />
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Basic Usage</h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Badge>Default</Badge>
-          </div>
-          <CodeBlock code="<Badge>Default</Badge>" language="tsx" />
+      <DemoSection title="Basic Usage" code="<Badge>Default</Badge>">
+        <div class="flex flex-wrap items-center gap-2">
+          <Badge>Default</Badge>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Variants (Status Colors)
-        </h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Badge variant="default">Default</Badge>
-            <Badge variant="success">Success</Badge>
-            <Badge variant="warning">Warning</Badge>
-            <Badge variant="error">Error</Badge>
-            <Badge variant="info">Info</Badge>
-          </div>
-          <CodeBlock
-            code={`<Badge variant="default">Default</Badge>
+      <DemoSection
+        title="Variants (Status Colors)"
+        code={`<Badge variant="default">Default</Badge>
 <Badge variant="success">Success</Badge>
 <Badge variant="warning">Warning</Badge>
 <Badge variant="error">Error</Badge>
 <Badge variant="info">Info</Badge>`}
-            language="tsx"
-          />
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <Badge variant="default">Default</Badge>
+          <Badge variant="success">Success</Badge>
+          <Badge variant="warning">Warning</Badge>
+          <Badge variant="error">Error</Badge>
+          <Badge variant="info">Info</Badge>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">Sizes</h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Badge size="sm">Small</Badge>
-            <Badge size="md">Medium</Badge>
-            <Badge size="lg">Large</Badge>
-          </div>
-          <CodeBlock
-            code={`<Badge size="sm">Small</Badge>
+      <DemoSection
+        title="Sizes"
+        code={`<Badge size="sm">Small</Badge>
 <Badge size="md">Medium</Badge>
 <Badge size="lg">Large</Badge>`}
-            language="tsx"
-          />
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <Badge size="sm">Small</Badge>
+          <Badge size="md">Medium</Badge>
+          <Badge size="lg">Large</Badge>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          HTTP Method Badges
-        </h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <Badge variant="method" method="get">GET</Badge>
-            <Badge variant="method" method="post">POST</Badge>
-            <Badge variant="method" method="put">PUT</Badge>
-            <Badge variant="method" method="patch">PATCH</Badge>
-            <Badge variant="method" method="delete">DELETE</Badge>
-            <Badge variant="method" method="head">HEAD</Badge>
-            <Badge variant="method" method="options">OPTIONS</Badge>
-          </div>
-          <CodeBlock
-            code={`<Badge variant="method" method="get">GET</Badge>
+      <DemoSection
+        title="HTTP Method Badges"
+        code={`<Badge variant="method" method="get">GET</Badge>
 <Badge variant="method" method="post">POST</Badge>
 <Badge variant="method" method="put">PUT</Badge>
 <Badge variant="method" method="patch">PATCH</Badge>
 <Badge variant="method" method="delete">DELETE</Badge>
 <Badge variant="method" method="head">HEAD</Badge>
 <Badge variant="method" method="options">OPTIONS</Badge>`}
-            language="tsx"
-          />
+      >
+        <div class="flex flex-wrap items-center gap-2">
+          <Badge variant="method" method="get">GET</Badge>
+          <Badge variant="method" method="post">POST</Badge>
+          <Badge variant="method" method="put">PUT</Badge>
+          <Badge variant="method" method="patch">PATCH</Badge>
+          <Badge variant="method" method="delete">DELETE</Badge>
+          <Badge variant="method" method="head">HEAD</Badge>
+          <Badge variant="method" method="options">OPTIONS</Badge>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Combining Variants and Sizes
-        </h2>
-        <div class="space-y-4">
-          <div class="flex flex-wrap items-center gap-3">
-            <Badge variant="success" size="sm">Small Success</Badge>
-            <Badge variant="warning" size="md">Medium Warning</Badge>
-            <Badge variant="error" size="lg">Large Error</Badge>
-          </div>
-          <CodeBlock
-            code={`<Badge variant="success" size="sm">Small Success</Badge>
+      <DemoSection
+        title="Combining Variants and Sizes"
+        code={`<Badge variant="success" size="sm">Small Success</Badge>
 <Badge variant="warning" size="md">Medium Warning</Badge>
 <Badge variant="error" size="lg">Large Error</Badge>`}
-            language="tsx"
-          />
+      >
+        <div class="flex flex-wrap items-center gap-3">
+          <Badge variant="success" size="sm">Small Success</Badge>
+          <Badge variant="warning" size="md">Medium Warning</Badge>
+          <Badge variant="error" size="lg">Large Error</Badge>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Use Cases
-        </h2>
+      <DemoSection title="Use Cases" card={false}>
         <div class="space-y-6">
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
@@ -172,12 +139,9 @@ export default function BadgePage() {
             </div>
           </div>
         </div>
-      </section>
+      </DemoSection>
 
-      <section>
-        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
-          Color Reference
-        </h2>
+      <DemoSection title="Color Reference" card={false}>
         <div class="space-y-4">
           <div>
             <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
@@ -276,7 +240,7 @@ export default function BadgePage() {
             </div>
           </div>
         </div>
-      </section>
+      </DemoSection>
     </div>
   );
 }
