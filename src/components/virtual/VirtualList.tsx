@@ -1,4 +1,4 @@
-import { createMemo, createEffect, For, Show, onMount, type JSX, type Component } from 'solid-js';
+import { createMemo, createEffect, createSignal, For, Show, onMount, type JSX, type Component } from 'solid-js';
 import { useVirtualizer } from './useVirtualizer';
 import type { VirtualListProps, VirtualHandle, ListItem } from './types';
 
@@ -104,8 +104,9 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
 export function VirtualList<D = unknown, C = unknown>(
   props: VirtualListProps<D, C>
 ): JSX.Element {
-  let scrollerRef: HTMLDivElement | undefined;
-  
+  // --- Use signal for scroller ref to ensure reactivity ---
+  const [scrollerRef, setScrollerRef] = createSignal<HTMLDivElement | undefined>(undefined);
+
   // --- Computed props ---
   const totalCount = createMemo(() => props.totalCount ?? props.data?.length ?? 0);
   const defaultItemHeight = createMemo(() => props.defaultItemHeight ?? props.fixedItemHeight ?? 50);
@@ -129,7 +130,7 @@ export function VirtualList<D = unknown, C = unknown>(
     getFixedSize: () => fixedItemHeight(),
     overscan: () => overscan(),
     increaseViewportBy: () => increaseViewportBy(),
-    getScrollContainer: () => scrollerRef,
+    getScrollContainer: scrollerRef,
     onRangeChanged: props.rangeChanged,
     onScrollingChanged: props.isScrolling,
     onTotalSizeChanged: props.totalListHeightChanged,
@@ -165,8 +166,9 @@ export function VirtualList<D = unknown, C = unknown>(
   
   // --- Initial scroll ---
   onMount(() => {
-    if (props.initialScrollTop !== undefined && scrollerRef) {
-      scrollerRef.scrollTop = props.initialScrollTop;
+    const scroller = scrollerRef();
+    if (props.initialScrollTop !== undefined && scroller) {
+      scroller.scrollTop = props.initialScrollTop;
     } else if (props.initialTopMostItemIndex !== undefined) {
       virtualizer.scrollToIndex(props.initialTopMostItemIndex);
     }
@@ -218,7 +220,7 @@ export function VirtualList<D = unknown, C = unknown>(
   // --- Render ---
   return (
     <Scroller
-      ref={(el) => { scrollerRef = el; }}
+      ref={setScrollerRef}
       style={scrollerStyle()}
     >
       <Show when={props.Header}>

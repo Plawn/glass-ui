@@ -152,10 +152,12 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
 export function VirtualTable<D = unknown, C = unknown>(
   props: VirtualTableProps<D, C>
 ): JSX.Element {
-  let scrollerRef: HTMLDivElement | undefined;
   let theadRef: HTMLTableSectionElement | undefined;
   let tfootRef: HTMLTableSectionElement | undefined;
-  
+
+  // --- Use signal for scroller ref to ensure reactivity ---
+  const [scrollerRef, setScrollerRef] = createSignal<HTMLDivElement | undefined>(undefined);
+
   // --- State for header/footer heights ---
   const [headerHeight, setHeaderHeight] = createSignal(0);
   const [footerHeight, setFooterHeight] = createSignal(0);
@@ -195,7 +197,7 @@ export function VirtualTable<D = unknown, C = unknown>(
     getFixedSize: () => fixedItemHeight(),
     overscan: () => overscan(),
     increaseViewportBy: () => increaseViewportBy(),
-    getScrollContainer: () => scrollerRef,
+    getScrollContainer: scrollerRef,
     onRangeChanged: props.rangeChanged,
     onScrollingChanged: props.isScrolling,
     onTotalSizeChanged: props.totalListHeightChanged,
@@ -265,12 +267,13 @@ export function VirtualTable<D = unknown, C = unknown>(
   
   // --- Initial scroll ---
   onMount(() => {
-    if (props.initialScrollTop !== undefined && scrollerRef) {
-      scrollerRef.scrollTop = props.initialScrollTop;
+    const scroller = scrollerRef();
+    if (props.initialScrollTop !== undefined && scroller) {
+      scroller.scrollTop = props.initialScrollTop;
     } else if (props.initialTopMostItemIndex !== undefined) {
       virtualizer.scrollToIndex(props.initialTopMostItemIndex);
     }
-    
+
     // Initial header/footer measurement
     requestAnimationFrame(() => {
       measureHeader();
@@ -330,7 +333,7 @@ export function VirtualTable<D = unknown, C = unknown>(
   
   return (
     <Scroller
-      ref={(el: HTMLDivElement) => { scrollerRef = el; }}
+      ref={setScrollerRef}
       style={scrollerStyle()}
       context={props.context}
     >
