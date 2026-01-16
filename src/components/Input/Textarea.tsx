@@ -49,7 +49,7 @@ export const Textarea: Component<TextareaProps> = (props) => {
         ref={props.ref}
         id={props.id}
         name={props.name}
-        class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'glass-input-error' : ''} ${props.class ?? ''}`}
+        class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''} ${props.class ?? ''}`}
         placeholder={props.placeholder}
         value={props.value}
         rows={props.rows}
