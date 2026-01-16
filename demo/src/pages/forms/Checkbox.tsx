@@ -183,7 +183,7 @@ const [updates, setUpdates] = createSignal(true);
         </form>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'checked', type: 'boolean', description: 'Whether the checkbox is checked (required)' },

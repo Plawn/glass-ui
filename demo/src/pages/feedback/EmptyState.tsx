@@ -178,7 +178,7 @@ export default function EmptyStatePage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'title', type: 'string', description: 'Title text displayed prominently' },

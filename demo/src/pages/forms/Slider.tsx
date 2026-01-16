@@ -205,7 +205,7 @@ export default function SliderPage() {
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'value', type: 'number', description: 'Current value of the slider' },

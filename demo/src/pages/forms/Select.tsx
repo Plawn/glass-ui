@@ -276,7 +276,7 @@ const userOptions = [
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'value', type: 'string', description: 'Current selected value (required)' },

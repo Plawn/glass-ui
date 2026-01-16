@@ -203,7 +203,7 @@ export default function NavbarPage() {
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'brand', type: 'JSX.Element', description: 'Brand/logo element displayed on the left' },

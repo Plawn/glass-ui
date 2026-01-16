@@ -201,7 +201,7 @@ export default function DropdownPage() {
         </Dropdown>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'trigger', type: 'JSX.Element', default: 'required', description: 'Trigger element that opens the dropdown' },

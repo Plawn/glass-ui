@@ -253,7 +253,7 @@ export default function SegmentedControlPage() {
         </Show>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'options', type: 'SegmentedControlOption<T>[]', default: 'required', description: 'Available options' },

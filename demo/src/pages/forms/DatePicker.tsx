@@ -254,7 +254,7 @@ const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() 
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'value', type: 'Date | null', default: 'required', description: 'Currently selected date value' },

@@ -104,7 +104,7 @@ export default function AlertPage() {
         </Show>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'type', type: "'info' | 'success' | 'warning' | 'error'", description: 'Alert type' },

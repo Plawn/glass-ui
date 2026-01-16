@@ -251,7 +251,7 @@ export default function SidebarPage() {
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'items', type: 'SidebarItem[]', default: 'required', description: 'Navigation items' },

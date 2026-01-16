@@ -11,7 +11,7 @@ export default function SkeletonPage() {
 
       <DemoSection title="Import" code="import { Skeleton } from 'glass-ui-solid';" />
 
-      <DemoSection title="Basic Usage" code={`<Skeleton width="200px" height="20px" />`}>
+      <DemoSection title="Basic Usage">
         <Skeleton width="200px" height="20px" />
       </DemoSection>
 
@@ -69,10 +69,7 @@ export default function SkeletonPage() {
         </div>
       </DemoSection>
 
-      <DemoSection
-        title="With Rounded Corners"
-        code={`<Skeleton width="100px" height="100px" rounded />`}
-      >
+      <DemoSection title="With Rounded Corners">
         <Skeleton width="100px" height="100px" rounded />
       </DemoSection>
 
@@ -118,7 +115,7 @@ export default function SkeletonPage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'width', type: 'string', description: 'Width (CSS value)' },

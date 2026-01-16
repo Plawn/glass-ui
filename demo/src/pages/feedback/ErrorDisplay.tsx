@@ -109,7 +109,7 @@ function Form() {
 }`}
       />
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'message', type: 'string', description: 'The error message to display' },

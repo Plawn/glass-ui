@@ -168,7 +168,7 @@ export default function MenuPage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'trigger', type: 'JSX.Element', default: 'required', description: 'Trigger element' },

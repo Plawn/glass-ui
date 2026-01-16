@@ -240,7 +240,7 @@ export default function CommandPalettePage() {
 <CommandPalette items={commands} onSelect={handleSelect} />`}
       />
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'items', type: 'CommandPaletteItem[]', default: 'required', description: 'Available commands' },

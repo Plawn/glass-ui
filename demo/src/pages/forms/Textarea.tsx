@@ -151,7 +151,7 @@ export default function TextareaPage() {
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'value', type: 'string', description: 'Current textarea value (required)' },

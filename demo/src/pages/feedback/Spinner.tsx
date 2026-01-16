@@ -11,7 +11,7 @@ export default function SpinnerPage() {
 
       <DemoSection title="Import" code="import { Spinner } from 'glass-ui-solid';" />
 
-      <DemoSection title="Basic Usage" code="<Spinner />">
+      <DemoSection title="Basic Usage">
         <Spinner />
       </DemoSection>
 
@@ -85,7 +85,7 @@ export default function SpinnerPage() {
         <Spinner centered label="Loading content..." />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'size', type: "'sm' | 'md' | 'lg' | 'xl'", default: "'md'", description: 'Spinner size' },

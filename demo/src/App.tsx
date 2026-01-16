@@ -193,9 +193,12 @@ function Layout(props: { children: any }) {
   );
 }
 
+// Get base path from Vite config (set during build)
+const basePath = import.meta.env.BASE_URL;
+
 export default function App() {
   return (
-    <Router root={Layout}>
+    <Router root={Layout} base={basePath}>
       <Route path="/" component={Home} />
 
       {/* Layout */}

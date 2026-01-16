@@ -69,7 +69,7 @@ export default function CardPage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'children', type: 'JSX.Element', default: 'required', description: 'Card body content' },

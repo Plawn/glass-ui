@@ -84,3 +84,57 @@ When adding a new component:
 1. Create the component in `src/components/`
 2. Export it from `src/components/index.ts`
 3. Add a demo page in `demo/src/pages/` showing usage examples, props table, and code snippets
+
+### DemoSection Code Capture
+
+The demo app uses a Vite plugin (`demo/plugins/demo-code-capture.ts`) that **automatically captures children source code** in `DemoSection` components. This eliminates the need to duplicate code in the `code` prop.
+
+#### How it works
+
+```tsx
+// Before (manual duplication - no longer needed for simple cases)
+<DemoSection title="Basic" code="<Button>Click me</Button>">
+  <Button>Click me</Button>
+</DemoSection>
+
+// After (automatic capture - preferred)
+<DemoSection title="Basic">
+  <Button>Click me</Button>
+</DemoSection>
+// The plugin automatically injects: code={`<Button>Click me</Button>`}
+```
+
+#### Conventions for DemoSection
+
+1. **Self-contained examples**: Children should not reference external variables. The captured code won't include variable definitions.
+   ```tsx
+   // ❌ Avoid - captured code shows `{variant}` without context
+   const variant = "primary";
+   <DemoSection title="Bad">
+     <Button variant={variant}>Click</Button>
+   </DemoSection>
+
+   // ✅ Good - all values are inline
+   <DemoSection title="Good">
+     <Button variant="primary">Click</Button>
+   </DemoSection>
+   ```
+
+2. **Use manual `code` prop for**:
+   - Import statements: `<DemoSection title="Import" code="import { Button } from 'glass-ui-solid';" />`
+   - Conditional/dynamic children
+   - When the displayed code should differ from the actual children (e.g., simplified version)
+   - Multi-line code that differs from the visual demo
+
+3. **PropsTable sections**: Automatically skipped (no code capture needed)
+
+4. **Wrapper divs are OK**: The plugin captures everything including layout wrappers
+   ```tsx
+   <DemoSection title="Sizes">
+     <div class="flex gap-4">
+       <Button size="sm">Small</Button>
+       <Button size="lg">Large</Button>
+     </div>
+   </DemoSection>
+   // Captured code includes the div wrapper
+   ```

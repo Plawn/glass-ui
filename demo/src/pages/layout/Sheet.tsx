@@ -120,7 +120,7 @@ export default function SheetPage() {
         </Sheet>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'open', type: 'boolean', default: 'required', description: 'Whether the sheet is open' },

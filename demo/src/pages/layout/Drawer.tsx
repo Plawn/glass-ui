@@ -248,7 +248,7 @@ export default function DrawerPage() {
         </Drawer>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           compact
           props={[

@@ -187,7 +187,7 @@ const steps = [
         </Card>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'steps', type: 'StepperStep[]', default: 'required', description: 'Array of step configurations' },

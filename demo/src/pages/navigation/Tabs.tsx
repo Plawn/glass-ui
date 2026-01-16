@@ -158,7 +158,7 @@ import type { TabItem } from 'glass-ui-solid';`}
 <Tabs lazy keepMounted items={items} />`}
       />
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'items', type: 'TabItem[]', default: 'required', description: 'Tab items array' },

@@ -21,7 +21,7 @@ export default function ProgressPage() {
 
       <DemoSection title="Import" code="import { Progress } from 'glass-ui-solid';" />
 
-      <DemoSection title="Basic Usage" code={`<Progress value={60} />`}>
+      <DemoSection title="Basic Usage">
         <Progress value={60} />
       </DemoSection>
 
@@ -99,7 +99,7 @@ export default function ProgressPage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'value', type: 'number', description: 'Progress value (0-100)' },

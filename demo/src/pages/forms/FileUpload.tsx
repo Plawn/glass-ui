@@ -137,7 +137,7 @@ export default function FileUploadPage() {
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'onFilesChange', type: '(files: File[]) => void', default: 'required', description: 'Callback when files are added or removed' },

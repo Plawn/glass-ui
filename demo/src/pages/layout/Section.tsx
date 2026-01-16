@@ -105,7 +105,7 @@ export default function SectionPage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'title', type: 'string', default: 'required', description: 'Section title' },

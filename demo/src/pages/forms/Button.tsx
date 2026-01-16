@@ -163,7 +163,7 @@ export default function ButtonPage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'children', type: 'JSX.Element', default: 'required', description: 'Button content' },

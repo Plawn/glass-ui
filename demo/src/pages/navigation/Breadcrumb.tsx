@@ -168,7 +168,7 @@ export default function BreadcrumbPage() {
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'items', type: 'BreadcrumbItem[]', default: 'required', description: 'Breadcrumb items to display' },

@@ -85,7 +85,7 @@ const [pageSize, setPageSize] = createSignal(10);
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'total', type: 'number', default: 'required', description: 'Total number of items' },

@@ -278,7 +278,7 @@ const customFilter = (option, input) =>
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'options', type: 'AutocompleteOption[]', default: 'required', description: 'List of available options' },

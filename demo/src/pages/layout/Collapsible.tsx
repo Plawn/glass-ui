@@ -176,7 +176,7 @@ export default function CollapsiblePage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'trigger', type: 'JSX.Element', default: 'required', description: 'The element that toggles the collapsible' },

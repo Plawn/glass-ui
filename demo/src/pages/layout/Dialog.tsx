@@ -128,7 +128,7 @@ export default function DialogPage() {
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           compact
           props={[

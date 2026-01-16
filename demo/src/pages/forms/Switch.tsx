@@ -171,7 +171,7 @@ export default function SwitchPage() {
         </Card>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'checked', type: 'boolean', description: 'Whether the switch is on' },

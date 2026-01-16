@@ -440,7 +440,7 @@ const [value, setValue] = createSignal({});
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'schema', type: 'Schema', default: 'required', description: 'The JSON Schema definition to render' },

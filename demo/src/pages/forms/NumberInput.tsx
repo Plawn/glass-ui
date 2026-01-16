@@ -158,7 +158,7 @@ export default function NumberInputPage() {
         </div>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'value', type: 'number', default: 'required', description: 'Current numeric value' },

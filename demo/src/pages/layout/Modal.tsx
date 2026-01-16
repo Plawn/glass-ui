@@ -166,7 +166,7 @@ export default function ModalPage() {
         </Modal>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           compact
           props={[

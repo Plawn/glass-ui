@@ -301,7 +301,7 @@ export default function InputPage() {
         </form>
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'value', type: 'string', default: 'required', description: 'Current input value' },

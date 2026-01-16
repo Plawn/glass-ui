@@ -179,7 +179,7 @@ const options = [
         />
       </DemoSection>
 
-      <DemoSection title="Props">
+      <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
             { name: 'options', type: 'RadioOption[]', description: 'Available options to choose from' },
