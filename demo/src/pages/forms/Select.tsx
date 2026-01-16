@@ -1,10 +1,32 @@
 import { Select, CodeBlock, Card } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 
+interface User {
+  id: number;
+  name: string;
+  role: string;
+}
+
 export default function SelectPage() {
   const [fruit, setFruit] = createSignal('');
   const [country, setCountry] = createSignal('');
   const [priority, setPriority] = createSignal('');
+  const [language, setLanguage] = createSignal<string | null>(null);
+  const [selectedUser, setSelectedUser] = createSignal<User | null>(null);
+
+  const languageOptions = [
+    { value: 'js', label: 'JavaScript' },
+    { value: 'ts', label: 'TypeScript' },
+    { value: 'py', label: 'Python' },
+    { value: 'rs', label: 'Rust' },
+    { value: 'go', label: 'Go', disabled: true },
+  ];
+
+  const userOptions = [
+    { value: { id: 1, name: 'John', role: 'Admin' }, label: 'John (Admin)' },
+    { value: { id: 2, name: 'Jane', role: 'Editor' }, label: 'Jane (Editor)' },
+    { value: { id: 3, name: 'Bob', role: 'Viewer' }, label: 'Bob (Viewer)' },
+  ];
 
   return (
     <div class="space-y-8">
@@ -47,6 +69,88 @@ export default function SelectPage() {
   <option value="orange">Orange</option>
   <option value="grape">Grape</option>
 </Select>`}
+            language="tsx"
+          />
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Options Array</h2>
+        <Card class="p-6">
+          <div class="space-y-4 max-w-xs">
+            <Select
+              value={language()}
+              onChange={setLanguage}
+              label="Language"
+              emptyOption="Select a language..."
+              options={languageOptions}
+            />
+            <p class="text-sm text-surface-500">
+              Selected: {language() || '(none)'}
+            </p>
+          </div>
+        </Card>
+        <div class="mt-4">
+          <CodeBlock
+            code={`const languageOptions = [
+  { value: 'js', label: 'JavaScript' },
+  { value: 'ts', label: 'TypeScript' },
+  { value: 'py', label: 'Python' },
+  { value: 'rs', label: 'Rust' },
+  { value: 'go', label: 'Go', disabled: true },
+];
+
+<Select
+  value={language()}
+  onChange={setLanguage}
+  label="Language"
+  emptyOption="Select a language..."
+  options={languageOptions}
+/>`}
+            language="tsx"
+          />
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">With Object Values</h2>
+        <Card class="p-6">
+          <div class="space-y-4 max-w-xs">
+            <Select
+              value={selectedUser()}
+              onChange={setSelectedUser}
+              label="User"
+              emptyOption="Select a user..."
+              options={userOptions}
+            />
+            <p class="text-sm text-surface-500">
+              Selected: {selectedUser() ? `${selectedUser()!.name} (${selectedUser()!.role})` : '(none)'}
+            </p>
+          </div>
+        </Card>
+        <div class="mt-4">
+          <CodeBlock
+            code={`interface User {
+  id: number;
+  name: string;
+  role: string;
+}
+
+const [selectedUser, setSelectedUser] = createSignal<User | null>(null);
+
+const userOptions = [
+  { value: { id: 1, name: 'John', role: 'Admin' }, label: 'John (Admin)' },
+  { value: { id: 2, name: 'Jane', role: 'Editor' }, label: 'Jane (Editor)' },
+  { value: { id: 3, name: 'Bob', role: 'Viewer' }, label: 'Bob (Viewer)' },
+];
+
+<Select
+  value={selectedUser()}
+  onChange={setSelectedUser}
+  label="User"
+  emptyOption="Select a user..."
+  options={userOptions}
+/>`}
             language="tsx"
           />
         </div>
@@ -256,7 +360,19 @@ export default function SelectPage() {
                 <td class="py-2 pr-4 font-mono text-xs">children</td>
                 <td class="py-2 pr-4 font-mono text-xs">JSX.Element</td>
                 <td class="py-2 pr-4">-</td>
-                <td class="py-2">Option elements (required)</td>
+                <td class="py-2">Option elements (use this OR options)</td>
+              </tr>
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-2 pr-4 font-mono text-xs">options</td>
+                <td class="py-2 pr-4 font-mono text-xs">SelectOption[]</td>
+                <td class="py-2 pr-4">-</td>
+                <td class="py-2">Array of options (use this OR children)</td>
+              </tr>
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-2 pr-4 font-mono text-xs">emptyOption</td>
+                <td class="py-2 pr-4 font-mono text-xs">string</td>
+                <td class="py-2 pr-4">-</td>
+                <td class="py-2">Placeholder text for empty option</td>
               </tr>
               <tr class="border-b border-surface-100 dark:border-surface-800">
                 <td class="py-2 pr-4 font-mono text-xs">label</td>

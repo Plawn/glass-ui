@@ -62,7 +62,7 @@ export { HoverCard } from './HoverCard';
 export type { HoverCardProps, HoverCardPlacement } from './HoverCard';
 
 // DatePicker
-export { DatePicker } from './DatePicker';
+export { DatePicker, DateRangePicker } from './DatePicker';
 export type {
   DatePickerProps,
   DatePickerSize,
@@ -70,6 +70,8 @@ export type {
   WeekStartDay,
   CalendarProps,
   CalendarDay,
+  DateRange,
+  DateRangePickerProps,
 } from './DatePicker';
 
 // Tabs

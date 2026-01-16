@@ -43,18 +43,57 @@ export interface TextareaProps extends BaseInputProps {
 }
 
 /**
- * Props for the Select component
+ * Option item for Select component
  */
-export interface SelectProps extends BaseInputProps {
+export interface SelectOption<T = string> {
+  /** Option value */
+  value: T;
+  /** Display label */
+  label: string;
+  /** Whether option is disabled */
+  disabled?: boolean;
+}
+
+/**
+ * Props for the Select component with children (string values only)
+ */
+export interface SelectPropsWithChildren extends BaseInputProps {
   /** Current selected value */
   value: string;
   /** Callback when selection changes */
   onChange: (value: string) => void;
   /** Option elements */
   children: JSX.Element;
+  /** Array of option objects - not used with children */
+  options?: never;
+  /** Placeholder text for empty option */
+  emptyOption?: never;
   /** Ref to the select element */
   ref?: HTMLSelectElement | ((el: HTMLSelectElement) => void);
 }
+
+/**
+ * Props for the Select component with options array (generic values)
+ */
+export interface SelectPropsWithOptions<T> extends BaseInputProps {
+  /** Current selected value */
+  value: T | null;
+  /** Callback when selection changes */
+  onChange: (value: T | null) => void;
+  /** Option elements - not used with options */
+  children?: never;
+  /** Array of option objects */
+  options: SelectOption<T>[];
+  /** Placeholder text for empty option */
+  emptyOption?: string;
+  /** Ref to the select element */
+  ref?: HTMLSelectElement | ((el: HTMLSelectElement) => void);
+}
+
+/**
+ * Props for the Select component
+ */
+export type SelectProps<T = string> = SelectPropsWithChildren | SelectPropsWithOptions<T>;
 
 /**
  * Props for the Checkbox component

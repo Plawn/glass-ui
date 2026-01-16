@@ -1,6 +1,9 @@
 // DatePicker component
 export { DatePicker } from './DatePicker';
 
+// DateRangePicker component
+export { DateRangePicker } from './DateRangePicker';
+
 // Types
 export type {
   DatePickerProps,
@@ -9,4 +12,6 @@ export type {
   WeekStartDay,
   CalendarProps,
   CalendarDay,
+  DateRange,
+  DateRangePickerProps,
 } from './types';

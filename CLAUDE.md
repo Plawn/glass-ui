@@ -75,3 +75,12 @@ This is a SolidJS component library called `glass-ui-solid` that provides iOS 26
 - ES modules only (`formats: ['es']`)
 - Preserves module structure for tree-shaking (`preserveModules: true`)
 - External: solid-js, solid-js/web, solid-js/store
+
+## Demo Requirements
+
+**All components exported from the library MUST have a corresponding demo page in `demo/src/pages/`.**
+
+When adding a new component:
+1. Create the component in `src/components/`
+2. Export it from `src/components/index.ts`
+3. Add a demo page in `demo/src/pages/` showing usage examples, props table, and code snippets

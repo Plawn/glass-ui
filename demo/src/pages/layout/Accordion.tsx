@@ -20,6 +20,25 @@ export default function AccordionPage() {
     },
   ];
 
+  const multipleItems = [
+    {
+      id: 'multi1',
+      title: 'Section 1',
+      content: <p class="text-surface-700 dark:text-surface-300">Content for section 1. This is the first panel with some example text.</p>,
+      defaultOpen: true,
+    },
+    {
+      id: 'multi2',
+      title: 'Section 2',
+      content: <p class="text-surface-700 dark:text-surface-300">Content for section 2. Click to expand and see this content.</p>,
+    },
+    {
+      id: 'multi3',
+      title: 'Section 3',
+      content: <p class="text-surface-700 dark:text-surface-300">Content for section 3. Another panel with different content.</p>,
+    },
+  ];
+
   const faqItems = [
     {
       id: 'faq1',
@@ -83,7 +102,7 @@ export default function AccordionPage() {
             <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
               Use the <code class="bg-surface-100 dark:bg-surface-800 px-1 rounded">multiple</code> prop to allow multiple panels to be open simultaneously.
             </p>
-            <Accordion items={basicItems} multiple />
+            <Accordion items={multipleItems} multiple />
           </div>
 
           {/* Using AccordionPanel */}

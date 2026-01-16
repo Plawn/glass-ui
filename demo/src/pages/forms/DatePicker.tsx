@@ -1,4 +1,4 @@
-import { DatePicker, CodeBlock, Card } from 'glass-ui-solid';
+import { DatePicker, DateRangePicker, CodeBlock, Card, type DateRange } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 
 export default function DatePickerPage() {
@@ -11,6 +11,19 @@ export default function DatePickerPage() {
   const [sizeLgDate, setSizeLgDate] = createSignal<Date | null>(null);
   const [errorDate, setErrorDate] = createSignal<Date | null>(null);
   const [mondayDate, setMondayDate] = createSignal<Date | null>(null);
+
+  // DateRangePicker signals
+  const [basicRange, setBasicRange] = createSignal<DateRange>({ start: null, end: null });
+  const [labeledRange, setLabeledRange] = createSignal<DateRange>({ start: null, end: null });
+  const [formatRange, setFormatRange] = createSignal<DateRange>({
+    start: new Date(),
+    end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  });
+  const [clearableRange, setClearableRange] = createSignal<DateRange>({
+    start: new Date(),
+    end: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+  });
+  const [constrainedRange, setConstrainedRange] = createSignal<DateRange>({ start: null, end: null });
 
   // Calculate min and max dates for the constrained example
   const today = new Date();
@@ -488,6 +501,247 @@ function EventForm() {
       <Button type="submit">Create Event</Button>
     </form>
   );
+}`}
+          language="tsx"
+        />
+      </section>
+
+      {/* DateRangePicker Section */}
+      <div class="border-t border-surface-200 dark:border-surface-700 pt-8 mt-8">
+        <h1 class="text-2xl font-bold text-surface-900 dark:text-white mb-2">
+          DateRangePicker
+        </h1>
+        <p class="text-surface-600 dark:text-surface-400">
+          A date range picker component for selecting a start and end date. Click once to set the start date,
+          then click again to set the end date. Hover to preview the range.
+        </p>
+      </div>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          Import
+        </h2>
+        <CodeBlock
+          code={`import { DateRangePicker, type DateRange } from 'glass-ui-solid';`}
+          language="tsx"
+        />
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          Basic Usage
+        </h2>
+        <Card class="p-6 space-y-4">
+          <DateRangePicker
+            value={basicRange()}
+            onChange={setBasicRange}
+            placeholder="Select date range..."
+          />
+          <p class="text-sm text-surface-500 dark:text-surface-400">
+            Selected: {basicRange().start?.toLocaleDateString() || 'None'} - {basicRange().end?.toLocaleDateString() || 'None'}
+          </p>
+        </Card>
+        <CodeBlock
+          class="mt-4"
+          code={`const [range, setRange] = createSignal<DateRange>({ start: null, end: null });
+
+<DateRangePicker
+  value={range()}
+  onChange={setRange}
+  placeholder="Select date range..."
+/>`}
+          language="tsx"
+        />
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          With Label
+        </h2>
+        <Card class="p-6 space-y-4">
+          <DateRangePicker
+            value={labeledRange()}
+            onChange={setLabeledRange}
+            label="Vacation Period"
+            placeholder="Choose your vacation dates..."
+          />
+        </Card>
+        <CodeBlock
+          class="mt-4"
+          code={`<DateRangePicker
+  value={range()}
+  onChange={setRange}
+  label="Vacation Period"
+  placeholder="Choose your vacation dates..."
+/>`}
+          language="tsx"
+        />
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          Date Formats
+        </h2>
+        <Card class="p-6 space-y-4">
+          <div class="grid gap-4 md:grid-cols-2">
+            <DateRangePicker
+              value={formatRange()}
+              onChange={setFormatRange}
+              label="ISO Format"
+              format="yyyy-MM-dd"
+            />
+            <DateRangePicker
+              value={formatRange()}
+              onChange={setFormatRange}
+              label="EU Format"
+              format="dd/MM/yyyy"
+            />
+            <DateRangePicker
+              value={formatRange()}
+              onChange={setFormatRange}
+              label="Long Format"
+              format="MMM dd, yyyy"
+            />
+            <DateRangePicker
+              value={formatRange()}
+              onChange={setFormatRange}
+              label="Custom Separator"
+              format="dd/MM/yyyy"
+              separator=" → "
+            />
+          </div>
+        </Card>
+        <CodeBlock
+          class="mt-4"
+          code={`<DateRangePicker format="yyyy-MM-dd" ... />
+<DateRangePicker format="dd/MM/yyyy" ... />
+<DateRangePicker format="MMM dd, yyyy" ... />
+<DateRangePicker separator=" → " ... />`}
+          language="tsx"
+        />
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          Clearable
+        </h2>
+        <Card class="p-6 space-y-4">
+          <DateRangePicker
+            value={clearableRange()}
+            onChange={setClearableRange}
+            label="Clearable Range"
+            clearable
+          />
+        </Card>
+        <CodeBlock
+          class="mt-4"
+          code={`<DateRangePicker
+  value={range()}
+  onChange={setRange}
+  label="Clearable Range"
+  clearable
+/>`}
+          language="tsx"
+        />
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          Min/Max Constraints
+        </h2>
+        <p class="text-surface-600 dark:text-surface-400 mb-4">
+          Restrict the selectable date range. In this example, dates from 7 days ago to 30 days from now are selectable.
+        </p>
+        <Card class="p-6 space-y-4">
+          <DateRangePicker
+            value={constrainedRange()}
+            onChange={setConstrainedRange}
+            label="Booking Period"
+            placeholder="Select available dates..."
+            min={minDate}
+            max={maxDate}
+            clearable
+          />
+          <p class="text-xs text-surface-500 dark:text-surface-400">
+            Available: {minDate.toLocaleDateString()} to {maxDate.toLocaleDateString()}
+          </p>
+        </Card>
+        <CodeBlock
+          class="mt-4"
+          code={`<DateRangePicker
+  value={range()}
+  onChange={setRange}
+  label="Booking Period"
+  min={minDate}
+  max={maxDate}
+/>`}
+          language="tsx"
+        />
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          DateRangePicker Props
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="border-b border-surface-200 dark:border-surface-700">
+                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Prop</th>
+                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Type</th>
+                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Default</th>
+                <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Description</th>
+              </tr>
+            </thead>
+            <tbody class="text-surface-600 dark:text-surface-400">
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-3 px-4 font-mono text-xs">value</td>
+                <td class="py-3 px-4 font-mono text-xs">DateRange</td>
+                <td class="py-3 px-4">required</td>
+                <td class="py-3 px-4">Currently selected date range</td>
+              </tr>
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-3 px-4 font-mono text-xs">onChange</td>
+                <td class="py-3 px-4 font-mono text-xs">(range: DateRange) =&gt; void</td>
+                <td class="py-3 px-4">required</td>
+                <td class="py-3 px-4">Callback when range selection changes</td>
+              </tr>
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-3 px-4 font-mono text-xs">separator</td>
+                <td class="py-3 px-4 font-mono text-xs">string</td>
+                <td class="py-3 px-4">' - '</td>
+                <td class="py-3 px-4">Separator text between start and end dates</td>
+              </tr>
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-3 px-4 font-mono text-xs">startPlaceholder</td>
+                <td class="py-3 px-4 font-mono text-xs">string</td>
+                <td class="py-3 px-4">'Start date'</td>
+                <td class="py-3 px-4">Placeholder for start date</td>
+              </tr>
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-3 px-4 font-mono text-xs">endPlaceholder</td>
+                <td class="py-3 px-4 font-mono text-xs">string</td>
+                <td class="py-3 px-4">'End date'</td>
+                <td class="py-3 px-4">Placeholder for end date</td>
+              </tr>
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="py-3 px-4 font-mono text-xs" colspan="4">
+                  <em>+ All props from DatePicker (label, format, min, max, size, disabled, error, clearable, weekStartsOn)</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-lg font-semibold text-surface-900 dark:text-white mb-4">
+          DateRange Type
+        </h2>
+        <CodeBlock
+          code={`interface DateRange {
+  start: Date | null;
+  end: Date | null;
 }`}
           language="tsx"
         />

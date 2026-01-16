@@ -11,5 +11,8 @@ export type {
   InputProps,
   TextareaProps,
   SelectProps,
+  SelectPropsWithChildren,
+  SelectPropsWithOptions,
+  SelectOption,
   CheckboxProps,
 } from './types';
