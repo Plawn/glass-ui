@@ -13,6 +13,7 @@
 /* Scan all glass-ui components to generate required utility classes */
 @source "../components/**/*.tsx";
 @source "../hooks/**/*.ts";
+@source "../constants/**/*.ts";
 
 /* iOS 26 Glassmorphism Design Tokens */
 @theme {

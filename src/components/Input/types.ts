@@ -62,6 +62,10 @@ export interface SelectProps extends BaseInputProps {
 export interface CheckboxProps extends Omit<BaseInputProps, 'placeholder' | 'size'> {
   /** Whether the checkbox is checked */
   checked: boolean;
+  /** Whether the checkbox is in indeterminate state (partially selected) */
+  indeterminate?: boolean;
+  /** Size of the checkbox */
+  size?: 'sm' | 'md' | 'lg';
   /** Callback when checked state changes */
   onChange?: (checked: boolean) => void;
   /** Ref to the checkbox input element */

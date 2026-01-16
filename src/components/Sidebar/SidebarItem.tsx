@@ -48,9 +48,10 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (props
 
   const baseClasses = () => {
     const base = `
-      w-full flex items-center gap-3 rounded-lg transition-all duration-200
+      w-full flex items-center gap-3 rounded-xl
+      transition-all duration-300 ease-out
       text-sm font-medium cursor-pointer select-none
-      focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50
+      focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50
     `;
 
     const paddingLeft = collapsed() ? 'px-3' : `pl-${3 + depth() * 3}`;
@@ -59,8 +60,21 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (props
     const stateClasses = props.item.disabled
       ? 'opacity-50 cursor-not-allowed text-surface-400 dark:text-surface-600'
       : isActive() || hasActiveChild()
-        ? 'glass-active text-primary-700 dark:text-primary-300'
-        : 'text-surface-700 dark:text-surface-300 hover:bg-black/5 dark:hover:bg-white/5';
+        ? `
+          backdrop-blur-md
+          bg-accent-500/20 dark:bg-accent-400/15
+          border border-accent-300/30 dark:border-accent-400/20
+          text-accent-700 dark:text-accent-300
+          shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.05)]
+        `
+        : `
+          text-surface-700 dark:text-surface-300
+          hover:backdrop-blur-md
+          hover:bg-white/10 dark:hover:bg-white/5
+          hover:border hover:border-white/15 dark:hover:border-white/10
+          hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]
+          border border-transparent
+        `;
 
     return `${base} ${padding} ${stateClasses}`;
   };
@@ -70,9 +84,9 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (props
       {/* Icon */}
       <Show when={props.item.icon}>
         <span
-          class={`flex-shrink-0 w-5 h-5 flex items-center justify-center ${
+          class={`flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors duration-300 ${
             isActive() || hasActiveChild()
-              ? 'text-primary-600 dark:text-primary-400'
+              ? 'text-accent-600 dark:text-accent-400'
               : 'text-surface-500 dark:text-surface-400'
           }`}
         >
@@ -87,7 +101,14 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (props
 
       {/* Badge */}
       <Show when={props.item.badge !== undefined && !collapsed()}>
-        <span class="flex-shrink-0 px-2 py-0.5 text-xs font-medium rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300">
+        <span class="
+          flex-shrink-0 px-2 py-0.5 text-xs font-medium rounded-full
+          backdrop-blur-sm
+          bg-accent-500/20 dark:bg-accent-400/20
+          border border-accent-300/30 dark:border-accent-400/20
+          text-accent-700 dark:text-accent-300
+          shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]
+        ">
           {props.item.badge}
         </span>
       </Show>

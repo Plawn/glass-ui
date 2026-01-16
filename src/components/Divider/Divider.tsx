@@ -23,7 +23,7 @@ export const Divider: Component<DividerProps> = (props) => {
   const hasLabel = () => props.label !== undefined;
 
   const lineClasses = () =>
-    `border-surface-200 dark:border-surface-700 ${variantStyles[variant()]}`;
+    `border-surface-200 dark:border-surface-600 ${variantStyles[variant()]}`;
 
   return (
     <Show

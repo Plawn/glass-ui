@@ -2,7 +2,7 @@ import { createIcon } from './createIcon';
 
 /** Sort icon - bidirectional arrows for sortable columns */
 export const SortIcon = createIcon({
-  path: (
+  path: () => (
     <path
       stroke-linecap="round"
       stroke-linejoin="round"

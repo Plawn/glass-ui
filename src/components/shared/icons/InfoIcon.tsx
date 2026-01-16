@@ -2,11 +2,10 @@ import { createIcon } from './createIcon';
 
 /** Info icon - circle with lowercase i */
 export const InfoIcon = createIcon({
-  path: (
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
+  path: () => (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01" />
+    </>
   ),
 });

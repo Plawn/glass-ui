@@ -1,4 +1,4 @@
-import type { JSX, Accessor } from 'solid-js';
+import { type JSX, type Accessor, createSignal, createEffect, onCleanup } from 'solid-js';
 import type { Placement, Direction } from '../types';
 
 // =============================================================================
@@ -17,6 +17,8 @@ export interface UsePositioningOptions {
   triggerRef: Accessor<HTMLElement | undefined>;
   /** Reference to the content element (for measuring dimensions) */
   contentRef: Accessor<HTMLElement | undefined>;
+  /** Whether positioning is active (content is visible) */
+  isOpen?: Accessor<boolean>;
   /** Placement relative to trigger (full placement with alignment) */
   placement?: Accessor<Placement>;
   /** Simple direction placement (without alignment, defaults to center) */
@@ -27,6 +29,10 @@ export interface UsePositioningOptions {
   viewportPadding?: number;
   /** Estimated size for initial positioning before content is measured */
   estimatedSize?: number;
+  /** Whether to update position on scroll (default: false) */
+  updateOnScroll?: boolean;
+  /** Whether to update position on resize (default: true) */
+  updateOnResize?: boolean;
 }
 
 /** Configuration for context menu positioning (cursor-based) */
@@ -45,20 +51,22 @@ export interface UseContextMenuPositioningOptions {
 
 /** Return type for usePositioning hook */
 export interface UsePositioningReturn {
-  /** Get position styles for the content element */
-  getPositionStyles: () => PositionStyles;
-  /** Get arrow styles for the optional arrow element */
-  getArrowStyles: () => JSX.CSSProperties;
+  /** Reactive position styles signal */
+  positionStyles: Accessor<PositionStyles>;
+  /** Reactive arrow styles signal */
+  arrowStyles: Accessor<JSX.CSSProperties>;
   /** Get the primary direction from placement */
   getPrimaryDirection: () => Direction;
   /** Get the alignment from placement */
   getAlignment: () => PositionAlignment;
+  /** Force recalculate position */
+  updatePosition: () => void;
 }
 
 /** Return type for useContextMenuPositioning hook */
 export interface UseContextMenuPositioningReturn {
-  /** Get position styles for the menu element */
-  getPositionStyles: () => PositionStyles;
+  /** Reactive position styles signal */
+  positionStyles: Accessor<PositionStyles>;
 }
 
 // =============================================================================
@@ -163,26 +171,144 @@ export const calculateArrowStyles = (placement: Placement | Direction): JSX.CSSP
   }
 };
 
+/**
+ * Calculate position styles for an element relative to a trigger
+ */
+function calculatePositionStyles(
+  triggerEl: HTMLElement,
+  contentEl: HTMLElement | undefined,
+  placement: Placement,
+  offset: number,
+  viewportPadding: number,
+  estimatedSize: number
+): PositionStyles {
+  const rect = triggerEl.getBoundingClientRect();
+
+  // Get actual content dimensions if available, otherwise use estimate
+  const contentHeight = contentEl?.offsetHeight || estimatedSize;
+  const contentWidth = contentEl?.offsetWidth || estimatedSize;
+
+  // Calculate available space in each direction
+  const spaceBelow = window.innerHeight - rect.bottom - viewportPadding;
+  const spaceAbove = rect.top - viewportPadding;
+  const spaceRight = window.innerWidth - rect.right - viewportPadding;
+  const spaceLeft = rect.left - viewportPadding;
+
+  const primaryDirection = getPrimaryDirection(placement);
+  const alignment = getAlignment(placement);
+
+  // Determine actual direction (with auto-flip if needed)
+  let actualDirection = primaryDirection;
+  if (primaryDirection === 'bottom' && spaceBelow < contentHeight && spaceAbove > spaceBelow) {
+    actualDirection = 'top';
+  } else if (primaryDirection === 'top' && spaceAbove < contentHeight && spaceBelow > spaceAbove) {
+    actualDirection = 'bottom';
+  } else if (primaryDirection === 'right' && spaceRight < contentWidth && spaceLeft > spaceRight) {
+    actualDirection = 'left';
+  } else if (primaryDirection === 'left' && spaceLeft < contentWidth && spaceRight > spaceLeft) {
+    actualDirection = 'right';
+  }
+
+  const styles: PositionStyles = {};
+
+  // Apply positioning based on direction
+  if (actualDirection === 'bottom') {
+    styles.top = `${rect.bottom + offset}px`;
+    // Horizontal alignment with overflow protection
+    if (alignment === 'start') {
+      const left = Math.max(viewportPadding, rect.left);
+      // Check if content would overflow right edge
+      const maxLeft = window.innerWidth - contentWidth - viewportPadding;
+      styles.left = `${Math.min(left, maxLeft)}px`;
+    } else if (alignment === 'end') {
+      const right = Math.max(viewportPadding, window.innerWidth - rect.right);
+      // Check if content would overflow left edge
+      const maxRight = window.innerWidth - contentWidth - viewportPadding;
+      styles.right = `${Math.min(right, maxRight)}px`;
+    } else {
+      // Center alignment
+      let left = rect.left + rect.width / 2 - contentWidth / 2;
+      // Clamp to viewport bounds
+      left = Math.max(viewportPadding, Math.min(left, window.innerWidth - contentWidth - viewportPadding));
+      styles.left = `${left}px`;
+    }
+  } else if (actualDirection === 'top') {
+    styles.bottom = `${window.innerHeight - rect.top + offset}px`;
+    // Horizontal alignment with overflow protection
+    if (alignment === 'start') {
+      const left = Math.max(viewportPadding, rect.left);
+      const maxLeft = window.innerWidth - contentWidth - viewportPadding;
+      styles.left = `${Math.min(left, maxLeft)}px`;
+    } else if (alignment === 'end') {
+      const right = Math.max(viewportPadding, window.innerWidth - rect.right);
+      const maxRight = window.innerWidth - contentWidth - viewportPadding;
+      styles.right = `${Math.min(right, maxRight)}px`;
+    } else {
+      // Center alignment
+      let left = rect.left + rect.width / 2 - contentWidth / 2;
+      left = Math.max(viewportPadding, Math.min(left, window.innerWidth - contentWidth - viewportPadding));
+      styles.left = `${left}px`;
+    }
+  } else if (actualDirection === 'right') {
+    styles.left = `${rect.right + offset}px`;
+    // Vertical alignment with overflow protection
+    if (alignment === 'start') {
+      const top = Math.max(viewportPadding, rect.top);
+      const maxTop = window.innerHeight - contentHeight - viewportPadding;
+      styles.top = `${Math.min(top, maxTop)}px`;
+    } else if (alignment === 'end') {
+      const bottom = Math.max(viewportPadding, window.innerHeight - rect.bottom);
+      const maxBottom = window.innerHeight - contentHeight - viewportPadding;
+      styles.bottom = `${Math.min(bottom, maxBottom)}px`;
+    } else {
+      // Center alignment
+      let top = rect.top + rect.height / 2 - contentHeight / 2;
+      top = Math.max(viewportPadding, Math.min(top, window.innerHeight - contentHeight - viewportPadding));
+      styles.top = `${top}px`;
+    }
+  } else if (actualDirection === 'left') {
+    styles.right = `${window.innerWidth - rect.left + offset}px`;
+    // Vertical alignment with overflow protection
+    if (alignment === 'start') {
+      const top = Math.max(viewportPadding, rect.top);
+      const maxTop = window.innerHeight - contentHeight - viewportPadding;
+      styles.top = `${Math.min(top, maxTop)}px`;
+    } else if (alignment === 'end') {
+      const bottom = Math.max(viewportPadding, window.innerHeight - rect.bottom);
+      const maxBottom = window.innerHeight - contentHeight - viewportPadding;
+      styles.bottom = `${Math.min(bottom, maxBottom)}px`;
+    } else {
+      // Center alignment
+      let top = rect.top + rect.height / 2 - contentHeight / 2;
+      top = Math.max(viewportPadding, Math.min(top, window.innerHeight - contentHeight - viewportPadding));
+      styles.top = `${top}px`;
+    }
+  }
+
+  return styles;
+}
+
 // =============================================================================
 // HOOKS
 // =============================================================================
 
 /**
  * Hook for positioning elements relative to a trigger element.
- * Handles viewport boundary checking and automatic flip behavior.
+ * Handles viewport boundary checking, automatic flip behavior, and reactive updates.
  *
  * @example
  * ```tsx
- * const { getPositionStyles, getArrowStyles } = usePositioning({
+ * const { positionStyles, arrowStyles } = usePositioning({
  *   triggerRef: () => triggerEl,
  *   contentRef: () => contentEl,
+ *   isOpen: () => isOpen(),
  *   placement: () => 'bottom',
  *   offset: 8,
  * });
  *
- * <div style={getPositionStyles()}>
+ * <div style={positionStyles()}>
  *   Content
- *   <div style={getArrowStyles()} />
+ *   <div style={arrowStyles()} />
  * </div>
  * ```
  */
@@ -190,6 +316,11 @@ export function usePositioning(options: UsePositioningOptions): UsePositioningRe
   const viewportPadding = options.viewportPadding ?? DEFAULT_VIEWPORT_PADDING;
   const offset = options.offset ?? DEFAULT_OFFSET;
   const estimatedSize = options.estimatedSize ?? DEFAULT_ESTIMATED_SIZE;
+  const updateOnScroll = options.updateOnScroll ?? false;
+  const updateOnResize = options.updateOnResize ?? true;
+
+  const [positionStyles, setPositionStyles] = createSignal<PositionStyles>({});
+  const [arrowStyles, setArrowStyles] = createSignal<JSX.CSSProperties>({});
 
   const getPlacement = (): Placement => {
     if (options.placement) {
@@ -209,102 +340,81 @@ export function usePositioning(options: UsePositioningOptions): UsePositioningRe
     return getAlignment(getPlacement());
   };
 
-  const getPositionStyles = (): PositionStyles => {
+  const updatePosition = () => {
     const triggerEl = options.triggerRef();
     if (!triggerEl) {
-      return {};
+      setPositionStyles({});
+      return;
     }
 
-    const rect = triggerEl.getBoundingClientRect();
-    const requestedPlacement = getPlacement();
-
-    // Get actual content dimensions if available, otherwise use estimate
+    const placement = getPlacement();
     const contentEl = options.contentRef();
-    const contentHeight = contentEl?.offsetHeight || estimatedSize;
-    const contentWidth = contentEl?.offsetWidth || estimatedSize;
 
-    // Calculate available space in each direction
-    const spaceBelow = window.innerHeight - rect.bottom - viewportPadding;
-    const spaceAbove = rect.top - viewportPadding;
-    const spaceRight = window.innerWidth - rect.right - viewportPadding;
-    const spaceLeft = rect.left - viewportPadding;
+    const styles = calculatePositionStyles(
+      triggerEl,
+      contentEl,
+      placement,
+      offset,
+      viewportPadding,
+      estimatedSize
+    );
 
-    const primaryDirection = getPrimaryDirection(requestedPlacement);
-    const alignment = getAlignment(requestedPlacement);
-
-    // Determine actual direction (with auto-flip if needed)
-    let actualDirection = primaryDirection;
-    if (primaryDirection === 'bottom' && spaceBelow < contentHeight && spaceAbove > spaceBelow) {
-      actualDirection = 'top';
-    } else if (primaryDirection === 'top' && spaceAbove < contentHeight && spaceBelow > spaceAbove) {
-      actualDirection = 'bottom';
-    } else if (primaryDirection === 'right' && spaceRight < contentWidth && spaceLeft > spaceRight) {
-      actualDirection = 'left';
-    } else if (primaryDirection === 'left' && spaceLeft < contentWidth && spaceRight > spaceLeft) {
-      actualDirection = 'right';
-    }
-
-    const styles: PositionStyles = {};
-
-    // Apply positioning based on direction
-    if (actualDirection === 'bottom') {
-      styles.top = `${rect.bottom + offset}px`;
-      // Horizontal alignment
-      if (alignment === 'start') {
-        styles.left = `${Math.max(viewportPadding, rect.left)}px`;
-      } else if (alignment === 'end') {
-        styles.right = `${Math.max(viewportPadding, window.innerWidth - rect.right)}px`;
-      } else {
-        styles.left = `${rect.left + rect.width / 2}px`;
-        styles.transform = 'translateX(-50%)';
-      }
-    } else if (actualDirection === 'top') {
-      styles.bottom = `${window.innerHeight - rect.top + offset}px`;
-      // Horizontal alignment
-      if (alignment === 'start') {
-        styles.left = `${Math.max(viewportPadding, rect.left)}px`;
-      } else if (alignment === 'end') {
-        styles.right = `${Math.max(viewportPadding, window.innerWidth - rect.right)}px`;
-      } else {
-        styles.left = `${rect.left + rect.width / 2}px`;
-        styles.transform = 'translateX(-50%)';
-      }
-    } else if (actualDirection === 'right') {
-      styles.left = `${rect.right + offset}px`;
-      // Vertical alignment
-      if (alignment === 'start') {
-        styles.top = `${Math.max(viewportPadding, rect.top)}px`;
-      } else if (alignment === 'end') {
-        styles.bottom = `${Math.max(viewportPadding, window.innerHeight - rect.bottom)}px`;
-      } else {
-        styles.top = `${rect.top + rect.height / 2}px`;
-        styles.transform = 'translateY(-50%)';
-      }
-    } else if (actualDirection === 'left') {
-      styles.right = `${window.innerWidth - rect.left + offset}px`;
-      // Vertical alignment
-      if (alignment === 'start') {
-        styles.top = `${Math.max(viewportPadding, rect.top)}px`;
-      } else if (alignment === 'end') {
-        styles.bottom = `${Math.max(viewportPadding, window.innerHeight - rect.bottom)}px`;
-      } else {
-        styles.top = `${rect.top + rect.height / 2}px`;
-        styles.transform = 'translateY(-50%)';
-      }
-    }
-
-    return styles;
+    setPositionStyles(styles);
+    setArrowStyles(calculateArrowStyles(placement));
   };
 
-  const getArrowStyles = (): JSX.CSSProperties => {
-    return calculateArrowStyles(getPlacement());
-  };
+  // Update position when isOpen changes or dependencies change
+  createEffect(() => {
+    const isOpen = options.isOpen?.() ?? true;
+    if (!isOpen) {
+      return;
+    }
+
+    // Initial calculation
+    updatePosition();
+
+    // Recalculate after a frame to get accurate content dimensions
+    requestAnimationFrame(() => {
+      updatePosition();
+    });
+  });
+
+  // Set up scroll listener if needed
+  createEffect(() => {
+    const isOpen = options.isOpen?.() ?? true;
+    if (!isOpen || !updateOnScroll) {
+      return;
+    }
+
+    const handleScroll = () => {
+      updatePosition();
+    };
+
+    window.addEventListener('scroll', handleScroll, true);
+    onCleanup(() => window.removeEventListener('scroll', handleScroll, true));
+  });
+
+  // Set up resize listener
+  createEffect(() => {
+    const isOpen = options.isOpen?.() ?? true;
+    if (!isOpen || !updateOnResize) {
+      return;
+    }
+
+    const handleResize = () => {
+      updatePosition();
+    };
+
+    window.addEventListener('resize', handleResize);
+    onCleanup(() => window.removeEventListener('resize', handleResize));
+  });
 
   return {
-    getPositionStyles,
-    getArrowStyles,
+    positionStyles,
+    arrowStyles,
     getPrimaryDirection: getCurrentPrimaryDirection,
     getAlignment: getCurrentAlignment,
+    updatePosition,
   };
 }
 
@@ -314,12 +424,12 @@ export function usePositioning(options: UsePositioningOptions): UsePositioningRe
  *
  * @example
  * ```tsx
- * const { getPositionStyles } = useContextMenuPositioning({
+ * const { positionStyles } = useContextMenuPositioning({
  *   contentRef: () => menuEl,
  *   position: () => ({ x: event.clientX, y: event.clientY }),
  * });
  *
- * <div style={getPositionStyles()}>Menu items</div>
+ * <div style={positionStyles()}>Menu items</div>
  * ```
  */
 export function useContextMenuPositioning(
@@ -329,7 +439,9 @@ export function useContextMenuPositioning(
   const estimatedHeight = options.estimatedHeight ?? DEFAULT_ESTIMATED_SIZE;
   const estimatedWidth = options.estimatedWidth ?? DEFAULT_ESTIMATED_SIZE;
 
-  const getPositionStyles = (): PositionStyles => {
+  const [positionStyles, setPositionStyles] = createSignal<PositionStyles>({});
+
+  createEffect(() => {
     const pos = options.position();
     const contentEl = options.contentRef();
     const menuHeight = contentEl?.offsetHeight || estimatedHeight;
@@ -351,10 +463,10 @@ export function useContextMenuPositioning(
       styles.left = `${pos.x}px`;
     }
 
-    return styles;
-  };
+    setPositionStyles(styles);
+  });
 
   return {
-    getPositionStyles,
+    positionStyles,
   };
 }

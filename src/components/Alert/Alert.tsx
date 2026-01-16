@@ -2,7 +2,7 @@ import { type Component, Show } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { ALERT_COLORS } from '../../constants';
 import {
-  CheckIcon,
+  CheckCircleIcon,
   CloseIcon,
   ErrorIcon,
   InfoIcon,
@@ -13,7 +13,7 @@ import type { AlertProps, AlertType } from './types';
 /** Icon component mapping by alert type */
 const ALERT_ICONS: Record<AlertType, Component<{ class?: string }>> = {
   info: InfoIcon,
-  success: CheckIcon,
+  success: CheckCircleIcon,
   warning: WarningIcon,
   error: ErrorIcon,
 };

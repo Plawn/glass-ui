@@ -17,7 +17,7 @@ export {
   ChevronRightIcon,
 } from './ChevronIcon';
 
-export { CheckIcon } from './CheckIcon';
+export { CheckIcon, CheckCircleIcon } from './CheckIcon';
 export { InfoIcon } from './InfoIcon';
 export { WarningIcon } from './WarningIcon';
 export { ErrorIcon } from './ErrorIcon';

@@ -128,7 +128,20 @@ export const Sidebar: Component<SidebarProps> = (props) => {
     <button
       type="button"
       onClick={handleCollapseToggle}
-      class="p-2 rounded-lg text-surface-500 dark:text-surface-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-surface-700 dark:hover:text-surface-200 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50"
+      class="
+        p-2 rounded-xl
+        text-surface-500 dark:text-surface-400
+        hover:text-surface-700 dark:hover:text-surface-200
+        transition-all duration-300 ease-out
+        backdrop-blur-md
+        bg-white/5 dark:bg-white/5
+        border border-white/10 dark:border-white/5
+        hover:bg-white/15 dark:hover:bg-white/10
+        hover:border-white/20 dark:hover:border-white/10
+        shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]
+        hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.05)]
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50
+      "
       aria-label={collapsed() ? 'Expand sidebar' : 'Collapse sidebar'}
     >
       <Show when={collapsed()} fallback={<ChevronLeftIcon class="w-4 h-4" />}>
@@ -143,7 +156,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
       {/* Header slot */}
       <Show when={props.header}>
         <div
-          class={`flex-shrink-0 border-b border-surface-200 dark:border-white/5 ${
+          class={`flex-shrink-0 border-b border-white/10 dark:border-white/5 ${
             collapsed() ? 'p-3' : 'px-4 py-4'
           }`}
         >
@@ -177,7 +190,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
 
       {/* Footer slot with collapse toggle */}
       <div
-        class={`flex-shrink-0 border-t border-surface-200 dark:border-white/5 ${
+        class={`flex-shrink-0 border-t border-white/10 dark:border-white/5 ${
           collapsed() ? 'p-2' : 'px-3 py-3'
         }`}
       >
@@ -207,7 +220,19 @@ export const Sidebar: Component<SidebarProps> = (props) => {
     <button
       type="button"
       onClick={() => setMobileOpen(true)}
-      class="p-2 rounded-lg glass-button hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-200 md:hidden"
+      class="
+        p-2.5 rounded-xl md:hidden
+        transition-all duration-300 ease-out
+        backdrop-blur-xl
+        bg-white/20 dark:bg-white/10
+        border border-white/30 dark:border-white/15
+        text-surface-700 dark:text-surface-300
+        hover:bg-white/30 dark:hover:bg-white/15
+        hover:border-white/40 dark:hover:border-white/20
+        shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_8px_rgba(0,0,0,0.08)]
+        hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_4px_12px_rgba(0,0,0,0.1)]
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50
+      "
       aria-label="Open navigation menu"
     >
       <svg

@@ -2,7 +2,7 @@ import { createIcon } from './createIcon';
 
 /** Warning icon - triangle with exclamation */
 export const WarningIcon = createIcon({
-  path: (
+  path: () => (
     <path
       stroke-linecap="round"
       stroke-linejoin="round"

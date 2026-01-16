@@ -2,45 +2,27 @@ import { type Component, For, Show, createUniqueId } from 'solid-js';
 import type { RadioGroupProps, RadioGroupSize } from './types';
 
 /**
- * Get size-specific classes for the radio indicator
+ * Size configuration for the radio indicator
  */
-const getIndicatorSizeClasses = (size: RadioGroupSize): { outer: string; inner: string } => {
-  switch (size) {
-    case 'sm':
-      return { outer: 'w-4 h-4', inner: 'w-1.5 h-1.5' };
-    case 'lg':
-      return { outer: 'w-6 h-6', inner: 'w-2.5 h-2.5' };
-    default:
-      return { outer: 'w-5 h-5', inner: 'w-2 h-2' };
-  }
-};
-
-/**
- * Get size-specific classes for the label text
- */
-const getLabelSizeClasses = (size: RadioGroupSize): string => {
-  switch (size) {
-    case 'sm':
-      return 'text-xs';
-    case 'lg':
-      return 'text-base';
-    default:
-      return 'text-sm';
-  }
-};
-
-/**
- * Get gap classes based on size
- */
-const getGapClasses = (size: RadioGroupSize): string => {
-  switch (size) {
-    case 'sm':
-      return 'gap-2';
-    case 'lg':
-      return 'gap-4';
-    default:
-      return 'gap-3';
-  }
+const sizeConfig: Record<RadioGroupSize, { outer: string; inner: string; gap: string; label: string }> = {
+  sm: {
+    outer: 'w-5 h-5',
+    inner: 'w-2 h-2',
+    gap: 'gap-2',
+    label: 'text-xs',
+  },
+  md: {
+    outer: 'w-6 h-6',
+    inner: 'w-2.5 h-2.5',
+    gap: 'gap-3',
+    label: 'text-sm',
+  },
+  lg: {
+    outer: 'w-7 h-7',
+    inner: 'w-3 h-3',
+    gap: 'gap-4',
+    label: 'text-base',
+  },
 };
 
 /**
@@ -66,10 +48,7 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
   const groupName = () => props.name ?? fallbackName;
   const size = () => props.size ?? 'md';
   const orientation = () => props.orientation ?? 'vertical';
-
-  const indicatorClasses = () => getIndicatorSizeClasses(size());
-  const labelClasses = () => getLabelSizeClasses(size());
-  const gapClasses = () => getGapClasses(size());
+  const config = () => sizeConfig[size()];
 
   const isOptionDisabled = (optionDisabled?: boolean) =>
     props.disabled || optionDisabled;
@@ -84,7 +63,7 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
       <div
         role="radiogroup"
         aria-label={props.label}
-        class={`flex ${gapClasses()} ${
+        class={`flex ${config().gap} ${
           orientation() === 'horizontal' ? 'flex-row flex-wrap' : 'flex-col'
         }`}
       >
@@ -96,38 +75,55 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
 
             return (
               <label
-                class={`inline-flex items-center ${gapClasses()} cursor-pointer ${
+                class={`inline-flex items-center ${config().gap} cursor-pointer select-none ${
                   disabled() ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
+                <input
+                  type="radio"
+                  id={optionId}
+                  name={groupName()}
+                  value={option.value}
+                  checked={isSelected()}
+                  disabled={disabled()}
+                  onChange={() => props.onChange(option.value)}
+                  class="sr-only"
+                />
+
+                {/* Radio indicator - glassmorphic circle */}
                 <div
-                  class={`${indicatorClasses().outer} flex items-center justify-center rounded-full transition-all duration-200 ${
-                    isSelected()
-                      ? 'bg-primary-500 dark:bg-primary-400 border-2 border-primary-500 dark:border-primary-400'
-                      : 'bg-surface-100/80 dark:bg-surface-800/80 border-2 border-surface-300 dark:border-surface-600 backdrop-blur-sm'
-                  } ${
-                    !disabled() && !isSelected()
-                      ? 'hover:border-primary-400 dark:hover:border-primary-500'
+                  class={`
+                    ${config().outer}
+                    relative flex items-center justify-center rounded-full
+                    transition-all duration-300 ease-out
+                    backdrop-blur-xl
+                    border
+                    ${isSelected()
+                      ? 'bg-accent-500/40 dark:bg-accent-400/30 border-accent-300/40 dark:border-accent-400/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_12px_rgba(0,0,0,0.1)]'
+                      : 'bg-white/10 dark:bg-white/5 border-white/20 dark:border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_6px_rgba(0,0,0,0.05)]'
+                    }
+                    ${!disabled() && !isSelected()
+                      ? 'hover:bg-white/20 dark:hover:bg-white/10 hover:border-white/30 dark:hover:border-white/20'
                       : ''
-                  }`}
+                    }
+                    ${disabled() ? 'pointer-events-none' : ''}
+                  `}
                 >
-                  <input
-                    type="radio"
-                    id={optionId}
-                    name={groupName()}
-                    value={option.value}
-                    checked={isSelected()}
-                    disabled={disabled()}
-                    onChange={() => props.onChange(option.value)}
-                    class="sr-only"
-                  />
-                  <div
-                    class={`${indicatorClasses().inner} rounded-full bg-white transition-all duration-200 ${
-                      isSelected() ? 'opacity-100 scale-100' : 'opacity-0 scale-0'
-                    }`}
+                  {/* Inner dot - glassmorphic */}
+                  <span
+                    class={`
+                      ${config().inner}
+                      rounded-full
+                      transition-all duration-300 ease-out
+                      ${isSelected()
+                        ? 'opacity-100 scale-100 bg-white/80 dark:bg-white/70 shadow-[0_1px_3px_rgba(0,0,0,0.2)]'
+                        : 'opacity-0 scale-0 bg-white/50'
+                      }
+                    `}
                   />
                 </div>
-                <span class={`${labelClasses()} text-surface-700 dark:text-surface-300`}>
+
+                <span class={`${config().label} text-surface-700 dark:text-surface-300`}>
                   {option.label}
                 </span>
               </label>

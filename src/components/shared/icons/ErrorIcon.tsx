@@ -2,7 +2,7 @@ import { createIcon } from './createIcon';
 
 /** Error icon - circle with exclamation mark */
 export const ErrorIcon = createIcon({
-  path: (
+  path: () => (
     <path
       stroke-linecap="round"
       stroke-linejoin="round"

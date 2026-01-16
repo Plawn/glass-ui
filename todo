@@ -3,9 +3,8 @@
 ### dark mode
 
 - accordion, first open has no visible data
-- modal, lg is larger than xl
-- divider trop légé
 - sidebar moche
-- text input required
+- text input required marche pas bien on dirait
+
 ## new
 - date range picker

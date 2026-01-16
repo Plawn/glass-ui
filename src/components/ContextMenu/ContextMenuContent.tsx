@@ -24,7 +24,7 @@ export const ContextMenuContent: Component<ContextMenuContentProps> = (props) =>
   let contentRef: HTMLDivElement | undefined;
 
   // Use the shared context menu positioning hook
-  const { getPositionStyles } = useContextMenuPositioning({
+  const { positionStyles } = useContextMenuPositioning({
     contentRef: () => contentRef,
     position: context.position,
   });
@@ -60,7 +60,7 @@ export const ContextMenuContent: Component<ContextMenuContentProps> = (props) =>
           ref={contentRef}
           role="menu"
           class={`fixed z-50 min-w-[160px] py-1.5 glass-card rounded-xl shadow-lg ${POPOVER_ENTER} ${props.class ?? ''}`}
-          style={{ ...getPositionStyles(), ...props.style }}
+          style={{ ...positionStyles(), ...props.style }}
         >
           {props.children}
         </div>

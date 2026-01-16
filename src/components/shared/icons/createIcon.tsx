@@ -8,8 +8,8 @@ export interface IconProps {
 
 /** Configuration for creating an icon component */
 export interface CreateIconOptions {
-  /** The SVG path element(s) to render */
-  path: JSX.Element;
+  /** Function that returns the SVG path element(s) - called on each render */
+  path: () => JSX.Element;
   /** Default size in pixels (default: 20) */
   defaultSize?: number;
   /** SVG viewBox attribute (default: "0 0 24 24") */
@@ -22,7 +22,7 @@ export interface CreateIconOptions {
  *
  * @example
  * export const CheckIcon = createIcon({
- *   path: <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />,
+ *   path: () => <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />,
  * });
  */
 export function createIcon(options: CreateIconOptions): Component<IconProps> {
@@ -42,7 +42,7 @@ export function createIcon(options: CreateIconOptions): Component<IconProps> {
         stroke-width="2"
         aria-hidden="true"
       >
-        {path}
+        {path()}
       </svg>
     );
   };

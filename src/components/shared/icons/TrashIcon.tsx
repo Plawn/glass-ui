@@ -2,7 +2,7 @@ import { createIcon } from './createIcon';
 
 /** Trash/delete icon for remove actions */
 export const TrashIcon = createIcon({
-  path: (
+  path: () => (
     <path
       stroke-linecap="round"
       stroke-linejoin="round"

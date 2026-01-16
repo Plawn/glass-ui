@@ -37,16 +37,20 @@ export interface UseFloatingContentOptions {
   /** Additional event handlers for the content container */
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
+  /** Whether to update position on scroll (default: false) */
+  updateOnScroll?: boolean;
 }
 
 /** Return type for useFloatingContent hook */
 export interface UseFloatingContentReturn {
-  /** Get position styles for the content element */
-  getPositionStyles: () => JSX.CSSProperties;
-  /** Get arrow styles for the optional arrow element */
-  getArrowStyles: () => JSX.CSSProperties;
+  /** Reactive position styles signal */
+  positionStyles: Accessor<JSX.CSSProperties>;
+  /** Reactive arrow styles signal */
+  arrowStyles: Accessor<JSX.CSSProperties>;
   /** Render the floating content with portal, positioning, and styling */
   FloatingContent: (props: FloatingContentProps) => JSX.Element;
+  /** Force recalculate position */
+  updatePosition: () => void;
 }
 
 /** Props for the FloatingContent component */
@@ -97,14 +101,17 @@ export function useFloatingContent(options: UseFloatingContentOptions): UseFloat
   const offset = options.offset ?? DEFAULT_OFFSET;
   const role = options.role ?? 'dialog';
   const ariaModal = options.ariaModal ?? false;
+  const updateOnScroll = options.updateOnScroll ?? false;
 
-  // Use the shared positioning hook
-  const { getPositionStyles, getArrowStyles } = usePositioning({
+  // Use the shared positioning hook with reactive signals
+  const { positionStyles, arrowStyles, updatePosition } = usePositioning({
     triggerRef: options.triggerRef,
     contentRef: options.contentRef,
+    isOpen: options.isOpen,
     placement: options.placement,
     direction: options.direction,
     offset,
+    updateOnScroll,
   });
 
   // Component for rendering the floating content
@@ -118,7 +125,7 @@ export function useFloatingContent(options: UseFloatingContentOptions): UseFloat
           <div
             ref={props.ref}
             class={`fixed z-50 glass-card rounded-xl shadow-lg ${POPOVER_ENTER} ${contentClass()}`}
-            style={getPositionStyles()}
+            style={positionStyles()}
             role={role}
             aria-modal={role === 'dialog' ? ariaModal : undefined}
             onMouseEnter={options.onMouseEnter}
@@ -128,7 +135,7 @@ export function useFloatingContent(options: UseFloatingContentOptions): UseFloat
             <Show when={showArrow()}>
               <div
                 class="glass-card"
-                style={getArrowStyles()}
+                style={arrowStyles()}
                 aria-hidden="true"
               />
             </Show>
@@ -139,8 +146,9 @@ export function useFloatingContent(options: UseFloatingContentOptions): UseFloat
   };
 
   return {
-    getPositionStyles,
-    getArrowStyles,
+    positionStyles,
+    arrowStyles,
     FloatingContent,
+    updatePosition,
   };
 }

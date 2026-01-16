@@ -34,7 +34,7 @@ export const Input: Component<InputProps> = (props) => {
         type={props.type ?? 'text'}
         id={props.id}
         name={props.name}
-        class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''} ${props.class ?? ''}`}
+        class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'glass-input-error' : ''} ${props.class ?? ''}`}
         placeholder={props.placeholder}
         value={props.value}
         disabled={props.disabled}

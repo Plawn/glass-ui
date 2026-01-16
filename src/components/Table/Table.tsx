@@ -1,6 +1,7 @@
 import type { Component, JSX } from 'solid-js';
 import { For, Show, createMemo, createSignal } from 'solid-js';
 import type { ComponentSize } from '../../types';
+import { Checkbox } from '../Input/Checkbox';
 import { ChevronDownIcon, ChevronUpIcon, SortIcon as SortIconBase } from '../shared/icons';
 import type {
   RowKey,
@@ -15,21 +16,18 @@ import type {
 // STYLE CONSTANTS (hoisted outside component for zero recalculation)
 // =============================================================================
 
-const SIZE_STYLES: Record<ComponentSize, { cell: string; header: string; checkbox: string }> = {
+const SIZE_STYLES: Record<ComponentSize, { cell: string; header: string }> = {
   sm: {
     cell: 'px-2 py-1.5 text-xs',
     header: 'px-2 py-2 text-[10px]',
-    checkbox: 'w-3.5 h-3.5',
   },
   md: {
     cell: 'px-4 py-3 text-sm',
     header: 'px-4 py-3 text-xs',
-    checkbox: 'w-4 h-4',
   },
   lg: {
     cell: 'px-6 py-4 text-base',
     header: 'px-6 py-4 text-sm',
-    checkbox: 'w-5 h-5',
   },
 };
 
@@ -85,32 +83,6 @@ const SortIcon: Component<{ direction: SortDirection; active: boolean }> = (prop
       <SortIconBase class="w-3.5 h-3.5" />
     </Show>
   </span>
-);
-
-const Checkbox: Component<{
-  checked: boolean;
-  indeterminate?: boolean;
-  onChange: (checked: boolean) => void;
-  size: ComponentSize;
-  disabled?: boolean;
-}> = (props) => (
-  <label class="relative inline-flex items-center cursor-pointer">
-    <input
-      type="checkbox"
-      checked={props.checked}
-      ref={(el) => {
-        if (el) el.indeterminate = props.indeterminate ?? false;
-      }}
-      onChange={(e) => props.onChange(e.currentTarget.checked)}
-      disabled={props.disabled}
-      class={`${SIZE_STYLES[props.size].checkbox} rounded border-2 border-surface-300 dark:border-surface-600 
-        bg-white/50 dark:bg-surface-800/50 
-        checked:bg-primary-500 checked:border-primary-500 
-        focus:ring-2 focus:ring-primary-500/30 focus:ring-offset-0
-        transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed
-        accent-primary-500`}
-    />
-  </label>
 );
 
 // Optimized: deterministic width based on index
@@ -449,7 +421,9 @@ export function Table<T extends Record<string, unknown>>(
                       <Show when={selectionMode()}>
                         <td class={`${sizeStyle().cell} text-center`}>
                           <div
-                            class={`animate-pulse bg-surface-200/50 dark:bg-surface-700/50 rounded ${sizeStyle().checkbox}`}
+                            class={`animate-pulse bg-surface-200/50 dark:bg-surface-700/50 rounded ${
+                              size() === 'sm' ? 'w-4 h-4' : size() === 'lg' ? 'w-6 h-6' : 'w-5 h-5'
+                            }`}
                           />
                         </td>
                       </Show>

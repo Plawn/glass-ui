@@ -29,7 +29,7 @@ export const Skeleton: Component<SkeletonProps> = (props) => {
 
   return (
     <div
-      class={`animate-pulse bg-surface-200/60 dark:bg-surface-700/40 ${borderRadius()} ${props.class ?? ''}`}
+      class={`animate-pulse bg-surface-200 dark:bg-surface-600/60 ${borderRadius()} ${props.class ?? ''}`}
       style={{
         width: width(),
         height: height(),
