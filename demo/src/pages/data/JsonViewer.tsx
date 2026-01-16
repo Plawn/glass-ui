@@ -1,5 +1,5 @@
 import { JsonViewer } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, FeatureList } from '../../components/demo';
 
 const basicData = {
   name: "John Doe",
@@ -153,13 +153,15 @@ export default function JsonViewerPage() {
       </DemoSection>
 
       <DemoSection title="Features" card={false}>
-        <ul class="list-disc list-inside space-y-2 text-surface-600 dark:text-surface-400">
-          <li>Collapsible objects and arrays</li>
-          <li>Syntax coloring for different data types</li>
-          <li>Copy to clipboard functionality</li>
-          <li>Expand/collapse all buttons</li>
-          <li>Shows item counts for arrays and objects</li>
-        </ul>
+        <FeatureList
+          items={[
+            'Collapsible objects and arrays',
+            'Syntax coloring for different data types',
+            'Copy to clipboard functionality',
+            'Expand/collapse all buttons',
+            'Shows item counts for arrays and objects',
+          ]}
+        />
       </DemoSection>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Slider, Card, CodeBlock } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
 
 export default function SliderPage() {
   const [basicValue, setBasicValue] = createSignal(50);
@@ -63,9 +63,7 @@ export default function SliderPage() {
             label="Temperature"
             showValue
           />
-          <p class="text-sm text-surface-600 dark:text-surface-400">
-            Range: 16-30, Step: 0.5
-          </p>
+          <StateDisplay label="Range" value="16-30, Step: 0.5" />
         </div>
       </DemoSection>
 

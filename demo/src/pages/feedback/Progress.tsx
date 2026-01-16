@@ -1,6 +1,6 @@
 import { Progress } from 'glass-ui-solid';
 import { createSignal, onMount, onCleanup } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay, VariantShowcase } from '../../components/demo';
 
 export default function ProgressPage() {
   const [dynamicProgress, setDynamicProgress] = createSignal(0);
@@ -29,16 +29,11 @@ export default function ProgressPage() {
         title="Variants"
         code={`<Progress value={60} variant="bar" />
 <Progress value={60} variant="circular" />`}
-        cardClass="p-6 space-y-6"
+        card={false}
       >
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Bar (default)</p>
-          <Progress value={60} variant="bar" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Circular</p>
-          <Progress value={60} variant="circular" />
-        </div>
+        <VariantShowcase variants={['bar', 'circular'] as const} label="Variant" columns={2}>
+          {(variant) => <Progress value={60} variant={variant} />}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection
@@ -47,24 +42,11 @@ export default function ProgressPage() {
 <Progress value={60} color="success" />
 <Progress value={60} color="warning" />
 <Progress value={60} color="error" />`}
-        cardClass="p-6 space-y-4"
+        card={false}
       >
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Primary</p>
-          <Progress value={60} color="primary" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Success</p>
-          <Progress value={60} color="success" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Warning</p>
-          <Progress value={60} color="warning" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Error</p>
-          <Progress value={60} color="error" />
-        </div>
+        <VariantShowcase variants={['primary', 'success', 'warning', 'error'] as const} label="Color" columns={2}>
+          {(color) => <Progress value={60} color={color} />}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection
@@ -72,36 +54,22 @@ export default function ProgressPage() {
         code={`<Progress value={60} size="sm" />
 <Progress value={60} size="md" />
 <Progress value={60} size="lg" />`}
-        cardClass="p-6 space-y-4"
+        card={false}
       >
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Small</p>
-          <Progress value={60} size="sm" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Medium (default)</p>
-          <Progress value={60} size="md" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Large</p>
-          <Progress value={60} size="lg" />
-        </div>
+        <VariantShowcase variants={['sm', 'md', 'lg'] as const} label="Size" columns={3}>
+          {(size) => <Progress value={60} size={size} />}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection
         title="Show Value"
         code={`<Progress value={75} showValue />
 <Progress value={75} variant="circular" size="lg" showValue />`}
-        cardClass="p-6 space-y-6"
+        card={false}
       >
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Bar with value</p>
-          <Progress value={75} showValue />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Circular with value</p>
-          <Progress value={75} variant="circular" size="lg" showValue />
-        </div>
+        <VariantShowcase variants={['bar', 'circular'] as const} label="Variant" columns={2}>
+          {(variant) => <Progress value={75} variant={variant} size={variant === 'circular' ? 'lg' : 'md'} showValue />}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection
@@ -123,7 +91,7 @@ export default function ProgressPage() {
         cardClass="p-6 space-y-6"
       >
         <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Animated progress: {dynamicProgress()}%</p>
+          <StateDisplay label="Animated progress" value={`${dynamicProgress()}%`} />
           <Progress value={dynamicProgress()} color="primary" showValue />
         </div>
         <div class="flex items-center gap-4">

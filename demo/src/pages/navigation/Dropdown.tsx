@@ -1,6 +1,6 @@
 import { Dropdown, Button, Checkbox } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
 
 export default function DropdownPage() {
   const [open, setOpen] = createSignal(false);
@@ -216,12 +216,14 @@ export default function DropdownPage() {
       </DemoSection>
 
       <DemoSection title="Behavior" card={false}>
-        <ul class="list-disc list-inside text-surface-600 dark:text-surface-400 space-y-2">
-          <li>Closes on click outside</li>
-          <li>Closes on Escape key</li>
-          <li>Positions with viewport boundary detection</li>
-          <li>Uses Portal to render outside component tree</li>
-        </ul>
+        <FeatureList
+          items={[
+            'Closes on click outside',
+            'Closes on Escape key',
+            'Positions with viewport boundary detection',
+            'Uses Portal to render outside component tree',
+          ]}
+        />
       </DemoSection>
     </div>
   );

@@ -1,5 +1,5 @@
 import { Spinner, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, VariantShowcase } from '../../components/demo';
 
 export default function SpinnerPage() {
   return (

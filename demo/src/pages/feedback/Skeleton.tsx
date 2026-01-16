@@ -1,5 +1,5 @@
 import { Skeleton } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, VariantShowcase } from '../../components/demo';
 
 export default function SkeletonPage() {
   return (
@@ -20,20 +20,17 @@ export default function SkeletonPage() {
         code={`<Skeleton variant="text" width="100%" />
 <Skeleton variant="rectangular" width="200px" height="100px" />
 <Skeleton variant="circular" width="48px" height="48px" />`}
-        cardClass="p-6 space-y-6"
+        card={false}
       >
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Text</p>
-          <Skeleton variant="text" width="100%" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Rectangular</p>
-          <Skeleton variant="rectangular" width="200px" height="100px" />
-        </div>
-        <div class="space-y-2">
-          <p class="text-sm text-surface-600 dark:text-surface-400">Circular</p>
-          <Skeleton variant="circular" width="48px" height="48px" />
-        </div>
+        <VariantShowcase variants={['text', 'rectangular', 'circular'] as const} label="Variant" columns={3}>
+          {(variant) => (
+            <Skeleton
+              variant={variant}
+              width={variant === 'text' ? '100%' : variant === 'rectangular' ? '200px' : '48px'}
+              height={variant === 'text' ? undefined : variant === 'rectangular' ? '100px' : '48px'}
+            />
+          )}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection

@@ -1,6 +1,6 @@
 import { SegmentedControl, Card } from 'glass-ui-solid';
 import { createSignal, Show } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay, FeatureList } from '../../components/demo';
 
 export default function SegmentedControlPage() {
   const [view, setView] = createSignal<'list' | 'grid' | 'table'>('list');
@@ -37,9 +37,7 @@ export default function SegmentedControlPage() {
   aria-label="View mode"
 />`}
       >
-        <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
-          Selected: <span class="font-mono">{view()}</span>
-        </p>
+        <StateDisplay label="Selected" value={view()} />
         <SegmentedControl
           value={view()}
           onChange={setView}
@@ -143,9 +141,7 @@ export default function SegmentedControlPage() {
   ]}
 />`}
       >
-        <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
-          Selected: <span class="font-mono">{plan()}</span>
-        </p>
+        <StateDisplay label="Selected" value={plan()} />
         <SegmentedControl
           value={plan()}
           onChange={setPlan}
@@ -173,9 +169,7 @@ export default function SegmentedControlPage() {
   ]}
 />`}
       >
-        <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
-          Items per page: <span class="font-mono">{count()}</span>
-        </p>
+        <StateDisplay label="Items per page" value={count()} />
         <SegmentedControl<number>
           value={count()}
           onChange={setCount}

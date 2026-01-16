@@ -1,6 +1,6 @@
 import { Select } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
 
 interface User {
   id: number;
@@ -61,9 +61,7 @@ export default function SelectPage() {
             <option value="orange">Orange</option>
             <option value="grape">Grape</option>
           </Select>
-          <p class="text-sm text-surface-500">
-            Selected: {fruit() || '(none)'}
-          </p>
+          <StateDisplay label="Selected" value={fruit() || '(none)'} />
         </div>
       </DemoSection>
 
@@ -93,9 +91,7 @@ export default function SelectPage() {
             emptyOption="Select a language..."
             options={languageOptions}
           />
-          <p class="text-sm text-surface-500">
-            Selected: {language() || '(none)'}
-          </p>
+          <StateDisplay label="Selected" value={language() || '(none)'} />
         </div>
       </DemoSection>
 
@@ -131,9 +127,7 @@ const userOptions = [
             emptyOption="Select a user..."
             options={userOptions}
           />
-          <p class="text-sm text-surface-500">
-            Selected: {selectedUser() ? `${selectedUser()!.name} (${selectedUser()!.role})` : '(none)'}
-          </p>
+          <StateDisplay label="Selected" value={selectedUser() ? `${selectedUser()!.name} (${selectedUser()!.role})` : '(none)'} />
         </div>
       </DemoSection>
 

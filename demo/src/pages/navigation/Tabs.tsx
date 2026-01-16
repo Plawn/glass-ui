@@ -1,7 +1,7 @@
 import { Tabs } from 'glass-ui-solid';
 import { createSignal, For } from 'solid-js';
 import type { TabItem } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay, VariantShowcase } from '../../components/demo';
 
 export default function TabsPage() {
   const [controlledTab, setControlledTab] = createSignal('tab1');
@@ -64,16 +64,9 @@ import type { TabItem } from 'glass-ui-solid';`}
 <Tabs size="lg" items={items} />`}
         card={false}
       >
-        <div class="space-y-6">
-          <For each={['sm', 'md', 'lg'] as const}>
-            {(size) => (
-              <div class="p-6 glass-card rounded-xl">
-                <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">Size: {size}</p>
-                <Tabs size={size} items={basicItems} />
-              </div>
-            )}
-          </For>
-        </div>
+        <VariantShowcase variants={['sm', 'md', 'lg']} label="Size">
+          {(size) => <Tabs size={size} items={basicItems} />}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection
@@ -130,9 +123,7 @@ import type { TabItem } from 'glass-ui-solid';`}
 <Button onClick={() => setActiveTab('tab1')}>Go to Tab 1</Button>
 <Button onClick={() => setActiveTab('tab2')}>Go to Tab 2</Button>`}
       >
-        <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
-          Active tab: <span class="font-mono">{controlledTab()}</span>
-        </p>
+        <StateDisplay label="Active tab" value={controlledTab()} />
         <Tabs
           activeTab={controlledTab()}
           onTabChange={setControlledTab}

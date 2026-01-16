@@ -1,6 +1,6 @@
 import { Switch, Card } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
 
 export default function SwitchPage() {
   const [isEnabled, setIsEnabled] = createSignal(false);
@@ -35,9 +35,7 @@ export default function SwitchPage() {
           onChange={setIsEnabled}
           label="Enable feature"
         />
-        <p class="mt-4 text-sm text-surface-600 dark:text-surface-400">
-          Status: {isEnabled() ? 'Enabled' : 'Disabled'}
-        </p>
+        <StateDisplay label="Status" value={isEnabled() ? 'Enabled' : 'Disabled'} />
       </DemoSection>
 
       <DemoSection

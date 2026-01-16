@@ -1,7 +1,7 @@
 import { createSignal } from 'solid-js';
 import { Sidebar, Card, Button } from 'glass-ui-solid';
 import type { SidebarItem } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, FeatureList } from '../../components/demo';
 
 // Icon components for demo
 const HomeIcon = () => (
@@ -270,15 +270,18 @@ export default function SidebarPage() {
       </DemoSection>
 
       <DemoSection title="Features">
-        <ul class="list-disc list-inside space-y-2 text-surface-600 dark:text-surface-400">
-          <li>Automatic mobile drawer behavior below 768px viewport width</li>
-          <li>Escape key closes mobile drawer</li>
-          <li>Body scroll lock when mobile drawer is open</li>
-          <li>Nested navigation with expand/collapse animations</li>
-          <li>Badge support for notification counts</li>
-          <li>Smooth width transitions when collapsing</li>
-          <li>Tooltips on collapsed items showing full labels</li>
-        </ul>
+        <FeatureList
+          checkmarks
+          items={[
+            'Automatic mobile drawer behavior below 768px viewport width',
+            'Escape key closes mobile drawer',
+            'Body scroll lock when mobile drawer is open',
+            'Nested navigation with expand/collapse animations',
+            'Badge support for notification counts',
+            'Smooth width transitions when collapsing',
+            'Tooltips on collapsed items showing full labels',
+          ]}
+        />
       </DemoSection>
     </div>
   );

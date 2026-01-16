@@ -1,6 +1,6 @@
 import { Autocomplete, CodeBlock, Card } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay, FeatureList } from '../../components/demo';
 
 const fruits = [
   { value: 'apple', label: 'Apple' },
@@ -80,9 +80,7 @@ export default function AutocompletePage() {
           onChange={setBasicValue}
           placeholder="Select a fruit..."
         />
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Selected: {basicValue() || 'None'}
-        </p>
+        <StateDisplay label="Selected" value={basicValue() || 'None'} />
       </DemoSection>
 
       <DemoSection
@@ -124,9 +122,7 @@ export default function AutocompletePage() {
           placeholder="Type or select a fruit..."
           allowCustomValue
         />
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Value: {customValue() || 'None'}
-        </p>
+        <StateDisplay label="Value" value={customValue() || 'None'} />
       </DemoSection>
 
       <DemoSection

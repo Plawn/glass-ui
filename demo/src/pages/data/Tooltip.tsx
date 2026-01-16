@@ -1,5 +1,5 @@
 import { Tooltip, Button } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
 
 export default function TooltipPage() {
   return (
@@ -150,26 +150,14 @@ export default function TooltipPage() {
       </DemoSection>
 
       <DemoSection title="Accessibility">
-        <ul class="space-y-2 text-surface-600 dark:text-surface-400">
-          <li class="flex items-start gap-2">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Uses <CodePill>role="tooltip"</CodePill> for screen readers</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Shows on focus for keyboard users</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Automatically hides when focus leaves the trigger element</span>
-          </li>
-        </ul>
+        <FeatureList
+          checkmarks
+          items={[
+            <>Uses <CodePill>role="tooltip"</CodePill> for screen readers</>,
+            'Shows on focus for keyboard users',
+            'Automatically hides when focus leaves the trigger element',
+          ]}
+        />
       </DemoSection>
 
       <DemoSection title="Props" card={false}>

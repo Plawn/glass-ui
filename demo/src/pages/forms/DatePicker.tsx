@@ -1,6 +1,6 @@
 import { DatePicker, DateRangePicker, CodeBlock, Card, type DateRange } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay } from '../../components/demo';
 
 export default function DatePickerPage() {
   const [basicDate, setBasicDate] = createSignal<Date | null>(null);
@@ -58,9 +58,7 @@ export default function DatePickerPage() {
           onChange={setBasicDate}
           placeholder="Select a date..."
         />
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Selected: {basicDate()?.toLocaleDateString() || 'None'}
-        </p>
+        <StateDisplay label="Selected" value={basicDate()?.toLocaleDateString() || 'None'} />
       </DemoSection>
 
       <DemoSection
@@ -165,9 +163,7 @@ const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() 
           max={maxDate}
           clearable
         />
-        <p class="mt-4 text-xs text-surface-500 dark:text-surface-400">
-          Range: {minDate.toLocaleDateString()} to {maxDate.toLocaleDateString()}
-        </p>
+        <StateDisplay label="Range" value={`${minDate.toLocaleDateString()} to ${maxDate.toLocaleDateString()}`} />
       </DemoSection>
 
       <DemoSection
@@ -368,9 +364,7 @@ function EventForm() {
           onChange={setBasicRange}
           placeholder="Select date range..."
         />
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Selected: {basicRange().start?.toLocaleDateString() || 'None'} - {basicRange().end?.toLocaleDateString() || 'None'}
-        </p>
+        <StateDisplay label="Selected" value={`${basicRange().start?.toLocaleDateString() || 'None'} - ${basicRange().end?.toLocaleDateString() || 'None'}`} />
       </DemoSection>
 
       <DemoSection
@@ -463,9 +457,7 @@ function EventForm() {
           max={maxDate}
           clearable
         />
-        <p class="mt-4 text-xs text-surface-500 dark:text-surface-400">
-          Available: {minDate.toLocaleDateString()} to {maxDate.toLocaleDateString()}
-        </p>
+        <StateDisplay label="Available" value={`${minDate.toLocaleDateString()} to ${maxDate.toLocaleDateString()}`} />
       </DemoSection>
 
       <DemoSection title="DateRangePicker Props">

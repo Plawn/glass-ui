@@ -1,7 +1,7 @@
 import { Table, Badge } from 'glass-ui-solid';
 import type { TableColumn } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection } from '../../components/demo';
+import { PageHeader, DemoSection, StateDisplay, VariantShowcase } from '../../components/demo';
 
 interface User {
   id: number;
@@ -116,9 +116,7 @@ const data = [
         card={false}
       >
         <div class="space-y-4">
-          <p class="text-sm text-surface-600 dark:text-surface-400">
-            Selected: {selectedKeys().size} row(s)
-          </p>
+          <StateDisplay label="Selected" value={`${selectedKeys().size} row(s)`} />
           <Table
             columns={basicColumns}
             data={sampleData}
@@ -158,26 +156,9 @@ const data = [
 <Table variant="striped" {...props} />`}
         card={false}
       >
-        <div class="space-y-6">
-          <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              Default
-            </h3>
-            <Table columns={basicColumns} data={sampleData.slice(0, 3)} variant="default" />
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              Bordered
-            </h3>
-            <Table columns={basicColumns} data={sampleData.slice(0, 3)} variant="bordered" />
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-              Striped
-            </h3>
-            <Table columns={basicColumns} data={sampleData.slice(0, 3)} variant="striped" />
-          </div>
-        </div>
+        <VariantShowcase variants={['default', 'bordered', 'striped']} label="Variant">
+          {(variant) => <Table columns={basicColumns} data={sampleData.slice(0, 3)} variant={variant} />}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection
@@ -187,20 +168,9 @@ const data = [
 <Table size="lg" {...props} />`}
         card={false}
       >
-        <div class="space-y-6">
-          <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Small</h3>
-            <Table columns={basicColumns} data={sampleData.slice(0, 2)} size="sm" />
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Medium</h3>
-            <Table columns={basicColumns} data={sampleData.slice(0, 2)} size="md" />
-          </div>
-          <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Large</h3>
-            <Table columns={basicColumns} data={sampleData.slice(0, 2)} size="lg" />
-          </div>
-        </div>
+        <VariantShowcase variants={['sm', 'md', 'lg']} label="Size">
+          {(size) => <Table columns={basicColumns} data={sampleData.slice(0, 2)} size={size} />}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection

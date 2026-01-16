@@ -1,6 +1,6 @@
 import { RadioGroup } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
 
 export default function RadioGroupPage() {
   const [selectedFruit, setSelectedFruit] = createSignal('apple');
@@ -67,9 +67,7 @@ const options = [
           onChange={setSelectedFruit}
           label="Select a fruit"
         />
-        <p class="mt-4 text-sm text-surface-600 dark:text-surface-400">
-          Selected: {selectedFruit()}
-        </p>
+        <StateDisplay label="Selected" value={selectedFruit()} />
       </DemoSection>
 
       <DemoSection

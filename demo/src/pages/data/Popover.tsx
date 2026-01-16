@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js';
 import { Popover, Button, Avatar } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
 
 export default function PopoverPage() {
   const [controlled, setControlled] = createSignal(false);
@@ -252,32 +252,15 @@ export default function PopoverPage() {
       </DemoSection>
 
       <DemoSection title="Behavior">
-        <ul class="space-y-2 text-surface-600 dark:text-surface-400">
-          <li class="flex items-start gap-2">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Closes on click outside the popover</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Closes on Escape key press</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Positions with viewport boundary detection</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <svg class="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            <span>Uses <CodePill>aria-expanded</CodePill> and <CodePill>aria-haspopup</CodePill> for accessibility</span>
-          </li>
-        </ul>
+        <FeatureList
+          checkmarks
+          items={[
+            'Closes on click outside the popover',
+            'Closes on Escape key press',
+            'Positions with viewport boundary detection',
+            <>Uses <CodePill>aria-expanded</CodePill> and <CodePill>aria-haspopup</CodePill> for accessibility</>,
+          ]}
+        />
       </DemoSection>
 
       <DemoSection title="Props" card={false}>

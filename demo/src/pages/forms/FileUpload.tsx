@@ -1,6 +1,6 @@
 import { FileUpload, Card, CodeBlock } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay, FeatureList } from '../../components/demo';
 
 export default function FileUploadPage() {
   const [basicFiles, setBasicFiles] = createSignal<File[]>([]);
@@ -38,9 +38,7 @@ export default function FileUploadPage() {
           description="Drag and drop files here or click to browse"
           multiple
         />
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Files selected: {basicFiles().length}
-        </p>
+        <StateDisplay label="Files selected" value={basicFiles().length} />
       </DemoSection>
 
       <DemoSection
@@ -78,9 +76,7 @@ export default function FileUploadPage() {
           description="Upload a single image file"
           accept="image/*"
         />
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          {singleFile().length > 0 ? `Selected: ${singleFile()[0].name}` : 'No file selected'}
-        </p>
+        <StateDisplay label="Selected" value={singleFile().length > 0 ? singleFile()[0].name : 'No file selected'} />
       </DemoSection>
 
       <DemoSection
@@ -104,9 +100,7 @@ export default function FileUploadPage() {
           maxSize={5 * 1024 * 1024}
           maxFiles={3}
         />
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Files: {limitedFiles().length} / 3
-        </p>
+        <StateDisplay label="Files" value={`${limitedFiles().length} / 3`} />
       </DemoSection>
 
       <DemoSection
@@ -165,14 +159,17 @@ export default function FileUploadPage() {
         card={false}
       >
         <Card class="p-6">
-          <ul class="space-y-2 text-surface-600 dark:text-surface-400">
-            <li><strong>Drag and Drop</strong> - Drop files directly onto the upload zone</li>
-            <li><strong>Click to Browse</strong> - Click the zone to open file browser</li>
-            <li><strong>File Type Filtering</strong> - Use accept prop to limit file types</li>
-            <li><strong>Size Validation</strong> - Automatically validates file sizes</li>
-            <li><strong>File List</strong> - Shows uploaded files with remove buttons</li>
-            <li><strong>Keyboard Accessible</strong> - Full keyboard navigation support</li>
-          </ul>
+          <FeatureList
+            items={[
+              'Drag and Drop - Drop files directly onto the upload zone',
+              'Click to Browse - Click the zone to open file browser',
+              'File Type Filtering - Use accept prop to limit file types',
+              'Size Validation - Automatically validates file sizes',
+              'File List - Shows uploaded files with remove buttons',
+              'Keyboard Accessible - Full keyboard navigation support',
+            ]}
+            checkmarks
+          />
         </Card>
       </DemoSection>
 

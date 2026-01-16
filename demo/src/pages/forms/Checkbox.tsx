@@ -1,6 +1,6 @@
 import { Checkbox } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
 
 export default function CheckboxPage() {
   const [checked, setChecked] = createSignal(false);
@@ -35,9 +35,7 @@ export default function CheckboxPage() {
             checked={checked()}
             onChange={setChecked}
           />
-          <p class="text-sm text-surface-500">
-            Checked: {checked() ? 'true' : 'false'}
-          </p>
+          <StateDisplay label="Checked" value={checked()} />
         </div>
       </DemoSection>
 

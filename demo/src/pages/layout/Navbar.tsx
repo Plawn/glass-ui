@@ -1,7 +1,7 @@
 import { createSignal } from 'solid-js';
 import { Navbar, Card, Button } from 'glass-ui-solid';
 import type { NavbarItem } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
 
 const basicCode = `<Navbar
   brand={
@@ -218,24 +218,30 @@ export default function NavbarPage() {
       </DemoSection>
 
       <DemoSection title="Features">
-        <ul class="list-disc list-inside space-y-2 text-surface-600 dark:text-surface-400">
-          <li>Responsive mobile menu with hamburger toggle</li>
-          <li>Escape key closes mobile menu</li>
-          <li>Smooth background transition on scroll (transparent mode)</li>
-          <li>Glass effect background with backdrop blur</li>
-          <li>Support for both link and button navigation items</li>
-          <li>Actions slot for additional buttons or icons</li>
-          <li>Active state styling for navigation items</li>
-        </ul>
+        <FeatureList
+          checkmarks
+          items={[
+            'Responsive mobile menu with hamburger toggle',
+            'Escape key closes mobile menu',
+            'Smooth background transition on scroll (transparent mode)',
+            'Glass effect background with backdrop blur',
+            'Support for both link and button navigation items',
+            'Actions slot for additional buttons or icons',
+            'Active state styling for navigation items',
+          ]}
+        />
       </DemoSection>
 
       <DemoSection title="Accessibility">
-        <ul class="list-disc list-inside space-y-2 text-surface-600 dark:text-surface-400">
-          <li>Uses semantic <CodePill>&lt;nav&gt;</CodePill> element with <CodePill>aria-label</CodePill></li>
-          <li>Mobile menu button has <CodePill>aria-expanded</CodePill> and <CodePill>aria-controls</CodePill></li>
-          <li>Mobile menu has <CodePill>aria-hidden</CodePill> when closed</li>
-          <li>Focus visible ring on interactive elements</li>
-        </ul>
+        <FeatureList
+          checkmarks
+          items={[
+            <>Uses semantic <CodePill>&lt;nav&gt;</CodePill> element with <CodePill>aria-label</CodePill></>,
+            <>Mobile menu button has <CodePill>aria-expanded</CodePill> and <CodePill>aria-controls</CodePill></>,
+            <>Mobile menu has <CodePill>aria-hidden</CodePill> when closed</>,
+            'Focus visible ring on interactive elements',
+          ]}
+        />
       </DemoSection>
     </div>
   );

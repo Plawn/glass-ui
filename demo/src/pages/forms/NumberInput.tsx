@@ -1,6 +1,6 @@
 import { NumberInput, Card } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay, FeatureList } from '../../components/demo';
 
 export default function NumberInputPage() {
   const [basicValue, setBasicValue] = createSignal(5);
@@ -43,9 +43,7 @@ export default function NumberInputPage() {
             placeholder="Enter a number"
           />
         </div>
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Current value: {basicValue()}
-        </p>
+        <StateDisplay label="Current value" value={basicValue()} />
       </DemoSection>
 
       <DemoSection
@@ -67,9 +65,7 @@ export default function NumberInputPage() {
             max={100}
           />
         </div>
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Value is clamped between 0 and 100
-        </p>
+        <StateDisplay label="Info" value="Value is clamped between 0 and 100" />
       </DemoSection>
 
       <DemoSection
@@ -91,9 +87,7 @@ export default function NumberInputPage() {
             min={0}
           />
         </div>
-        <p class="mt-4 text-sm text-surface-500 dark:text-surface-400">
-          Step: 0.25 | Current value: {stepValue().toFixed(2)}
-        </p>
+        <StateDisplay label="Step: 0.25 | Current value" value={stepValue().toFixed(2)} />
       </DemoSection>
 
       <DemoSection
@@ -189,10 +183,12 @@ export default function NumberInputPage() {
         card={false}
       >
         <Card class="p-6">
-          <ul class="space-y-2 text-surface-600 dark:text-surface-400">
-            <li><span class="font-mono text-xs bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded">Arrow Up</span> - Increment value by step</li>
-            <li><span class="font-mono text-xs bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded">Arrow Down</span> - Decrement value by step</li>
-          </ul>
+          <FeatureList
+            items={[
+              'Arrow Up - Increment value by step',
+              'Arrow Down - Decrement value by step',
+            ]}
+          />
         </Card>
       </DemoSection>
     </div>

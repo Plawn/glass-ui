@@ -1,6 +1,6 @@
 import { Stepper, CodeBlock, Card, Button } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay, VariantShowcase } from '../../components/demo';
 
 export default function StepperPage() {
   const [currentStep, setCurrentStep] = createSignal(1);
@@ -77,9 +77,7 @@ const steps = [
             Next
           </Button>
         </div>
-        <p class="mt-4 text-center text-sm text-surface-500 dark:text-surface-400">
-          Step {currentStep() + 1} of {basicSteps.length}
-        </p>
+        <StateDisplay label="Step" value={`${currentStep() + 1} of ${basicSteps.length}`} />
       </DemoSection>
 
       <DemoSection
@@ -149,9 +147,7 @@ const steps = [
           onStepClick={setClickableStep}
           allowClickPrevious
         />
-        <p class="mt-4 text-center text-sm text-surface-500 dark:text-surface-400">
-          Click on completed steps to navigate back
-        </p>
+        <StateDisplay label="Tip" value="Click on completed steps to navigate back" />
       </DemoSection>
 
       <DemoSection
@@ -160,32 +156,15 @@ const steps = [
 <Stepper steps={steps} currentStep={1} size="md" />
 <Stepper steps={steps} currentStep={1} size="lg" />`}
       >
-        <div class="space-y-8">
-          <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">Small</p>
+        <VariantShowcase variants={['sm', 'md', 'lg'] as const} label="Size">
+          {(size) => (
             <Stepper
               steps={basicSteps}
               currentStep={1}
-              size="sm"
+              size={size}
             />
-          </div>
-          <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">Medium (default)</p>
-            <Stepper
-              steps={basicSteps}
-              currentStep={1}
-              size="md"
-            />
-          </div>
-          <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">Large</p>
-            <Stepper
-              steps={basicSteps}
-              currentStep={1}
-              size="lg"
-            />
-          </div>
-        </div>
+          )}
+        </VariantShowcase>
       </DemoSection>
 
       <DemoSection

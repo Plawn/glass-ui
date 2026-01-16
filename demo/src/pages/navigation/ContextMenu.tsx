@@ -7,7 +7,7 @@ import {
   createContextMenu,
 } from 'glass-ui-solid';
 import { createSignal, For } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
 
 interface FileItem {
   id: string;
@@ -336,12 +336,14 @@ menu.close();`}
       </DemoSection>
 
       <DemoSection title="Behavior" card={false}>
-        <ul class="list-disc list-inside text-surface-600 dark:text-surface-400 space-y-2">
-          <li>Appears at cursor position with viewport boundary detection</li>
-          <li>Closes on click outside, Escape key, or item selection</li>
-          <li>Prevents browser's default context menu</li>
-          <li>Renders via Portal for proper stacking</li>
-        </ul>
+        <FeatureList
+          items={[
+            'Appears at cursor position with viewport boundary detection',
+            'Closes on click outside, Escape key, or item selection',
+            "Prevents browser's default context menu",
+            'Renders via Portal for proper stacking',
+          ]}
+        />
       </DemoSection>
 
       <DemoSection title="Accessibility" card={false}>

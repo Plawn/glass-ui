@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js';
 import { Collapsible, Card, Button } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
 
 const basicCode = `<Collapsible
   trigger={
@@ -191,12 +191,15 @@ export default function CollapsiblePage() {
       </DemoSection>
 
       <DemoSection title="Accessibility">
-        <ul class="list-disc list-inside space-y-2 text-surface-600 dark:text-surface-400">
-          <li>Trigger has <CodePill>role="button"</CodePill> with proper keyboard support (Enter/Space)</li>
-          <li>Uses <CodePill>aria-expanded</CodePill> to indicate open state</li>
-          <li>Uses <CodePill>aria-controls</CodePill> to link trigger to content</li>
-          <li>Disabled state is communicated via <CodePill>aria-disabled</CodePill></li>
-        </ul>
+        <FeatureList
+          checkmarks
+          items={[
+            <>Trigger has <CodePill>role="button"</CodePill> with proper keyboard support (Enter/Space)</>,
+            <>Uses <CodePill>aria-expanded</CodePill> to indicate open state</>,
+            <>Uses <CodePill>aria-controls</CodePill> to link trigger to content</>,
+            <>Disabled state is communicated via <CodePill>aria-disabled</CodePill></>,
+          ]}
+        />
       </DemoSection>
     </div>
   );

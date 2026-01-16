@@ -1,6 +1,6 @@
 import { Textarea } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
 
 export default function TextareaPage() {
   const [value, setValue] = createSignal('');
@@ -37,9 +37,7 @@ export default function TextareaPage() {
             placeholder="Enter your message..."
             rows={4}
           />
-          <p class="text-sm text-surface-500">
-            Current value: {value() || '(empty)'}
-          </p>
+          <StateDisplay label="Current value" value={value() || '(empty)'} />
         </div>
       </DemoSection>
 

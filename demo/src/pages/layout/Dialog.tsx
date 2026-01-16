@@ -1,6 +1,6 @@
 import { Dialog, Button, useDisclosure, Card } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
 
 const basicExample = `import { Dialog, Button, useDisclosure } from 'glass-ui-solid';
 
@@ -164,12 +164,15 @@ export default function DialogPage() {
       </DemoSection>
 
       <DemoSection title="Accessibility">
-        <ul class="space-y-2 text-surface-600 dark:text-surface-400 text-sm">
-          <li><CodePill>role="alertdialog"</CodePill> for confirmation dialogs</li>
-          <li><CodePill>aria-labelledby</CodePill> pointing to title</li>
-          <li><CodePill>aria-describedby</CodePill> pointing to description</li>
-          <li>Focus management on open/close</li>
-        </ul>
+        <FeatureList
+          checkmarks
+          items={[
+            <><CodePill>role="alertdialog"</CodePill> for confirmation dialogs</>,
+            <><CodePill>aria-labelledby</CodePill> pointing to title</>,
+            <><CodePill>aria-describedby</CodePill> pointing to description</>,
+            'Focus management on open/close',
+          ]}
+        />
       </DemoSection>
     </div>
   );

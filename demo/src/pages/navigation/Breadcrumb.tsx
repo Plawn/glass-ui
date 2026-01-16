@@ -1,6 +1,6 @@
 import { Breadcrumb } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay } from '../../components/demo';
 
 // Simple icon components for demo
 const HomeIcon = () => (
@@ -67,9 +67,7 @@ export default function BreadcrumbPage() {
   ]}
 />`}
       >
-        <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
-          Last clicked: <span class="font-mono">{lastClicked() ?? 'None'}</span>
-        </p>
+        <StateDisplay label="Last clicked" value={lastClicked() ?? 'None'} />
         <Breadcrumb
           items={[
             { label: 'Home', onClick: () => setLastClicked('Home') },

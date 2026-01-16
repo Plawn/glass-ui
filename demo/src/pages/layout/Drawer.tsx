@@ -1,6 +1,6 @@
 import { Drawer, Button, useDisclosure, Card } from 'glass-ui-solid';
 import { createSignal, For } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, FeatureList } from '../../components/demo';
 
 const basicExample = `import { Drawer, Button, useDisclosure } from 'glass-ui-solid';
 
@@ -268,22 +268,26 @@ export default function DrawerPage() {
       </DemoSection>
 
       <DemoSection title="Behavior">
-        <ul class="space-y-2 text-surface-600 dark:text-surface-400 text-sm">
-          <li><strong>Body scroll lock:</strong> Prevents page scrolling when open</li>
-          <li><strong>Escape key:</strong> Closes drawer by default (configurable)</li>
-          <li><strong>Backdrop click:</strong> Closes drawer by default (configurable)</li>
-          <li><strong>Exit animation:</strong> Waits for animation to complete before unmounting</li>
-        </ul>
+        <FeatureList
+          items={[
+            <><strong>Body scroll lock:</strong> Prevents page scrolling when open</>,
+            <><strong>Escape key:</strong> Closes drawer by default (configurable)</>,
+            <><strong>Backdrop click:</strong> Closes drawer by default (configurable)</>,
+            <><strong>Exit animation:</strong> Waits for animation to complete before unmounting</>,
+          ]}
+        />
       </DemoSection>
 
       <DemoSection title="Animation">
-        <p class="text-surface-600 dark:text-surface-400 text-sm">
+        <p class="text-surface-600 dark:text-surface-400 text-sm mb-2">
           The drawer uses slide animations:
         </p>
-        <ul class="space-y-1 text-surface-600 dark:text-surface-400 text-sm mt-2">
-          <li><strong>Enter:</strong> Slides in from the edge with fade (300ms)</li>
-          <li><strong>Exit:</strong> Slides out to the edge with fade (200ms)</li>
-        </ul>
+        <FeatureList
+          items={[
+            <><strong>Enter:</strong> Slides in from the edge with fade (300ms)</>,
+            <><strong>Exit:</strong> Slides out to the edge with fade (200ms)</>,
+          ]}
+        />
       </DemoSection>
     </div>
   );

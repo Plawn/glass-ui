@@ -1,5 +1,5 @@
 import { Markdown, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, FeatureList } from '../../components/demo';
 
 const basicMarkdown = `# Hello World
 
@@ -156,11 +156,13 @@ console.log(greeting);
       </DemoSection>
 
       <DemoSection title="Security" card={false}>
-        <ul class="list-disc list-inside space-y-2 text-surface-600 dark:text-surface-400">
-          <li>Content is sanitized using DOMPurify</li>
-          <li>Safe from XSS attacks</li>
-          <li>Unsafe HTML is automatically stripped</li>
-        </ul>
+        <FeatureList
+          items={[
+            'Content is sanitized using DOMPurify',
+            'Safe from XSS attacks',
+            'Unsafe HTML is automatically stripped',
+          ]}
+        />
       </DemoSection>
 
       <DemoSection title="Supported Syntax" card={false}>
