@@ -1,4 +1,4 @@
-import { For, createSignal, createEffect, onMount } from 'solid-js';
+import { For, createSignal, createEffect, onMount, on } from 'solid-js';
 import type { SegmentedControlProps } from './types';
 
 export function SegmentedControl<T extends string | number>(props: SegmentedControlProps<T>) {
@@ -33,13 +33,16 @@ export function SegmentedControl<T extends string | number>(props: SegmentedCont
     requestAnimationFrame(() => setIsInitialized(true));
   });
 
-  createEffect(() => {
-    // Track value changes
-    props.value;
-    if (isInitialized()) {
-      updateIndicator();
-    }
-  });
+  createEffect(
+    on(
+      () => props.value,
+      () => {
+        if (isInitialized()) {
+          updateIndicator();
+        }
+      }
+    )
+  );
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: fieldset has browser styling that breaks the design

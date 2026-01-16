@@ -57,6 +57,7 @@ const LinearProgress: Component<ProgressProps> = (props) => {
   const color = () => props.color ?? 'primary';
   const styles = () => colorStyles[color()];
   const clampedValue = () => Math.min(100, Math.max(0, props.value));
+  const fillStyle = createMemo(() => ({ width: `${clampedValue()}%` }));
 
   return (
     <div class={`w-full ${props.class ?? ''}`}>
@@ -77,7 +78,7 @@ const LinearProgress: Component<ProgressProps> = (props) => {
       >
         <div
           class={`h-full rounded-full transition-all duration-300 ease-out ${styles().fill}`}
-          style={{ width: `${clampedValue()}%` }}
+          style={fillStyle()}
         />
       </div>
     </div>
@@ -102,6 +103,9 @@ const CircularProgress: Component<ProgressProps> = (props) => {
 
   const radius = createMemo(() => (dimensions().size - dimensions().stroke) / 2);
   const center = createMemo(() => dimensions().size / 2);
+  const valueFontStyle = createMemo(() => ({
+    'font-size': size() === 'sm' ? '0.5rem' : size() === 'md' ? '0.625rem' : '0.75rem',
+  }));
 
   return (
     // biome-ignore lint/a11y/useFocusableInteractive: Progress bars are visual indicators, not interactive
@@ -144,9 +148,7 @@ const CircularProgress: Component<ProgressProps> = (props) => {
       <Show when={props.showValue}>
         <span
           class="absolute text-surface-700 dark:text-surface-300 font-semibold"
-          style={{
-            'font-size': size() === 'sm' ? '0.5rem' : size() === 'md' ? '0.625rem' : '0.75rem',
-          }}
+          style={valueFontStyle()}
         >
           {Math.round(clampedValue())}%
         </span>

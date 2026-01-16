@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, Show } from 'solid-js';
+import { createMemo, For, Show } from 'solid-js';
 import clsx from 'clsx';
 import type { ComponentSize } from '../../types';
 import type { StepperProps } from './types';
@@ -72,6 +72,10 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   const styles = () => sizeStyles[size()];
   const isVertical = () => orientation() === 'vertical';
+  const verticalConnectorStyle = createMemo(() => ({
+    top: `${styles().circleSize + 8}px`,
+    bottom: '-8px',
+  }));
 
   // --- Step state helpers ---
   const isCompleted = (index: number) => index < props.currentStep;
@@ -222,7 +226,7 @@ export const Stepper: Component<StepperProps> = (props) => {
               'top-10 bottom-0 -translate-x-1/2',
               getConnectorClasses(index)
             )}
-            style={{ top: `${styles().circleSize + 8}px`, bottom: '-8px' }}
+            style={verticalConnectorStyle()}
           />
         </Show>
 

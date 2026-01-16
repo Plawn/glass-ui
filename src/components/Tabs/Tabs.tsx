@@ -3,7 +3,9 @@ import {
   For,
   Show,
   createEffect,
+  createMemo,
   createSignal,
+  on,
   onMount,
 } from 'solid-js';
 import { useControlled } from '../../hooks';
@@ -87,13 +89,16 @@ export const Tabs: Component<TabsProps> = (props) => {
     requestAnimationFrame(() => setIsInitialized(true));
   });
 
-  createEffect(() => {
-    // Track value changes
-    activeTab();
-    if (isInitialized()) {
-      updateIndicator();
-    }
-  });
+  createEffect(
+    on(
+      () => activeTab(),
+      () => {
+        if (isInitialized()) {
+          updateIndicator();
+        }
+      }
+    )
+  );
 
   const handleTabChange = (tabId: string) => {
     const tab = props.items.find((item) => item.id === tabId);
@@ -130,7 +135,7 @@ export const Tabs: Component<TabsProps> = (props) => {
     return activeTab() === tabId;
   };
 
-  const getIndicatorStyle = () => {
+  const indicatorCssStyle = createMemo(() => {
     const style = indicatorStyle();
     return {
       left: `${style.x}px`,
@@ -139,7 +144,7 @@ export const Tabs: Component<TabsProps> = (props) => {
       height: `${style.height}px`,
       'transition-timing-function': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
     };
-  };
+  });
 
   return (
     <div class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${props.class ?? ''}`}>
@@ -157,7 +162,7 @@ export const Tabs: Component<TabsProps> = (props) => {
           class={`absolute rounded-lg bg-white dark:bg-white/15 shadow-sm dark:shadow-none ${
             isInitialized() ? 'transition-all duration-300' : ''
           }`}
-          style={getIndicatorStyle()}
+          style={indicatorCssStyle()}
         />
 
         <For each={props.items}>

@@ -119,28 +119,41 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   const hasValue = () => props.value.start !== null || props.value.end !== null;
 
   const handleDateSelect = (date: Date) => {
-    const start = localStart();
-    const end = localEnd();
+    console.log('handleDateSelect called', date);
+    try {
+      const start = localStart();
+      const end = localEnd();
+      console.log('current state:', { start, end });
 
-    if (!start || (start && end)) {
-      // No selection or complete selection: start a new range
-      setLocalStart(date);
-      setLocalEnd(null);
-      props.onChange({ start: date, end: null });
-    } else {
-      // We have a start but no end
-      if (isBeforeDay(date, start)) {
-        // Clicked before start: make this the new start
+      if (!start || (start && end)) {
+        // No selection or complete selection: start a new range
         setLocalStart(date);
-        setLocalEnd(null);
-        props.onChange({ start: date, end: null });
+        if (end) {
+          // Only reset end if it was set (avoid setting null which breaks reactivity)
+          setLocalEnd(null);
+        }
+        console.log('select2, localStart is now:', localStart());
+        // props.onChange({ start: date, end: null });
+        console.log('select3');
       } else {
-        // Clicked on or after start: complete the range
-        setLocalEnd(date);
-        props.onChange({ start, end: date });
-        setIsOpen(false);
+        // We have a start but no end
+        console.log('select4');
+        if (isBeforeDay(date, start)) {
+          // Clicked before start: make this the new start
+          setLocalStart(date);
+          setLocalEnd(null);
+          props.onChange({ start: date, end: null });
+        } else {
+          // Clicked on or after start: complete the range
+          setLocalEnd(date);
+          props.onChange({ start, end: date });
+          setIsOpen(false);
+        }
       }
+    } catch (e) {
+      console.error("failed", e);
     }
+
   };
 
   const handleHover = (date: Date | null) => {
@@ -162,7 +175,15 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
   const handleOpenChange = (open: boolean) => {
     if (!disabled()) {
+      const wasOpen = isOpen();
+      console.log('handleOpenChange:', { open, wasOpen });
       setIsOpen(open);
+      if (open && !wasOpen) {
+        // Sync local state with props only when first opening (not on quick re-open)
+        console.log('syncing from props:', props.value);
+        setLocalStart(props.value.start);
+        setLocalEnd(props.value.end);
+      }
       if (!open) {
         setHoverDate(null);
       }

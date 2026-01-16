@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, Show } from 'solid-js';
+import { createMemo, For, Show } from 'solid-js';
 import { TEXT_SIZES } from '../../constants';
 import type { SliderProps, SliderSize } from './types';
 
@@ -33,6 +33,12 @@ export const Slider: Component<SliderProps> = (props) => {
     if (range === 0) return 0;
     return ((props.value - min()) / range) * 100;
   };
+
+  const sliderStyle = createMemo(() => ({
+    '--slider-fill': `${percentage()}%`,
+    '--slider-track-height': trackHeights[size()],
+    '--slider-thumb-size': thumbSizes[size()],
+  }));
 
   const handleInput = (e: Event) => {
     const target = e.target as HTMLInputElement;
@@ -81,11 +87,7 @@ export const Slider: Component<SliderProps> = (props) => {
         disabled={props.disabled}
         onInput={handleInput}
         class="slider-input w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
-        style={{
-          '--slider-fill': `${percentage()}%`,
-          '--slider-track-height': trackHeights[size()],
-          '--slider-thumb-size': thumbSizes[size()],
-        }}
+        style={sliderStyle()}
         aria-valuemin={min()}
         aria-valuemax={max()}
         aria-valuenow={props.value}

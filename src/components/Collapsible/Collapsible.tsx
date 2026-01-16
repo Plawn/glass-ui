@@ -1,4 +1,5 @@
 import type { Component } from 'solid-js';
+import { createMemo } from 'solid-js';
 import { useControlled } from '../../hooks';
 import type { CollapsibleProps } from './types';
 
@@ -18,6 +19,10 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
 
   // Unique ID for accessibility
   const id = `collapsible-${Math.random().toString(36).slice(2, 9)}`;
+
+  const contentStyle = createMemo(() => ({
+    'grid-template-rows': isOpen() ? '1fr' : '0fr',
+  }));
 
   return (
     <div class={props.class ?? ''}>
@@ -44,9 +49,7 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
       <div
         id={id}
         class="grid transition-[grid-template-rows] duration-200 ease-out"
-        style={{
-          'grid-template-rows': isOpen() ? '1fr' : '0fr',
-        }}
+        style={contentStyle()}
       >
         <div class="overflow-hidden">
           {props.children}

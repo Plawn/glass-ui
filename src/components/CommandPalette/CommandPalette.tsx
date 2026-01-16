@@ -1,4 +1,4 @@
-import { type Component, For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
+import { type Component, For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js';
 import { BACKDROP_ENTER, COMMAND_PALETTE_PANEL_ENTER } from '../../constants';
 import { useControlled, useBodyScrollLock } from '../../hooks';
 import { PortalWithDarkMode } from '../shared';
@@ -254,11 +254,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   });
 
   // Reset selection when results change
-  createEffect(() => {
-    // Access results to track
-    flatResults();
-    setSelectedIndex(0);
-  });
+  createEffect(on(() => flatResults(), () => setSelectedIndex(0)));
 
   // Scroll selected item into view
   createEffect(() => {

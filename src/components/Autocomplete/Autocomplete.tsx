@@ -5,6 +5,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  on,
   onCleanup,
 } from 'solid-js';
 import { PortalWithDarkMode } from '../shared';
@@ -172,10 +173,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   });
 
   // Reset focused index when options change
-  createEffect(() => {
-    filteredOptions();
-    setFocusedIndex(-1);
-  });
+  createEffect(on(() => filteredOptions(), () => setFocusedIndex(-1)));
 
   // Scroll focused item into view
   createEffect(() => {
@@ -340,8 +338,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   });
 
   // Calculate dropdown position
-  const getDropdownPosition = () => {
-    if (!containerRef) return {};
+  const dropdownPosition = createMemo(() => {
+    // Track isOpen to recalculate when dropdown opens
+    if (!isOpen() || !containerRef) return {};
 
     const rect = containerRef.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;
@@ -358,7 +357,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         ? { bottom: `${window.innerHeight - rect.top + 4}px` }
         : { top: `${rect.bottom + 4}px` }),
     };
-  };
+  });
 
   const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
   const itemSizeClasses = () => DROPDOWN_ITEM_SIZE_CLASSES[size()];
@@ -417,7 +416,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
           <div
             ref={dropdownRef}
             class="fixed z-50 glass-card rounded-xl shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150"
-            style={getDropdownPosition()}
+            style={dropdownPosition()}
             role="listbox"
           >
             <div class="max-h-60 overflow-y-auto scrollbar-thin py-1">

@@ -314,6 +314,9 @@ export function Table<T extends Record<string, unknown>>(
   });
 
   const shouldStickyHeader = createMemo(() => props.stickyHeader || !!props.maxHeight);
+  const checkboxColumnStyle = createMemo(() => ({
+    width: size() === 'sm' ? '32px' : size() === 'lg' ? '48px' : '40px',
+  }));
 
   // --- Memoized row class names ---
   const getRowClassName = (row: T, index: number): string => {
@@ -335,7 +338,7 @@ export function Table<T extends Record<string, unknown>>(
       <Show when={selectionMode() === 'multiple'}>
         <th
           class={`${sizeStyle().header} ${headerBaseClass()} text-center ${variantStyle().headerCell}`}
-          style={{ width: size() === 'sm' ? '32px' : size() === 'lg' ? '48px' : '40px' }}
+          style={checkboxColumnStyle()}
         >
           <Checkbox
             checked={selectionState().allSelected}
@@ -348,7 +351,7 @@ export function Table<T extends Record<string, unknown>>(
       <Show when={selectionMode() === 'single'}>
         <th
           class={`${sizeStyle().header} ${headerBaseClass()} ${variantStyle().headerCell}`}
-          style={{ width: size() === 'sm' ? '32px' : size() === 'lg' ? '48px' : '40px' }}
+          style={checkboxColumnStyle()}
         />
       </Show>
 
