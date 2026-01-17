@@ -15,6 +15,7 @@ export {
   type OutlinedColorStyle,
   type AlertColorStyle,
   type ProgressColorStyle,
+  type ToastColorStyle,
   // Status colors (core status types)
   STATUS_COLORS_FILLED,
   STATUS_COLORS_OUTLINED,
@@ -26,6 +27,7 @@ export {
   PROGRESS_COLORS,
   PROGRESS_COLORS_CIRCULAR,
   HTTP_METHOD_COLORS,
+  TOAST_COLORS,
   // Utility functions
   getFilledClasses,
   getOutlinedClasses,

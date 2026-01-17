@@ -307,3 +307,15 @@ export interface ProgressColorStyle {
   track: string;
   fill: string;
 }
+
+/**
+ * Style definition for toast notifications
+ */
+export interface ToastColorStyle {
+  /** Background and border classes combined */
+  bg: string;
+  /** Icon color class */
+  icon: string;
+  /** Icon background class */
+  iconBg: string;
+}

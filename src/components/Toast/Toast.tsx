@@ -1,32 +1,9 @@
 import { type Component, For, createSignal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
-import { TOAST_ENTER } from '../../constants';
+import { TOAST_COLORS, TOAST_ENTER } from '../../constants';
 import { CheckIcon, CloseIcon, ErrorIcon, InfoIcon, WarningIcon } from '../shared/icons';
 import { dismissToast, getToastStore } from './store';
 import type { Toast, ToastType } from './types';
-
-const typeStyles: Record<ToastType, { bg: string; icon: string; iconBg: string }> = {
-  success: {
-    bg: 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/30',
-    icon: 'text-emerald-600 dark:text-emerald-400',
-    iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
-  },
-  error: {
-    bg: 'bg-rose-50 dark:bg-rose-900/20 border-rose-200 dark:border-rose-800/30',
-    icon: 'text-rose-600 dark:text-rose-400',
-    iconBg: 'bg-rose-100 dark:bg-rose-900/30',
-  },
-  warning: {
-    bg: 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/30',
-    icon: 'text-amber-600 dark:text-amber-400',
-    iconBg: 'bg-amber-100 dark:bg-amber-900/30',
-  },
-  info: {
-    bg: 'bg-accent-50 dark:bg-accent-900/20 border-accent-200 dark:border-accent-800/30',
-    icon: 'text-accent-600 dark:text-accent-400',
-    iconBg: 'bg-accent-100 dark:bg-accent-900/30',
-  },
-};
 
 /** Icon component mapping by toast type */
 const TOAST_ICONS: Record<ToastType, Component<{ class?: string }>> = {
@@ -42,7 +19,7 @@ const ToastIcon: Component<{ type: ToastType }> = (props) => (
 
 const ToastItem: Component<{ toast: Toast }> = (props) => {
   const [exiting, setExiting] = createSignal(false);
-  const styles = () => typeStyles[props.toast.type];
+  const styles = () => TOAST_COLORS[props.toast.type];
 
   const handleDismiss = () => {
     setExiting(true);

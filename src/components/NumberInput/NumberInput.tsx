@@ -1,19 +1,6 @@
 import { type Component, Show } from 'solid-js';
+import { INPUT_SIZE_CLASSES } from '../../constants';
 import type { NumberInputProps, NumberInputSize } from './types';
-
-/**
- * Get size-specific classes for the input
- */
-const getSizeClasses = (size: NumberInputSize): string => {
-  switch (size) {
-    case 'sm':
-      return 'px-2.5 py-1.5 text-xs';
-    case 'lg':
-      return 'px-4 py-3 text-base';
-    default:
-      return 'px-3 sm:px-4 py-2 sm:py-2.5 text-sm';
-  }
-};
 
 /**
  * Get size-specific classes for the buttons
@@ -50,7 +37,7 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
   const min = () => props.min;
   const max = () => props.max;
 
-  const sizeClasses = () => getSizeClasses(size());
+  const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
   const buttonSizeClasses = () => getButtonSizeClasses(size());
 
   const clampValue = (value: number): number => {

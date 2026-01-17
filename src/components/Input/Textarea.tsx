@@ -1,19 +1,6 @@
 import { type Component, Show } from 'solid-js';
-import type { InputSize, TextareaProps } from './types';
-
-/**
- * Get size-specific classes for the textarea
- */
-const getSizeClasses = (size: InputSize): string => {
-  switch (size) {
-    case 'sm':
-      return 'px-2.5 py-1.5 text-xs';
-    case 'lg':
-      return 'px-4 py-3 text-base';
-    default:
-      return 'px-3 py-2 text-sm';
-  }
-};
+import { INPUT_SIZE_CLASSES } from '../../constants';
+import type { TextareaProps } from './types';
 
 /**
  * A glassmorphic textarea component with size variants.
@@ -30,7 +17,8 @@ const getSizeClasses = (size: InputSize): string => {
  * ```
  */
 export const Textarea: Component<TextareaProps> = (props) => {
-  const sizeClasses = () => getSizeClasses(props.size ?? 'md');
+  const size = () => props.size ?? 'md';
+  const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
 
   return (
     <div class="w-full">

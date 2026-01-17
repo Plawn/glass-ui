@@ -1,4 +1,5 @@
 import { type Component, For, Show, createSignal } from 'solid-js';
+import { ACCORDION_CONTENT_ENTER } from '../../constants';
 import { ChevronDownIcon, ChevronRightIcon } from '../shared/icons';
 import type { AccordionProps } from './types';
 
@@ -53,7 +54,7 @@ export const Accordion: Component<AccordionProps> = (props) => {
             <Show when={isOpen(item.id)}>
               <div
                 id={`accordion-content-${item.id}`}
-                class="px-3 pb-3 border-t border-surface-200 dark:border-white/5 animate-in fade-in slide-in-from-top-2 duration-200"
+                class={`px-3 pb-3 border-t border-surface-200 dark:border-white/5 ${ACCORDION_CONTENT_ENTER}`}
               >
                 <div class="pt-3">{item.content}</div>
               </div>
