@@ -37,14 +37,14 @@ export default function VirtualTablePage() {
 
   const statusColors = {
     active: 'success',
-    inactive: 'secondary',
+    inactive: 'default',
     pending: 'warning',
   } as const;
 
   const roleColors = {
-    Admin: 'primary',
-    User: 'secondary',
-    Moderator: 'info',
+    Admin: 'info',
+    User: 'default',
+    Moderator: 'warning',
   } as const;
 
   return (
