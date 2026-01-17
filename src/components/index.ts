@@ -256,3 +256,25 @@ export type { CollapsibleProps } from './Collapsible';
 // Sidebar
 export { Sidebar, SidebarItemComponent } from './Sidebar';
 export type { SidebarProps, SidebarItem, SidebarItemComponentProps } from './Sidebar';
+
+// Chat
+export {
+  Chat,
+  ChatMessage,
+  ChatMessageList,
+  ChatInput,
+  ChatThinking,
+  ChatTypingIndicator,
+} from './Chat';
+export type {
+  ChatProps,
+  ChatMessageType,
+  ChatMessageProps,
+  ChatMessageListProps,
+  ChatInputProps,
+  ChatThinkingProps,
+  ChatTypingIndicatorProps,
+  ThinkingStep,
+  MessageRole,
+  MessageStatus,
+} from './Chat';

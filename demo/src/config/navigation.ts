@@ -60,6 +60,7 @@ export const navigation: NavGroup[] = [
       { id: 'snackbar', label: 'Snackbar', path: '/feedback/snackbar' },
       { id: 'toast', label: 'Toast', path: '/feedback/toast' },
       { id: 'empty-state', label: 'EmptyState', path: '/feedback/empty-state' },
+      { id: 'chat', label: 'Chat', path: '/feedback/chat' },
     ],
   },
   {

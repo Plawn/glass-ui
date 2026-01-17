@@ -55,6 +55,7 @@ const ErrorDisplayPage = lazy(() => import('./pages/feedback/ErrorDisplay'));
 const SnackbarPage = lazy(() => import('./pages/feedback/Snackbar'));
 const ToastPage = lazy(() => import('./pages/feedback/Toast'));
 const EmptyStatePage = lazy(() => import('./pages/feedback/EmptyState'));
+const ChatPage = lazy(() => import('./pages/feedback/Chat'));
 
 // Navigation pages
 const TabsPage = lazy(() => import('./pages/navigation/Tabs'));
@@ -239,6 +240,7 @@ export default function App() {
       <Route path="/feedback/snackbar" component={SnackbarPage} />
       <Route path="/feedback/toast" component={ToastPage} />
       <Route path="/feedback/empty-state" component={EmptyStatePage} />
+      <Route path="/feedback/chat" component={ChatPage} />
 
       {/* Navigation */}
       <Route path="/navigation/tabs" component={TabsPage} />
