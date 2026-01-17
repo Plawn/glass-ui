@@ -175,7 +175,7 @@ export function Table<T extends Record<string, unknown>>(
       const col = props.columns[i];
       if (col?.sticky === 'left') {
         styles.set(i, { position: 'sticky', left: `${leftOffset}px`, 'z-index': 10 });
-        leftOffset += parseInt(col.width ?? '100', 10) || 100;
+        leftOffset += Number.parseInt(col.width ?? '100', 10) || 100;
       }
     }
 
@@ -185,7 +185,7 @@ export function Table<T extends Record<string, unknown>>(
       const col = props.columns[i];
       if (col?.sticky === 'right') {
         styles.set(i, { position: 'sticky', right: `${rightOffset}px`, 'z-index': 10 });
-        rightOffset += parseInt(col.width ?? '100', 10) || 100;
+        rightOffset += Number.parseInt(col.width ?? '100', 10) || 100;
       }
     }
 
@@ -437,7 +437,7 @@ export function Table<T extends Record<string, unknown>>(
                             style={{
                               width: column.width,
                               'min-width': column.minWidth,
-                              ...(stickyStyles().get(columnIndex()) ?? {}),
+                              ...stickyStyles().get(columnIndex()),
                             }}
                           >
                             <SkeletonCell size={size()} index={rowIdx * props.columns.length + columnIndex()} />

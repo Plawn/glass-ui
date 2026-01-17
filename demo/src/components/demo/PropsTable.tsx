@@ -34,7 +34,7 @@ function highlightType(type: string): string {
  * - Default (full): 4 columns (Prop, Type, Default, Description)
  * - Compact: 3 columns (Prop, Type, Description)
  */
-export function PropsTable(props: PropsTableProps) {
+export function PropsTable(props: Readonly<PropsTableProps>) {
   const isCompact = () => props.compact ?? false;
 
   const columns = createMemo((): TableColumn<PropDefinition>[] => {
@@ -43,12 +43,12 @@ export function PropsTable(props: PropsTableProps) {
         key: 'name',
         header: 'Prop',
         width: '140px',
-        render: (value) => <code class="font-mono text-xs text-primary-600 dark:text-primary-400">{value as string}</code>,
+        render: (value: unknown) => <code class="font-mono text-xs text-primary-600 dark:text-primary-400">{value as string}</code>,
       },
       {
         key: 'type',
         header: 'Type',
-        render: (value) => <code class="font-mono text-xs" innerHTML={highlightType(value as string)} />,
+        render: (value: unknown) => <code class="font-mono text-xs" innerHTML={highlightType(value as string)} />,
       },
     ];
 
@@ -57,7 +57,7 @@ export function PropsTable(props: PropsTableProps) {
         key: 'default',
         header: 'Default',
         width: '120px',
-        render: (value) => <span class="text-surface-500">{(value as string) ?? '-'}</span>,
+        render: (value: unknown) => <span class="text-surface-500">{(value as string) ?? '-'}</span>,
       });
     }
 
@@ -75,7 +75,7 @@ export function PropsTable(props: PropsTableProps) {
       columns={columns()}
       size="sm"
       hoverable={false}
-      getRowKey={(_, index) => index}
+      getRowKey={(_: PropDefinition, index: number) => index}
     />
   );
 }

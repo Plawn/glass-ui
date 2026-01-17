@@ -38,13 +38,11 @@ const columnsWithStatus: TableColumn<User>[] = [
   {
     key: 'status',
     header: 'Status',
-    render: (value) => (
-      <Badge
-        variant={value === 'active' ? 'success' : value === 'pending' ? 'warning' : 'error'}
-      >
-        {String(value)}
-      </Badge>
-    ),
+    render: (value: unknown) => {
+      const status = value as string;
+      const variant = status === 'active' ? 'success' : status === 'pending' ? 'warning' : 'error';
+      return <Badge variant={variant}>{status}</Badge>;
+    },
   },
 ];
 
@@ -122,7 +120,7 @@ const data = [
             data={sampleData}
             selectable="multiple"
             selectedKeys={selectedKeys()}
-            onSelectionChange={(keys) => setSelectedKeys(keys as Set<number>)}
+            onSelectionChange={(keys: Set<number | string>) => setSelectedKeys(keys as Set<number>)}
           />
         </div>
       </DemoSection>

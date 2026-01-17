@@ -14,6 +14,12 @@ const circularSizes: Record<ProgressSize, { size: number; stroke: number }> = {
   lg: { size: 56, stroke: 5 },
 };
 
+const circularValueFontSizes: Record<ProgressSize, string> = {
+  sm: '0.5rem',
+  md: '0.625rem',
+  lg: '0.75rem',
+};
+
 const colorStyles: Record<ProgressColor, { track: string; fill: string }> = {
   primary: {
     track: 'bg-surface-200/60 dark:bg-surface-700/40',
@@ -104,7 +110,7 @@ const CircularProgress: Component<ProgressProps> = (props) => {
   const radius = createMemo(() => (dimensions().size - dimensions().stroke) / 2);
   const center = createMemo(() => dimensions().size / 2);
   const valueFontStyle = createMemo(() => ({
-    'font-size': size() === 'sm' ? '0.5rem' : size() === 'md' ? '0.625rem' : '0.75rem',
+    'font-size': circularValueFontSizes[size()],
   }));
 
   return (

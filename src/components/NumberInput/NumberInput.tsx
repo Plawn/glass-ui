@@ -67,8 +67,8 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
 
   const handleInput = (e: Event) => {
     const target = e.currentTarget as HTMLInputElement;
-    const parsed = parseFloat(target.value);
-    if (!isNaN(parsed)) {
+    const parsed = Number.parseFloat(target.value);
+    if (!Number.isNaN(parsed)) {
       props.onChange(clampValue(parsed));
     } else if (target.value === '' || target.value === '-') {
       // Allow empty or negative sign while typing
@@ -77,11 +77,11 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
 
   const handleBlur = (e: Event) => {
     const target = e.currentTarget as HTMLInputElement;
-    const parsed = parseFloat(target.value);
-    if (isNaN(parsed)) {
+    const parsed = Number.parseFloat(target.value);
+    if (Number.isNaN(parsed)) {
       // Reset to min value or 0 if invalid
       const minVal = min();
-      props.onChange(minVal !== undefined ? minVal : 0);
+      props.onChange(minVal ?? 0);
     } else {
       props.onChange(clampValue(parsed));
     }
@@ -121,7 +121,7 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
       <div class="flex items-center gap-2">
         <button
           type="button"
-          class={`flex-shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
+          class={`shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
           onClick={decrement}
           disabled={props.disabled || !canDecrement()}
           aria-label="Decrement"
@@ -143,7 +143,7 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
         />
         <button
           type="button"
-          class={`flex-shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
+          class={`shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
           onClick={increment}
           disabled={props.disabled || !canIncrement()}
           aria-label="Increment"

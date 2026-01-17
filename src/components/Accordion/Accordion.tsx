@@ -34,7 +34,7 @@ export const Accordion: Component<AccordionProps> = (props) => {
             <button
               type="button"
               onClick={() => toggle(item.id)}
-              class="w-full flex items-center justify-between px-3 py-2.5 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors"
+              class="w-full flex items-center justify-between px-3 py-2.5 hover:bg-black/2 dark:hover:bg-white/2 transition-colors"
               aria-expanded={isOpen(item.id)}
               aria-controls={`accordion-content-${item.id}`}
             >
