@@ -47,7 +47,8 @@
     "prepublishOnly": "bun run build",
     "publish:npm": "bun run build && npm publish",
     "demo": "cd demo && bun install && bun run dev",
-    "demo:build": "cd demo && bun install && bun run build"
+    "demo:build": "cd demo && bun install && bun run build",
+    "demo:preview": "cd demo && bun install && bun run build && bun run preview"
   },
   "peerDependencies": {
     "solid-js": "^1.8.0"

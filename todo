@@ -2,9 +2,10 @@
 
 - accesssibilité
 - virtual table scroll to marche pas en prod
-- virtual table avec footer marche pas en prod
-
+- virtual table avec footer marche pas en prod -> pb de contenu
+- optimiser le useVirtualizer perfo
 
 ## new
 - date range picker
 - chat (message, text prompt with actions)
+  - pas tout fonctionnel

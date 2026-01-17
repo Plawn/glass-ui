@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import { Show } from 'solid-js';
+import { Show, children } from 'solid-js';
 import { Card, CodeBlock } from 'glass-ui-solid';
 
 export interface DemoSectionProps {
@@ -52,7 +52,10 @@ export interface DemoSectionProps {
  * ```
  */
 export function DemoSection(props: DemoSectionProps) {
-  const showCard = () => props.card ?? (props.children !== undefined);
+  // Resolve children once to avoid recreating components on each access
+  const resolved = children(() => props.children);
+
+  const showCard = () => props.card ?? (resolved() !== undefined);
   const cardClass = () => props.cardClass ?? 'p-6';
   const language = () => props.language ?? 'tsx';
 
@@ -73,14 +76,14 @@ export function DemoSection(props: DemoSectionProps) {
         <p class="text-surface-600 dark:text-surface-400 mb-4">{props.description}</p>
       </Show>
 
-      <Show when={props.children}>
-        <Show when={showCard()} fallback={props.children}>
-          <Card class={cardClass()}>{props.children}</Card>
+      <Show when={resolved()}>
+        <Show when={showCard()} fallback={resolved()}>
+          <Card class={cardClass()}>{resolved()}</Card>
         </Show>
       </Show>
 
       <Show when={props.code}>
-        <div class={props.children ? 'mt-4' : ''}>
+        <div class={resolved() ? 'mt-4' : ''}>
           <CodeBlock code={props.code!} language={language()} />
         </div>
       </Show>
