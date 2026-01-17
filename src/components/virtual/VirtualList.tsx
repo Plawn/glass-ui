@@ -1,4 +1,4 @@
-import { createMemo, createEffect, createSignal, For, Show, onMount, type JSX, type Component } from 'solid-js';
+import { createMemo, createEffect, createSignal, For, Show, onMount, onCleanup, type JSX, type Component } from 'solid-js';
 import { useVirtualizer } from './useVirtualizer';
 import type { VirtualListProps, VirtualHandle, ListItem } from './types';
 
@@ -59,9 +59,11 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
   });
   
   // Measure item size on mount and when content changes
+  let resizeObserver: ResizeObserver | undefined;
+
   onMount(() => {
     if (props.fixedItemHeight !== undefined) return;
-    
+
     const measureSize = () => {
       if (itemRef) {
         const height = itemRef.offsetHeight;
@@ -70,15 +72,19 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
         }
       }
     };
-    
+
     // Initial measurement after render
     requestAnimationFrame(measureSize);
-    
+
     // Set up resize observer for dynamic content
     if (typeof ResizeObserver !== 'undefined' && itemRef) {
-      const observer = new ResizeObserver(measureSize);
-      observer.observe(itemRef);
+      resizeObserver = new ResizeObserver(measureSize);
+      resizeObserver.observe(itemRef);
     }
+  });
+
+  onCleanup(() => {
+    resizeObserver?.disconnect();
   });
   
   return (

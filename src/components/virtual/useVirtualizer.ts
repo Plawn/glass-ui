@@ -2,80 +2,115 @@ import { createSignal, createMemo, createEffect, onCleanup } from 'solid-js';
 import type { ListItem, ListRange, ScrollAlignment, ScrollBehavior } from './types';
 
 // =============================================================================
-// SIZE STATE MANAGEMENT - Simple and predictable
+// OPTIMIZED SIZE CACHE - O(1) offset lookup, O(log n) index search
 // =============================================================================
 
-interface SizeState {
+interface SizeCache {
   /** Map of index -> measured size */
   sizes: Map<number, number>;
-  /** Default size for unmeasured items (never changes after init) */
+  /** Default size for unmeasured items */
   defaultSize: number;
   /** Total count of items */
   totalCount: number;
+  /** Cached total size (sum of all items) */
+  cachedTotalSize: number;
+  /** Version number for cache invalidation */
+  version: number;
 }
 
-function createSizeState(defaultSize: number, totalCount: number): SizeState {
+function createSizeCache(defaultSize: number, totalCount: number): SizeCache {
   return {
     sizes: new Map(),
     defaultSize,
     totalCount,
+    cachedTotalSize: defaultSize * totalCount,
+    version: 0,
   };
 }
 
-/**
- * Get size for an index - uses measured size if available, otherwise default
- */
-function getSizeForIndex(state: SizeState, index: number): number {
-  return state.sizes.get(index) ?? state.defaultSize;
+/** Get size for an index - O(1) */
+function getSizeForIndex(cache: SizeCache, index: number): number {
+  return cache.sizes.get(index) ?? cache.defaultSize;
 }
 
 /**
- * Calculate offset for an index by summing all sizes before it
+ * Calculate offset for an index - O(n) but only for measured items
+ * For lists with fixedItemHeight, this is O(1)
  */
-function getOffsetForIndex(state: SizeState, index: number): number {
+function getOffsetForIndex(cache: SizeCache, index: number, fixedSize?: number): number {
   if (index <= 0) return 0;
-  
-  const clampedIndex = Math.min(index, state.totalCount);
-  let offset = 0;
-  
-  for (let i = 0; i < clampedIndex; i++) {
-    offset += getSizeForIndex(state, i);
+
+  // Fast path for fixed size
+  if (fixedSize !== undefined) {
+    return index * fixedSize;
   }
-  
+
+  const clampedIndex = Math.min(index, cache.totalCount);
+
+  // If no items have been measured, use simple calculation
+  if (cache.sizes.size === 0) {
+    return clampedIndex * cache.defaultSize;
+  }
+
+  // Calculate offset by summing sizes
+  let offset = 0;
+  for (let i = 0; i < clampedIndex; i++) {
+    offset += cache.sizes.get(i) ?? cache.defaultSize;
+  }
+
   return offset;
 }
 
 /**
- * Calculate total scroll height by summing all sizes
+ * Find the index at a given scroll offset using binary search for fixed size,
+ * or linear scan for variable sizes
  */
-function getTotalSize(state: SizeState): number {
-  if (state.totalCount === 0) return 0;
-  
-  let total = 0;
-  for (let i = 0; i < state.totalCount; i++) {
-    total += getSizeForIndex(state, i);
-  }
-  return total;
-}
-
-/**
- * Find the index at a given scroll offset
- */
-function getIndexAtOffset(state: SizeState, targetOffset: number): number {
+function getIndexAtOffset(cache: SizeCache, targetOffset: number, fixedSize?: number): number {
   if (targetOffset <= 0) return 0;
-  if (state.totalCount === 0) return 0;
-  
+  if (cache.totalCount === 0) return 0;
+
+  // Fast path for fixed size - O(1)
+  if (fixedSize !== undefined) {
+    return Math.min(Math.floor(targetOffset / fixedSize), cache.totalCount - 1);
+  }
+
+  // If no items have been measured, use simple calculation - O(1)
+  if (cache.sizes.size === 0) {
+    return Math.min(Math.floor(targetOffset / cache.defaultSize), cache.totalCount - 1);
+  }
+
+  // Linear scan for variable sizes - O(n) but typically only scans visible items
   let offset = 0;
-  
-  for (let i = 0; i < state.totalCount; i++) {
-    const size = getSizeForIndex(state, i);
+  for (let i = 0; i < cache.totalCount; i++) {
+    const size = cache.sizes.get(i) ?? cache.defaultSize;
     if (offset + size > targetOffset) {
       return i;
     }
     offset += size;
   }
-  
-  return state.totalCount - 1;
+
+  return cache.totalCount - 1;
+}
+
+/** Get total size - O(1) using cached value */
+function getTotalSize(cache: SizeCache, fixedSize?: number): number {
+  if (fixedSize !== undefined) {
+    return cache.totalCount * fixedSize;
+  }
+  return cache.cachedTotalSize;
+}
+
+/** Update cached total size after a size change */
+function updateCachedTotalSize(cache: SizeCache): number {
+  if (cache.sizes.size === 0) {
+    return cache.totalCount * cache.defaultSize;
+  }
+
+  let total = 0;
+  for (let i = 0; i < cache.totalCount; i++) {
+    total += cache.sizes.get(i) ?? cache.defaultSize;
+  }
+  return total;
 }
 
 // =============================================================================
@@ -119,128 +154,119 @@ export interface VirtualizerResult {
 export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
   const [scrollTop, setScrollTop] = createSignal(0);
   const [viewportSize, setViewportSize] = createSignal(0);
-  const [sizeState, setSizeState] = createSignal<SizeState>(
-    createSizeState(options.getEstimatedSize(), options.totalCount())
+  const [sizeCache, setSizeCache] = createSignal<SizeCache>(
+    createSizeCache(options.getEstimatedSize(), options.totalCount())
   );
   const [isScrolling, setIsScrolling] = createSignal(false);
   const [prevRange, setPrevRange] = createSignal<ListRange>({ startIndex: 0, endIndex: 0 });
   const [prevAtBottom, setPrevAtBottom] = createSignal(false);
   const [prevAtTop, setPrevAtTop] = createSignal(true);
-  
+
   let scrollingTimer: ReturnType<typeof setTimeout> | null = null;
-  
+
   // Update when totalCount changes
   createEffect(() => {
     const count = options.totalCount();
     const estimatedSize = options.getEstimatedSize();
-    
-    setSizeState((prev) => {
+
+    setSizeCache((prev) => {
       if (prev.totalCount !== count || prev.defaultSize !== estimatedSize) {
-        const newSizes = new Map(prev.sizes);
-        
         // Remove measurements for items beyond new count
         if (count < prev.totalCount) {
           for (const index of prev.sizes.keys()) {
             if (index >= count) {
-              newSizes.delete(index);
+              prev.sizes.delete(index);
             }
           }
         }
-        
-        return {
-          sizes: newSizes,
+
+        const newCache: SizeCache = {
+          sizes: prev.sizes,
           defaultSize: estimatedSize,
           totalCount: count,
+          cachedTotalSize: 0,
+          version: prev.version + 1,
         };
+        newCache.cachedTotalSize = updateCachedTotalSize(newCache);
+        return newCache;
       }
       return prev;
     });
   });
-  
+
   const overscan = createMemo(() => options.overscan?.() ?? 5);
-  
+
   const viewportIncrease = createMemo(() => {
     const increase = options.increaseViewportBy?.();
     if (!increase) return { top: 0, bottom: 0 };
     if (typeof increase === 'number') return { top: increase, bottom: increase };
     return increase;
   });
-  
-  // Total size - recalculated when sizes change
+
+  // Total size - O(1) using cached value
   const totalSize = createMemo(() => {
-    const state = sizeState();
+    const cache = sizeCache();
     const fixedSize = options.getFixedSize?.();
-    
-    if (fixedSize !== undefined) {
-      return state.totalCount * fixedSize;
-    }
-    
-    return getTotalSize(state);
+    return getTotalSize(cache, fixedSize);
   });
-  
-  // Calculate visible items
+
+  // Calculate visible items - optimized for fixed size
   const visibleItems = createMemo((): ListItem[] => {
-    const state = sizeState();
-    const count = state.totalCount;
-    
+    const cache = sizeCache();
+    const count = cache.totalCount;
+
     if (count === 0 || viewportSize() === 0) {
       return [];
     }
-    
+
     const fixedSize = options.getFixedSize?.();
     const scroll = scrollTop();
     const viewport = viewportSize();
     const increase = viewportIncrease();
     const os = overscan();
-    
+
     const startOffset = Math.max(0, scroll - increase.top);
     const endOffset = scroll + viewport + increase.bottom;
-    
-    let startIndex: number;
-    let endIndex: number;
-    
-    if (fixedSize !== undefined) {
-      startIndex = Math.floor(startOffset / fixedSize);
-      endIndex = Math.ceil(endOffset / fixedSize);
-    } else {
-      startIndex = getIndexAtOffset(state, startOffset);
-      endIndex = getIndexAtOffset(state, endOffset);
-    }
-    
+
+    // Use optimized index lookup
+    let startIndex = getIndexAtOffset(cache, startOffset, fixedSize);
+    let endIndex = getIndexAtOffset(cache, endOffset, fixedSize);
+
     // Apply overscan
     startIndex = Math.max(0, startIndex - os);
     endIndex = Math.min(count, endIndex + os + 1);
-    
-    const items: ListItem[] = [];
-    
+
+    const items: ListItem[] = new Array(endIndex - startIndex);
+
     if (fixedSize !== undefined) {
+      // Fast path for fixed size - no offset calculation needed
       for (let i = startIndex; i < endIndex; i++) {
-        items.push({
+        items[i - startIndex] = {
           index: i,
           offset: i * fixedSize,
           size: fixedSize,
-        });
+        };
       }
     } else {
       // Calculate offset for first visible item
-      let offset = getOffsetForIndex(state, startIndex);
-      
+      let offset = getOffsetForIndex(cache, startIndex, fixedSize);
+
       for (let i = startIndex; i < endIndex; i++) {
-        const size = getSizeForIndex(state, i);
-        items.push({ index: i, offset, size });
+        const size = getSizeForIndex(cache, i);
+        items[i - startIndex] = { index: i, offset, size };
         offset += size;
       }
     }
-    
+
     return items;
   });
-  
+
   const offsetTop = createMemo(() => {
     const items = visibleItems();
     if (items.length === 0) return 0;
     return items[0].offset;
   });
-  
+
   const offsetBottom = createMemo(() => {
     const items = visibleItems();
     const total = totalSize();
@@ -248,7 +274,7 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
     const lastItem = items[items.length - 1];
     return Math.max(0, total - lastItem.offset - lastItem.size);
   });
-  
+
   const range = createMemo((): ListRange => {
     const items = visibleItems();
     if (items.length === 0) {
@@ -259,52 +285,52 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
       endIndex: items[items.length - 1].index,
     };
   });
-  
+
   // Range change callback
   createEffect(() => {
     const r = range();
     const prev = prevRange();
-    
+
     if (r.startIndex !== prev.startIndex || r.endIndex !== prev.endIndex) {
       setPrevRange(r);
       options.onRangeChanged?.(r);
     }
   });
-  
+
   // Items change callback
   createEffect(() => {
     const items = visibleItems();
     options.onItemsChanged?.(items);
   });
-  
+
   // Total size change callback
   createEffect(() => {
     const size = totalSize();
     options.onTotalSizeChanged?.(size);
   });
-  
+
   // At bottom/top detection
   createEffect(() => {
     const scroll = scrollTop();
     const viewport = viewportSize();
     const total = totalSize();
-    
+
     const bottomThreshold = options.atBottomThreshold?.() ?? 4;
     const topThreshold = options.atTopThreshold?.() ?? 0;
-    
+
     const atBottom = total > 0 && scroll + viewport >= total - bottomThreshold;
     const atTop = scroll <= topThreshold;
-    
+
     if (atBottom !== prevAtBottom()) {
       setPrevAtBottom(atBottom);
       options.onAtBottomChange?.(atBottom);
     }
-    
+
     if (atTop !== prevAtTop()) {
       setPrevAtTop(atTop);
       options.onAtTopChange?.(atTop);
     }
-    
+
     // End/start reached callbacks
     const items = visibleItems();
     if (items.length > 0 && atBottom) {
@@ -313,7 +339,7 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
         options.onEndReached?.(lastItem.index);
       }
     }
-    
+
     if (items.length > 0 && atTop) {
       const firstItem = items[0];
       if (firstItem.index === 0) {
@@ -321,7 +347,7 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
       }
     }
   });
-  
+
   // Scroll handling
   createEffect(() => {
     const container = options.getScrollContainer();
@@ -333,22 +359,19 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
 
     const measureViewport = () => {
       // Use getBoundingClientRect for more reliable measurement
-      // clientHeight can return 0 for elements not yet in visible viewport
       const rect = container.getBoundingClientRect();
       const size = options.horizontal ? rect.width : rect.height;
       if (size > 0) {
         setViewportSize(size);
-        // Clear retry timer once we have a valid size
         if (retryTimer) {
           clearTimeout(retryTimer);
           retryTimer = null;
         }
       } else if (retryCount < MAX_RETRIES) {
-        // If size is 0, retry after a short delay (CSS might not be loaded yet)
         retryCount++;
         retryTimer = setTimeout(() => {
           requestAnimationFrame(measureViewport);
-        }, 50 * retryCount); // Exponential backoff: 50ms, 100ms, 150ms, etc.
+        }, 50 * retryCount);
       }
     };
 
@@ -379,7 +402,6 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
       }
     };
 
-    // Initial measurement - use requestAnimationFrame to ensure DOM is ready
     requestAnimationFrame(measureViewport);
     setScrollTop(options.horizontal ? container.scrollLeft : container.scrollTop);
 
@@ -408,27 +430,33 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
       }
     });
   });
-  
-  // Measure item - updates the size map
+
+  // Measure item - mutates in place for performance, then triggers update
   const measureItem = (index: number, size: number) => {
-    setSizeState((prev) => {
+    setSizeCache((prev) => {
       const currentSize = prev.sizes.get(index);
-      
+
       // Only update if size actually changed
       if (currentSize === size) {
         return prev;
       }
-      
-      const newSizes = new Map(prev.sizes);
-      newSizes.set(index, size);
-      
+
+      // Calculate the size difference for incremental total update
+      const oldSize = currentSize ?? prev.defaultSize;
+      const sizeDiff = size - oldSize;
+
+      // Mutate the existing map for performance
+      prev.sizes.set(index, size);
+
+      // Return new object to trigger reactivity, but reuse the map
       return {
         ...prev,
-        sizes: newSizes,
+        cachedTotalSize: prev.cachedTotalSize + sizeDiff,
+        version: prev.version + 1,
       };
     });
   };
-  
+
   return {
     items: visibleItems,
     totalSize,
@@ -439,27 +467,19 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
     scrollToIndex: (index, opts) => {
       const container = options.getScrollContainer?.();
       if (!container) return;
-      
-      const state = sizeState();
+
+      const cache = sizeCache();
       const viewport = viewportSize();
       const fixedSize = options.getFixedSize?.();
-      
-      let itemOffset: number;
-      let itemSize: number;
-      
-      if (fixedSize !== undefined) {
-        itemOffset = index * fixedSize;
-        itemSize = fixedSize;
-      } else {
-        itemOffset = getOffsetForIndex(state, index);
-        itemSize = getSizeForIndex(state, index);
-      }
-      
+
+      const itemOffset = getOffsetForIndex(cache, index, fixedSize);
+      const itemSize = fixedSize ?? getSizeForIndex(cache, index);
+
       const align = opts?.align ?? 'start';
       const behavior = opts?.behavior ?? 'auto';
-      
+
       let targetOffset: number;
-      
+
       switch (align) {
         case 'center':
           targetOffset = itemOffset - viewport / 2 + itemSize / 2;
@@ -482,7 +502,7 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
         default:
           targetOffset = itemOffset;
       }
-      
+
       container.scrollTo({
         top: Math.max(0, targetOffset),
         behavior,

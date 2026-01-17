@@ -21,8 +21,35 @@ const generateItems = (count: number): ListItem[] =>
     status: ['online', 'offline', 'away'][i % 3] as ListItem['status'],
   }));
 
+// Variable height items
+interface VariableItem {
+  id: number;
+  type: 'compact' | 'normal' | 'expanded';
+  title: string;
+  description?: string;
+  tags?: string[];
+}
+
+const generateVariableItems = (count: number): VariableItem[] =>
+  Array.from({ length: count }, (_, i) => {
+    const types: VariableItem['type'][] = ['compact', 'normal', 'expanded'];
+    const type = types[i % 3];
+    return {
+      id: i + 1,
+      type,
+      title: `Item ${i + 1}`,
+      description: type !== 'compact'
+        ? `This is a ${type} item with more content. Lorem ipsum dolor sit amet.`
+        : undefined,
+      tags: type === 'expanded'
+        ? ['Tag A', 'Tag B', 'Tag C', 'Important']
+        : undefined,
+    };
+  });
+
 export default function VirtualListPage() {
   const items = generateItems(10000);
+  const variableItems = generateVariableItems(5000);
   let listRef: VirtualHandle | undefined;
   const [scrollIndex, setScrollIndex] = createSignal(500);
 
@@ -114,6 +141,80 @@ export default function VirtualListPage() {
             </div>
           )}
           style={{ height: '320px' }}
+        />
+      </DemoSection>
+
+      <DemoSection
+        title="Variable Height Items"
+        description={<>Items can have different heights. The virtualizer automatically measures each item and adjusts. Use <CodePill>defaultItemHeight</CodePill> to set an estimated height for initial render.</>}
+        code={`interface VariableItem {
+  id: number;
+  type: 'compact' | 'normal' | 'expanded';
+  title: string;
+  description?: string;
+  tags?: string[];
+}
+
+// Items have different heights based on content
+const variableItems = Array.from({ length: 5000 }, (_, i) => ({
+  id: i + 1,
+  type: ['compact', 'normal', 'expanded'][i % 3],
+  title: \`Item \${i + 1}\`,
+  description: i % 3 !== 0 ? 'Description text...' : undefined,
+  tags: i % 3 === 2 ? ['Tag A', 'Tag B'] : undefined,
+}));
+
+<VirtualList
+  data={variableItems}
+  defaultItemHeight={80}
+  itemContent={(index, item) => (
+    <div class="p-4 border-b">
+      <div class="font-medium">{item.title}</div>
+      {item.description && (
+        <p class="text-sm text-surface-500 mt-1">{item.description}</p>
+      )}
+      {item.tags && (
+        <div class="flex gap-2 mt-2">
+          {item.tags.map(tag => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </div>
+  )}
+  style={{ height: '400px' }}
+/>`}
+      >
+        <VirtualList
+          data={variableItems}
+          defaultItemHeight={80}
+          itemContent={(index, item) => (
+            <div class={`p-4 border-b border-surface-200 dark:border-surface-700 ${
+              item.type === 'compact' ? 'bg-surface-50 dark:bg-surface-800/50' :
+              item.type === 'expanded' ? 'bg-primary-50/30 dark:bg-primary-900/10' : ''
+            }`}>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-surface-400 font-mono w-8">#{item.id}</span>
+                <span class="font-medium text-surface-900 dark:text-white">{item.title}</span>
+                <Badge size="sm" variant={item.type === 'expanded' ? 'info' : 'default'}>
+                  {item.type}
+                </Badge>
+              </div>
+              {item.description && (
+                <p class="text-sm text-surface-600 dark:text-surface-400 mt-2 ml-10">
+                  {item.description}
+                </p>
+              )}
+              {item.tags && (
+                <div class="flex gap-2 mt-3 ml-10">
+                  {item.tags.map((tag) => (
+                    <span class="px-2 py-0.5 text-xs rounded-full bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-300">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          style={{ height: '400px' }}
         />
       </DemoSection>
 
