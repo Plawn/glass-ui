@@ -2,69 +2,170 @@ import { createSignal, createMemo, createEffect, onCleanup } from 'solid-js';
 import type { ListItem, ListRange, ScrollAlignment, ScrollBehavior } from './types';
 
 // =============================================================================
-// OPTIMIZED SIZE CACHE - O(1) offset lookup, O(log n) index search
+// FENWICK TREE (Binary Indexed Tree) - O(log n) operations
+// =============================================================================
+
+/**
+ * Fenwick Tree for efficient prefix sum queries and point updates.
+ * - Point update: O(log n)
+ * - Prefix sum query: O(log n)
+ * - Find index at offset (binary search): O(log² n)
+ */
+class FenwickTree {
+  private tree: number[];
+  private values: number[];
+  private _size: number;
+
+  constructor(size: number, defaultValue: number) {
+    this._size = size;
+    this.values = new Array(size).fill(defaultValue);
+    this.tree = new Array(size + 1).fill(0);
+    // Initialize tree with default values
+    for (let i = 0; i < size; i++) {
+      this.addToTree(i, defaultValue);
+    }
+  }
+
+  private addToTree(index: number, delta: number): void {
+    let i = index + 1;
+    while (i <= this._size) {
+      this.tree[i] += delta;
+      i += i & (-i); // Add least significant bit
+    }
+  }
+
+  /** Update value at index - O(log n) */
+  update(index: number, newValue: number): void {
+    if (index < 0 || index >= this._size) return;
+    const delta = newValue - this.values[index];
+    if (delta === 0) return;
+    this.values[index] = newValue;
+    this.addToTree(index, delta);
+  }
+
+  /** Get value at index - O(1) */
+  get(index: number): number {
+    if (index < 0 || index >= this._size) return 0;
+    return this.values[index];
+  }
+
+  /** Get prefix sum [0, index] - O(log n) */
+  prefixSum(index: number): number {
+    if (index < 0) return 0;
+    let sum = 0;
+    let i = Math.min(index, this._size - 1) + 1;
+    while (i > 0) {
+      sum += this.tree[i];
+      i -= i & (-i); // Remove least significant bit
+    }
+    return sum;
+  }
+
+  /** Get total sum - O(log n) */
+  totalSum(): number {
+    return this.prefixSum(this._size - 1);
+  }
+
+  /** Find index where prefix sum >= target using binary search - O(log² n) */
+  findIndex(targetOffset: number): number {
+    if (targetOffset <= 0) return 0;
+
+    let low = 0;
+    let high = this._size - 1;
+
+    while (low < high) {
+      const mid = (low + high) >>> 1;
+      const sumAtMid = this.prefixSum(mid);
+      if (sumAtMid <= targetOffset) {
+        low = mid + 1;
+      } else {
+        high = mid;
+      }
+    }
+
+    // Verify and adjust
+    const sumBefore = low > 0 ? this.prefixSum(low - 1) : 0;
+    if (sumBefore > targetOffset && low > 0) {
+      return low - 1;
+    }
+
+    return Math.min(low, this._size - 1);
+  }
+
+  /** Resize the tree - O(n) */
+  resize(newSize: number, defaultValue: number): void {
+    if (newSize === this._size) return;
+
+    const oldValues = this.values;
+    const oldSize = this._size;
+
+    this._size = newSize;
+    this.values = new Array(newSize).fill(defaultValue);
+    this.tree = new Array(newSize + 1).fill(0);
+
+    // Copy existing values
+    const copyCount = Math.min(oldSize, newSize);
+    for (let i = 0; i < copyCount; i++) {
+      this.values[i] = oldValues[i];
+    }
+
+    // Rebuild tree
+    for (let i = 0; i < newSize; i++) {
+      this.addToTree(i, this.values[i]);
+    }
+  }
+
+  get size(): number {
+    return this._size;
+  }
+}
+
+// =============================================================================
+// SIZE CACHE with Fenwick Tree
 // =============================================================================
 
 interface SizeCache {
-  /** Map of index -> measured size */
-  sizes: Map<number, number>;
+  /** Fenwick tree for O(log n) operations */
+  tree: FenwickTree;
+  /** Map of index -> measured size (for tracking which items are measured) */
+  measured: Set<number>;
   /** Default size for unmeasured items */
   defaultSize: number;
   /** Total count of items */
   totalCount: number;
-  /** Cached total size (sum of all items) */
-  cachedTotalSize: number;
   /** Version number for cache invalidation */
   version: number;
 }
 
 function createSizeCache(defaultSize: number, totalCount: number): SizeCache {
   return {
-    sizes: new Map(),
+    tree: new FenwickTree(Math.max(1, totalCount), defaultSize),
+    measured: new Set(),
     defaultSize,
     totalCount,
-    cachedTotalSize: defaultSize * totalCount,
     version: 0,
   };
 }
 
 /** Get size for an index - O(1) */
 function getSizeForIndex(cache: SizeCache, index: number): number {
-  return cache.sizes.get(index) ?? cache.defaultSize;
+  return cache.tree.get(index) || cache.defaultSize;
 }
 
-/**
- * Calculate offset for an index - O(n) but only for measured items
- * For lists with fixedItemHeight, this is O(1)
- */
+/** Calculate offset for an index - O(log n) using Fenwick tree */
 function getOffsetForIndex(cache: SizeCache, index: number, fixedSize?: number): number {
   if (index <= 0) return 0;
 
-  // Fast path for fixed size
+  // Fast path for fixed size - O(1)
   if (fixedSize !== undefined) {
     return index * fixedSize;
   }
 
-  const clampedIndex = Math.min(index, cache.totalCount);
-
-  // If no items have been measured, use simple calculation
-  if (cache.sizes.size === 0) {
-    return clampedIndex * cache.defaultSize;
-  }
-
-  // Calculate offset by summing sizes
-  let offset = 0;
-  for (let i = 0; i < clampedIndex; i++) {
-    offset += cache.sizes.get(i) ?? cache.defaultSize;
-  }
-
-  return offset;
+  // Use Fenwick tree prefix sum - O(log n)
+  return cache.tree.prefixSum(index - 1);
 }
 
-/**
- * Find the index at a given scroll offset using binary search for fixed size,
- * or linear scan for variable sizes
- */
+/** Find the index at a given scroll offset - O(log² n) using Fenwick tree binary search */
 function getIndexAtOffset(cache: SizeCache, targetOffset: number, fixedSize?: number): number {
   if (targetOffset <= 0) return 0;
   if (cache.totalCount === 0) return 0;
@@ -74,43 +175,16 @@ function getIndexAtOffset(cache: SizeCache, targetOffset: number, fixedSize?: nu
     return Math.min(Math.floor(targetOffset / fixedSize), cache.totalCount - 1);
   }
 
-  // If no items have been measured, use simple calculation - O(1)
-  if (cache.sizes.size === 0) {
-    return Math.min(Math.floor(targetOffset / cache.defaultSize), cache.totalCount - 1);
-  }
-
-  // Linear scan for variable sizes - O(n) but typically only scans visible items
-  let offset = 0;
-  for (let i = 0; i < cache.totalCount; i++) {
-    const size = cache.sizes.get(i) ?? cache.defaultSize;
-    if (offset + size > targetOffset) {
-      return i;
-    }
-    offset += size;
-  }
-
-  return cache.totalCount - 1;
+  // Use Fenwick tree binary search - O(log² n)
+  return cache.tree.findIndex(targetOffset);
 }
 
-/** Get total size - O(1) using cached value */
+/** Get total size - O(log n) for variable, O(1) for fixed */
 function getTotalSize(cache: SizeCache, fixedSize?: number): number {
   if (fixedSize !== undefined) {
     return cache.totalCount * fixedSize;
   }
-  return cache.cachedTotalSize;
-}
-
-/** Update cached total size after a size change */
-function updateCachedTotalSize(cache: SizeCache): number {
-  if (cache.sizes.size === 0) {
-    return cache.totalCount * cache.defaultSize;
-  }
-
-  let total = 0;
-  for (let i = 0; i < cache.totalCount; i++) {
-    total += cache.sizes.get(i) ?? cache.defaultSize;
-  }
-  return total;
+  return cache.tree.totalSum();
 }
 
 // =============================================================================
@@ -161,6 +235,8 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
   const [prevRange, setPrevRange] = createSignal<ListRange>({ startIndex: 0, endIndex: 0 });
   const [prevAtBottom, setPrevAtBottom] = createSignal(false);
   const [prevAtTop, setPrevAtTop] = createSignal(true);
+  const [endReachedFired, setEndReachedFired] = createSignal(false);
+  const [startReachedFired, setStartReachedFired] = createSignal(false);
 
   let scrollingTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -171,24 +247,31 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
 
     setSizeCache((prev) => {
       if (prev.totalCount !== count || prev.defaultSize !== estimatedSize) {
+        // Reset edge-reached flags when data changes to allow new fetches
+        if (count !== prev.totalCount) {
+          setEndReachedFired(false);
+          setStartReachedFired(false);
+        }
+
+        // Resize the Fenwick tree
+        prev.tree.resize(Math.max(1, count), estimatedSize);
+
         // Remove measurements for items beyond new count
         if (count < prev.totalCount) {
-          for (const index of prev.sizes.keys()) {
+          for (const index of prev.measured) {
             if (index >= count) {
-              prev.sizes.delete(index);
+              prev.measured.delete(index);
             }
           }
         }
 
-        const newCache: SizeCache = {
-          sizes: prev.sizes,
+        return {
+          tree: prev.tree,
+          measured: prev.measured,
           defaultSize: estimatedSize,
           totalCount: count,
-          cachedTotalSize: 0,
           version: prev.version + 1,
         };
-        newCache.cachedTotalSize = updateCachedTotalSize(newCache);
-        return newCache;
       }
       return prev;
     });
@@ -210,7 +293,21 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
     return getTotalSize(cache, fixedSize);
   });
 
+  // Compare two ListItem arrays - only compare indices to avoid cascading updates
+  // when items are measured. Offsets/sizes are recalculated but don't trigger
+  // component recreation since only the visible item indices matter for rendering.
+  const itemsEqual = (prev: ListItem[], next: ListItem[]): boolean => {
+    if (prev.length !== next.length) return false;
+    for (let i = 0; i < prev.length; i++) {
+      if (prev[i].index !== next[i].index) {
+        return false;
+      }
+    }
+    return true;
+  };
+
   // Calculate visible items - optimized for fixed size
+  // Uses custom equality check to avoid unnecessary updates when items haven't changed
   const visibleItems = createMemo((): ListItem[] => {
     const cache = sizeCache();
     const count = cache.totalCount;
@@ -259,20 +356,29 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
     }
 
     return items;
-  });
+  }, undefined, { equals: itemsEqual });
 
+  // Calculate offsetTop directly from cache to ensure correct positioning
+  // even when visibleItems memo doesn't update (due to index-only comparison)
   const offsetTop = createMemo(() => {
     const items = visibleItems();
     if (items.length === 0) return 0;
-    return items[0].offset;
+    const cache = sizeCache();
+    const fixedSize = options.getFixedSize?.();
+    return getOffsetForIndex(cache, items[0].index, fixedSize);
   });
 
+  // Calculate offsetBottom directly from cache
   const offsetBottom = createMemo(() => {
     const items = visibleItems();
     const total = totalSize();
     if (items.length === 0) return total;
     const lastItem = items[items.length - 1];
-    return Math.max(0, total - lastItem.offset - lastItem.size);
+    const cache = sizeCache();
+    const fixedSize = options.getFixedSize?.();
+    const lastOffset = getOffsetForIndex(cache, lastItem.index, fixedSize);
+    const lastSize = fixedSize ?? getSizeForIndex(cache, lastItem.index);
+    return Math.max(0, total - lastOffset - lastSize);
   });
 
   const range = createMemo((): ListRange => {
@@ -324,25 +430,37 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
     if (atBottom !== prevAtBottom()) {
       setPrevAtBottom(atBottom);
       options.onAtBottomChange?.(atBottom);
+
+      // Reset end reached flag when leaving bottom
+      if (!atBottom) {
+        setEndReachedFired(false);
+      }
     }
 
     if (atTop !== prevAtTop()) {
       setPrevAtTop(atTop);
       options.onAtTopChange?.(atTop);
+
+      // Reset start reached flag when leaving top
+      if (!atTop) {
+        setStartReachedFired(false);
+      }
     }
 
-    // End/start reached callbacks
+    // End/start reached callbacks - fire only once until user scrolls away
     const items = visibleItems();
-    if (items.length > 0 && atBottom) {
+    if (items.length > 0 && atBottom && !endReachedFired()) {
       const lastItem = items[items.length - 1];
       if (lastItem.index === options.totalCount() - 1) {
+        setEndReachedFired(true);
         options.onEndReached?.(lastItem.index);
       }
     }
 
-    if (items.length > 0 && atTop) {
+    if (items.length > 0 && atTop && !startReachedFired()) {
       const firstItem = items[0];
       if (firstItem.index === 0) {
+        setStartReachedFired(true);
         options.onStartReached?.(firstItem.index);
       }
     }
@@ -431,27 +549,26 @@ export function useVirtualizer(options: VirtualizerOptions): VirtualizerResult {
     });
   });
 
-  // Measure item - mutates in place for performance, then triggers update
+  // Measure item - O(log n) update using Fenwick tree
   const measureItem = (index: number, size: number) => {
     setSizeCache((prev) => {
-      const currentSize = prev.sizes.get(index);
+      const currentSize = prev.tree.get(index);
 
       // Only update if size actually changed
       if (currentSize === size) {
         return prev;
       }
 
-      // Calculate the size difference for incremental total update
-      const oldSize = currentSize ?? prev.defaultSize;
-      const sizeDiff = size - oldSize;
+      // Update the Fenwick tree - O(log n)
+      prev.tree.update(index, size);
+      prev.measured.add(index);
 
-      // Mutate the existing map for performance
-      prev.sizes.set(index, size);
-
-      // Return new object to trigger reactivity, but reuse the map
+      // Return new object to trigger reactivity
       return {
-        ...prev,
-        cachedTotalSize: prev.cachedTotalSize + sizeDiff,
+        tree: prev.tree,
+        measured: prev.measured,
+        defaultSize: prev.defaultSize,
+        totalCount: prev.totalCount,
         version: prev.version + 1,
       };
     });

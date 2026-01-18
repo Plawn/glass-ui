@@ -1,4 +1,4 @@
-import { createMemo, createEffect, createSignal, For, Show, onMount, type JSX, type Component } from 'solid-js';
+import { createMemo, createEffect, createSignal, Index, Show, onMount, onCleanup, type JSX, type Component } from 'solid-js';
 import { useVirtualizer } from './useVirtualizer';
 import type { VirtualTableProps, VirtualHandle, ListItem, TableComponents } from './types';
 
@@ -100,16 +100,17 @@ interface RowWrapperProps<D, C> {
 
 function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
   let rowRef: HTMLTableRowElement | undefined;
-  
+  let resizeObserver: ResizeObserver | undefined;
+
   const itemData = createMemo(() => {
     const index = props.item.index;
     return props.data?.[index] as D;
   });
-  
+
   // Measure row size on mount and when content changes
   onMount(() => {
     if (props.fixedItemHeight !== undefined) return;
-    
+
     const measureSize = () => {
       if (rowRef) {
         const height = rowRef.offsetHeight;
@@ -118,15 +119,19 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
         }
       }
     };
-    
+
     // Initial measurement after render
     requestAnimationFrame(measureSize);
-    
+
     // Set up resize observer for dynamic content
     if (typeof ResizeObserver !== 'undefined' && rowRef) {
-      const observer = new ResizeObserver(measureSize);
-      observer.observe(rowRef);
+      resizeObserver = new ResizeObserver(measureSize);
+      resizeObserver.observe(rowRef);
     }
+  });
+
+  onCleanup(() => {
+    resizeObserver?.disconnect();
   });
   
   return (
@@ -351,28 +356,28 @@ export function VirtualTable<D = unknown, C = unknown>(
         
         {/* Table Body with virtualization using filler rows */}
         <TableBody
-          ref={() => {}}
+          ref={() => {/* ref required by TableComponents interface */}}
           context={props.context}
         >
           {/* Top filler row for scroll positioning */}
           <Show when={virtualizer.offsetTop() > 0}>
             <FillerRow height={virtualizer.offsetTop()} context={props.context} />
           </Show>
-          
+
           {/* Empty state */}
           <Show when={totalCount() === 0}>
             <tr>
-              <td colspan={100}>
+              <td colSpan={Number.MAX_SAFE_INTEGER}>
                 <EmptyPlaceholder context={props.context} />
               </td>
             </tr>
           </Show>
           
           {/* Virtualized rows */}
-          <For each={virtualizer.items()}>
+          <Index each={virtualizer.items()}>
             {(item) => (
               <RowWrapper
-                item={item as ListItem<D>}
+                item={item() as ListItem<D>}
                 data={props.data}
                 context={props.context}
                 itemContent={props.itemContent}
@@ -382,7 +387,7 @@ export function VirtualTable<D = unknown, C = unknown>(
                 fixedItemHeight={fixedItemHeight()}
               />
             )}
-          </For>
+          </Index>
           
           {/* Bottom filler row for scroll positioning */}
           <Show when={virtualizer.offsetBottom() > 0}>
