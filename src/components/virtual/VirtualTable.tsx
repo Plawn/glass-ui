@@ -1,6 +1,96 @@
-import { createMemo, createEffect, createSignal, Index, Show, onMount, onCleanup, type JSX, type Component } from 'solid-js';
+import { createMemo, createEffect, createSignal, Index, Show, For, onMount, onCleanup, type JSX, type Component } from 'solid-js';
 import { useVirtualizer } from './useVirtualizer';
-import type { VirtualTableProps, VirtualHandle, ListItem, TableComponents } from './types';
+import type { VirtualTableProps, VirtualHandle, ListItem, TableComponents, VirtualTableColumn, TableRowContent } from './types';
+
+// =============================================================================
+// CELL VALUE HELPER
+// =============================================================================
+
+// Cache for path splits to avoid repeated string operations
+const pathCache = new Map<string, string[]>();
+
+/**
+ * Get a cell value from a row using dot notation (e.g., "user.name")
+ */
+function getCellValue<T>(row: T, key: string): unknown {
+  if (!row || typeof row !== 'object') return undefined;
+
+  // Check cache for path
+  let path = pathCache.get(key);
+  if (!path) {
+    path = key.split('.');
+    pathCache.set(key, path);
+  }
+
+  // Navigate the path
+  let value: unknown = row;
+  for (const part of path) {
+    if (value == null || typeof value !== 'object') return undefined;
+    value = (value as Record<string, unknown>)[part];
+  }
+  return value;
+}
+
+// =============================================================================
+// COLUMN-BASED CELL RENDERER
+// =============================================================================
+
+/**
+ * Creates an itemContent function from column definitions
+ */
+function createColumnRenderer<D>(columns: VirtualTableColumn<D>[]): TableRowContent<D, unknown> {
+  return (index: number, row: D) => (
+    <For each={columns}>
+      {(column) => {
+        const value = getCellValue(row, column.key);
+        const alignClass = column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left';
+
+        return (
+          <td
+            class={`p-3 ${alignClass} ${column.cellClass ?? ''}`}
+            style={{
+              width: column.width,
+              'min-width': column.minWidth,
+            }}
+          >
+            {column.render ? column.render(value, row, index) : String(value ?? '')}
+          </td>
+        );
+      }}
+    </For>
+  );
+}
+
+/**
+ * Creates a header renderer from column definitions
+ */
+function createColumnHeader<D>(columns: VirtualTableColumn<D>[]): () => JSX.Element {
+  return () => (
+    <tr>
+      <For each={columns}>
+        {(column) => {
+          const alignClass = column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left';
+
+          if (column.headerRender) {
+            return column.headerRender(column);
+          }
+
+          return (
+            <th
+              class={`p-3 font-medium text-surface-600 dark:text-surface-400 ${alignClass} ${column.headerClass ?? ''}`}
+              style={{
+                width: column.width,
+                'min-width': column.minWidth,
+              }}
+            >
+              {column.header}
+            </th>
+          );
+        }}
+      </For>
+    </tr>
+  );
+}
 
 // =============================================================================
 // DEFAULT TABLE COMPONENTS
@@ -91,7 +181,7 @@ interface RowWrapperProps<D, C> {
   item: ListItem<D>;
   data?: readonly D[];
   context?: C;
-  itemContent: VirtualTableProps<D, C>['itemContent'];
+  itemContent: TableRowContent<D, C>;
   measureItem: (index: number, size: number) => void;
   TableRowComponent: typeof DefaultTableRow;
   firstItemIndex: number;
@@ -175,6 +265,22 @@ export function VirtualTable<D = unknown, C = unknown>(
   const firstItemIndex = createMemo(() => props.firstItemIndex ?? 0);
   const atBottomThreshold = createMemo(() => props.atBottomThreshold ?? 4);
   const atTopThreshold = createMemo(() => props.atTopThreshold ?? 0);
+
+  // --- Column-based rendering support ---
+  // Create itemContent from columns if provided
+  const effectiveItemContent = createMemo(() => {
+    if (props.itemContent) return props.itemContent;
+    if (props.columns) return createColumnRenderer(props.columns) as TableRowContent<D, C>;
+    // Fallback - should never happen in proper usage
+    return (() => null) as TableRowContent<D, C>;
+  });
+
+  // Auto-generate header from columns if no fixedHeaderContent provided
+  const effectiveHeaderContent = createMemo(() => {
+    if (props.fixedHeaderContent) return props.fixedHeaderContent;
+    if (props.columns) return createColumnHeader(props.columns);
+    return undefined;
+  });
   
   const increaseViewportBy = createMemo((): number | { top: number; bottom: number } => {
     const val = props.increaseViewportBy;
@@ -344,13 +450,13 @@ export function VirtualTable<D = unknown, C = unknown>(
     >
       <Table style={tableStyle()} context={props.context}>
         {/* Fixed Header */}
-        <Show when={props.fixedHeaderContent}>
+        <Show when={effectiveHeaderContent()}>
           <TableHead
             ref={(el: HTMLTableSectionElement) => { theadRef = el; }}
             style={theadStyle()}
             context={props.context}
           >
-            {props.fixedHeaderContent!()}
+            {effectiveHeaderContent()!()}
           </TableHead>
         </Show>
         
@@ -380,7 +486,7 @@ export function VirtualTable<D = unknown, C = unknown>(
                 item={item() as ListItem<D>}
                 data={props.data}
                 context={props.context}
-                itemContent={props.itemContent}
+                itemContent={effectiveItemContent()}
                 measureItem={virtualizer.measureItem}
                 TableRowComponent={DefaultTableRow}
                 firstItemIndex={firstItemIndex()}

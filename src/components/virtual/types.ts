@@ -205,6 +205,31 @@ export type TableRowContent<D = unknown, C = unknown> = (
 ) => JSX.Element;
 
 /**
+ * Column definition for VirtualTable
+ * Allows per-cell rendering instead of per-row
+ */
+export interface VirtualTableColumn<T> {
+  /** Unique key for the column, used to access data (supports dot notation for nested props) */
+  key: string;
+  /** Column header label */
+  header: string;
+  /** Custom render function for cell content */
+  render?: (value: unknown, row: T, index: number) => JSX.Element;
+  /** Column width (CSS value) */
+  width?: string;
+  /** Minimum column width (CSS value) */
+  minWidth?: string;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
+  /** Custom class for this column's cells */
+  cellClass?: string;
+  /** Custom class for this column's header */
+  headerClass?: string;
+  /** Custom header render function */
+  headerRender?: (column: VirtualTableColumn<T>) => JSX.Element;
+}
+
+/**
  * Fixed header content render function
  */
 export type FixedHeaderContent = () => JSX.Element;
@@ -220,11 +245,20 @@ export interface VirtualTableProps<D = unknown, C = unknown> {
   totalCount?: number;
   /** Array of data items */
   data?: readonly D[];
-  
+
   // --- Rendering ---
-  /** Render function for row cells */
-  itemContent: TableRowContent<D, C>;
-  /** Fixed header content (sticky) */
+  /**
+   * Render function for row cells (returns all <td> elements for a row)
+   * Either itemContent OR columns must be provided
+   */
+  itemContent?: TableRowContent<D, C>;
+  /**
+   * Column definitions for declarative cell rendering
+   * When provided, cells are rendered per-column with optional custom renderers
+   * Either itemContent OR columns must be provided
+   */
+  columns?: VirtualTableColumn<D>[];
+  /** Fixed header content (sticky). Auto-generated from columns if not provided */
   fixedHeaderContent?: FixedHeaderContent;
   /** Fixed footer content (sticky) */
   fixedFooterContent?: FixedFooterContent;

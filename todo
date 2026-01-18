@@ -1,9 +1,8 @@
 ## to fix
 
 - accesssibilité
-- virtual table scroll to marche pas en prod
-- virtual table avec footer marche pas en prod -> pb de contenu
-- optimiser le useVirtualizer perfo
+- table / virtual table, fonction par cell et pas par ligne
+
 
 ## new
 - date range picker

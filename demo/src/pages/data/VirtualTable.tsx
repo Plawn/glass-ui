@@ -1,6 +1,6 @@
 import { createSignal, For, Show, createMemo, type JSX } from 'solid-js';
 import { VirtualTable, Badge, Button } from 'glass-ui-solid';
-import type { VirtualHandle } from 'glass-ui-solid';
+import type { VirtualHandle, VirtualTableColumn } from 'glass-ui-solid';
 import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay } from '../../components/demo';
 
 // Sample data generator
@@ -114,6 +114,67 @@ export default function VirtualTablePage() {
               </td>
             </>
           )}
+          style={{ height: '400px' }}
+        />
+      </DemoSection>
+
+      <DemoSection
+        title="Column-Based Rendering"
+        description={<>Use <CodePill>columns</CodePill> prop for declarative cell rendering instead of <CodePill>itemContent</CodePill>. Each column can have its own render function. Header is auto-generated from column definitions.</>}
+        code={`import type { VirtualTableColumn } from 'glass-ui-solid';
+
+const columns: VirtualTableColumn<User>[] = [
+  { key: 'id', header: 'ID', width: '80px', align: 'right' },
+  { key: 'name', header: 'Name' },
+  { key: 'email', header: 'Email' },
+  {
+    key: 'role',
+    header: 'Role',
+    width: '120px',
+    render: (value) => <Badge size="sm">{value}</Badge>,
+  },
+  {
+    key: 'status',
+    header: 'Status',
+    width: '120px',
+    render: (value, row) => (
+      <Badge size="sm" variant={value === 'active' ? 'success' : 'default'}>
+        {value}
+      </Badge>
+    ),
+  },
+];
+
+<VirtualTable
+  data={users}
+  columns={columns}
+  style={{ height: '400px' }}
+/>`}
+      >
+        <VirtualTable
+          data={users}
+          columns={[
+            { key: 'id', header: 'ID', width: '80px', align: 'right', cellClass: 'text-surface-500 dark:text-surface-400' },
+            { key: 'name', header: 'Name', cellClass: 'font-medium text-surface-900 dark:text-white' },
+            { key: 'email', header: 'Email', cellClass: 'text-surface-600 dark:text-surface-400' },
+            {
+              key: 'role',
+              header: 'Role',
+              width: '120px',
+              render: (value) => <Badge size="sm">{String(value)}</Badge>,
+            },
+            {
+              key: 'status',
+              header: 'Status',
+              width: '120px',
+              render: (value) => (
+                <Badge size="sm" variant={value === 'active' ? 'success' : value === 'pending' ? 'warning' : 'default'}>
+                  {String(value)}
+                </Badge>
+              ),
+            },
+          ] satisfies VirtualTableColumn<User>[]}
+          fixedItemHeight={48}
           style={{ height: '400px' }}
         />
       </DemoSection>
@@ -307,8 +368,9 @@ export default function VirtualTablePage() {
           props={[
             { name: 'data', type: 'readonly D[]', default: '-', description: 'Array of data items' },
             { name: 'totalCount', type: 'number', default: '-', description: 'Total count (alternative to data)' },
-            { name: 'itemContent', type: '(index, data, context) => JSX.Element', default: 'required', description: 'Row cell renderer' },
-            { name: 'fixedHeaderContent', type: '() => JSX.Element', default: '-', description: 'Sticky header content' },
+            { name: 'itemContent', type: '(index, data, context) => JSX.Element', default: '-', description: 'Row cell renderer (returns <td> elements)' },
+            { name: 'columns', type: 'VirtualTableColumn<D>[]', default: '-', description: 'Column definitions for per-cell rendering (alternative to itemContent)' },
+            { name: 'fixedHeaderContent', type: '() => JSX.Element', default: '-', description: 'Sticky header content (auto-generated from columns if not provided)' },
             { name: 'fixedFooterContent', type: '() => JSX.Element', default: '-', description: 'Sticky footer content' },
             { name: 'fixedItemHeight', type: 'number', default: '-', description: 'Fixed row height optimization' },
             { name: 'defaultItemHeight', type: 'number', default: '48', description: 'Estimated row height' },
@@ -346,6 +408,23 @@ export default function VirtualTablePage() {
             { name: 'scrollTo({ top, behavior })', type: '', description: 'Scroll to a specific offset' },
             { name: 'scrollBy({ top, behavior })', type: '', description: 'Scroll by a delta amount' },
             { name: 'getScrollTop()', type: '', description: 'Get current scroll position' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection title="VirtualTableColumn" description="Column definition for column-based rendering" card={false}>
+        <PropsTable
+          compact
+          props={[
+            { name: 'key', type: 'string', description: 'Data accessor key (supports dot notation, e.g., "user.name")' },
+            { name: 'header', type: 'string', description: 'Column header label' },
+            { name: 'render', type: '(value, row, index) => JSX.Element', description: 'Custom cell render function' },
+            { name: 'width', type: 'string', description: 'Column width (CSS value)' },
+            { name: 'minWidth', type: 'string', description: 'Minimum column width' },
+            { name: 'align', type: "'left' | 'center' | 'right'", description: 'Text alignment' },
+            { name: 'cellClass', type: 'string', description: 'Custom CSS class for cells' },
+            { name: 'headerClass', type: 'string', description: 'Custom CSS class for header' },
+            { name: 'headerRender', type: '(column) => JSX.Element', description: 'Custom header render function' },
           ]}
         />
       </DemoSection>

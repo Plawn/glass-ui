@@ -27,5 +27,6 @@ export type {
   TableRowContent,
   FixedHeaderContent,
   FixedFooterContent,
+  VirtualTableColumn,
   VirtualTableProps,
 } from './types';
