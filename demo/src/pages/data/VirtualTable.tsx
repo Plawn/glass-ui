@@ -1,7 +1,7 @@
-import { createSignal, For } from 'solid-js';
+import { createSignal, For, Show, createMemo, type JSX } from 'solid-js';
 import { VirtualTable, Badge, Button } from 'glass-ui-solid';
 import type { VirtualHandle } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay } from '../../components/demo';
 
 // Sample data generator
 interface User {
@@ -296,6 +296,12 @@ export default function VirtualTablePage() {
         </div>
       </DemoSection>
 
+      {/* Expandable Rows with Virtualization */}
+      <ExpandableVirtualTableDemo />
+
+      {/* Expandable Rows with Sub-items in Same Columns */}
+      <ExpandableSubItemsDemo />
+
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
@@ -344,5 +350,464 @@ export default function VirtualTablePage() {
         />
       </DemoSection>
     </div>
+  );
+}
+
+// =============================================================================
+// EXPANDABLE ROWS WITH VIRTUALIZATION DEMO
+// =============================================================================
+
+interface UserWithDetails {
+  id: number;
+  name: string;
+  email: string;
+  role: 'Admin' | 'User' | 'Moderator';
+  status: 'active' | 'inactive' | 'pending';
+  department: string;
+  phone: string;
+  address: string;
+  projects: string[];
+}
+
+// Generate users with extra details for expansion
+const generateUsersWithDetails = (count: number): UserWithDetails[] =>
+  Array.from({ length: count }, (_, i) => ({
+    id: i + 1,
+    name: `User ${i + 1}`,
+    email: `user${i + 1}@example.com`,
+    role: roles[i % roles.length],
+    status: statuses[i % statuses.length],
+    department: departments[i % departments.length],
+    phone: `+1 (555) ${String(100 + (i % 900)).padStart(3, '0')}-${String(1000 + (i % 9000)).padStart(4, '0')}`,
+    address: `${100 + i} ${['Main St', 'Oak Ave', 'Pine Rd', 'Elm Blvd', 'Maple Dr'][i % 5]}, ${['San Francisco', 'New York', 'Austin', 'Seattle', 'Denver'][i % 5]}`,
+    projects: [
+      ['Platform Core', 'API Gateway', 'Auth Service'],
+      ['Brand Campaign', 'Social Media', 'Analytics'],
+      ['Blog Revamp', 'Documentation', 'Tutorials'],
+      ['Enterprise Deals', 'Partner Program'],
+      ['Forum Moderation', 'User Support', 'Community Events'],
+    ][i % 5],
+  }));
+
+// Chevron icon for expand/collapse
+const ChevronIcon = (props: { expanded: boolean; class?: string }) => (
+  <svg
+    class={`w-4 h-4 transition-transform duration-200 ${props.expanded ? 'rotate-90' : ''} ${props.class ?? ''}`}
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+  </svg>
+);
+
+// Expanded content component for a user
+const ExpandedUserContent = (props: { user: UserWithDetails }) => (
+  <div class="px-4 py-3 bg-surface-50/50 dark:bg-surface-800/30 border-t border-surface-200/50 dark:border-surface-700/50">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div>
+        <p class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-1">
+          Phone
+        </p>
+        <p class="text-sm text-surface-900 dark:text-white">
+          {props.user.phone}
+        </p>
+      </div>
+      <div>
+        <p class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-1">
+          Department
+        </p>
+        <p class="text-sm text-surface-900 dark:text-white">
+          {props.user.department}
+        </p>
+      </div>
+      <div class="lg:col-span-2">
+        <p class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-1">
+          Address
+        </p>
+        <p class="text-sm text-surface-900 dark:text-white">
+          {props.user.address}
+        </p>
+      </div>
+      <div class="md:col-span-2 lg:col-span-4">
+        <p class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
+          Projects
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <For each={props.user.projects}>
+            {(project) => (
+              <Badge variant="info" size="sm">{project}</Badge>
+            )}
+          </For>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+function ExpandableVirtualTableDemo() {
+  const usersWithDetails = generateUsersWithDetails(1000);
+  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(new Set([1, 2])); // First two expanded
+
+  const toggleExpand = (id: number, e?: MouseEvent) => {
+    e?.stopPropagation();
+    setExpandedKeys(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const statusColors = {
+    active: 'success',
+    inactive: 'default',
+    pending: 'warning',
+  } as const;
+
+  return (
+    <DemoSection
+      title="Expandable Rows (Virtualized)"
+      description="Expandable rows with virtualization. Click the chevron to expand. The expanded content is rendered inside the row itself, allowing the virtualizer to measure the new height automatically."
+      code={`// For VirtualTable, render expanded content inside itemContent
+// The virtualizer automatically measures and adjusts to new heights
+
+const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(new Set());
+
+const toggleExpand = (id: number) => {
+  setExpandedKeys(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
+};
+
+<VirtualTable
+  data={users}
+  context={{ expandedKeys: expandedKeys(), toggleExpand }}
+  // DON'T use fixedItemHeight - heights are variable!
+  defaultItemHeight={48}
+  itemContent={(index, user, ctx) => {
+    const isExpanded = ctx.expandedKeys.has(user.id);
+    return (
+      <>
+        <td class="p-3" colspan={5}>
+          {/* Row content wrapper */}
+          <div class="flex items-center gap-4">
+            <ChevronIcon expanded={isExpanded} onClick={() => ctx.toggleExpand(user.id)} />
+            <span>{user.name}</span>
+            <span>{user.email}</span>
+          </div>
+          {/* Expanded content - inside same cell */}
+          <Show when={isExpanded}>
+            <div class="mt-3 p-3 bg-surface-50 rounded">
+              <p>Phone: {user.phone}</p>
+              <p>Department: {user.department}</p>
+            </div>
+          </Show>
+        </td>
+      </>
+    );
+  }}
+  style={{ height: '400px' }}
+/>`}
+    >
+      <div class="space-y-4">
+        <div class="flex gap-2 items-center">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setExpandedKeys(new Set(usersWithDetails.slice(0, 10).map(u => u.id)))}
+          >
+            Expand First 10
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setExpandedKeys(new Set<number>())}
+          >
+            Collapse All
+          </Button>
+          <StateDisplay label="Expanded" value={`${expandedKeys().size} row(s)`} />
+        </div>
+
+        <VirtualTable
+          data={usersWithDetails}
+          context={{ expandedKeys: expandedKeys(), toggleExpand }}
+          defaultItemHeight={48}
+          fixedHeaderContent={() => (
+            <tr class="text-left">
+              <th class="w-10 p-3 text-surface-600 dark:text-surface-400 font-semibold" />
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name</th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Email</th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Role</th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Status</th>
+            </tr>
+          )}
+          itemContent={(index, user, ctx) => {
+            const isExpanded = () => ctx.expandedKeys.has(user.id);
+            return (
+              <td class="p-0 border-b border-surface-100/50 dark:border-surface-800/50" colspan={5}>
+                {/* Main row content */}
+                <div
+                  class={`flex items-center cursor-pointer hover:bg-surface-50/50 dark:hover:bg-surface-800/30 transition-colors ${isExpanded() ? 'bg-primary-50/30 dark:bg-primary-900/10' : ''}`}
+                  onClick={(e) => ctx.toggleExpand(user.id, e)}
+                >
+                  <div class="w-10 p-3 text-center">
+                    <button class="p-1 rounded hover:bg-surface-200/50 dark:hover:bg-surface-700/50 transition-colors">
+                      <ChevronIcon expanded={isExpanded()} class="text-surface-500" />
+                    </button>
+                  </div>
+                  <div class="flex-1 p-3 font-medium text-surface-900 dark:text-white">
+                    {user.name}
+                  </div>
+                  <div class="flex-1 p-3 text-surface-600 dark:text-surface-400">
+                    {user.email}
+                  </div>
+                  <div class="w-28 p-3">
+                    <Badge size="sm">{user.role}</Badge>
+                  </div>
+                  <div class="w-28 p-3">
+                    <Badge variant={statusColors[user.status]} size="sm">{user.status}</Badge>
+                  </div>
+                </div>
+                {/* Expanded content with CSS Grid animation */}
+                <div
+                  class="grid transition-[grid-template-rows] duration-150 ease-out"
+                  style={{ "grid-template-rows": isExpanded() ? "1fr" : "0fr" }}
+                >
+                  <div class="overflow-hidden">
+                    <ExpandedUserContent user={user} />
+                  </div>
+                </div>
+              </td>
+            );
+          }}
+          style={{ height: '450px' }}
+        />
+      </div>
+    </DemoSection>
+  );
+}
+
+// =============================================================================
+// EXPANDABLE SUB-ITEMS IN SAME COLUMNS DEMO
+// =============================================================================
+
+interface Task {
+  id: string;
+  name: string;
+  status: 'todo' | 'in_progress' | 'done';
+  priority: 'low' | 'medium' | 'high';
+  dueDate: string;
+}
+
+interface UserWithTasks {
+  id: number;
+  name: string;
+  role: 'Admin' | 'User' | 'Moderator';
+  tasksCount: number;
+  tasks: Task[];
+}
+
+const taskStatusColors = {
+  todo: 'default',
+  in_progress: 'warning',
+  done: 'success',
+} as const;
+
+const taskPriorityColors = {
+  low: 'default',
+  high: 'error',
+  medium: 'warning',
+} as const;
+
+// Generate users with tasks
+const generateUsersWithTasks = (count: number): UserWithTasks[] =>
+  Array.from({ length: count }, (_, i) => {
+    const taskCount = 2 + (i % 4); // 2-5 tasks per user
+    return {
+      id: i + 1,
+      name: `User ${i + 1}`,
+      role: roles[i % roles.length],
+      tasksCount: taskCount,
+      tasks: Array.from({ length: taskCount }, (_, j) => ({
+        id: `${i + 1}-${j + 1}`,
+        name: [
+          'Review PR #' + (100 + j),
+          'Update documentation',
+          'Fix bug in auth',
+          'Implement feature X',
+          'Write unit tests',
+        ][j % 5],
+        status: (['todo', 'in_progress', 'done'] as const)[j % 3],
+        priority: (['low', 'medium', 'high'] as const)[j % 3],
+        dueDate: new Date(2024, 0, 15 + j).toLocaleDateString(),
+      })),
+    };
+  });
+
+function ExpandableSubItemsDemo() {
+  const usersWithTasks = generateUsersWithTasks(500);
+  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(new Set([1]));
+
+  const toggleExpand = (id: number, e?: MouseEvent) => {
+    e?.stopPropagation();
+    setExpandedKeys(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  return (
+    <DemoSection
+      title="Sub-Items in Same Columns"
+      description="Expanded content shows sub-items (tasks) aligned with the same column structure as the parent row. This creates a tree-like table view."
+      code={`// Sub-items use the same column layout as parent rows
+<VirtualTable
+  data={usersWithTasks}
+  context={{ expandedKeys: expandedKeys(), toggleExpand }}
+  itemContent={(index, user, ctx) => {
+    const isExpanded = ctx.expandedKeys.has(user.id);
+    return (
+      <td colspan={4} class="p-0">
+        {/* Parent row */}
+        <div class="flex items-center" onClick={() => ctx.toggleExpand(user.id)}>
+          <div class="w-10"><ChevronIcon expanded={isExpanded} /></div>
+          <div class="flex-1">{user.name}</div>
+          <div class="w-24">{user.role}</div>
+          <div class="w-20">{user.tasksCount} tasks</div>
+        </div>
+        {/* Sub-items with same column alignment */}
+        <div class="grid" style={{ "grid-template-rows": isExpanded ? "1fr" : "0fr" }}>
+          <div class="overflow-hidden">
+            <For each={user.tasks}>
+              {(task) => (
+                <div class="flex items-center pl-10 bg-surface-50">
+                  <div class="w-10" /> {/* Indent spacer */}
+                  <div class="flex-1">{task.name}</div>
+                  <div class="w-24"><Badge>{task.status}</Badge></div>
+                  <div class="w-20">{task.dueDate}</div>
+                </div>
+              )}
+            </For>
+          </div>
+        </div>
+      </td>
+    );
+  }}
+/>`}
+    >
+      <div class="space-y-4">
+        <div class="flex gap-2 items-center">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setExpandedKeys(new Set(usersWithTasks.slice(0, 5).map(u => u.id)))}
+          >
+            Expand First 5
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => setExpandedKeys(new Set<number>())}
+          >
+            Collapse All
+          </Button>
+          <StateDisplay label="Expanded" value={`${expandedKeys().size} row(s)`} />
+        </div>
+
+        <VirtualTable
+          data={usersWithTasks}
+          context={{ expandedKeys: expandedKeys(), toggleExpand }}
+          defaultItemHeight={48}
+          fixedHeaderContent={() => (
+            <tr class="text-left">
+              <th class="w-10 p-3 text-surface-600 dark:text-surface-400 font-semibold" />
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name / Task</th>
+              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">Role / Status</th>
+              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">Tasks / Priority</th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Due Date</th>
+            </tr>
+          )}
+          itemContent={(_, user, ctx) => {
+            const isExpanded = () => ctx.expandedKeys.has(user.id);
+            return (
+              <td class="p-0 border-b border-surface-100/50 dark:border-surface-800/50" colspan={5}>
+                {/* Parent row */}
+                <div
+                  class={`flex items-center cursor-pointer hover:bg-surface-50/50 dark:hover:bg-surface-800/30 transition-colors ${isExpanded() ? 'bg-primary-50/30 dark:bg-primary-900/10 font-medium' : ''}`}
+                  onClick={(e) => ctx.toggleExpand(user.id, e)}
+                >
+                  <div class="w-10 p-3 text-center">
+                    <button class="p-1 rounded hover:bg-surface-200/50 dark:hover:bg-surface-700/50 transition-colors">
+                      <ChevronIcon expanded={isExpanded()} class="text-surface-500" />
+                    </button>
+                  </div>
+                  <div class="flex-1 p-3 text-surface-900 dark:text-white">
+                    {user.name}
+                  </div>
+                  <div class="w-32 p-3">
+                    <Badge size="sm">{user.role}</Badge>
+                  </div>
+                  <div class="w-32 p-3 text-surface-600 dark:text-surface-400">
+                    {user.tasksCount} tasks
+                  </div>
+                  <div class="w-28 p-3 text-surface-400">
+                    —
+                  </div>
+                </div>
+
+                {/* Sub-items (tasks) with same column alignment */}
+                <div
+                  class="grid transition-[grid-template-rows] duration-150 ease-out"
+                  style={{ "grid-template-rows": isExpanded() ? "1fr" : "0fr" }}
+                >
+                  <div class="overflow-hidden">
+                    <For each={user.tasks}>
+                      {(task, taskIndex) => (
+                        <div
+                          class={`flex items-center bg-surface-50/50 dark:bg-surface-800/20 hover:bg-surface-100/50 dark:hover:bg-surface-700/30 transition-colors ${taskIndex() === user.tasks.length - 1 ? '' : 'border-b border-surface-100/50 dark:border-surface-800/50'}`}
+                        >
+                          <div class="w-10 p-3 text-center">
+                            {/* Empty spacer for alignment */}
+                          </div>
+                          <div class="flex-1 p-3 pl-6 text-sm text-surface-700 dark:text-surface-300">
+                            <span class="text-surface-400 dark:text-surface-500 mr-2">↳</span>
+                            {task.name}
+                          </div>
+                          <div class="w-32 p-3">
+                            <Badge size="sm" variant={taskStatusColors[task.status]}>
+                              {task.status.replace('_', ' ')}
+                            </Badge>
+                          </div>
+                          <div class="w-32 p-3">
+                            <Badge size="sm" variant={taskPriorityColors[task.priority]}>
+                              {task.priority}
+                            </Badge>
+                          </div>
+                          <div class="w-28 p-3 text-sm text-surface-500 dark:text-surface-400">
+                            {task.dueDate}
+                          </div>
+                        </div>
+                      )}
+                    </For>
+                  </div>
+                </div>
+              </td>
+            );
+          }}
+          style={{ height: '450px' }}
+        />
+      </div>
+    </DemoSection>
   );
 }
