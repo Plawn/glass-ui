@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { createSignal, createMemo, createEffect } from 'solid-js';
+import { createSignal, createEffect, Show } from 'solid-js';
 import type { CollapsibleProps } from './types';
 
 export const Collapsible: Component<CollapsibleProps> = (props) => {
@@ -20,7 +20,8 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
   });
 
   // Handle toggle
-  const handleToggle = () => {
+  const handleToggle = (e: MouseEvent) => {
+    e.stopPropagation();
     if (props.disabled) return;
     const newValue = !isOpen();
     if (!isControlled()) {
@@ -32,41 +33,28 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
   // Unique ID for accessibility
   const id = `collapsible-${Math.random().toString(36).slice(2, 9)}`;
 
-  const contentStyle = createMemo(() => ({
-    'grid-template-rows': isOpen() ? '1fr' : '0fr',
-  }));
-
   return (
     <div class={props.class ?? ''}>
-      {/* Trigger wrapper */}
-      <div
-        role="button"
+      {/* Trigger wrapper - using native button for better event handling */}
+      <button
+        type="button"
         tabIndex={props.disabled ? -1 : 0}
         aria-expanded={isOpen()}
         aria-controls={id}
-        aria-disabled={props.disabled}
+        disabled={props.disabled}
         onClick={handleToggle}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleToggle();
-          }
-        }}
-        class={props.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
+        class={`w-full text-left ${props.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}`}
+        style={{ background: 'none', border: 'none', padding: 0 }}
       >
         {props.trigger}
-      </div>
+      </button>
 
-      {/* Content with CSS grid animation */}
-      <div
-        id={id}
-        class="grid transition-grid-rows"
-        style={contentStyle()}
-      >
-        <div class="overflow-hidden">
+      {/* Content */}
+      <Show when={isOpen()}>
+        <div id={id} class="animate-in fade-in slide-in-from-top-2 duration-200">
           {props.children}
         </div>
-      </div>
+      </Show>
     </div>
   );
 };

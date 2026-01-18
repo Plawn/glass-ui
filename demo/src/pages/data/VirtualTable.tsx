@@ -615,7 +615,7 @@ const toggleExpand = (id: number) => {
 
         <VirtualTable
           data={usersWithDetails}
-          context={{ expandedKeys: expandedKeys(), toggleExpand }}
+          context={{ expandedKeys, toggleExpand }}
           defaultItemHeight={48}
           fixedHeaderContent={() => (
             <tr class="text-left">
@@ -627,7 +627,7 @@ const toggleExpand = (id: number) => {
             </tr>
           )}
           itemContent={(index, user, ctx) => {
-            const isExpanded = () => ctx.expandedKeys.has(user.id);
+            const isExpanded = () => ctx.expandedKeys().has(user.id);
             return (
               <td class="p-0 border-b border-surface-100/50 dark:border-surface-800/50" colspan={5}>
                 {/* Main row content */}
@@ -806,7 +806,7 @@ function ExpandableSubItemsDemo() {
 
         <VirtualTable
           data={usersWithTasks}
-          context={{ expandedKeys: expandedKeys(), toggleExpand }}
+          context={{ expandedKeys, toggleExpand }}
           defaultItemHeight={48}
           fixedHeaderContent={() => (
             <tr class="text-left">
@@ -818,7 +818,7 @@ function ExpandableSubItemsDemo() {
             </tr>
           )}
           itemContent={(_, user, ctx) => {
-            const isExpanded = () => ctx.expandedKeys.has(user.id);
+            const isExpanded = () => ctx.expandedKeys().has(user.id);
             return (
               <td class="p-0 border-b border-surface-100/50 dark:border-surface-800/50" colspan={5}>
                 {/* Parent row */}

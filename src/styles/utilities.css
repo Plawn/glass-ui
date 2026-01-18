@@ -206,6 +206,15 @@ body {
   transition-duration: 200ms;
 }
 
+/* Grid row states for collapsible */
+.grid-rows-\[0fr\] {
+  grid-template-rows: 0fr;
+}
+
+.grid-rows-\[1fr\] {
+  grid-template-rows: 1fr;
+}
+
 /* ============================================
    SLIDER INPUT
    ============================================ */
