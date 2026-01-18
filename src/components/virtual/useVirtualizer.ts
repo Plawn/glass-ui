@@ -10,20 +10,35 @@ import {
 import type { ListItem, ListRange, ScrollAlignment, ScrollBehavior } from './types';
 
 // =============================================================================
-// MATH CORE: FENWICK TREE + BINARY LIFTING (Unchanged - It's optimal)
+// CORE MATH: OPTIMIZED FENWICK TREE
 // =============================================================================
 
 class FenwickTree {
   private tree: Float64Array;
   private _size: number;
 
-  constructor(size: number, defaultValue: number) {
+  constructor(size: number, defaultValue: number, initialSizes?: Map<number, number>) {
     this._size = size;
     this.tree = new Float64Array(size + 1);
-    for (let i = 1; i <= size; i++) this.tree[i] = defaultValue;
+    
+    // 1. Initialize raw values (O(N))
+    // If we have specific sizes, use them. Otherwise use default.
+    if (initialSizes && initialSizes.size > 0) {
+      for (let i = 0; i < size; i++) {
+        this.tree[i + 1] = initialSizes.get(i) ?? defaultValue;
+      }
+    } else {
+      for (let i = 1; i <= size; i++) {
+        this.tree[i] = defaultValue;
+      }
+    }
+
+    // 2. Propagate prefix sums in-place (O(N))
     for (let i = 1; i <= size; i++) {
       const parent = i + (i & -i);
-      if (parent <= size) this.tree[parent] += this.tree[i];
+      if (parent <= size) {
+        this.tree[parent] += this.tree[i];
+      }
     }
   }
 
@@ -49,10 +64,12 @@ class FenwickTree {
     return this.prefixSum(this._size - 1);
   }
 
+  // Binary Lifting: O(log N) search
   findIndex(targetOffset: number): number {
     if (targetOffset <= 0) return 0;
     let idx = 0;
     let bitMask = 1;
+    // Find largest power of 2 <= size
     while (bitMask <= this._size) bitMask <<= 1;
     bitMask >>= 1;
 
@@ -66,22 +83,6 @@ class FenwickTree {
     }
     return Math.min(idx, this._size - 1);
   }
-
-  resize(newSize: number, defaultValue: number): void {
-    if (newSize === this._size) return;
-    const newTree = new FenwickTree(newSize, defaultValue);
-    const copyLimit = Math.min(this._size, newSize);
-    
-    // Efficiently reconstruct logic would go here
-    // For simplicity in resize, we accept a small rebuild cost
-    // as resizes (total count changes) are rare compared to scrolls.
-    // In a perfect world, we copy the raw array but resizing a BIT 
-    // technically requires re-propagating sums if dimensions change drastically.
-    // Re-instantiating is O(N) which is fine.
-    
-    this.tree = newTree.tree;
-    this._size = newSize;
-  }
 }
 
 // =============================================================================
@@ -93,7 +94,7 @@ interface SizeCache {
   sizes: Map<number, number>; 
   defaultSize: number;
   totalCount: number;
-  version: number; // Used to trigger fine-grained updates
+  version: number;
 }
 
 export interface VirtualizerOptions {
@@ -103,26 +104,25 @@ export interface VirtualizerOptions {
   overscan?: () => number;
   getScrollContainer: () => HTMLElement | null | undefined;
   horizontal?: boolean;
-  
-  // Callbacks
   onRangeChanged?: (range: ListRange) => void;
   onScrollingChanged?: (isScrolling: boolean) => void;
   onEndReached?: (index: number) => void;
 }
 
 // =============================================================================
-// VIRTUALIZER HOOK
+// HOOK
 // =============================================================================
 
 export function useVirtualizer(options: VirtualizerOptions) {
-  // 1. STATE
+  // STATE
   const [scrollTop, setScrollTop] = createSignal(0);
   const [viewportSize, setViewportSize] = createSignal(0);
   const [isScrolling, setIsScrolling] = createSignal(false);
   
-  // Internal mutable state for handling scroll correction loop
+  // INTERNAL REFS
   let ignoreNextScrollEvent = false;
   let scrollTimeout: number | undefined;
+  let itemRefCache = new Map<number, ListItem>(); 
 
   const [sizeCache, setSizeCache] = createSignal<SizeCache>({
     tree: new FenwickTree(Math.max(1, options.totalCount()), options.getEstimatedSize()),
@@ -132,26 +132,25 @@ export function useVirtualizer(options: VirtualizerOptions) {
     version: 0
   });
 
-  // 2. CACHE & SIZE MANAGEMENT
+  // 1. DATA SYNC (Total Count / Estimated Size)
   createEffect(() => {
     const count = options.totalCount();
     const estSize = options.getEstimatedSize();
 
     setSizeCache(prev => {
+      // Optimization: No-op if nothing relevant changed
       if (prev.totalCount === count && prev.defaultSize === estSize) return prev;
       
-      // Re-initialize if count changes drastically, or resize logic
-      // Ideally we preserve measurements that are still valid
-      const newTree = new FenwickTree(Math.max(1, count), estSize);
-      
-      // Migrate old measurements if possible
+      // Filter out sizes for indices that no longer exist
       const newSizes = new Map<number, number>();
-      prev.sizes.forEach((size, index) => {
-        if (index < count) {
-          newSizes.set(index, size);
-          newTree.update(index, size - estSize);
+      if (prev.sizes.size > 0) {
+        for (const [idx, size] of prev.sizes) {
+          if (idx < count) newSizes.set(idx, size);
         }
-      });
+      }
+
+      // Bulk Load Tree - O(N)
+      const newTree = new FenwickTree(Math.max(1, count), estSize, newSizes);
 
       return {
         tree: newTree,
@@ -163,23 +162,20 @@ export function useVirtualizer(options: VirtualizerOptions) {
     });
   });
 
-  // 3. RANGE CALCULATION (Separated from Item Generation for Performance)
-  // This calculates *which* indices are visible. It runs on every scroll frame.
+  // 2. VISIBLE INDICES
   const visibleRange = createMemo(() => {
     const cache = sizeCache();
     const scroll = scrollTop();
     const viewport = viewportSize();
-    const count = cache.totalCount;
     const fixed = options.getFixedSize?.();
-    const os = options.overscan?.() ?? 5;
+    
+    cache.version; // dependency
 
-    // Dependency on version ensures we recalculate if a size changes
-    cache.version; 
-
-    if (count === 0 || viewport === 0) return { start: 0, end: -1 };
+    if (cache.totalCount === 0 || viewport === 0) return { start: 0, end: -1 };
 
     const startEdge = Math.max(0, scroll);
     const endEdge = scroll + viewport;
+    const os = options.overscan?.() ?? 5;
 
     let startIndex: number, endIndex: number;
 
@@ -193,13 +189,11 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
     return {
       start: Math.max(0, startIndex - os),
-      end: Math.min(count - 1, endIndex + os)
+      end: Math.min(cache.totalCount - 1, endIndex + os)
     };
   });
 
-  // 4. ITEM GENERATION (Stable Array Identity)
-  // Only regenerates the array if the *indices* change or the *cache version* changes.
-  // This prevents recreating 20 objects when you scroll 1px.
+  // 3. ITEMS GENERATION (Stable Identity)
   const visibleItems = createMemo(() => {
     const { start, end } = visibleRange();
     const cache = sizeCache();
@@ -208,44 +202,72 @@ export function useVirtualizer(options: VirtualizerOptions) {
     if (start > end) return [];
 
     const items: ListItem[] = new Array(end - start + 1);
+    const nextRefCache = new Map<number, ListItem>();
     
-    if (fixed) {
-      for (let i = start; i <= end; i++) {
-        items[i - start] = {
-          index: i,
-          offset: i * fixed,
-          size: fixed
-        };
+    let currentOffset = fixed ? start * fixed : cache.tree.prefixSum(start - 1);
+
+    for (let i = start; i <= end; i++) {
+      const size = fixed ?? (cache.sizes.get(i) ?? cache.defaultSize);
+      
+      // Double Buffer: If exact same item exists in previous frame, reuse reference
+      const cached = itemRefCache.get(i);
+      if (cached && cached.offset === currentOffset && cached.size === size) {
+        items[i - start] = cached;
+        nextRefCache.set(i, cached);
+      } else {
+        const newItem = { index: i, offset: currentOffset, size };
+        items[i - start] = newItem;
+        nextRefCache.set(i, newItem);
       }
-    } else {
-      let currentOffset = cache.tree.prefixSum(start - 1);
-      for (let i = start; i <= end; i++) {
-        const size = cache.sizes.get(i) ?? cache.defaultSize;
-        items[i - start] = {
-          index: i,
-          offset: currentOffset,
-          size: size
-        };
-        currentOffset += size;
-      }
+
+      currentOffset += size;
     }
+
+    itemRefCache = nextRefCache;
     return items;
   });
 
-  // 5. SCROLL OBSERVER
+  // 4. HELPERS
+  const offsetTop = createMemo(() => {
+    const items = visibleItems();
+    return items.length > 0 ? items[0].offset : 0;
+  });
+
+  const offsetBottom = createMemo(() => {
+    const items = visibleItems();
+    if (items.length === 0) return 0;
+    const last = items[items.length - 1];
+    // Read total size from tree to ensure it's in sync with items
+    const fixed = options.getFixedSize?.();
+    const total = fixed ? options.totalCount() * fixed : sizeCache().tree.totalSum();
+    return Math.max(0, total - (last.offset + last.size));
+  });
+
+  const totalSize = createMemo(() => {
+    sizeCache().version; 
+    const fixed = options.getFixedSize?.();
+    return fixed ? options.totalCount() * fixed : sizeCache().tree.totalSum();
+  });
+
+  // 5. OBSERVERS
   createEffect(() => {
     const container = options.getScrollContainer();
     if (!container) return;
 
+    // ResizeObserver
     const ro = new ResizeObserver(entries => {
-      const entry = entries[0];
-      const size = options.horizontal ? entry.contentRect.width : entry.contentRect.height;
-      setViewportSize(size);
+      // Wrap in animation frame to prevent "ResizeObserver loop limit exceeded"
+      requestAnimationFrame(() => {
+        if (!Array.isArray(entries) || !entries.length) return;
+        const entry = entries[0];
+        const size = options.horizontal ? entry.contentRect.width : entry.contentRect.height;
+        setViewportSize(size);
+      });
     });
     ro.observe(container);
 
+    // Scroll Handler
     const onScroll = () => {
-      // If we adjusted scroll programmatically (anchoring), ignore this event
       if (ignoreNextScrollEvent) {
         ignoreNextScrollEvent = false;
         return;
@@ -267,8 +289,7 @@ export function useVirtualizer(options: VirtualizerOptions) {
     };
 
     container.addEventListener('scroll', onScroll, { passive: true });
-    
-    // Initial sync
+    // Initial measure
     onScroll();
 
     onCleanup(() => {
@@ -278,38 +299,33 @@ export function useVirtualizer(options: VirtualizerOptions) {
     });
   });
 
-  // 6. MEASUREMENT & SCROLL ANCHORING (Critical UX Feature)
+  // 6. DYNAMIC MEASUREMENT
   const measureItem = (index: number, size: number) => {
+    const fixed = options.getFixedSize?.();
+    if (fixed) return; 
+
     const container = options.getScrollContainer();
-    // We need untracked access to state to determine if we need to anchor
+    // Use untrack to avoid subscription loops
     const { start } = untrack(visibleRange);
-    
+
     batch(() => {
       setSizeCache(prev => {
         const currentSize = prev.sizes.get(index) ?? prev.defaultSize;
-        if (Math.abs(currentSize - size) < 0.5) return prev; // Ignore sub-pixel noise
+        if (Math.abs(currentSize - size) < 0.5) return prev; 
 
         const delta = size - currentSize;
         
-        // UPDATE TREE
         prev.tree.update(index, delta);
         prev.sizes.set(index, size);
 
-        // SCROLL ANCHORING LOGIC
-        // If the resized item is *above* our current view, the view was pushed down.
-        // We must subtract the delta from scrollTop to keep the visible content stationary.
-        // Or, more commonly, add delta to scrollTop to maintain the visual position relative to the document.
+        // Scroll Anchoring
         if (container && index < start) {
            const currentScroll = options.horizontal ? container.scrollLeft : container.scrollTop;
            const newScroll = currentScroll + delta;
            
-           // Set flag so the scroll listener doesn't trigger a re-render cycle
            ignoreNextScrollEvent = true;
-           
            if (options.horizontal) container.scrollLeft = newScroll;
            else container.scrollTop = newScroll;
-           
-           // Update signal synchronously so calculations are correct for this frame
            setScrollTop(newScroll);
         }
 
@@ -318,7 +334,6 @@ export function useVirtualizer(options: VirtualizerOptions) {
     });
   };
 
-  // 7. EXTERNAL EVENTS
   createEffect(on(visibleRange, (range) => {
     options.onRangeChanged?.({ startIndex: range.start, endIndex: range.end });
     if (range.end >= options.totalCount() - 1 && range.end > 0) {
@@ -326,23 +341,19 @@ export function useVirtualizer(options: VirtualizerOptions) {
     }
   }));
 
-  const totalSize = createMemo(() => {
-    sizeCache().version; // subscribe
-    const fixed = options.getFixedSize?.();
-    if (fixed) return options.totalCount() * fixed;
-    return sizeCache().tree.totalSum();
-  });
-
+  // 7. PUBLIC API
   return {
     items: visibleItems,
     totalSize,
+    offsetTop,
+    offsetBottom,
     isScrolling,
+    measureItem,
     range: () => {
       const { start, end } = visibleRange();
       return { startIndex: start, endIndex: end };
     },
-    measureItem,
-    
+    getScrollTop: () => scrollTop(),
     scrollToIndex: (index: number, opts?: { align?: ScrollAlignment, behavior?: ScrollBehavior }) => {
       const container = options.getScrollContainer();
       if (!container) return;
@@ -352,7 +363,6 @@ export function useVirtualizer(options: VirtualizerOptions) {
       
       const offset = fixed ? index * fixed : cache.tree.prefixSum(index - 1);
       const size = fixed ? fixed : (cache.sizes.get(index) ?? cache.defaultSize);
-      
       const viewport = untrack(viewportSize);
       const currentScroll = untrack(scrollTop);
 
@@ -374,18 +384,20 @@ export function useVirtualizer(options: VirtualizerOptions) {
       }
 
       const behavior = opts?.behavior ?? 'auto';
-      
-      if (options.horizontal) {
-        container.scrollTo({ left: target, behavior });
-      } else {
-        container.scrollTo({ top: target, behavior });
-      }
+      const scrollOpt = options.horizontal 
+        ? { left: target, behavior } 
+        : { top: target, behavior };
+      container.scrollTo(scrollOpt);
     },
-
     scrollTo: (offset: number) => {
       const container = options.getScrollContainer();
       if (options.horizontal) container?.scrollTo({ left: offset });
       else container?.scrollTo({ top: offset });
+    },
+    scrollBy: (delta: number) => {
+      const container = options.getScrollContainer();
+      if (options.horizontal) container?.scrollBy({ left: delta });
+      else container?.scrollBy({ top: delta });
     }
   };
 }
