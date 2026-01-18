@@ -44,7 +44,7 @@ export const ChatThinking: Component<ChatThinkingProps> = (props) => {
 
       {/* Content with CSS grid animation */}
       <div
-        class="grid transition-[grid-template-rows] duration-200 ease-out"
+        class="grid transition-grid-rows"
         style={contentStyle()}
       >
         <div class="overflow-hidden">

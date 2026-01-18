@@ -1,4 +1,4 @@
-import { type Component, Show, createEffect } from 'solid-js';
+import { type Component, Show, createEffect, createSignal } from 'solid-js';
 import { CheckIcon } from '../shared/icons';
 import type { CheckboxProps } from './types';
 
@@ -25,14 +25,42 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
   const size = () => props.size ?? 'md';
   const sizeStyle = () => SIZE_STYLES[size()];
 
+  // Internal visual state - this is what drives the UI
+  const [visualChecked, setVisualChecked] = createSignal(props.checked ?? false);
+  const [visualIndeterminate, setVisualIndeterminate] = createSignal(props.indeterminate ?? false);
+
+  // Sync with props.checked - works if props are reactive OR if component remounts
   createEffect(() => {
-    if (inputRef) {
-      inputRef.indeterminate = props.indeterminate ?? false;
+    const propValue = props.checked;
+    if (propValue !== undefined) {
+      setVisualChecked(propValue);
     }
   });
 
+  createEffect(() => {
+    const propValue = props.indeterminate;
+    setVisualIndeterminate(propValue ?? false);
+    if (inputRef) {
+      inputRef.indeterminate = propValue ?? false;
+    }
+  });
+
+  const isActive = () => visualChecked() || visualIndeterminate();
+  const iconClass = () =>
+    `${sizeStyle().icon} text-white transition-all duration-200 ${visualChecked() ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`;
+
+  const handleChange = (e: Event) => {
+    const newChecked = (e.currentTarget as HTMLInputElement).checked;
+    // Update visual state immediately for responsiveness
+    setVisualChecked(newChecked);
+    // Notify parent
+    props.onChange?.(newChecked);
+  };
+
   const setRef = (el: HTMLInputElement) => {
     inputRef = el;
+    // Sync initial indeterminate state
+    el.indeterminate = props.indeterminate ?? false;
     if (typeof props.ref === 'function') {
       props.ref(el);
     }
@@ -43,28 +71,28 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
       class={`inline-flex items-center gap-3 cursor-pointer ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''} ${props.class ?? ''}`}
     >
       <div
-        class={`${sizeStyle().box} flex items-center justify-center ${
-          props.checked || props.indeterminate ? 'glass-checkbox-checked' : 'glass-checkbox'
-        }`}
+        class={`${sizeStyle().box} flex items-center justify-center`}
+        classList={{
+          'glass-checkbox-checked': isActive(),
+          'glass-checkbox': !isActive(),
+        }}
       >
         <input
           ref={setRef}
           type="checkbox"
           id={props.id}
           name={props.name}
-          checked={props.checked}
+          checked={visualChecked()}
           disabled={props.disabled}
           required={props.required}
-          onChange={(e) => props.onChange?.(e.currentTarget.checked)}
+          onChange={handleChange}
           class="sr-only"
         />
-        <Show when={props.indeterminate}>
+        <Show when={visualIndeterminate()}>
           <div class={`${sizeStyle().bar} bg-white rounded-full`} />
         </Show>
-        <Show when={!props.indeterminate}>
-          <CheckIcon
-            class={`${sizeStyle().icon} text-white transition-all duration-200 ${props.checked ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}
-          />
+        <Show when={!visualIndeterminate()}>
+          <CheckIcon class={iconClass()} />
         </Show>
       </div>
       <Show when={props.label}>

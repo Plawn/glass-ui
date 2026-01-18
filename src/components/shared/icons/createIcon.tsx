@@ -30,10 +30,11 @@ export function createIcon(options: CreateIconOptions): Component<IconProps> {
 
   return (props) => {
     const size = () => props.size ?? defaultSize;
+    const className = () => props.class;
 
     return (
       <svg
-        class={props.class}
+        class={className()}
         width={size()}
         height={size()}
         fill="none"
