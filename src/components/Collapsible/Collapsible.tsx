@@ -1,20 +1,32 @@
 import type { Component } from 'solid-js';
-import { createMemo } from 'solid-js';
-import { useControlled } from '../../hooks';
+import { createSignal, createMemo, createEffect } from 'solid-js';
 import type { CollapsibleProps } from './types';
 
 export const Collapsible: Component<CollapsibleProps> = (props) => {
-  // Controlled/uncontrolled state management
-  const [isOpen, setIsOpen] = useControlled({
-    value: () => props.open,
-    defaultValue: props.defaultOpen ?? false,
-    onChange: props.onOpenChange,
+  // Internal state for uncontrolled mode
+  const [internalOpen, setInternalOpen] = createSignal(props.defaultOpen ?? false);
+
+  // Determine if controlled
+  const isControlled = () => props.open !== undefined;
+
+  // Current open state
+  const isOpen = () => (isControlled() ? props.open! : internalOpen());
+
+  // Sync internal state when controlled value changes
+  createEffect(() => {
+    if (isControlled() && props.open !== undefined) {
+      setInternalOpen(props.open);
+    }
   });
 
   // Handle toggle
   const handleToggle = () => {
     if (props.disabled) return;
-    setIsOpen(!isOpen());
+    const newValue = !isOpen();
+    if (!isControlled()) {
+      setInternalOpen(newValue);
+    }
+    props.onOpenChange?.(newValue);
   };
 
   // Unique ID for accessibility
