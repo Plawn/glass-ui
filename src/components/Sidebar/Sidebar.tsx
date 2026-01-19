@@ -76,7 +76,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
   // Animation state for mobile drawer
   const { visible: mobileVisible, isClosing: mobileClosing } = useAnimationState({
     open: mobileOpen,
-    duration: ANIMATION_DURATION_SLOW,
+    duration: () => ANIMATION_DURATION_SLOW,
   });
 
   // Handle item click

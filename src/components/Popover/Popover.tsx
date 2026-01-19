@@ -31,7 +31,7 @@ export const Popover: Component<PopoverProps> = (props) => {
     contentRef: () => contentRef,
     isOpen,
     placement,
-    offset: offset(),
+    offset,
     showArrow,
     contentClass: () => props.contentClass,
     role: 'dialog',

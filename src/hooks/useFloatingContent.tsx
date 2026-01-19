@@ -9,9 +9,6 @@ import type { Placement, Direction } from '../types';
 // TYPES
 // =============================================================================
 
-/** Default offset between trigger and floating content */
-const DEFAULT_OFFSET = 8;
-
 /** Configuration options for useFloatingContent hook */
 export interface UseFloatingContentOptions {
   /** Reference to the trigger element */
@@ -24,8 +21,8 @@ export interface UseFloatingContentOptions {
   placement?: Accessor<Placement>;
   /** Simple direction placement (without alignment, defaults to center) */
   direction?: Accessor<Direction>;
-  /** Offset distance from the trigger (in pixels) */
-  offset?: number;
+  /** Offset distance from the trigger (in pixels). Must be an accessor for reactivity. */
+  offset: Accessor<number>;
   /** Whether to show an arrow pointing to the trigger */
   showArrow?: Accessor<boolean>;
   /** Additional CSS classes for the content container */
@@ -98,7 +95,6 @@ export interface FloatingContentProps {
  * ```
  */
 export function useFloatingContent(options: UseFloatingContentOptions): UseFloatingContentReturn {
-  const offset = options.offset ?? DEFAULT_OFFSET;
   const role = options.role ?? 'dialog';
   const ariaModal = options.ariaModal ?? false;
   const updateOnScroll = options.updateOnScroll ?? false;
@@ -110,7 +106,7 @@ export function useFloatingContent(options: UseFloatingContentOptions): UseFloat
     isOpen: options.isOpen,
     placement: options.placement,
     direction: options.direction,
-    offset,
+    offset: options.offset,
     updateOnScroll,
   });
 

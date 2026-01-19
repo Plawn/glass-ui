@@ -1,12 +1,10 @@
 import { type Accessor, createEffect, createSignal, onCleanup } from 'solid-js';
 
-const DEFAULT_ANIMATION_DURATION = 200;
-
 export interface UseAnimationStateOptions {
   /** The open state accessor from the parent component */
   open: Accessor<boolean>;
-  /** Animation duration in milliseconds (default: 200) */
-  duration?: number;
+  /** Animation duration in milliseconds. Must be an accessor for reactivity. */
+  duration: Accessor<number>;
 }
 
 export interface UseAnimationStateReturn {
@@ -42,8 +40,6 @@ export interface UseAnimationStateReturn {
  * ```
  */
 export function useAnimationState(options: UseAnimationStateOptions): UseAnimationStateReturn {
-  const duration = options.duration ?? DEFAULT_ANIMATION_DURATION;
-
   // Track visibility separately from open state for exit animation
   const [visible, setVisible] = createSignal(false);
   const [isClosing, setIsClosing] = createSignal(false);
@@ -60,7 +56,7 @@ export function useAnimationState(options: UseAnimationStateOptions): UseAnimati
       const timer = setTimeout(() => {
         setVisible(false);
         setIsClosing(false);
-      }, duration);
+      }, options.duration());
       onCleanup(() => clearTimeout(timer));
     }
   });

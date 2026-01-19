@@ -14,10 +14,22 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
   const [isHoveringContent, setIsHoveringContent] = createSignal(false);
 
   const placement = () => props.placement ?? 'bottom';
+  const offset = () => DEFAULT_OFFSET;
   const openDelay = () => props.openDelay ?? 200;
   const closeDelay = () => props.closeDelay ?? 300;
   const showArrow = () => props.showArrow ?? false;
   const disabled = () => props.disabled ?? false;
+
+  // Event handlers - defined before use to avoid hoisting issues
+  const handleContentMouseEnter = () => {
+    if (!disabled()) {
+      setIsHoveringContent(true);
+    }
+  };
+
+  const handleContentMouseLeave = () => {
+    setIsHoveringContent(false);
+  };
 
   // Use the shared floating content hook
   const { FloatingContent } = useFloatingContent({
@@ -25,7 +37,7 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
     contentRef: () => contentRef,
     isOpen,
     direction: placement,
-    offset: DEFAULT_OFFSET,
+    offset,
     showArrow,
     contentClass: () => props.contentClass,
     role: 'tooltip',
@@ -60,16 +72,6 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
   const handleTriggerMouseLeave = () => {
     setIsHoveringTrigger(false);
   };
-
-  function handleContentMouseEnter() {
-    if (!disabled()) {
-      setIsHoveringContent(true);
-    }
-  }
-
-  function handleContentMouseLeave() {
-    setIsHoveringContent(false);
-  }
 
   return (
     <div

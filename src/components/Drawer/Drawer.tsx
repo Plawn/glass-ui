@@ -27,7 +27,7 @@ export const Drawer: Component<DrawerProps> = (props) => {
   // Use animation state hook for enter/exit animations
   const { visible, isClosing } = useAnimationState({
     open: () => props.open,
-    duration: ANIMATION_DURATION,
+    duration: () => ANIMATION_DURATION,
   });
 
   // Use shared dialog state hook for escape, scroll lock, and backdrop

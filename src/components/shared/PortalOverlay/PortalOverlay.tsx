@@ -61,7 +61,7 @@ export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
   // Animation state for components that need exit animations
   const animationState = useAnimationState({
     open: openAccessor,
-    duration: animationDuration(),
+    duration: animationDuration,
   });
 
   // Determine visibility based on whether animations are enabled

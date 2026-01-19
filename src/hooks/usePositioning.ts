@@ -23,8 +23,8 @@ export interface UsePositioningOptions {
   placement?: Accessor<Placement>;
   /** Simple direction placement (without alignment, defaults to center) */
   direction?: Accessor<Direction>;
-  /** Offset distance from the trigger (in pixels) */
-  offset?: number;
+  /** Offset distance from the trigger (in pixels). Must be an accessor for reactivity. */
+  offset: Accessor<number>;
   /** Minimum space between element and viewport edge */
   viewportPadding?: number;
   /** Estimated size for initial positioning before content is measured */
@@ -75,9 +75,6 @@ export interface UseContextMenuPositioningReturn {
 
 /** Default minimum space required between element and viewport edge */
 const DEFAULT_VIEWPORT_PADDING = 8;
-
-/** Default offset between trigger and positioned element */
-const DEFAULT_OFFSET = 8;
 
 /** Default estimated element size for viewport calculations */
 const DEFAULT_ESTIMATED_SIZE = 200;
@@ -314,7 +311,6 @@ function calculatePositionStyles(
  */
 export function usePositioning(options: UsePositioningOptions): UsePositioningReturn {
   const viewportPadding = options.viewportPadding ?? DEFAULT_VIEWPORT_PADDING;
-  const offset = options.offset ?? DEFAULT_OFFSET;
   const estimatedSize = options.estimatedSize ?? DEFAULT_ESTIMATED_SIZE;
   const updateOnScroll = options.updateOnScroll ?? false;
   const updateOnResize = options.updateOnResize ?? true;
@@ -354,7 +350,7 @@ export function usePositioning(options: UsePositioningOptions): UsePositioningRe
       triggerEl,
       contentEl,
       placement,
-      offset,
+      options.offset(),
       viewportPadding,
       estimatedSize
     );
