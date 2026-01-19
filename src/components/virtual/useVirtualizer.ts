@@ -102,11 +102,35 @@ export interface VirtualizerOptions {
   getEstimatedSize: () => number;
   getFixedSize?: () => number | undefined;
   overscan?: () => number;
+  increaseViewportBy?: () => number | { top: number; bottom: number };
   getScrollContainer: () => HTMLElement | null | undefined;
   horizontal?: boolean;
+  /** Threshold for considering "at bottom" (pixels from bottom) */
+  atBottomThreshold?: () => number;
+  /** Threshold for considering "at top" (pixels from top) */
+  atTopThreshold?: () => number;
   onRangeChanged?: (range: ListRange) => void;
   onScrollingChanged?: (isScrolling: boolean) => void;
+  onTotalSizeChanged?: (size: number) => void;
+  onAtBottomChange?: (atBottom: boolean) => void;
+  onAtTopChange?: (atTop: boolean) => void;
   onEndReached?: (index: number) => void;
+  onStartReached?: (index: number) => void;
+}
+
+/** Return type of useVirtualizer hook */
+export interface VirtualizerResult {
+  items: () => ListItem[];
+  totalSize: () => number;
+  offsetTop: () => number;
+  offsetBottom: () => number;
+  isScrolling: () => boolean;
+  measureItem: (el: HTMLElement | null, index: number) => void;
+  range: () => { startIndex: number; endIndex: number };
+  getScrollTop: () => number;
+  scrollToIndex: (index: number, opts?: { align?: ScrollAlignment; behavior?: ScrollBehavior }) => void;
+  scrollTo: (offset: number) => void;
+  scrollBy: (delta: number) => void;
 }
 
 // =============================================================================

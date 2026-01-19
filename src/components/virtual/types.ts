@@ -75,9 +75,9 @@ export interface VirtualHandle {
   /** Scroll to a specific index */
   scrollToIndex: (location: number | ScrollToIndexLocation) => void;
   /** Scroll to a specific offset */
-  scrollTo: (options: { top: number; behavior?: ScrollBehavior }) => void;
+  scrollTo: (offset: number) => void;
   /** Scroll by a delta */
-  scrollBy: (options: { top: number; behavior?: ScrollBehavior }) => void;
+  scrollBy: (delta: number) => void;
   /** Get the current scroll position */
   getScrollTop: () => number;
 }
