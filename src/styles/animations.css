@@ -83,6 +83,25 @@
   }
 }
 
+/* Slide animations - Bottom (full height for sheets) */
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-bottom {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
 /* Slide animations - Top/Bottom with offsets */
 @keyframes slide-in-from-top-2 {
   from {
@@ -209,6 +228,14 @@
 
 .slide-in-from-top-2 {
   animation-name: slide-in-from-top-2;
+}
+
+.slide-in-from-bottom {
+  animation-name: slide-in-from-bottom;
+}
+
+.slide-out-to-bottom {
+  animation-name: slide-out-to-bottom;
 }
 
 .slide-in-from-bottom-2 {

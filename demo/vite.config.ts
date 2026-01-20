@@ -10,6 +10,10 @@ export default defineConfig({
   resolve: {
     alias: {
       'glass-ui-solid': resolve(__dirname, '../src'),
+      // Force single instance of solid-js to fix reactivity in production
+      'solid-js/web': resolve(__dirname, 'node_modules/solid-js/web'),
+      'solid-js/store': resolve(__dirname, 'node_modules/solid-js/store'),
+      'solid-js': resolve(__dirname, 'node_modules/solid-js'),
     },
   },
 });
