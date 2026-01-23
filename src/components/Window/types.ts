@@ -61,8 +61,14 @@ export interface WindowProps {
   closeOnEscape?: boolean;
   /** Additional CSS class for the window */
   class?: string;
-  /** Z-index for the window. Default: 50 */
+  /** Base z-index for the window. Default: 50. Actual z-index may be higher when focused. */
   zIndex?: number;
+
+  // Focus
+  /** Callback when window receives focus (clicked). Useful for multi-window z-index management. */
+  onFocus?: () => void;
+  /** Whether this window is currently focused (has highest z-index). Used with windowManager. */
+  focused?: boolean;
 }
 
 export interface WindowHandleProps {

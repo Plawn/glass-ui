@@ -1,4 +1,4 @@
-import { Window, Button, useDisclosure } from 'glass-ui-solid';
+import { Window, Button, useDisclosure, useWindowManager } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
 
@@ -92,6 +92,34 @@ const nonInteractiveExample = `<Window
   <p>This window cannot be moved or resized.</p>
 </Window>`;
 
+const multiWindowExample = `import { Window, useDisclosure, useWindowManager } from 'glass-ui-solid';
+
+function Example() {
+  const windows = useWindowManager();
+  const win1 = windows.register('window1');
+  const win2 = windows.register('window2');
+  const win3 = windows.register('window3');
+
+  const window1 = useDisclosure();
+  const window2 = useDisclosure();
+  const window3 = useDisclosure();
+
+  return (
+    <>
+      <Window
+        open={window1.isOpen()}
+        onClose={window1.onClose}
+        title="Window 1"
+        zIndex={win1.zIndex()}
+        onFocus={win1.focus}
+      >
+        Click on a window to bring it to front!
+      </Window>
+      {/* ... more windows */}
+    </>
+  );
+}`;
+
 export default function WindowPage() {
   const basicWindow = useDisclosure();
   const footerWindow = useDisclosure();
@@ -99,11 +127,24 @@ export default function WindowPage() {
   const constraintsWindow = useDisclosure();
   const controlledWindow = useDisclosure();
   const staticWindow = useDisclosure();
+
+  // Multi-window with focus management
   const multiWindow1 = useDisclosure();
   const multiWindow2 = useDisclosure();
+  const multiWindow3 = useDisclosure();
+  const windowManager = useWindowManager();
+  const win1 = windowManager.register('win1');
+  const win2 = windowManager.register('win2');
+  const win3 = windowManager.register('win3');
 
   const [position, setPosition] = createSignal({ x: 100, y: 100 });
   const [size, setSize] = createSignal({ width: 400, height: 300 });
+
+  const openAllWindows = () => {
+    multiWindow1.onOpen();
+    multiWindow2.onOpen();
+    multiWindow3.onOpen();
+  };
 
   return (
     <div class="space-y-8">
@@ -240,37 +281,65 @@ export default function WindowPage() {
       </DemoSection>
 
       <DemoSection
-        title="Multiple Windows"
-        description="Multiple windows can be opened simultaneously with different z-indexes."
-        code={`<Window zIndex={50} ... />
-<Window zIndex={51} ... />`}
+        title="Multiple Windows with Focus"
+        description="Click on a window to bring it to front. Uses useWindowManager for automatic z-index management."
+        code={multiWindowExample}
       >
         <div class="flex gap-2">
-          <Button onClick={multiWindow1.onOpen}>Open Window 1</Button>
-          <Button variant="secondary" onClick={multiWindow2.onOpen}>Open Window 2</Button>
+          <Button onClick={openAllWindows}>Open All Windows</Button>
+          <Button variant="secondary" onClick={multiWindow1.onOpen}>Window 1</Button>
+          <Button variant="secondary" onClick={multiWindow2.onOpen}>Window 2</Button>
+          <Button variant="secondary" onClick={multiWindow3.onOpen}>Window 3</Button>
         </div>
         <Window
           open={multiWindow1.isOpen()}
           onClose={multiWindow1.onClose}
-          title="Window 1"
-          defaultPosition={{ x: 100, y: 100 }}
-          defaultSize={{ width: 350, height: 250 }}
-          zIndex={50}
+          title="Window 1 (Red)"
+          defaultPosition={{ x: 80, y: 100 }}
+          defaultSize={{ width: 320, height: 220 }}
+          zIndex={win1.zIndex()}
+          onFocus={win1.focus}
+          class="border-2 border-red-500/50"
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This is window 1 with z-index 50.
+            Click on any window to bring it to front!
+          </p>
+          <p class="text-sm text-surface-500 mt-2">
+            Current z-index: {win1.zIndex()}
           </p>
         </Window>
         <Window
           open={multiWindow2.isOpen()}
           onClose={multiWindow2.onClose}
-          title="Window 2"
-          defaultPosition={{ x: 200, y: 150 }}
-          defaultSize={{ width: 350, height: 250 }}
-          zIndex={51}
+          title="Window 2 (Green)"
+          defaultPosition={{ x: 180, y: 160 }}
+          defaultSize={{ width: 320, height: 220 }}
+          zIndex={win2.zIndex()}
+          onFocus={win2.focus}
+          class="border-2 border-green-500/50"
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This is window 2 with z-index 51 (on top).
+            Click on any window to bring it to front!
+          </p>
+          <p class="text-sm text-surface-500 mt-2">
+            Current z-index: {win2.zIndex()}
+          </p>
+        </Window>
+        <Window
+          open={multiWindow3.isOpen()}
+          onClose={multiWindow3.onClose}
+          title="Window 3 (Blue)"
+          defaultPosition={{ x: 280, y: 220 }}
+          defaultSize={{ width: 320, height: 220 }}
+          zIndex={win3.zIndex()}
+          onFocus={win3.focus}
+          class="border-2 border-blue-500/50"
+        >
+          <p class="text-surface-600 dark:text-surface-400">
+            Click on any window to bring it to front!
+          </p>
+          <p class="text-sm text-surface-500 mt-2">
+            Current z-index: {win3.zIndex()}
           </p>
         </Window>
       </DemoSection>
@@ -299,6 +368,7 @@ export default function WindowPage() {
             { name: 'showClose', type: 'boolean', default: 'true', description: 'Show close button' },
             { name: 'closeOnEscape', type: 'boolean', default: 'true', description: 'Close on Escape key' },
             { name: 'zIndex', type: 'number', default: '50', description: 'Z-index for stacking' },
+            { name: 'onFocus', type: '() => void', description: 'Callback when window is clicked (for focus management)' },
             { name: 'class', type: 'string', description: 'Additional CSS class' },
           ]}
         />

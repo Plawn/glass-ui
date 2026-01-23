@@ -280,5 +280,5 @@ export type {
 } from './Chat';
 
 // Window
-export { Window, WindowHandle } from './Window';
+export { Window, WindowHandle, useWindowZIndex, useWindowManager } from './Window';
 export type { WindowProps, WindowHandleProps, WindowConstraints } from './Window';

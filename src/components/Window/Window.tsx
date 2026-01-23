@@ -160,6 +160,11 @@ export const Window: Component<WindowProps> = (props) => {
     }
   };
 
+  // Handle window focus (bring to front)
+  const handleWindowFocus = () => {
+    props.onFocus?.();
+  };
+
   // Animation classes
   const backdropClasses = () => (isClosing() ? BACKDROP_EXIT : BACKDROP_ENTER);
   const windowClasses = () => (isClosing() ? 'animate-out fade-out zoom-out-95 duration-200' : MODAL_PANEL_ENTER);
@@ -205,6 +210,8 @@ export const Window: Component<WindowProps> = (props) => {
           role="dialog"
           aria-modal={showBackdrop()}
           aria-labelledby={props.title ? 'window-title' : undefined}
+          onMouseDown={handleWindowFocus}
+          onTouchStart={handleWindowFocus}
         >
           {/* Header (drag handle) */}
           <div
