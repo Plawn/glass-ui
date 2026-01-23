@@ -202,7 +202,9 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   };
 
   const placeholder = () => {
-    if (props.placeholder) return props.placeholder;
+    if (props.placeholder) {
+      return props.placeholder;
+    }
     const startText = props.startPlaceholder ?? 'Start date';
     const endText = props.endPlaceholder ?? 'End date';
     return `${startText}${separator()}${endText}`;

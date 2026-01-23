@@ -75,11 +75,15 @@ class FenwickTree {
 
   // Binary Lifting: O(log N) search
   findIndex(targetOffset: number): number {
-    if (targetOffset <= 0) return 0;
+    if (targetOffset <= 0) {
+      return 0;
+    }
     let idx = 0;
     let bitMask = 1;
     // Find largest power of 2 <= size
-    while (bitMask <= this._size) bitMask <<= 1;
+    while (bitMask <= this._size) {
+      bitMask <<= 1;
+    }
     bitMask >>= 1;
 
     while (bitMask > 0) {
@@ -178,14 +182,17 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
     setSizeCache((prev) => {
       // Optimization: No-op if nothing relevant changed
-      if (prev.totalCount === count && prev.defaultSize === estSize)
+      if (prev.totalCount === count && prev.defaultSize === estSize) {
         return prev;
+      }
 
       // Filter out sizes for indices that no longer exist
       const newSizes = new Map<number, number>();
       if (prev.sizes.size > 0) {
         for (const [idx, size] of prev.sizes) {
-          if (idx < count) newSizes.set(idx, size);
+          if (idx < count) {
+            newSizes.set(idx, size);
+          }
         }
       }
 
@@ -211,13 +218,16 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
     cache.version; // dependency
 
-    if (cache.totalCount === 0 || viewport === 0) return { start: 0, end: -1 };
+    if (cache.totalCount === 0 || viewport === 0) {
+      return { start: 0, end: -1 };
+    }
 
     const startEdge = Math.max(0, scroll);
     const endEdge = scroll + viewport;
     const os = options.overscan?.() ?? 5;
 
-    let startIndex: number, endIndex: number;
+    let startIndex: number;
+    let endIndex: number;
 
     if (fixed) {
       startIndex = Math.floor(startEdge / fixed);
@@ -239,7 +249,9 @@ export function useVirtualizer(options: VirtualizerOptions) {
     const cache = sizeCache();
     const fixed = options.getFixedSize?.();
 
-    if (start > end) return [];
+    if (start > end) {
+      return [];
+    }
 
     const items: ListItem[] = new Array(end - start + 1);
     const nextRefCache = new Map<number, ListItem>();
@@ -275,7 +287,9 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
   const offsetBottom = createMemo(() => {
     const items = visibleItems();
-    if (items.length === 0) return 0;
+    if (items.length === 0) {
+      return 0;
+    }
     const last = items[items.length - 1];
     // Read total size from tree to ensure it's in sync with items
     const fixed = options.getFixedSize?.();
@@ -294,13 +308,17 @@ export function useVirtualizer(options: VirtualizerOptions) {
   // 5. OBSERVERS
   createEffect(() => {
     const container = options.getScrollContainer();
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     // ResizeObserver
     const ro = new ResizeObserver((entries) => {
       // Wrap in animation frame to prevent "ResizeObserver loop limit exceeded"
       requestAnimationFrame(() => {
-        if (!Array.isArray(entries) || !entries.length) return;
+        if (!Array.isArray(entries) || !entries.length) {
+          return;
+        }
         const entry = entries[0];
         const size = options.horizontal
           ? entry.contentRect.width
@@ -327,7 +345,9 @@ export function useVirtualizer(options: VirtualizerOptions) {
         options.onScrollingChanged?.(true);
       }
 
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
       scrollTimeout = window.setTimeout(() => {
         setIsScrolling(false);
         options.onScrollingChanged?.(false);
@@ -341,14 +361,18 @@ export function useVirtualizer(options: VirtualizerOptions) {
     onCleanup(() => {
       ro.disconnect();
       container.removeEventListener('scroll', onScroll);
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
     });
   });
 
   // 6. DYNAMIC MEASUREMENT
   const measureItem = (index: number, size: number) => {
     const fixed = options.getFixedSize?.();
-    if (fixed) return;
+    if (fixed) {
+      return;
+    }
 
     const container = options.getScrollContainer();
     // Use untrack to avoid subscription loops
@@ -357,7 +381,9 @@ export function useVirtualizer(options: VirtualizerOptions) {
     batch(() => {
       setSizeCache((prev) => {
         const currentSize = prev.sizes.get(index) ?? prev.defaultSize;
-        if (Math.abs(currentSize - size) < 0.5) return prev;
+        if (Math.abs(currentSize - size) < 0.5) {
+          return prev;
+        }
 
         const delta = size - currentSize;
 
@@ -372,8 +398,11 @@ export function useVirtualizer(options: VirtualizerOptions) {
           const newScroll = currentScroll + delta;
 
           ignoreNextScrollEvent = true;
-          if (options.horizontal) container.scrollLeft = newScroll;
-          else container.scrollTop = newScroll;
+          if (options.horizontal) {
+            container.scrollLeft = newScroll;
+          } else {
+            container.scrollTop = newScroll;
+          }
           setScrollTop(newScroll);
         }
 
@@ -412,7 +441,9 @@ export function useVirtualizer(options: VirtualizerOptions) {
       opts?: { align?: ScrollAlignment; behavior?: ScrollBehavior },
     ) => {
       const container = options.getScrollContainer();
-      if (!container) return;
+      if (!container) {
+        return;
+      }
 
       const cache = untrack(sizeCache);
       const fixed = options.getFixedSize?.();
@@ -449,13 +480,19 @@ export function useVirtualizer(options: VirtualizerOptions) {
     },
     scrollTo: (offset: number) => {
       const container = options.getScrollContainer();
-      if (options.horizontal) container?.scrollTo({ left: offset });
-      else container?.scrollTo({ top: offset });
+      if (options.horizontal) {
+        container?.scrollTo({ left: offset });
+      } else {
+        container?.scrollTo({ top: offset });
+      }
     },
     scrollBy: (delta: number) => {
       const container = options.getScrollContainer();
-      if (options.horizontal) container?.scrollBy({ left: delta });
-      else container?.scrollBy({ top: delta });
+      if (options.horizontal) {
+        container?.scrollBy({ left: delta });
+      } else {
+        container?.scrollBy({ top: delta });
+      }
     },
   };
 }

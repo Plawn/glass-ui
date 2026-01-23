@@ -56,7 +56,7 @@ export function useClickOutside(options: UseClickOutsideOptions): void {
       const refs = options.refs();
 
       // Check if click is inside any of the provided refs
-      const isInsideAnyRef = refs.some((ref) => ref && ref.contains(target));
+      const isInsideAnyRef = refs.some((ref) => ref?.contains(target));
 
       if (!isInsideAnyRef) {
         options.onClickOutside();

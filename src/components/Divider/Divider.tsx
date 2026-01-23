@@ -52,7 +52,6 @@ export const Divider: Component<DividerProps> = (props) => {
           <hr
             class={`border-t ${lineClasses()} ${props.class ?? ''}`}
             style={props.style}
-            role="separator"
             aria-orientation="horizontal"
           />
         }

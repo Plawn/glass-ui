@@ -170,7 +170,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   });
 
   const handleOpen = () => {
-    if (props.disabled) return;
+    if (props.disabled) {
+      return;
+    }
     setIsOpen(true);
     setFocusedIndex(-1);
   };
@@ -181,7 +183,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   };
 
   const handleSelect = (option: AutocompleteOption) => {
-    if (option.disabled) return;
+    if (option.disabled) {
+      return;
+    }
     setInputValue(option.label);
     props.onChange(option.value);
     handleClose();
@@ -209,7 +213,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
     // On blur, validate the input
     setTimeout(() => {
-      if (!isOpen()) return;
+      if (!isOpen()) {
+        return;
+      }
 
       const matchingOption = props.options.find(
         (opt) => opt.label.toLowerCase() === inputValue().toLowerCase(),
@@ -279,7 +285,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         break;
 
       case 'Tab':
-        if (open) handleClose();
+        if (open) {
+          handleClose();
+        }
         break;
 
       case 'Home':
@@ -327,7 +335,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   // Calculate dropdown position
   const dropdownPosition = createMemo(() => {
     // Track isOpen to recalculate when dropdown opens
-    if (!isOpen() || !containerRef) return {};
+    if (!isOpen() || !containerRef) {
+      return {};
+    }
 
     const rect = containerRef.getBoundingClientRect();
     const spaceBelow = window.innerHeight - rect.bottom;

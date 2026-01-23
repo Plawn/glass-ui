@@ -31,7 +31,9 @@ const pathCache = new Map<string, string[]>();
  * Get a cell value from a row using dot notation (e.g., "user.name")
  */
 function getCellValue<T>(row: T, key: string): unknown {
-  if (!row || typeof row !== 'object') return undefined;
+  if (!row || typeof row !== 'object') {
+    return undefined;
+  }
 
   // Check cache for path
   let path = pathCache.get(key);
@@ -43,7 +45,9 @@ function getCellValue<T>(row: T, key: string): unknown {
   // Navigate the path
   let value: unknown = row;
   for (const part of path) {
-    if (value == null || typeof value !== 'object') return undefined;
+    if (value == null || typeof value !== 'object') {
+      return undefined;
+    }
     value = (value as Record<string, unknown>)[part];
   }
   return value;
@@ -140,7 +144,6 @@ const DefaultScroller: Component<{
     style={props.style}
     class="glass-card rounded-xl overflow-hidden scrollbar-thin"
     data-virtual-scroller
-    tabIndex={0}
   >
     {props.children}
   </div>
@@ -233,7 +236,9 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
 
   // Measure row size on mount and when content changes
   onMount(() => {
-    if (props.fixedItemHeight !== undefined) return;
+    if (props.fixedItemHeight !== undefined) {
+      return;
+    }
 
     const measureSize = () => {
       if (rowRef) {
@@ -309,25 +314,36 @@ export function VirtualTable<D = unknown, C = unknown>(
   // --- Column-based rendering support ---
   // Create itemContent from columns if provided
   const effectiveItemContent = createMemo(() => {
-    if (props.itemContent) return props.itemContent;
-    if (props.columns)
+    if (props.itemContent) {
+      return props.itemContent;
+    }
+    if (props.columns) {
       return createColumnRenderer(props.columns) as TableRowContent<D, C>;
+    }
     // Fallback - should never happen in proper usage
     return (() => null) as TableRowContent<D, C>;
   });
 
   // Auto-generate header from columns if no fixedHeaderContent provided
   const effectiveHeaderContent = createMemo(() => {
-    if (props.fixedHeaderContent) return props.fixedHeaderContent;
-    if (props.columns) return createColumnHeader(props.columns);
+    if (props.fixedHeaderContent) {
+      return props.fixedHeaderContent;
+    }
+    if (props.columns) {
+      return createColumnHeader(props.columns);
+    }
     return undefined;
   });
 
   const increaseViewportBy = createMemo(
     (): number | { top: number; bottom: number } => {
       const val = props.increaseViewportBy;
-      if (!val) return 0;
-      if (typeof val === 'number') return val;
+      if (!val) {
+        return 0;
+      }
+      if (typeof val === 'number') {
+        return val;
+      }
       return val;
     },
   );
@@ -386,15 +402,21 @@ export function VirtualTable<D = unknown, C = unknown>(
 
   // Observe header/footer size changes
   createEffect(() => {
-    if (typeof ResizeObserver === 'undefined') return;
+    if (typeof ResizeObserver === 'undefined') {
+      return;
+    }
 
     const observer = new ResizeObserver(() => {
       measureHeader();
       measureFooter();
     });
 
-    if (theadRef) observer.observe(theadRef);
-    if (tfootRef) observer.observe(tfootRef);
+    if (theadRef) {
+      observer.observe(theadRef);
+    }
+    if (tfootRef) {
+      observer.observe(tfootRef);
+    }
 
     return () => observer.disconnect();
   });
@@ -513,7 +535,7 @@ export function VirtualTable<D = unknown, C = unknown>(
             style={theadStyle()}
             context={props.context}
           >
-            {effectiveHeaderContent()!()}
+            {effectiveHeaderContent()?.()}
           </TableHead>
         </Show>
 
@@ -575,7 +597,7 @@ export function VirtualTable<D = unknown, C = unknown>(
             style={tfootStyle()}
             context={props.context}
           >
-            {props.fixedFooterContent!()}
+            {props.fixedFooterContent?.()}
           </TableFoot>
         </Show>
       </Table>

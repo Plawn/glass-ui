@@ -57,7 +57,6 @@ export const Drawer: Component<DrawerProps> = (props) => {
   return (
     <Show when={visible()}>
       <PortalWithDarkMode>
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Backdrop click is supplementary to Escape key (handled by useDialogState) */}
         <div
           class={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm ${backdropClasses()}`}
           onClick={(e) => handleBackdropClick(e)}

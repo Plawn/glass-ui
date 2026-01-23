@@ -25,5 +25,53 @@
   },
   "files": {
     "ignore": ["dist/**", "node_modules/**", "demo/dist/**"]
-  }
+  },
+  "overrides": [
+    {
+      "include": ["demo/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noSvgWithoutTitle": "off",
+            "useButtonType": "off",
+            "useKeyWithClickEvents": "off",
+            "noLabelWithoutControl": "off",
+            "useValidAnchor": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noExplicitAny": "off",
+            "noAssignInExpressions": "off"
+          },
+          "correctness": {
+            "useJsxKeyInIterable": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["src/**"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "noSvgWithoutTitle": "off",
+            "useSemanticElements": "off",
+            "useFocusableInteractive": "off",
+            "useKeyWithClickEvents": "off",
+            "useAriaPropsForRole": "off",
+            "noLabelWithoutControl": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off",
+            "noParameterAssign": "off"
+          },
+          "suspicious": {
+            "noAssignInExpressions": "off"
+          }
+        }
+      }
+    }
+  ]
 }

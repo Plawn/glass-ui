@@ -54,13 +54,17 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
   };
 
   const increment = () => {
-    if (props.disabled) return;
+    if (props.disabled) {
+      return;
+    }
     const newValue = clampValue(props.value + step());
     props.onChange(newValue);
   };
 
   const decrement = () => {
-    if (props.disabled) return;
+    if (props.disabled) {
+      return;
+    }
     const newValue = clampValue(props.value - step());
     props.onChange(newValue);
   };
@@ -88,7 +92,9 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (props.disabled) return;
+    if (props.disabled) {
+      return;
+    }
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       increment();

@@ -119,7 +119,7 @@ clearToasts();`}
         <div class="flex flex-wrap gap-3 mb-4">
           <Button
             onClick={() =>
-              toast.info('Toast ' + Math.floor(Math.random() * 100))
+              toast.info(`Toast ${Math.floor(Math.random() * 100)}`)
             }
           >
             Add Toast

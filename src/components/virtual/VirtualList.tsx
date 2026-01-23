@@ -26,7 +26,6 @@ const DefaultScroller: Component<{
     style={props.style}
     class="glass-card rounded-xl overflow-hidden scrollbar-thin"
     data-virtual-scroller
-    tabIndex={0}
   >
     {props.children}
   </div>
@@ -59,7 +58,9 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
 
   // Measure item size on mount and when content changes
   onMount(() => {
-    if (props.fixedItemHeight !== undefined) return;
+    if (props.fixedItemHeight !== undefined) {
+      return;
+    }
 
     const measureSize = () => {
       if (itemRef) {
@@ -148,8 +149,12 @@ export function VirtualList<D = unknown, C = unknown>(
   const increaseViewportBy = createMemo(
     (): number | { top: number; bottom: number } => {
       const val = props.increaseViewportBy;
-      if (!val) return 0;
-      if (typeof val === 'number') return val;
+      if (!val) {
+        return 0;
+      }
+      if (typeof val === 'number') {
+        return val;
+      }
       return val;
     },
   );
@@ -183,7 +188,9 @@ export function VirtualList<D = unknown, C = unknown>(
     if (count < prevTotalCount) {
       setCachedIndices((prev) => {
         const filtered = prev.filter((index) => index < count);
-        if (filtered.length === prev.length) return prev;
+        if (filtered.length === prev.length) {
+          return prev;
+        }
         return filtered;
       });
     }
@@ -324,13 +331,15 @@ export function VirtualList<D = unknown, C = unknown>(
   return (
     <Scroller ref={setScrollerRef} style={scrollerStyle()}>
       <Show when={props.Header}>
-        <div data-virtual-header>{props.Header!()}</div>
+        <div data-virtual-header>{props.Header?.()}</div>
       </Show>
 
       <Show
         when={totalCount() > 0}
         fallback={
-          <Show when={props.EmptyPlaceholder}>{props.EmptyPlaceholder!()}</Show>
+          <Show when={props.EmptyPlaceholder}>
+            {props.EmptyPlaceholder?.()}
+          </Show>
         }
       >
         {/* Container with total height for scroll */}
@@ -342,7 +351,9 @@ export function VirtualList<D = unknown, C = unknown>(
               // These are reactive getters that will update when virtualizer changes
               const getOffset = () => {
                 const info = getItemInfo(index);
-                if (info) return info.offset;
+                if (info) {
+                  return info.offset;
+                }
                 // Fallback: estimate offset based on default height
                 return index * defaultItemHeight();
               };
@@ -374,7 +385,7 @@ export function VirtualList<D = unknown, C = unknown>(
       </Show>
 
       <Show when={props.Footer}>
-        <div data-virtual-footer>{props.Footer!()}</div>
+        <div data-virtual-footer>{props.Footer?.()}</div>
       </Show>
     </Scroller>
   );

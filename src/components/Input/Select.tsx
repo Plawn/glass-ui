@@ -32,15 +32,18 @@ import type { SelectProps } from './types';
 export function Select<T = string>(props: SelectProps<T>) {
   // Find the index of the currently selected value
   const getSelectedIndex = () => {
-    if (!props.options || props.value === null || props.value === undefined)
+    if (!props.options || props.value === null || props.value === undefined) {
       return '';
+    }
     const index = props.options.findIndex((opt) => opt.value === props.value);
     return index >= 0 ? String(index) : '';
   };
 
   // Handle change for options array
   const handleOptionsChange = (indexStr: string) => {
-    if (!props.options) return;
+    if (!props.options) {
+      return;
+    }
     if (indexStr === '') {
       (props.onChange as (value: T | null) => void)(null);
     } else {

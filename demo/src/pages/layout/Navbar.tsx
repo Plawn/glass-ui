@@ -35,7 +35,7 @@ const withActionsCode = `<Navbar
   }
 />`;
 
-const stickyCode = `<Navbar sticky brand={<Logo />} items={navItems} />`;
+const stickyCode = '<Navbar sticky brand={<Logo />} items={navItems} />';
 
 const transparentCode = `<Navbar
   sticky

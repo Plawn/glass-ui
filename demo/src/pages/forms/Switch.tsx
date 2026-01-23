@@ -104,7 +104,7 @@ export default function SwitchPage() {
       <DemoSection
         title="Without Label"
         description="Switch can be used without a label for compact layouts."
-        code={`<Switch checked={autoSave()} onChange={setAutoSave} />`}
+        code={'<Switch checked={autoSave()} onChange={setAutoSave} />'}
       >
         <div class="flex items-center gap-4">
           <Switch checked={autoSave()} onChange={setAutoSave} />

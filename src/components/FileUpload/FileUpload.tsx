@@ -7,13 +7,13 @@ import type { FileUploadProps } from './types';
  * Format file size to human readable string
  */
 const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return (
-    Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  );
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 };
 
 /**
@@ -71,7 +71,9 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
   };
 
   const addFiles = (newFiles: File[]) => {
-    if (isDisabled()) return;
+    if (isDisabled()) {
+      return;
+    }
 
     const filesToAdd = multiple() ? newFiles : newFiles.slice(0, 1);
     const { valid, error } = validateFiles(filesToAdd);
@@ -88,7 +90,9 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
   };
 
   const removeFile = (index: number) => {
-    if (isDisabled()) return;
+    if (isDisabled()) {
+      return;
+    }
 
     const updatedFiles = files().filter((_, i) => i !== index);
     setFiles(updatedFiles);
@@ -115,7 +119,9 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
     e.stopPropagation();
     setIsDragOver(false);
 
-    if (isDisabled() || !e.dataTransfer?.files) return;
+    if (isDisabled() || !e.dataTransfer?.files) {
+      return;
+    }
 
     const droppedFiles = Array.from(e.dataTransfer.files);
     addFiles(droppedFiles);

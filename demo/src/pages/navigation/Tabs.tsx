@@ -137,7 +137,7 @@ import type { TabItem } from 'glass-ui-solid';`}
         </VariantShowcase>
       </DemoSection>
 
-      <DemoSection title="Full Width" code={`<Tabs fullWidth items={items} />`}>
+      <DemoSection title="Full Width" code={'<Tabs fullWidth items={items} />'}>
         <Tabs fullWidth items={basicItems} />
       </DemoSection>
 

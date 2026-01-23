@@ -115,7 +115,9 @@ export const Tabs: Component<TabsProps> = (props) => {
 
   const handleTabChange = (tabId: string) => {
     const tab = props.items.find((item) => item.id === tabId);
-    if (tab?.disabled) return;
+    if (tab?.disabled) {
+      return;
+    }
 
     setActiveTab(tabId);
 
@@ -143,8 +145,12 @@ export const Tabs: Component<TabsProps> = (props) => {
 
   // --- Render helpers ---
   const shouldRenderContent = (tabId: string) => {
-    if (!lazy()) return true;
-    if (keepMounted()) return visitedTabs().has(tabId);
+    if (!lazy()) {
+      return true;
+    }
+    if (keepMounted()) {
+      return visitedTabs().has(tabId);
+    }
     return activeTab() === tabId;
   };
 

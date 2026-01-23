@@ -176,7 +176,7 @@ function Layout(props: { children: any }) {
             <span class="text-xs font-medium text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded-md">
               v{version}
             </span>
-            <div class="h-6 w-[1px] bg-surface-200 dark:bg-surface-800 mx-1"></div>
+            <div class="h-6 w-[1px] bg-surface-200 dark:bg-surface-800 mx-1" />
             <Button
               variant="ghost"
               size="sm"

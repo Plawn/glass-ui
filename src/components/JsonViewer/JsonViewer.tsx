@@ -201,8 +201,12 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
 
   const currentExpandDepth = () => {
     const state = expandState();
-    if (state === true) return 100;
-    if (state === false) return 0;
+    if (state === true) {
+      return 100;
+    }
+    if (state === false) {
+      return 0;
+    }
     return initialExpandDepth();
   };
 

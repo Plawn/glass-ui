@@ -149,14 +149,14 @@ export default function ButtonPage() {
 
       <DemoSection
         title="Full Width"
-        code={`<Button fullWidth>Full Width Button</Button>`}
+        code={'<Button fullWidth>Full Width Button</Button>'}
       >
         <Button fullWidth>Full Width Button</Button>
       </DemoSection>
 
       <DemoSection
         title="Disabled"
-        code={`<Button disabled>Cannot Click</Button>`}
+        code={'<Button disabled>Cannot Click</Button>'}
       >
         <div class="flex flex-wrap gap-3">
           <For each={variants}>

@@ -150,8 +150,12 @@ export function Table<T extends Record<string, unknown>>(
   );
 
   const selectionMode = createMemo((): SelectionMode | null => {
-    if (!props.selectable) return null;
-    if (props.selectable === true) return 'multiple';
+    if (!props.selectable) {
+      return null;
+    }
+    if (props.selectable === true) {
+      return 'multiple';
+    }
     return props.selectable;
   });
 
@@ -160,9 +164,15 @@ export function Table<T extends Record<string, unknown>>(
     if (props.getRowKey) {
       return props.getRowKey(row, index);
     }
-    if ('id' in row) return row.id as RowKey;
-    if ('_id' in row) return row._id as RowKey;
-    if ('key' in row) return row.key as RowKey;
+    if ('id' in row) {
+      return row.id as RowKey;
+    }
+    if ('_id' in row) {
+      return row._id as RowKey;
+    }
+    if ('key' in row) {
+      return row.key as RowKey;
+    }
     return index;
   };
 
@@ -226,14 +236,19 @@ export function Table<T extends Record<string, unknown>>(
   // --- Handlers ---
   const handleSort = (columnKey: string) => {
     const column = props.columns.find((c) => c.key === columnKey);
-    if (!column?.sortable && !props.sortable) return;
+    if (!column?.sortable && !props.sortable) {
+      return;
+    }
 
     const current = currentSort();
     let newDirection: SortDirection = 'asc';
 
     if (current.column === columnKey) {
-      if (current.direction === 'asc') newDirection = 'desc';
-      else if (current.direction === 'desc') newDirection = null;
+      if (current.direction === 'asc') {
+        newDirection = 'desc';
+      } else if (current.direction === 'desc') {
+        newDirection = null;
+      }
     }
 
     const newSort: SortState = {
@@ -251,15 +266,20 @@ export function Table<T extends Record<string, unknown>>(
   const handleRowSelect = (row: T, index: number, checked: boolean) => {
     const key = getRowKey(row, index);
     const mode = selectionMode();
-    if (!mode) return;
+    if (!mode) {
+      return;
+    }
 
     let newKeys: Set<RowKey>;
     if (mode === 'single') {
       newKeys = checked ? new Set([key]) : new Set();
     } else {
       newKeys = new Set(currentSelectedKeys());
-      if (checked) newKeys.add(key);
-      else newKeys.delete(key);
+      if (checked) {
+        newKeys.add(key);
+      } else {
+        newKeys.delete(key);
+      }
     }
 
     if (props.onSelectionChange) {
@@ -273,7 +293,9 @@ export function Table<T extends Record<string, unknown>>(
   };
 
   const handleSelectAll = (checked: boolean) => {
-    if (selectionMode() !== 'multiple') return;
+    if (selectionMode() !== 'multiple') {
+      return;
+    }
 
     const newKeys = checked
       ? new Set(sortedData().map((row, index) => getRowKey(row, index)))
@@ -304,15 +326,23 @@ export function Table<T extends Record<string, unknown>>(
     }
 
     const column = props.columns.find((c) => c.key === sort.column);
-    if (!column) return props.data;
+    if (!column) {
+      return props.data;
+    }
 
     return [...props.data].sort((a, b) => {
       const aVal = getCellValue(a, sort.column as string);
       const bVal = getCellValue(b, sort.column as string);
 
-      if (aVal == null && bVal == null) return 0;
-      if (aVal == null) return sort.direction === 'asc' ? -1 : 1;
-      if (bVal == null) return sort.direction === 'asc' ? 1 : -1;
+      if (aVal == null && bVal == null) {
+        return 0;
+      }
+      if (aVal == null) {
+        return sort.direction === 'asc' ? -1 : 1;
+      }
+      if (bVal == null) {
+        return sort.direction === 'asc' ? 1 : -1;
+      }
 
       let comparison = 0;
       if (typeof aVal === 'number' && typeof bVal === 'number') {
@@ -342,7 +372,9 @@ export function Table<T extends Record<string, unknown>>(
 
   // --- Computed container styles ---
   const containerStyle = createMemo((): JSX.CSSProperties => {
-    if (!props.maxHeight) return {};
+    if (!props.maxHeight) {
+      return {};
+    }
     return { 'max-height': props.maxHeight };
   });
 
@@ -355,7 +387,9 @@ export function Table<T extends Record<string, unknown>>(
 
   // --- Memoized row class names ---
   const getRowClassName = (row: T, index: number): string => {
-    if (!props.rowClass) return '';
+    if (!props.rowClass) {
+      return '';
+    }
     return typeof props.rowClass === 'function'
       ? props.rowClass(row, index)
       : props.rowClass;
@@ -364,11 +398,11 @@ export function Table<T extends Record<string, unknown>>(
   // --- Pre-computed base classes ---
   const headerBaseClass = createMemo(
     () =>
-      `font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400`,
+      'font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400',
   );
 
   const cellBaseClass = createMemo(
-    () => `text-surface-800 dark:text-surface-200`,
+    () => 'text-surface-800 dark:text-surface-200',
   );
 
   // Render header row content

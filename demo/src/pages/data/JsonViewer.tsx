@@ -19,7 +19,7 @@ const basicData = {
 const complexData = {
   string: 'Hello World',
   number: 42,
-  float: 3.14159,
+  float: Math.PI,
   boolean: true,
   nullValue: null,
   array: [1, 2, 3, 'four', { nested: true }],

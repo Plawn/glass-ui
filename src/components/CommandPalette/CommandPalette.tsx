@@ -87,7 +87,9 @@ function findMatches(text: string, query: string): [number, number][] {
   let pos = 0;
   while (pos < text.length) {
     const idx = text.indexOf(query, pos);
-    if (idx === -1) break;
+    if (idx === -1) {
+      break;
+    }
     matches.push([idx, idx + query.length]);
     pos = idx + 1;
   }
@@ -263,7 +265,9 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
   // Global keyboard shortcut
   createEffect(() => {
-    if (props.disableShortcut || props.items.length === 0) return;
+    if (props.disableShortcut || props.items.length === 0) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const key = shortcutKey();
@@ -302,7 +306,9 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   createEffect(() => {
     const idx = selectedIndex();
     const container = listRef;
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     const items = container.querySelectorAll('[data-command-item]');
     const item = items[idx];
@@ -317,7 +323,9 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   });
 
   const handleSelect = (item: ItemType) => {
-    if (item.disabled) return;
+    if (item.disabled) {
+      return;
+    }
     setOpen(false);
     props.onSelect(item);
   };
@@ -363,7 +371,6 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   return (
     <Show when={isOpen()}>
       <PortalWithDarkMode>
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled in input */}
         <div
           class={`fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/20 dark:bg-black/40 backdrop-blur-md ${BACKDROP_ENTER}`}
           onClick={handleBackdropClick}
@@ -443,7 +450,9 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                               name,
                               items,
                             ] of groupedResults().groups.entries()) {
-                              if (name === groupName) break;
+                              if (name === groupName) {
+                                break;
+                              }
                               offset += items.length;
                             }
                             return offset + idx();

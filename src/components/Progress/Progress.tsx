@@ -77,7 +77,6 @@ const LinearProgress: Component<ProgressProps> = (props) => {
           </span>
         </div>
       </Show>
-      {/* biome-ignore lint/a11y/useFocusableInteractive: Progress bars are visual indicators, not interactive */}
       <div
         class={`w-full rounded-full overflow-hidden ${linearSizes[size()]} ${styles().track}`}
         role="progressbar"
@@ -119,7 +118,6 @@ const CircularProgress: Component<ProgressProps> = (props) => {
   }));
 
   return (
-    // biome-ignore lint/a11y/useFocusableInteractive: Progress bars are visual indicators, not interactive
     <div
       class={`relative inline-flex items-center justify-center ${props.class ?? ''}`}
       role="progressbar"

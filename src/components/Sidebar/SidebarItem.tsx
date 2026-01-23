@@ -18,11 +18,17 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
 
   // Check if any child is active (for highlighting parent groups)
   const hasActiveChild = createMemo(() => {
-    if (!props.item.children || !props.activeId) return false;
+    if (!props.item.children || !props.activeId) {
+      return false;
+    }
     const checkActive = (items: SidebarItem[]): boolean => {
       for (const child of items) {
-        if (child.id === props.activeId) return true;
-        if (child.children && checkActive(child.children)) return true;
+        if (child.id === props.activeId) {
+          return true;
+        }
+        if (child.children && checkActive(child.children)) {
+          return true;
+        }
       }
       return false;
     };
@@ -30,7 +36,9 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
   });
 
   const handleClick = () => {
-    if (props.item.disabled) return;
+    if (props.item.disabled) {
+      return;
+    }
 
     if (hasChildren()) {
       props.onToggleExpand?.(props.item.id);

@@ -122,7 +122,6 @@ export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
   return (
     <Show when={isVisible()}>
       <PortalWithDarkMode>
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled by useDialogState */}
         <div
           class={backdropClasses()}
           onClick={(e) => handleBackdropClick(e)}

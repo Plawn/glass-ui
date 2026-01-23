@@ -104,7 +104,9 @@ export function useDraggable(
 
   // Handle drag start
   const handleDragStart = (clientX: number, clientY: number) => {
-    if (!enabled()) return;
+    if (!enabled()) {
+      return;
+    }
 
     setIsDragging(true);
     setStartPosition(position());
@@ -113,7 +115,9 @@ export function useDraggable(
 
   // Handle drag move
   const handleDragMove = (clientX: number, clientY: number) => {
-    if (!isDragging()) return;
+    if (!isDragging()) {
+      return;
+    }
 
     const deltaX = clientX - startMouse().x;
     const deltaY = clientY - startMouse().y;
@@ -128,7 +132,9 @@ export function useDraggable(
 
   // Handle drag end
   const handleDragEnd = () => {
-    if (!isDragging()) return;
+    if (!isDragging()) {
+      return;
+    }
     setIsDragging(false);
   };
 
@@ -148,7 +154,9 @@ export function useDraggable(
 
   // Global mouse/touch move and end handlers
   createEffect(() => {
-    if (!isDragging()) return;
+    if (!isDragging()) {
+      return;
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       handleDragMove(e.clientX, e.clientY);

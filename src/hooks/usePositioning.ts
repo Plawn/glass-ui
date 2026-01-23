@@ -101,9 +101,15 @@ const ARROW_SIZE = 8;
 export const getPrimaryDirection = (
   placement: Placement | Direction,
 ): Direction => {
-  if (placement.startsWith('top')) return 'top';
-  if (placement.startsWith('bottom')) return 'bottom';
-  if (placement.startsWith('left')) return 'left';
+  if (placement.startsWith('top')) {
+    return 'top';
+  }
+  if (placement.startsWith('bottom')) {
+    return 'bottom';
+  }
+  if (placement.startsWith('left')) {
+    return 'left';
+  }
   return 'right';
 };
 
@@ -113,8 +119,12 @@ export const getPrimaryDirection = (
 export const getAlignment = (
   placement: Placement | Direction,
 ): PositionAlignment => {
-  if (placement.includes('start')) return 'start';
-  if (placement.includes('end')) return 'end';
+  if (placement.includes('start')) {
+    return 'start';
+  }
+  if (placement.includes('end')) {
+    return 'end';
+  }
   return 'center';
 };
 

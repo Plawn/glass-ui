@@ -24,7 +24,9 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
   // Handle toggle
   const handleToggle = (e: MouseEvent) => {
     e.stopPropagation();
-    if (props.disabled) return;
+    if (props.disabled) {
+      return;
+    }
     const newValue = !isOpen();
     if (!isControlled()) {
       setInternalOpen(newValue);

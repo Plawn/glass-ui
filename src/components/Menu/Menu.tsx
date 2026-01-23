@@ -66,7 +66,9 @@ export const Menu: Component<MenuProps> = (props) => {
     switch (e.key) {
       case 'ArrowDown': {
         e.preventDefault();
-        if (items.length === 0) return;
+        if (items.length === 0) {
+          return;
+        }
         const nextIndex =
           focusedIndex() === -1
             ? 0
@@ -76,7 +78,9 @@ export const Menu: Component<MenuProps> = (props) => {
       }
       case 'ArrowUp': {
         e.preventDefault();
-        if (items.length === 0) return;
+        if (items.length === 0) {
+          return;
+        }
         const prevIndex =
           focusedIndex() === -1
             ? items.length - 1

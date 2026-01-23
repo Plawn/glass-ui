@@ -179,8 +179,12 @@ export const Window: Component<WindowProps> = (props) => {
 
   // Cursor class for dragging state
   const cursorClass = () => {
-    if (isDragging()) return 'cursor-grabbing';
-    if (draggable()) return 'cursor-grab';
+    if (isDragging()) {
+      return 'cursor-grabbing';
+    }
+    if (draggable()) {
+      return 'cursor-grab';
+    }
     return '';
   };
 
@@ -189,7 +193,6 @@ export const Window: Component<WindowProps> = (props) => {
       <PortalWithDarkMode>
         {/* Backdrop (optional) */}
         <Show when={showBackdrop()}>
-          {/* biome-ignore lint/a11y/useKeyWithClickEvents: Backdrop click is supplementary to Escape key */}
           <div
             class={clsx(
               'fixed inset-0 bg-black/50 backdrop-blur-sm',

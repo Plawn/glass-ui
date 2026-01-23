@@ -30,7 +30,9 @@ export const Slider: Component<SliderProps> = (props) => {
 
   const percentage = () => {
     const range = max() - min();
-    if (range === 0) return 0;
+    if (range === 0) {
+      return 0;
+    }
     return ((props.value - min()) / range) * 100;
   };
 
@@ -47,7 +49,9 @@ export const Slider: Component<SliderProps> = (props) => {
 
   const getMarkPosition = (markValue: number) => {
     const range = max() - min();
-    if (range === 0) return 0;
+    if (range === 0) {
+      return 0;
+    }
     return ((markValue - min()) / range) * 100;
   };
 

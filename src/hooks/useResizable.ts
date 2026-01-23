@@ -117,7 +117,9 @@ export function useResizable(
     clientX: number,
     clientY: number,
   ) => {
-    if (!enabled()) return;
+    if (!enabled()) {
+      return;
+    }
 
     setIsResizing(true);
     setResizeDirection(direction);
@@ -128,10 +130,14 @@ export function useResizable(
 
   // Handle resize move
   const handleResizeMove = (clientX: number, clientY: number) => {
-    if (!isResizing()) return;
+    if (!isResizing()) {
+      return;
+    }
 
     const direction = resizeDirection();
-    if (!direction) return;
+    if (!direction) {
+      return;
+    }
 
     const deltaX = clientX - startMouse().x;
     const deltaY = clientY - startMouse().y;
@@ -142,10 +148,18 @@ export function useResizable(
     let rawWidth = start.width;
     let rawHeight = start.height;
 
-    if (direction.includes('e')) rawWidth = start.width + deltaX;
-    if (direction.includes('w')) rawWidth = start.width - deltaX;
-    if (direction.includes('s')) rawHeight = start.height + deltaY;
-    if (direction.includes('n')) rawHeight = start.height - deltaY;
+    if (direction.includes('e')) {
+      rawWidth = start.width + deltaX;
+    }
+    if (direction.includes('w')) {
+      rawWidth = start.width - deltaX;
+    }
+    if (direction.includes('s')) {
+      rawHeight = start.height + deltaY;
+    }
+    if (direction.includes('n')) {
+      rawHeight = start.height - deltaY;
+    }
 
     // Step 2: Apply min/max constraints
     let finalWidth = Math.max(minWidth, Math.min(rawWidth, maxWidth));
@@ -212,7 +226,9 @@ export function useResizable(
 
   // Handle resize end
   const handleResizeEnd = () => {
-    if (!isResizing()) return;
+    if (!isResizing()) {
+      return;
+    }
     setIsResizing(false);
     setResizeDirection(null);
   };
@@ -244,7 +260,9 @@ export function useResizable(
 
   // Global mouse/touch move and end handlers
   createEffect(() => {
-    if (!isResizing()) return;
+    if (!isResizing()) {
+      return;
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       handleResizeMove(e.clientX, e.clientY);

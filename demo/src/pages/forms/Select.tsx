@@ -136,7 +136,7 @@ const userOptions = [
             label="Selected"
             value={
               selectedUser()
-                ? `${selectedUser()!.name} (${selectedUser()!.role})`
+                ? `${selectedUser()?.name} (${selectedUser()?.role})`
                 : '(none)'
             }
           />

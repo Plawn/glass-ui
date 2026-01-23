@@ -42,7 +42,7 @@
     "build": "vite build",
     "typecheck": "tsc --noEmit",
     "lint": "biome check .",
-    "lint:fix": "biome check --write --fix --unsafe .",
+    "lint:fix": "biome check --write --unsafe .",
     "prepublishOnly": "bun run build",
     "publish:npm": "bun run build && npm publish",
     "demo": "cd demo && bun install && bun run dev",
@@ -69,7 +69,9 @@
     "vite-plugin-solid": "^2.11.10"
   },
   "lint-staged": {
-    "*.{js,ts,jsx,tsx,json}": []
+    "*.{js,ts,jsx,tsx,json}": [
+      "biome check --no-errors-on-unmatched  --fix --unsafe"
+    ]
   },
   "dependencies": {
     "clsx": "^2.1.1",

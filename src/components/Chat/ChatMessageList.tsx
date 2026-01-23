@@ -22,7 +22,6 @@ const ChatScroller: Component<{
     style={props.style}
     class="rounded-xl overflow-hidden scrollbar-thin"
     data-virtual-scroller
-    tabIndex={0}
   >
     {props.children}
   </div>

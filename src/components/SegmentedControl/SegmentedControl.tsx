@@ -52,7 +52,6 @@ export function SegmentedControl<T extends string | number>(
   );
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: fieldset has browser styling that breaks the design
     <div
       ref={containerRef}
       role="group"

@@ -119,7 +119,9 @@ export const Sidebar: Component<SidebarProps> = (props) => {
 
   // Handle escape key for mobile drawer
   createEffect(() => {
-    if (!isMobile() || !mobileOpen()) return;
+    if (!isMobile() || !mobileOpen()) {
+      return;
+    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -283,7 +285,6 @@ export const Sidebar: Component<SidebarProps> = (props) => {
     <Show when={mobileVisible()}>
       <PortalWithDarkMode>
         {/* Backdrop */}
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Backdrop click is supplementary to Escape key */}
         <div
           class={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm ${
             mobileClosing() ? BACKDROP_EXIT : BACKDROP_ENTER

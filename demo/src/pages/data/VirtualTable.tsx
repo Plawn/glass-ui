@@ -1052,7 +1052,7 @@ const generateUsersWithTasks = (count: number): UserWithTasks[] =>
       tasks: Array.from({ length: taskCount }, (_, j) => ({
         id: `${i + 1}-${j + 1}`,
         name: [
-          'Review PR #' + (100 + j),
+          `Review PR #${100 + j}`,
           'Update documentation',
           'Fix bug in auth',
           'Implement feature X',

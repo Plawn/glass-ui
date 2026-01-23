@@ -14,14 +14,22 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
   const isSystem = createMemo(() => props.message.role === 'system');
 
   const displayName = createMemo(() => {
-    if (isUser()) return props.userName ?? 'User';
-    if (isAssistant()) return props.assistantName ?? 'Assistant';
+    if (isUser()) {
+      return props.userName ?? 'User';
+    }
+    if (isAssistant()) {
+      return props.assistantName ?? 'Assistant';
+    }
     return 'System';
   });
 
   const avatarUrl = createMemo(() => {
-    if (isUser()) return props.userAvatarUrl;
-    if (isAssistant()) return props.assistantAvatarUrl;
+    if (isUser()) {
+      return props.userAvatarUrl;
+    }
+    if (isAssistant()) {
+      return props.assistantAvatarUrl;
+    }
     return undefined;
   });
 
@@ -36,9 +44,12 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
   const isStreaming = createMemo(() => props.message.status === 'streaming');
 
   const bubbleStyleClass = createMemo(() => {
-    if (isUser()) return 'bg-accent-500 text-white rounded-br-md';
-    if (isSystem())
+    if (isUser()) {
+      return 'bg-accent-500 text-white rounded-br-md';
+    }
+    if (isSystem()) {
       return 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 text-center text-sm italic';
+    }
     return 'glass-card rounded-bl-md';
   });
 

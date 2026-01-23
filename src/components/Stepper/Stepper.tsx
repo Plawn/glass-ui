@@ -85,8 +85,12 @@ export const Stepper: Component<StepperProps> = (props) => {
   const isCurrent = (index: number) => index === props.currentStep;
 
   const isClickable = (index: number) => {
-    if (!props.onStepClick) return false;
-    if (allowClickPrevious() && isCompleted(index)) return true;
+    if (!props.onStepClick) {
+      return false;
+    }
+    if (allowClickPrevious() && isCompleted(index)) {
+      return true;
+    }
     return false;
   };
 

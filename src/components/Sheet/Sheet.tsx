@@ -57,14 +57,18 @@ export const Sheet: Component<SheetProps> = (props) => {
 
   // Handle drag move
   const handleDragMove = (clientY: number) => {
-    if (!isDragging()) return;
+    if (!isDragging()) {
+      return;
+    }
     const delta = clientY - startY();
     setDragOffset(delta);
   };
 
   // Handle drag end
   const handleDragEnd = () => {
-    if (!isDragging()) return;
+    if (!isDragging()) {
+      return;
+    }
     setIsDragging(false);
 
     const offset = dragOffset();
@@ -109,7 +113,9 @@ export const Sheet: Component<SheetProps> = (props) => {
 
   // Global mouse/touch move and end handlers
   createEffect(() => {
-    if (!isDragging()) return;
+    if (!isDragging()) {
+      return;
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       handleDragMove(e.clientY);
