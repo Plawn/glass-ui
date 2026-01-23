@@ -14,7 +14,7 @@ import {
 } from '../../constants';
 import { useClickOutside } from '../../hooks';
 import { Spinner } from '../Spinner';
-import { ChevronDownIcon, PortalWithDarkMode } from '../shared';
+import { ChevronDownIcon, CloseIcon, PortalWithDarkMode } from '../shared';
 import type { AutocompleteOption, AutocompleteProps } from './types';
 
 /**
@@ -105,6 +105,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   let internalInputRef: HTMLInputElement | undefined;
   let containerRef: HTMLDivElement | undefined;
   let dropdownRef: HTMLDivElement | undefined;
+  let justSelected = false;
 
   // Combine internal ref with user-provided ref
   const setInputRef = (el: HTMLInputElement) => {
@@ -149,11 +150,16 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
     return filteredOptions().filter((opt) => !opt.disabled);
   });
 
-  // Reset focused index when options change
+  // Reset focused index when options change (keep first item highlighted)
   createEffect(
     on(
       () => filteredOptions(),
-      () => setFocusedIndex(-1),
+      () => {
+        if (isOpen()) {
+          const firstFocusable = focusableOptions().length > 0 ? 0 : -1;
+          setFocusedIndex(firstFocusable);
+        }
+      },
     ),
   );
 
@@ -174,7 +180,21 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
       return;
     }
     setIsOpen(true);
-    setFocusedIndex(-1);
+    // Pre-select first focusable option
+    const firstFocusable = focusableOptions().length > 0 ? 0 : -1;
+    setFocusedIndex(firstFocusable);
+  };
+
+  const handleToggle = () => {
+    if (props.disabled) {
+      return;
+    }
+    if (isOpen()) {
+      handleClose();
+    } else {
+      handleOpen();
+      internalInputRef?.focus();
+    }
   };
 
   const handleClose = () => {
@@ -189,8 +209,19 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
     setInputValue(option.label);
     props.onChange(option.value);
     handleClose();
+    justSelected = true;
     internalInputRef?.focus();
   };
+
+  const handleClear = (e: MouseEvent) => {
+    e.stopPropagation();
+    setInputValue('');
+    props.onChange('');
+    props.onInputChange?.('');
+    internalInputRef?.focus();
+  };
+
+  const hasValue = () => !!props.value;
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
@@ -201,6 +232,10 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   };
 
   const handleInputFocus = () => {
+    if (justSelected) {
+      justSelected = false;
+      return;
+    }
     handleOpen();
   };
 
@@ -376,7 +411,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
           type="text"
           id={props.id}
           name={props.name}
-          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed pr-10 ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''}`}
+          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${hasValue() && !props.disabled ? 'pr-16' : 'pr-10'} ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''}`}
           placeholder={props.placeholder}
           value={inputValue()}
           disabled={props.disabled}
@@ -389,19 +424,42 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           onKeyDown={handleKeyDown}
+          onClick={() => !isOpen() && handleOpen()}
         />
 
-        {/* Right side indicator */}
-        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <Show
-            when={props.loading}
-            fallback={
+        {/* Right side indicators */}
+        <div class="absolute inset-y-0 right-0 flex items-center gap-1 pr-2">
+          <Show when={props.loading}>
+            <div class="pointer-events-none">
+              <Spinner size="sm" />
+            </div>
+          </Show>
+
+          <Show when={!props.loading && hasValue() && !props.disabled}>
+            <button
+              type="button"
+              class="p-1 rounded-full text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 transition-colors"
+              onClick={handleClear}
+              tabIndex={-1}
+              aria-label="Clear selection"
+            >
+              <CloseIcon class="w-4 h-4" />
+            </button>
+          </Show>
+
+          <Show when={!props.loading}>
+            <button
+              type="button"
+              class="p-1 text-surface-400 cursor-pointer disabled:cursor-not-allowed"
+              onClick={handleToggle}
+              disabled={props.disabled}
+              tabIndex={-1}
+              aria-label={isOpen() ? 'Close dropdown' : 'Open dropdown'}
+            >
               <ChevronDownIcon
-                class={`text-surface-400 transition-transform duration-150 ${isOpen() ? 'rotate-180' : ''}`}
+                class={`transition-transform duration-150 ${isOpen() ? 'rotate-180' : ''}`}
               />
-            }
-          >
-            <Spinner size="sm" />
+            </button>
           </Show>
         </div>
       </div>

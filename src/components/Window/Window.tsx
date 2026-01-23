@@ -5,6 +5,7 @@ import {
   Show,
   createEffect,
   createSignal,
+  on,
 } from 'solid-js';
 import {
   ANIMATION_DURATION,
@@ -148,15 +149,21 @@ export const Window: Component<WindowProps> = (props) => {
   });
 
   // Recenter when opening if using 'center'
-  createEffect(() => {
-    if (props.open && props.defaultPosition === 'center') {
-      const s = props.size ?? size();
-      setInternalPosition({
-        x: Math.max(0, (window.innerWidth - s.width) / 2),
-        y: Math.max(0, (window.innerHeight - s.height) / 2),
-      });
-    }
-  });
+  // Use on() to only track props.open, not size changes
+  createEffect(
+    on(
+      () => props.open,
+      (open) => {
+        if (open && props.defaultPosition === 'center') {
+          const s = props.size ?? size();
+          setInternalPosition({
+            x: Math.max(0, (window.innerWidth - s.width) / 2),
+            y: Math.max(0, (window.innerHeight - s.height) / 2),
+          });
+        }
+      },
+    ),
+  );
 
   // Handle backdrop click
   const handleBackdropClick = (e: MouseEvent) => {
