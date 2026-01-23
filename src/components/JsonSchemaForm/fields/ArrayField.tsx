@@ -24,16 +24,34 @@ const PrimitiveArrayItem: Component<BaseFieldProps> = (props) => {
 
   return (
     <Switch
-      fallback={<StringField schema={props.schema} value={props.value} onChange={props.onChange} />}
+      fallback={
+        <StringField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
+      }
     >
       <Match when={props.schema.enum && props.schema.enum.length > 0}>
-        <EnumField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <EnumField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
       <Match when={schemaType() === 'boolean'}>
-        <BooleanField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <BooleanField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
       <Match when={schemaType() === 'number' || schemaType() === 'integer'}>
-        <NumberField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <NumberField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
     </Switch>
   );
@@ -74,7 +92,12 @@ export const ArrayField: Component<ArrayFieldProps> = (props) => {
 
   const isPrimitive = () => {
     const type = itemSchema().type;
-    return type === 'string' || type === 'number' || type === 'integer' || type === 'boolean';
+    return (
+      type === 'string' ||
+      type === 'number' ||
+      type === 'integer' ||
+      type === 'boolean'
+    );
   };
 
   return (
@@ -161,13 +184,27 @@ export const ArrayField: Component<ArrayFieldProps> = (props) => {
       </button>
 
       {/* Constraints hint */}
-      <Show when={props.schema.minItems !== undefined || props.schema.maxItems !== undefined}>
+      <Show
+        when={
+          props.schema.minItems !== undefined ||
+          props.schema.maxItems !== undefined
+        }
+      >
         <div class="text-xs text-surface-400 dark:text-surface-500">
-          <Show when={props.schema.minItems !== undefined}>Min items: {props.schema.minItems}</Show>
-          <Show when={props.schema.minItems !== undefined && props.schema.maxItems !== undefined}>
+          <Show when={props.schema.minItems !== undefined}>
+            Min items: {props.schema.minItems}
+          </Show>
+          <Show
+            when={
+              props.schema.minItems !== undefined &&
+              props.schema.maxItems !== undefined
+            }
+          >
             {' | '}
           </Show>
-          <Show when={props.schema.maxItems !== undefined}>Max items: {props.schema.maxItems}</Show>
+          <Show when={props.schema.maxItems !== undefined}>
+            Max items: {props.schema.maxItems}
+          </Show>
         </div>
       </Show>
     </div>

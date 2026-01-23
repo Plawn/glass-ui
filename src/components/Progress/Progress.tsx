@@ -39,7 +39,10 @@ const colorStyles: Record<ProgressColor, { track: string; fill: string }> = {
   },
 };
 
-const circularColorStyles: Record<ProgressColor, { track: string; fill: string }> = {
+const circularColorStyles: Record<
+  ProgressColor,
+  { track: string; fill: string }
+> = {
   primary: {
     track: 'stroke-surface-200 dark:stroke-surface-700',
     fill: 'stroke-violet-500 dark:stroke-violet-400',
@@ -107,7 +110,9 @@ const CircularProgress: Component<ProgressProps> = (props) => {
     return circumference() - (clampedValue() / 100) * circumference();
   });
 
-  const radius = createMemo(() => (dimensions().size - dimensions().stroke) / 2);
+  const radius = createMemo(
+    () => (dimensions().size - dimensions().stroke) / 2,
+  );
   const center = createMemo(() => dimensions().size / 2);
   const valueFontStyle = createMemo(() => ({
     'font-size': circularValueFontSizes[size()],
@@ -167,7 +172,10 @@ export const Progress: Component<ProgressProps> = (props) => {
   const variant = () => props.variant ?? 'linear';
 
   return (
-    <Show when={variant() === 'circular'} fallback={<LinearProgress {...props} />}>
+    <Show
+      when={variant() === 'circular'}
+      fallback={<LinearProgress {...props} />}
+    >
       <CircularProgress {...props} />
     </Show>
   );

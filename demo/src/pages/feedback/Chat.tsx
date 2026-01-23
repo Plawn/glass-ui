@@ -1,6 +1,6 @@
-import { createSignal } from 'solid-js';
 import { Chat, type ChatMessageType } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { createSignal } from 'solid-js';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 // Helper to generate unique IDs
 const generateId = () => crypto.randomUUID();
@@ -10,12 +10,14 @@ const sampleThinking = [
   {
     id: '1',
     title: 'Analyzing the question',
-    content: 'The user is asking about how to use the Chat component. I should explain the basic setup and props.',
+    content:
+      'The user is asking about how to use the Chat component. I should explain the basic setup and props.',
   },
   {
     id: '2',
     title: 'Formulating response',
-    content: 'I will provide a clear example with:\n- Basic usage\n- Message structure\n- Event handling',
+    content:
+      'I will provide a clear example with:\n- Basic usage\n- Message structure\n- Event handling',
   },
 ];
 
@@ -24,7 +26,7 @@ const initialMessages: ChatMessageType[] = [
   {
     id: generateId(),
     role: 'assistant',
-    content: 'Hello! I\'m your AI assistant. How can I help you today?',
+    content: "Hello! I'm your AI assistant. How can I help you today?",
     timestamp: new Date(Date.now() - 60000),
     status: 'complete',
   },
@@ -38,7 +40,8 @@ const initialMessages: ChatMessageType[] = [
   {
     id: generateId(),
     role: 'assistant',
-    content: 'Of course! The Chat component provides a complete chat interface with:\n\n- **Virtualized message list** for performance with many messages\n- **Auto-scroll** to newest messages\n- **Markdown support** for rich text formatting\n- **Thinking sections** to show AI reasoning\n- **Streaming indicators** for real-time responses\n\nWould you like to see an example of the thinking feature?',
+    content:
+      'Of course! The Chat component provides a complete chat interface with:\n\n- **Virtualized message list** for performance with many messages\n- **Auto-scroll** to newest messages\n- **Markdown support** for rich text formatting\n- **Thinking sections** to show AI reasoning\n- **Streaming indicators** for real-time responses\n\nWould you like to see an example of the thinking feature?',
     timestamp: new Date(),
     status: 'complete',
     thinking: sampleThinking,
@@ -46,7 +49,8 @@ const initialMessages: ChatMessageType[] = [
 ];
 
 export default function ChatPage() {
-  const [messages, setMessages] = createSignal<ChatMessageType[]>(initialMessages);
+  const [messages, setMessages] =
+    createSignal<ChatMessageType[]>(initialMessages);
   const [isStreaming, setIsStreaming] = createSignal(false);
 
   const handleSendMessage = (content: string) => {
@@ -204,20 +208,84 @@ interface ThinkingStep {
         <DemoSection title="ChatProps" subsection>
           <PropsTable
             props={[
-              { name: 'messages', type: 'ChatMessageType[]', required: true, description: 'Array of messages to display' },
-              { name: 'onSendMessage', type: '(content: string) => void', required: true, description: 'Callback when user sends a message' },
-              { name: 'onCancelStream', type: '() => void', description: 'Callback to cancel streaming' },
-              { name: 'isStreaming', type: 'boolean', default: 'false', description: 'Whether the assistant is currently streaming' },
-              { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the input' },
-              { name: 'placeholder', type: 'string', default: '"Type a message..."', description: 'Input placeholder text' },
-              { name: 'userName', type: 'string', default: '"User"', description: 'User display name for avatar' },
-              { name: 'userAvatarUrl', type: 'string', description: 'User avatar URL' },
-              { name: 'assistantName', type: 'string', default: '"Assistant"', description: 'Assistant display name for avatar' },
-              { name: 'assistantAvatarUrl', type: 'string', description: 'Assistant avatar URL' },
-              { name: 'showTypingIndicator', type: 'boolean', default: 'false', description: 'Show typing indicator when streaming' },
-              { name: 'header', type: 'JSX.Element', description: 'Optional header element' },
-              { name: 'emptyState', type: 'JSX.Element', description: 'Custom empty state element' },
-              { name: 'class', type: 'string', description: 'Additional CSS classes' },
+              {
+                name: 'messages',
+                type: 'ChatMessageType[]',
+                required: true,
+                description: 'Array of messages to display',
+              },
+              {
+                name: 'onSendMessage',
+                type: '(content: string) => void',
+                required: true,
+                description: 'Callback when user sends a message',
+              },
+              {
+                name: 'onCancelStream',
+                type: '() => void',
+                description: 'Callback to cancel streaming',
+              },
+              {
+                name: 'isStreaming',
+                type: 'boolean',
+                default: 'false',
+                description: 'Whether the assistant is currently streaming',
+              },
+              {
+                name: 'disabled',
+                type: 'boolean',
+                default: 'false',
+                description: 'Disable the input',
+              },
+              {
+                name: 'placeholder',
+                type: 'string',
+                default: '"Type a message..."',
+                description: 'Input placeholder text',
+              },
+              {
+                name: 'userName',
+                type: 'string',
+                default: '"User"',
+                description: 'User display name for avatar',
+              },
+              {
+                name: 'userAvatarUrl',
+                type: 'string',
+                description: 'User avatar URL',
+              },
+              {
+                name: 'assistantName',
+                type: 'string',
+                default: '"Assistant"',
+                description: 'Assistant display name for avatar',
+              },
+              {
+                name: 'assistantAvatarUrl',
+                type: 'string',
+                description: 'Assistant avatar URL',
+              },
+              {
+                name: 'showTypingIndicator',
+                type: 'boolean',
+                default: 'false',
+                description: 'Show typing indicator when streaming',
+              },
+              {
+                name: 'header',
+                type: 'JSX.Element',
+                description: 'Optional header element',
+              },
+              {
+                name: 'emptyState',
+                type: 'JSX.Element',
+                description: 'Custom empty state element',
+              },
+              {
+                name: 'class',
+                type: 'string',
+                description: 'Additional CSS classes',
+              },
             ]}
           />
         </DemoSection>
@@ -225,13 +293,46 @@ interface ThinkingStep {
         <DemoSection title="ChatMessageType" subsection>
           <PropsTable
             props={[
-              { name: 'id', type: 'string', required: true, description: 'Unique message identifier' },
-              { name: 'role', type: "'user' | 'assistant' | 'system'", required: true, description: 'Message role' },
-              { name: 'content', type: 'string', required: true, description: 'Message content (markdown supported)' },
-              { name: 'timestamp', type: 'Date', required: true, description: 'Message timestamp' },
-              { name: 'status', type: "'pending' | 'streaming' | 'complete' | 'error'", default: "'complete'", description: 'Message status' },
-              { name: 'thinking', type: 'ThinkingStep[]', description: 'Thinking steps (assistant only)' },
-              { name: 'error', type: 'string', description: 'Error message if status is error' },
+              {
+                name: 'id',
+                type: 'string',
+                required: true,
+                description: 'Unique message identifier',
+              },
+              {
+                name: 'role',
+                type: "'user' | 'assistant' | 'system'",
+                required: true,
+                description: 'Message role',
+              },
+              {
+                name: 'content',
+                type: 'string',
+                required: true,
+                description: 'Message content (markdown supported)',
+              },
+              {
+                name: 'timestamp',
+                type: 'Date',
+                required: true,
+                description: 'Message timestamp',
+              },
+              {
+                name: 'status',
+                type: "'pending' | 'streaming' | 'complete' | 'error'",
+                default: "'complete'",
+                description: 'Message status',
+              },
+              {
+                name: 'thinking',
+                type: 'ThinkingStep[]',
+                description: 'Thinking steps (assistant only)',
+              },
+              {
+                name: 'error',
+                type: 'string',
+                description: 'Error message if status is error',
+              },
             ]}
           />
         </DemoSection>
@@ -239,9 +340,23 @@ interface ThinkingStep {
         <DemoSection title="ThinkingStep" subsection>
           <PropsTable
             props={[
-              { name: 'id', type: 'string', required: true, description: 'Unique step identifier' },
-              { name: 'content', type: 'string', required: true, description: 'Step content (markdown supported)' },
-              { name: 'title', type: 'string', description: 'Optional step title' },
+              {
+                name: 'id',
+                type: 'string',
+                required: true,
+                description: 'Unique step identifier',
+              },
+              {
+                name: 'content',
+                type: 'string',
+                required: true,
+                description: 'Step content (markdown supported)',
+              },
+              {
+                name: 'title',
+                type: 'string',
+                description: 'Optional step title',
+              },
             ]}
           />
         </DemoSection>

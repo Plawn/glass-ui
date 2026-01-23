@@ -2,7 +2,11 @@ import type { Component, JSX } from 'solid-js';
 import { For, Show, createMemo, createSignal } from 'solid-js';
 import type { ComponentSize } from '../../types';
 import { Checkbox } from '../Input/Checkbox';
-import { ChevronDownIcon, ChevronUpIcon, SortIcon as SortIconBase } from '../shared/icons';
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  SortIcon as SortIconBase,
+} from '../shared/icons';
 import type {
   RowKey,
   SelectionMode,
@@ -45,7 +49,8 @@ const VARIANT_STYLES: Record<
     row: 'border-b border-surface-200 dark:border-surface-700',
     headerRow: 'border-b-2 border-surface-300 dark:border-surface-600',
     cell: 'border-x border-surface-200 dark:border-surface-700 first:border-l-0 last:border-r-0',
-    headerCell: 'border-x border-surface-200 dark:border-surface-700 first:border-l-0 last:border-r-0',
+    headerCell:
+      'border-x border-surface-200 dark:border-surface-700 first:border-l-0 last:border-r-0',
   },
   striped: {
     row: 'border-b border-surface-100/30 dark:border-surface-800/30 last:border-b-0',
@@ -56,7 +61,18 @@ const VARIANT_STYLES: Record<
 };
 
 // Deterministic skeleton widths (no Math.random())
-const SKELETON_WIDTHS = ['45%', '65%', '55%', '75%', '50%', '60%', '70%', '40%', '80%', '58%'];
+const SKELETON_WIDTHS = [
+  '45%',
+  '65%',
+  '55%',
+  '75%',
+  '50%',
+  '60%',
+  '70%',
+  '40%',
+  '80%',
+  '58%',
+];
 
 const ALIGN_CLASSES = {
   left: 'text-left',
@@ -68,7 +84,9 @@ const ALIGN_CLASSES = {
 // SUBCOMPONENTS
 // =============================================================================
 
-const SortIcon: Component<{ direction: SortDirection; active: boolean }> = (props) => (
+const SortIcon: Component<{ direction: SortDirection; active: boolean }> = (
+  props,
+) => (
   <span
     class={`ml-1 inline-flex transition-opacity ${props.active ? 'opacity-100' : 'opacity-0 group-hover:opacity-40'}`}
     aria-hidden="true"
@@ -86,7 +104,9 @@ const SortIcon: Component<{ direction: SortDirection; active: boolean }> = (prop
 );
 
 // Optimized: deterministic width based on index
-const SkeletonCell: Component<{ size: ComponentSize; index: number }> = (props) => (
+const SkeletonCell: Component<{ size: ComponentSize; index: number }> = (
+  props,
+) => (
   <div
     class={`animate-pulse bg-surface-200/50 dark:bg-surface-700/50 rounded ${
       props.size === 'sm' ? 'h-3' : props.size === 'lg' ? 'h-5' : 'h-4'
@@ -108,7 +128,6 @@ export function Table<T extends Record<string, unknown>>(
   const hoverable = createMemo(() => props.hoverable ?? true);
   const loadingRows = createMemo(() => props.loadingRows ?? 5);
 
-
   // --- Memoized style lookups (avoid object creation in render) ---
   const sizeStyle = createMemo(() => SIZE_STYLES[size()]);
   const variantStyle = createMemo(() => VARIANT_STYLES[variant()]);
@@ -120,11 +139,15 @@ export function Table<T extends Record<string, unknown>>(
   });
 
   // --- Internal selection state ---
-  const [internalSelectedKeys, setInternalSelectedKeys] = createSignal<Set<RowKey>>(new Set());
+  const [internalSelectedKeys, setInternalSelectedKeys] = createSignal<
+    Set<RowKey>
+  >(new Set());
 
   // --- Computed values ---
   const currentSort = createMemo(() => props.sort ?? internalSort());
-  const currentSelectedKeys = createMemo(() => props.selectedKeys ?? internalSelectedKeys());
+  const currentSelectedKeys = createMemo(
+    () => props.selectedKeys ?? internalSelectedKeys(),
+  );
 
   const selectionMode = createMemo((): SelectionMode | null => {
     if (!props.selectable) return null;
@@ -174,7 +197,11 @@ export function Table<T extends Record<string, unknown>>(
     for (let i = 0; i < props.columns.length; i++) {
       const col = props.columns[i];
       if (col?.sticky === 'left') {
-        styles.set(i, { position: 'sticky', left: `${leftOffset}px`, 'z-index': 10 });
+        styles.set(i, {
+          position: 'sticky',
+          left: `${leftOffset}px`,
+          'z-index': 10,
+        });
         leftOffset += Number.parseInt(col.width ?? '100', 10) || 100;
       }
     }
@@ -184,7 +211,11 @@ export function Table<T extends Record<string, unknown>>(
     for (let i = props.columns.length - 1; i >= 0; i--) {
       const col = props.columns[i];
       if (col?.sticky === 'right') {
-        styles.set(i, { position: 'sticky', right: `${rightOffset}px`, 'z-index': 10 });
+        styles.set(i, {
+          position: 'sticky',
+          right: `${rightOffset}px`,
+          'z-index': 10,
+        });
         rightOffset += Number.parseInt(col.width ?? '100', 10) || 100;
       }
     }
@@ -232,7 +263,9 @@ export function Table<T extends Record<string, unknown>>(
     }
 
     if (props.onSelectionChange) {
-      const selectedRows = sortedData().filter((r, i) => newKeys.has(getRowKey(r, i)));
+      const selectedRows = sortedData().filter((r, i) =>
+        newKeys.has(getRowKey(r, i)),
+      );
       props.onSelectionChange(newKeys, selectedRows);
     } else {
       setInternalSelectedKeys(newKeys);
@@ -313,7 +346,9 @@ export function Table<T extends Record<string, unknown>>(
     return { 'max-height': props.maxHeight };
   });
 
-  const shouldStickyHeader = createMemo(() => props.stickyHeader || !!props.maxHeight);
+  const shouldStickyHeader = createMemo(
+    () => props.stickyHeader || !!props.maxHeight,
+  );
   const checkboxColumnStyle = createMemo(() => ({
     width: size() === 'sm' ? '32px' : size() === 'lg' ? '48px' : '40px',
   }));
@@ -321,15 +356,20 @@ export function Table<T extends Record<string, unknown>>(
   // --- Memoized row class names ---
   const getRowClassName = (row: T, index: number): string => {
     if (!props.rowClass) return '';
-    return typeof props.rowClass === 'function' ? props.rowClass(row, index) : props.rowClass;
+    return typeof props.rowClass === 'function'
+      ? props.rowClass(row, index)
+      : props.rowClass;
   };
 
   // --- Pre-computed base classes ---
-  const headerBaseClass = createMemo(() =>
-    `font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400`,
+  const headerBaseClass = createMemo(
+    () =>
+      `font-semibold uppercase tracking-wider text-surface-600 dark:text-surface-400`,
   );
 
-  const cellBaseClass = createMemo(() => `text-surface-800 dark:text-surface-200`);
+  const cellBaseClass = createMemo(
+    () => `text-surface-800 dark:text-surface-200`,
+  );
 
   // Render header row content
   const renderHeaderContent = () => (
@@ -360,7 +400,8 @@ export function Table<T extends Record<string, unknown>>(
         {(column, columnIndex) => {
           const isSortable = column.sortable ?? props.sortable;
           const isActive = () => currentSort().column === column.key;
-          const sortDirection = () => (isActive() ? currentSort().direction : null);
+          const sortDirection = () =>
+            isActive() ? currentSort().direction : null;
           const stickyStyle = () => stickyStyles().get(columnIndex()) ?? {};
           const stickyClass = column.sticky
             ? 'bg-white/90 dark:bg-surface-900/90 backdrop-blur-sm'
@@ -383,7 +424,10 @@ export function Table<T extends Record<string, unknown>>(
               }}
               tabIndex={isSortable ? 0 : undefined}
             >
-              <Show when={!column.headerRender} fallback={column.headerRender?.(column)}>
+              <Show
+                when={!column.headerRender}
+                fallback={column.headerRender?.(column)}
+              >
                 <span class="inline-flex items-center">
                   {column.header}
                   <Show when={isSortable}>
@@ -400,87 +444,101 @@ export function Table<T extends Record<string, unknown>>(
 
   // --- Render ---
   return (
-    <div class={`glass-card rounded-xl overflow-hidden ${props.class ?? ''}`} style={props.style}>
-      <div
-        class="overflow-x-auto overflow-y-auto"
-        style={containerStyle()}
-      >
-          <table class="w-full">
-            <thead
-              class={
-                shouldStickyHeader()
-                  ? 'sticky top-0 z-20 bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm'
-                  : ''
-              }
-            >
-              {renderHeaderContent()}
-            </thead>
-            <tbody>
-              {/* Loading state */}
-              <Show when={props.loading}>
-                <For each={Array.from({ length: loadingRows() }, (_, i) => i)}>
-                  {(rowIdx) => (
-                    <tr class={variantStyle().row}>
-                      <Show when={selectionMode()}>
-                        <td class={`${sizeStyle().cell} text-center`}>
-                          <div
-                            class={`animate-pulse bg-surface-200/50 dark:bg-surface-700/50 rounded ${
-                              size() === 'sm' ? 'w-4 h-4' : size() === 'lg' ? 'w-6 h-6' : 'w-5 h-5'
-                            }`}
+    <div
+      class={`glass-card rounded-xl overflow-hidden ${props.class ?? ''}`}
+      style={props.style}
+    >
+      <div class="overflow-x-auto overflow-y-auto" style={containerStyle()}>
+        <table class="w-full">
+          <thead
+            class={
+              shouldStickyHeader()
+                ? 'sticky top-0 z-20 bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm'
+                : ''
+            }
+          >
+            {renderHeaderContent()}
+          </thead>
+          <tbody>
+            {/* Loading state */}
+            <Show when={props.loading}>
+              <For each={Array.from({ length: loadingRows() }, (_, i) => i)}>
+                {(rowIdx) => (
+                  <tr class={variantStyle().row}>
+                    <Show when={selectionMode()}>
+                      <td class={`${sizeStyle().cell} text-center`}>
+                        <div
+                          class={`animate-pulse bg-surface-200/50 dark:bg-surface-700/50 rounded ${
+                            size() === 'sm'
+                              ? 'w-4 h-4'
+                              : size() === 'lg'
+                                ? 'w-6 h-6'
+                                : 'w-5 h-5'
+                          }`}
+                        />
+                      </td>
+                    </Show>
+                    <For each={props.columns}>
+                      {(column, columnIndex) => (
+                        <td
+                          class={`${sizeStyle().cell} ${ALIGN_CLASSES[column.align ?? 'left']} ${variantStyle().cell} ${column.cellClass ?? ''}`}
+                          style={{
+                            width: column.width,
+                            'min-width': column.minWidth,
+                            ...stickyStyles().get(columnIndex()),
+                          }}
+                        >
+                          <SkeletonCell
+                            size={size()}
+                            index={
+                              rowIdx * props.columns.length + columnIndex()
+                            }
                           />
                         </td>
-                      </Show>
-                      <For each={props.columns}>
-                        {(column, columnIndex) => (
-                          <td
-                            class={`${sizeStyle().cell} ${ALIGN_CLASSES[column.align ?? 'left']} ${variantStyle().cell} ${column.cellClass ?? ''}`}
-                            style={{
-                              width: column.width,
-                              'min-width': column.minWidth,
-                              ...stickyStyles().get(columnIndex()),
-                            }}
-                          >
-                            <SkeletonCell size={size()} index={rowIdx * props.columns.length + columnIndex()} />
-                          </td>
-                        )}
-                      </For>
-                    </tr>
-                  )}
-                </For>
-              </Show>
+                      )}
+                    </For>
+                  </tr>
+                )}
+              </For>
+            </Show>
 
-              {/* Empty state */}
-              <Show when={!props.loading && sortedData().length === 0}>
-                <tr>
-                  <td
-                    colspan={props.columns.length + (selectionMode() ? 1 : 0)}
-                    class={`${sizeStyle().cell} py-8 text-center text-surface-500 dark:text-surface-400`}
+            {/* Empty state */}
+            <Show when={!props.loading && sortedData().length === 0}>
+              <tr>
+                <td
+                  colspan={props.columns.length + (selectionMode() ? 1 : 0)}
+                  class={`${sizeStyle().cell} py-8 text-center text-surface-500 dark:text-surface-400`}
+                >
+                  <Show
+                    when={!props.emptyRender}
+                    fallback={props.emptyRender?.()}
                   >
-                    <Show when={!props.emptyRender} fallback={props.emptyRender?.()}>
-                      {props.emptyMessage ?? 'No data available'}
-                    </Show>
-                  </td>
-                </tr>
-              </Show>
+                    {props.emptyMessage ?? 'No data available'}
+                  </Show>
+                </td>
+              </tr>
+            </Show>
 
-              {/* Data rows */}
-              <Show when={!props.loading && sortedData().length > 0}>
-                <For each={sortedData()}>
-                  {(row, index) => {
-                    const rowKey = () => getRowKey(row, index());
-                    const isSelected = () => currentSelectedKeys().has(rowKey());
-                    const clickable = () =>
-                      props.clickableRows || !!props.onRowClick || selectionMode() === 'single';
+            {/* Data rows */}
+            <Show when={!props.loading && sortedData().length > 0}>
+              <For each={sortedData()}>
+                {(row, index) => {
+                  const rowKey = () => getRowKey(row, index());
+                  const isSelected = () => currentSelectedKeys().has(rowKey());
+                  const clickable = () =>
+                    props.clickableRows ||
+                    !!props.onRowClick ||
+                    selectionMode() === 'single';
 
-                    const isEven = () => index() % 2 === 1;
-                    const stripedClass = () =>
-                      variant() === 'striped' && isEven()
-                        ? 'bg-surface-50/50 dark:bg-surface-800/20'
-                        : '';
+                  const isEven = () => index() % 2 === 1;
+                  const stripedClass = () =>
+                    variant() === 'striped' && isEven()
+                      ? 'bg-surface-50/50 dark:bg-surface-800/20'
+                      : '';
 
-                    return (
-                      <tr
-                        class={`
+                  return (
+                    <tr
+                      class={`
                           ${variantStyle().row}
                           ${stripedClass()}
                           ${hoverable() ? 'hover:bg-surface-50/50 dark:hover:bg-surface-800/30' : ''}
@@ -489,54 +547,63 @@ export function Table<T extends Record<string, unknown>>(
                           ${getRowClassName(row, index())}
                           transition-colors
                         `}
-                        onClick={(e) => handleRowClick(row, index(), e)}
-                        onDblClick={(e) => props.onRowDoubleClick?.(row, index(), e)}
-                      >
-                        <Show when={selectionMode()}>
-                          <td
-                            class={`${sizeStyle().cell} text-center ${variantStyle().cell}`}
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Checkbox
-                              checked={isSelected()}
-                              onChange={(checked) => handleRowSelect(row, index(), checked)}
-                              size={size()}
-                            />
-                          </td>
-                        </Show>
+                      onClick={(e) => handleRowClick(row, index(), e)}
+                      onDblClick={(e) =>
+                        props.onRowDoubleClick?.(row, index(), e)
+                      }
+                    >
+                      <Show when={selectionMode()}>
+                        <td
+                          class={`${sizeStyle().cell} text-center ${variantStyle().cell}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Checkbox
+                            checked={isSelected()}
+                            onChange={(checked) =>
+                              handleRowSelect(row, index(), checked)
+                            }
+                            size={size()}
+                          />
+                        </td>
+                      </Show>
 
-                        <For each={props.columns}>
-                          {(column, columnIndex) => {
-                            const value = () => getCellValue(row, column.key);
-                            const stickyStyle = () => stickyStyles().get(columnIndex()) ?? {};
-                            const stickyClass = () => column.sticky
+                      <For each={props.columns}>
+                        {(column, columnIndex) => {
+                          const value = () => getCellValue(row, column.key);
+                          const stickyStyle = () =>
+                            stickyStyles().get(columnIndex()) ?? {};
+                          const stickyClass = () =>
+                            column.sticky
                               ? `bg-white/90 dark:bg-surface-900/90 backdrop-blur-sm ${isSelected() ? '!bg-primary-50/90 dark:!bg-primary-900/40' : ''}`
                               : '';
 
-                            return (
-                              <td
-                                class={`${sizeStyle().cell} ${cellBaseClass()} ${ALIGN_CLASSES[column.align ?? 'left']} ${variantStyle().cell} ${stickyClass()} ${column.cellClass ?? ''}`}
-                                style={{
-                                  width: column.width,
-                                  'min-width': column.minWidth,
-                                  ...stickyStyle(),
-                                }}
+                          return (
+                            <td
+                              class={`${sizeStyle().cell} ${cellBaseClass()} ${ALIGN_CLASSES[column.align ?? 'left']} ${variantStyle().cell} ${stickyClass()} ${column.cellClass ?? ''}`}
+                              style={{
+                                width: column.width,
+                                'min-width': column.minWidth,
+                                ...stickyStyle(),
+                              }}
+                            >
+                              <Show
+                                when={column.render}
+                                fallback={String(value() ?? '')}
                               >
-                                <Show when={column.render} fallback={String(value() ?? '')}>
-                                  {column.render?.(value(), row, index())}
-                                </Show>
-                              </td>
-                            );
-                          }}
-                        </For>
-                      </tr>
-                    );
-                  }}
-                </For>
-              </Show>
-            </tbody>
-          </table>
-        </div>
+                                {column.render?.(value(), row, index())}
+                              </Show>
+                            </td>
+                          );
+                        }}
+                      </For>
+                    </tr>
+                  );
+                }}
+              </For>
+            </Show>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

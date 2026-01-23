@@ -39,7 +39,9 @@ export interface UseAnimationStateReturn {
  * );
  * ```
  */
-export function useAnimationState(options: UseAnimationStateOptions): UseAnimationStateReturn {
+export function useAnimationState(
+  options: UseAnimationStateOptions,
+): UseAnimationStateReturn {
   // Track visibility separately from open state for exit animation
   const [visible, setVisible] = createSignal(false);
   const [isClosing, setIsClosing] = createSignal(false);

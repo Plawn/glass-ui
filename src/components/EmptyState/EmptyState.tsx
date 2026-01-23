@@ -2,7 +2,10 @@ import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
 import type { EmptyStateProps, EmptyStateSize } from './types';
 
-const sizeStyles: Record<EmptyStateSize, { container: string; icon: string; title: string; description: string }> = {
+const sizeStyles: Record<
+  EmptyStateSize,
+  { container: string; icon: string; title: string; description: string }
+> = {
   sm: {
     container: 'py-6 px-4',
     icon: 'w-10 h-10 text-3xl',
@@ -40,12 +43,16 @@ export const EmptyState: Component<EmptyStateProps> = (props) => {
         </div>
       </Show>
 
-      <h3 class={`font-medium text-surface-700 dark:text-surface-200 ${styles().title}`}>
+      <h3
+        class={`font-medium text-surface-700 dark:text-surface-200 ${styles().title}`}
+      >
         {props.title}
       </h3>
 
       <Show when={props.description}>
-        <p class={`mt-2 text-surface-500 dark:text-surface-400 max-w-md ${styles().description}`}>
+        <p
+          class={`mt-2 text-surface-500 dark:text-surface-400 max-w-md ${styles().description}`}
+        >
           {props.description}
         </p>
       </Show>

@@ -1,13 +1,18 @@
-import { 
-  createSignal, 
-  createMemo, 
-  createEffect, 
-  onCleanup, 
-  batch, 
+import {
+  batch,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  onCleanup,
   untrack,
-  on
 } from 'solid-js';
-import type { ListItem, ListRange, ScrollAlignment, ScrollBehavior } from './types';
+import type {
+  ListItem,
+  ListRange,
+  ScrollAlignment,
+  ScrollBehavior,
+} from './types';
 
 // =============================================================================
 // CORE MATH: OPTIMIZED FENWICK TREE
@@ -17,10 +22,14 @@ class FenwickTree {
   private tree: Float64Array;
   private _size: number;
 
-  constructor(size: number, defaultValue: number, initialSizes?: Map<number, number>) {
+  constructor(
+    size: number,
+    defaultValue: number,
+    initialSizes?: Map<number, number>,
+  ) {
     this._size = size;
     this.tree = new Float64Array(size + 1);
-    
+
     // 1. Initialize raw values (O(N))
     // If we have specific sizes, use them. Otherwise use default.
     if (initialSizes && initialSizes.size > 0) {
@@ -46,7 +55,7 @@ class FenwickTree {
     let i = index + 1;
     while (i <= this._size) {
       this.tree[i] += delta;
-      i += i & (-i);
+      i += i & -i;
     }
   }
 
@@ -55,7 +64,7 @@ class FenwickTree {
     let i = index + 1;
     while (i > 0) {
       sum += this.tree[i];
-      i -= i & (-i);
+      i -= i & -i;
     }
     return sum;
   }
@@ -91,7 +100,7 @@ class FenwickTree {
 
 interface SizeCache {
   tree: FenwickTree;
-  sizes: Map<number, number>; 
+  sizes: Map<number, number>;
   defaultSize: number;
   totalCount: number;
   version: number;
@@ -128,7 +137,10 @@ export interface VirtualizerResult {
   measureItem: (el: HTMLElement | null, index: number) => void;
   range: () => { startIndex: number; endIndex: number };
   getScrollTop: () => number;
-  scrollToIndex: (index: number, opts?: { align?: ScrollAlignment; behavior?: ScrollBehavior }) => void;
+  scrollToIndex: (
+    index: number,
+    opts?: { align?: ScrollAlignment; behavior?: ScrollBehavior },
+  ) => void;
   scrollTo: (offset: number) => void;
   scrollBy: (delta: number) => void;
 }
@@ -142,18 +154,21 @@ export function useVirtualizer(options: VirtualizerOptions) {
   const [scrollTop, setScrollTop] = createSignal(0);
   const [viewportSize, setViewportSize] = createSignal(0);
   const [isScrolling, setIsScrolling] = createSignal(false);
-  
+
   // INTERNAL REFS
   let ignoreNextScrollEvent = false;
   let scrollTimeout: number | undefined;
-  let itemRefCache = new Map<number, ListItem>(); 
+  let itemRefCache = new Map<number, ListItem>();
 
   const [sizeCache, setSizeCache] = createSignal<SizeCache>({
-    tree: new FenwickTree(Math.max(1, options.totalCount()), options.getEstimatedSize()),
+    tree: new FenwickTree(
+      Math.max(1, options.totalCount()),
+      options.getEstimatedSize(),
+    ),
     sizes: new Map(),
     defaultSize: options.getEstimatedSize(),
     totalCount: options.totalCount(),
-    version: 0
+    version: 0,
   });
 
   // 1. DATA SYNC (Total Count / Estimated Size)
@@ -161,10 +176,11 @@ export function useVirtualizer(options: VirtualizerOptions) {
     const count = options.totalCount();
     const estSize = options.getEstimatedSize();
 
-    setSizeCache(prev => {
+    setSizeCache((prev) => {
       // Optimization: No-op if nothing relevant changed
-      if (prev.totalCount === count && prev.defaultSize === estSize) return prev;
-      
+      if (prev.totalCount === count && prev.defaultSize === estSize)
+        return prev;
+
       // Filter out sizes for indices that no longer exist
       const newSizes = new Map<number, number>();
       if (prev.sizes.size > 0) {
@@ -181,7 +197,7 @@ export function useVirtualizer(options: VirtualizerOptions) {
         sizes: newSizes,
         defaultSize: estSize,
         totalCount: count,
-        version: prev.version + 1
+        version: prev.version + 1,
       };
     });
   });
@@ -192,7 +208,7 @@ export function useVirtualizer(options: VirtualizerOptions) {
     const scroll = scrollTop();
     const viewport = viewportSize();
     const fixed = options.getFixedSize?.();
-    
+
     cache.version; // dependency
 
     if (cache.totalCount === 0 || viewport === 0) return { start: 0, end: -1 };
@@ -213,7 +229,7 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
     return {
       start: Math.max(0, startIndex - os),
-      end: Math.min(cache.totalCount - 1, endIndex + os)
+      end: Math.min(cache.totalCount - 1, endIndex + os),
     };
   });
 
@@ -227,12 +243,12 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
     const items: ListItem[] = new Array(end - start + 1);
     const nextRefCache = new Map<number, ListItem>();
-    
+
     let currentOffset = fixed ? start * fixed : cache.tree.prefixSum(start - 1);
 
     for (let i = start; i <= end; i++) {
-      const size = fixed ?? (cache.sizes.get(i) ?? cache.defaultSize);
-      
+      const size = fixed ?? cache.sizes.get(i) ?? cache.defaultSize;
+
       // Double Buffer: If exact same item exists in previous frame, reuse reference
       const cached = itemRefCache.get(i);
       if (cached && cached.offset === currentOffset && cached.size === size) {
@@ -263,12 +279,14 @@ export function useVirtualizer(options: VirtualizerOptions) {
     const last = items[items.length - 1];
     // Read total size from tree to ensure it's in sync with items
     const fixed = options.getFixedSize?.();
-    const total = fixed ? options.totalCount() * fixed : sizeCache().tree.totalSum();
+    const total = fixed
+      ? options.totalCount() * fixed
+      : sizeCache().tree.totalSum();
     return Math.max(0, total - (last.offset + last.size));
   });
 
   const totalSize = createMemo(() => {
-    sizeCache().version; 
+    sizeCache().version;
     const fixed = options.getFixedSize?.();
     return fixed ? options.totalCount() * fixed : sizeCache().tree.totalSum();
   });
@@ -279,12 +297,14 @@ export function useVirtualizer(options: VirtualizerOptions) {
     if (!container) return;
 
     // ResizeObserver
-    const ro = new ResizeObserver(entries => {
+    const ro = new ResizeObserver((entries) => {
       // Wrap in animation frame to prevent "ResizeObserver loop limit exceeded"
       requestAnimationFrame(() => {
         if (!Array.isArray(entries) || !entries.length) return;
         const entry = entries[0];
-        const size = options.horizontal ? entry.contentRect.width : entry.contentRect.height;
+        const size = options.horizontal
+          ? entry.contentRect.width
+          : entry.contentRect.height;
         setViewportSize(size);
       });
     });
@@ -297,14 +317,16 @@ export function useVirtualizer(options: VirtualizerOptions) {
         return;
       }
 
-      const current = options.horizontal ? container.scrollLeft : container.scrollTop;
+      const current = options.horizontal
+        ? container.scrollLeft
+        : container.scrollTop;
       setScrollTop(current);
-      
+
       if (!isScrolling()) {
         setIsScrolling(true);
         options.onScrollingChanged?.(true);
       }
-      
+
       if (scrollTimeout) clearTimeout(scrollTimeout);
       scrollTimeout = window.setTimeout(() => {
         setIsScrolling(false);
@@ -326,31 +348,33 @@ export function useVirtualizer(options: VirtualizerOptions) {
   // 6. DYNAMIC MEASUREMENT
   const measureItem = (index: number, size: number) => {
     const fixed = options.getFixedSize?.();
-    if (fixed) return; 
+    if (fixed) return;
 
     const container = options.getScrollContainer();
     // Use untrack to avoid subscription loops
     const { start } = untrack(visibleRange);
 
     batch(() => {
-      setSizeCache(prev => {
+      setSizeCache((prev) => {
         const currentSize = prev.sizes.get(index) ?? prev.defaultSize;
-        if (Math.abs(currentSize - size) < 0.5) return prev; 
+        if (Math.abs(currentSize - size) < 0.5) return prev;
 
         const delta = size - currentSize;
-        
+
         prev.tree.update(index, delta);
         prev.sizes.set(index, size);
 
         // Scroll Anchoring
         if (container && index < start) {
-           const currentScroll = options.horizontal ? container.scrollLeft : container.scrollTop;
-           const newScroll = currentScroll + delta;
-           
-           ignoreNextScrollEvent = true;
-           if (options.horizontal) container.scrollLeft = newScroll;
-           else container.scrollTop = newScroll;
-           setScrollTop(newScroll);
+          const currentScroll = options.horizontal
+            ? container.scrollLeft
+            : container.scrollTop;
+          const newScroll = currentScroll + delta;
+
+          ignoreNextScrollEvent = true;
+          if (options.horizontal) container.scrollLeft = newScroll;
+          else container.scrollTop = newScroll;
+          setScrollTop(newScroll);
         }
 
         return { ...prev, version: prev.version + 1 };
@@ -358,12 +382,17 @@ export function useVirtualizer(options: VirtualizerOptions) {
     });
   };
 
-  createEffect(on(visibleRange, (range) => {
-    options.onRangeChanged?.({ startIndex: range.start, endIndex: range.end });
-    if (range.end >= options.totalCount() - 1 && range.end > 0) {
-      options.onEndReached?.(range.end);
-    }
-  }));
+  createEffect(
+    on(visibleRange, (range) => {
+      options.onRangeChanged?.({
+        startIndex: range.start,
+        endIndex: range.end,
+      });
+      if (range.end >= options.totalCount() - 1 && range.end > 0) {
+        options.onEndReached?.(range.end);
+      }
+    }),
+  );
 
   // 7. PUBLIC API
   return {
@@ -378,15 +407,20 @@ export function useVirtualizer(options: VirtualizerOptions) {
       return { startIndex: start, endIndex: end };
     },
     getScrollTop: () => scrollTop(),
-    scrollToIndex: (index: number, opts?: { align?: ScrollAlignment, behavior?: ScrollBehavior }) => {
+    scrollToIndex: (
+      index: number,
+      opts?: { align?: ScrollAlignment; behavior?: ScrollBehavior },
+    ) => {
       const container = options.getScrollContainer();
       if (!container) return;
 
       const cache = untrack(sizeCache);
       const fixed = options.getFixedSize?.();
-      
+
       const offset = fixed ? index * fixed : cache.tree.prefixSum(index - 1);
-      const size = fixed ? fixed : (cache.sizes.get(index) ?? cache.defaultSize);
+      const size = fixed
+        ? fixed
+        : (cache.sizes.get(index) ?? cache.defaultSize);
       const viewport = untrack(viewportSize);
       const currentScroll = untrack(scrollTop);
 
@@ -403,13 +437,13 @@ export function useVirtualizer(options: VirtualizerOptions) {
         } else if (offset + size > currentScroll + viewport) {
           target = offset - viewport + size;
         } else {
-          return; 
+          return;
         }
       }
 
       const behavior = opts?.behavior ?? 'auto';
-      const scrollOpt = options.horizontal 
-        ? { left: target, behavior } 
+      const scrollOpt = options.horizontal
+        ? { left: target, behavior }
         : { top: target, behavior };
       container.scrollTo(scrollOpt);
     },
@@ -422,6 +456,6 @@ export function useVirtualizer(options: VirtualizerOptions) {
       const container = options.getScrollContainer();
       if (options.horizontal) container?.scrollBy({ left: delta });
       else container?.scrollBy({ top: delta });
-    }
+    },
   };
 }

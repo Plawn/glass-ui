@@ -1,4 +1,4 @@
-import { createEffect, onCleanup, type Accessor } from 'solid-js';
+import { type Accessor, createEffect, onCleanup } from 'solid-js';
 
 /**
  * Options for the useClickOutside hook
@@ -77,7 +77,9 @@ export function useClickOutside(options: UseClickOutsideOptions): void {
       });
     } else {
       document.addEventListener('mousedown', handleClickOutside);
-      onCleanup(() => document.removeEventListener('mousedown', handleClickOutside));
+      onCleanup(() =>
+        document.removeEventListener('mousedown', handleClickOutside),
+      );
     }
   });
 }

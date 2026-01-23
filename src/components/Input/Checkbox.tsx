@@ -26,8 +26,12 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
   const sizeStyle = () => SIZE_STYLES[size()];
 
   // Internal visual state - this is what drives the UI
-  const [visualChecked, setVisualChecked] = createSignal(props.checked ?? false);
-  const [visualIndeterminate, setVisualIndeterminate] = createSignal(props.indeterminate ?? false);
+  const [visualChecked, setVisualChecked] = createSignal(
+    props.checked ?? false,
+  );
+  const [visualIndeterminate, setVisualIndeterminate] = createSignal(
+    props.indeterminate ?? false,
+  );
 
   // Sync with props.checked - works if props are reactive OR if component remounts
   createEffect(() => {
@@ -96,7 +100,9 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
         </Show>
       </div>
       <Show when={props.label}>
-        <span class="text-sm text-surface-700 dark:text-surface-300">{props.label}</span>
+        <span class="text-sm text-surface-700 dark:text-surface-300">
+          {props.label}
+        </span>
       </Show>
     </label>
   );

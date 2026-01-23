@@ -85,7 +85,10 @@ interface ParsedDemoSection {
 /**
  * Parse a single DemoSection starting at the given index
  */
-function parseDemoSection(code: string, startIndex: number): ParsedDemoSection | null {
+function parseDemoSection(
+  code: string,
+  startIndex: number,
+): ParsedDemoSection | null {
   let i = startIndex + '<DemoSection'.length;
 
   // Skip whitespace
@@ -116,7 +119,10 @@ function parseDemoSection(code: string, startIndex: number): ParsedDemoSection |
     }
 
     // Check for code prop
-    if (code.slice(i).startsWith('code=') || code.slice(i).startsWith('code ')) {
+    if (
+      code.slice(i).startsWith('code=') ||
+      code.slice(i).startsWith('code ')
+    ) {
       hasCodeProp = true;
     }
 
@@ -178,7 +184,9 @@ function parseDemoSection(code: string, startIndex: number): ParsedDemoSection |
 
   // Decide if we should inject code prop
   const shouldInject =
-    !hasCodeProp && trimmedChildren.length > 0 && !trimmedChildren.startsWith('<PropsTable');
+    !hasCodeProp &&
+    trimmedChildren.length > 0 &&
+    !trimmedChildren.startsWith('<PropsTable');
 
   if (!shouldInject) {
     return {
@@ -285,11 +293,13 @@ function dedentCode(code: string): string {
     ...nonEmptyLines.map((line) => {
       const match = line.match(/^(\s*)/);
       return match ? match[1].length : 0;
-    })
+    }),
   );
 
   // Remove the common indentation
-  const dedented = lines.map((line) => (line.length >= minIndent ? line.slice(minIndent) : line)).join('\n');
+  const dedented = lines
+    .map((line) => (line.length >= minIndent ? line.slice(minIndent) : line))
+    .join('\n');
 
   return dedented.trim();
 }

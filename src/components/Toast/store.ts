@@ -2,11 +2,19 @@ import { createTypedNotificationStore } from '../shared/createNotificationStore'
 import type { Toast, ToastStore, ToastType } from './types';
 
 // Create the toast notification store using the factory
-const { store: internalStore, success, error, warning, info, add, dismiss, clear } =
-  createTypedNotificationStore<Toast>({
-    defaultDuration: 4000,
-    idPrefix: 'toast',
-  });
+const {
+  store: internalStore,
+  success,
+  error,
+  warning,
+  info,
+  add,
+  dismiss,
+  clear,
+} = createTypedNotificationStore<Toast>({
+  defaultDuration: 4000,
+  idPrefix: 'toast',
+});
 
 // Adapt the internal store shape to match the expected ToastStore interface
 // The factory uses { items: T[] } but Toast expects { toasts: Toast[] }

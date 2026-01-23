@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { CardVariant, BaseComponentProps } from '../../types';
+import type { BaseComponentProps, CardVariant } from '../../types';
 
 export interface CardProps extends BaseComponentProps {
   /** Card header content */

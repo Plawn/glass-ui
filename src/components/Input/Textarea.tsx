@@ -47,7 +47,9 @@ export const Textarea: Component<TextareaProps> = (props) => {
         onInput={(e) => props.onInput(e.currentTarget.value)}
       />
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+          {props.error}
+        </p>
       </Show>
     </div>
   );

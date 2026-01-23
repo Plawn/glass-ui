@@ -13,7 +13,9 @@ import type { ContextMenuTriggerProps } from './types';
  * </ContextMenuTrigger>
  * ```
  */
-export const ContextMenuTrigger: Component<ContextMenuTriggerProps<unknown>> = (props) => {
+export const ContextMenuTrigger: Component<ContextMenuTriggerProps<unknown>> = (
+  props,
+) => {
   const context = useContextMenuContext();
 
   const handleContextMenu = (e: MouseEvent) => {

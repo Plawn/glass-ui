@@ -1,5 +1,5 @@
 import { Button, EmptyState } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function EmptyStatePage() {
   return (
@@ -9,7 +9,10 @@ export default function EmptyStatePage() {
         description="Placeholder content displayed when there is no data to show, with optional icons and actions."
       />
 
-      <DemoSection title="Import" code={`import { EmptyState } from 'glass-ui-solid';`} />
+      <DemoSection
+        title="Import"
+        code={`import { EmptyState } from 'glass-ui-solid';`}
+      />
 
       <DemoSection
         title="Basic Usage"
@@ -181,13 +184,42 @@ export default function EmptyStatePage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'title', type: 'string', description: 'Title text displayed prominently' },
-            { name: 'description', type: 'string', description: 'Optional description text below the title' },
-            { name: 'icon', type: 'JSX.Element', description: 'Optional icon element displayed at the top' },
-            { name: 'action', type: 'JSX.Element', description: 'Optional action element (e.g., a Button)' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant affecting icon and text sizes' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
-            { name: 'style', type: 'JSX.CSSProperties', description: 'Inline styles' },
+            {
+              name: 'title',
+              type: 'string',
+              description: 'Title text displayed prominently',
+            },
+            {
+              name: 'description',
+              type: 'string',
+              description: 'Optional description text below the title',
+            },
+            {
+              name: 'icon',
+              type: 'JSX.Element',
+              description: 'Optional icon element displayed at the top',
+            },
+            {
+              name: 'action',
+              type: 'JSX.Element',
+              description: 'Optional action element (e.g., a Button)',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant affecting icon and text sizes',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
+            {
+              name: 'style',
+              type: 'JSX.CSSProperties',
+              description: 'Inline styles',
+            },
           ]}
         />
       </DemoSection>

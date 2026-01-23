@@ -1,7 +1,7 @@
-import { type Component, createSignal, For, Show } from 'solid-js';
 import clsx from 'clsx';
-import type { FileUploadProps } from './types';
+import { type Component, For, Show, createSignal } from 'solid-js';
 import { TrashIcon } from '../shared';
+import type { FileUploadProps } from './types';
 
 /**
  * Format file size to human readable string
@@ -11,7 +11,9 @@ const formatFileSize = (bytes: number): string => {
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return (
+    Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  );
 };
 
 /**
@@ -32,15 +34,19 @@ const formatFileSize = (bytes: number): string => {
 export const FileUpload: Component<FileUploadProps> = (props) => {
   const [isDragOver, setIsDragOver] = createSignal(false);
   const [files, setFiles] = createSignal<File[]>([]);
-  const [validationError, setValidationError] = createSignal<string | null>(null);
+  const [validationError, setValidationError] = createSignal<string | null>(
+    null,
+  );
   let inputRef: HTMLInputElement | undefined;
 
   const isDisabled = () => props.disabled ?? false;
   const multiple = () => props.multiple ?? false;
-  const maxFiles = () => props.maxFiles ?? Infinity;
-  const maxSize = () => props.maxSize ?? Infinity;
+  const maxFiles = () => props.maxFiles ?? Number.POSITIVE_INFINITY;
+  const maxSize = () => props.maxSize ?? Number.POSITIVE_INFINITY;
 
-  const validateFiles = (newFiles: File[]): { valid: File[]; error: string | null } => {
+  const validateFiles = (
+    newFiles: File[],
+  ): { valid: File[]; error: string | null } => {
     const currentFiles = files();
     const allFiles = [...currentFiles, ...newFiles];
 
@@ -152,9 +158,11 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
               !isDragOver() && !displayError() && !isDisabled(),
             'border-primary-500 dark:border-primary-400 bg-primary-50/50 dark:bg-primary-900/20':
               isDragOver() && !isDisabled(),
-            'border-red-500 dark:border-red-400': displayError() && !isDisabled(),
-            'border-surface-200 dark:border-surface-700 opacity-50 cursor-not-allowed': isDisabled(),
-          }
+            'border-red-500 dark:border-red-400':
+              displayError() && !isDisabled(),
+            'border-surface-200 dark:border-surface-700 opacity-50 cursor-not-allowed':
+              isDisabled(),
+          },
         )}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -188,7 +196,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
               'bg-surface-100 dark:bg-surface-700/50',
               {
                 'bg-primary-100 dark:bg-primary-900/50': isDragOver(),
-              }
+              },
             )}
           >
             <svg
@@ -217,14 +225,18 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
           </p>
 
           <Show when={props.description}>
-            <p class="text-xs text-surface-500 dark:text-surface-400">{props.description}</p>
+            <p class="text-xs text-surface-500 dark:text-surface-400">
+              {props.description}
+            </p>
           </Show>
         </div>
       </div>
 
       {/* Error message */}
       <Show when={displayError()}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{displayError()}</p>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+          {displayError()}
+        </p>
       </Show>
 
       {/* File list */}
@@ -236,7 +248,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
                 class={clsx(
                   'flex items-center justify-between px-3 py-2 rounded-lg',
                   'bg-surface-100/80 dark:bg-surface-800/50',
-                  'border border-surface-200 dark:border-surface-700'
+                  'border border-surface-200 dark:border-surface-700',
                 )}
               >
                 <div class="flex items-center gap-3 min-w-0">
@@ -273,7 +285,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
                     'flex-shrink-0 p-1.5 rounded-md transition-colors',
                     'text-surface-400 hover:text-red-500 dark:text-surface-500 dark:hover:text-red-400',
                     'hover:bg-red-50 dark:hover:bg-red-900/20',
-                    { 'opacity-50 cursor-not-allowed': isDisabled() }
+                    { 'opacity-50 cursor-not-allowed': isDisabled() },
                   )}
                   onClick={(e) => {
                     e.stopPropagation();

@@ -1,5 +1,9 @@
 import type { JSX } from 'solid-js';
-import type { ComponentSize, StatusColor, BaseComponentProps } from '../../types';
+import type {
+  BaseComponentProps,
+  ComponentSize,
+  StatusColor,
+} from '../../types';
 
 /**
  * Badge variant - status colors plus 'default'

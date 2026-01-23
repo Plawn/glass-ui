@@ -1,8 +1,15 @@
-import { For, createSignal, createEffect, onMount, on } from 'solid-js';
+import { For, createEffect, createSignal, on, onMount } from 'solid-js';
 import type { SegmentedControlProps } from './types';
 
-export function SegmentedControl<T extends string | number>(props: SegmentedControlProps<T>) {
-  const [indicatorStyle, setIndicatorStyle] = createSignal({ left: 0, top: 0, width: 0, height: 0 });
+export function SegmentedControl<T extends string | number>(
+  props: SegmentedControlProps<T>,
+) {
+  const [indicatorStyle, setIndicatorStyle] = createSignal({
+    left: 0,
+    top: 0,
+    width: 0,
+    height: 0,
+  });
   const [isInitialized, setIsInitialized] = createSignal(false);
   let containerRef: HTMLDivElement | undefined;
   const buttonRefs: Map<T, HTMLButtonElement> = new Map();
@@ -40,8 +47,8 @@ export function SegmentedControl<T extends string | number>(props: SegmentedCont
         if (isInitialized()) {
           updateIndicator();
         }
-      }
-    )
+      },
+    ),
   );
 
   return (

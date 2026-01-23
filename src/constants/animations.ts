@@ -121,7 +121,8 @@ export const MODAL_PANEL_ENTER = 'animate-in zoom-in-95 fade-in duration-200';
  * Command Palette panel animation
  * Combines fade and slight scale for quick entrance
  */
-export const COMMAND_PALETTE_PANEL_ENTER = 'animate-in zoom-in-95 fade-in duration-150';
+export const COMMAND_PALETTE_PANEL_ENTER =
+  'animate-in zoom-in-95 fade-in duration-150';
 
 /**
  * Dropdown/Menu/Tooltip animation
@@ -138,12 +139,14 @@ export const TOAST_ENTER = 'animate-in slide-in-from-right-4 fade-in';
 /**
  * Accordion/Collapsible content animation
  */
-export const ACCORDION_CONTENT_ENTER = 'animate-in fade-in slide-in-from-top-2 duration-200';
+export const ACCORDION_CONTENT_ENTER =
+  'animate-in fade-in slide-in-from-top-2 duration-200';
 
 /**
  * Tab panel animation
  */
-export const TAB_PANEL_ENTER = 'animate-in fade-in slide-in-from-bottom-2 duration-200';
+export const TAB_PANEL_ENTER =
+  'animate-in fade-in slide-in-from-bottom-2 duration-200';
 
 // ============================================================================
 // SNACKBAR ANIMATIONS (position-based)

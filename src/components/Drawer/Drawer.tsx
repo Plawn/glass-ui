@@ -40,10 +40,16 @@ export const Drawer: Component<DrawerProps> = (props) => {
 
   const panelStyle = () => positionPanelStyles[position()];
 
-  const backdropClasses = () => getAnimationClass(isClosing(), BACKDROP_ENTER, BACKDROP_EXIT);
+  const backdropClasses = () =>
+    getAnimationClass(isClosing(), BACKDROP_ENTER, BACKDROP_EXIT);
 
   const drawerClasses = () => {
-    const animClass = getDirectionalAnimationClass(isClosing(), position(), DRAWER_ENTER, DRAWER_EXIT);
+    const animClass = getDirectionalAnimationClass(
+      isClosing(),
+      position(),
+      DRAWER_ENTER,
+      DRAWER_EXIT,
+    );
     const durationClass = isClosing() ? DURATION_DEFAULT : DURATION_SLOW;
     return `${animClass} ${durationClass}`;
   };

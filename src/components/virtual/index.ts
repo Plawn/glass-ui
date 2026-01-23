@@ -17,11 +17,9 @@ export type {
   ListItem,
   ComputeItemKey,
   ItemContent,
-  VirtualHandle as VirtualHandle,
-  
+  VirtualHandle,
   // VirtualList types
   VirtualListProps,
-  
   // VirtualTable types
   TableComponents,
   TableRowContent,

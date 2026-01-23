@@ -3,7 +3,7 @@ import type { ComponentSize } from '../../types';
 import { Popover } from '../Popover';
 import { CloseIcon } from '../shared/icons/CloseIcon';
 import { Calendar } from './Calendar';
-import type { DateRangePickerProps, DateFormat } from './types';
+import type { DateFormat, DateRangePickerProps } from './types';
 
 /** Size classes for the input */
 const getSizeClasses = (size: ComponentSize): string => {
@@ -48,8 +48,18 @@ const formatDate = (date: Date, format: DateFormat): string => {
   const pad = (n: number) => n.toString().padStart(2, '0');
 
   const monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   switch (format) {
@@ -94,7 +104,9 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   const [hoverDate, setHoverDate] = createSignal<Date | null>(null);
 
   // Local state for selection in progress
-  const [localStart, setLocalStart] = createSignal<Date | null>(props.value.start);
+  const [localStart, setLocalStart] = createSignal<Date | null>(
+    props.value.start,
+  );
   const [localEnd, setLocalEnd] = createSignal<Date | null>(props.value.end);
 
   const size = () => props.size ?? 'md';
@@ -151,9 +163,8 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
         }
       }
     } catch (e) {
-      console.error("failed", e);
+      console.error('failed', e);
     }
-
   };
 
   const handleHover = (date: Date | null) => {
@@ -226,8 +237,12 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
         }}
         trigger={
           <div class="flex items-center gap-2 w-full">
-            <CalendarIcon size={size() === 'sm' ? 14 : size() === 'lg' ? 18 : 16} />
-            <span class={`flex-1 text-left ${displayValue() ? '' : 'text-surface-400 dark:text-surface-500'}`}>
+            <CalendarIcon
+              size={size() === 'sm' ? 14 : size() === 'lg' ? 18 : 16}
+            />
+            <span
+              class={`flex-1 text-left ${displayValue() ? '' : 'text-surface-400 dark:text-surface-500'}`}
+            >
               {displayValue() || placeholder()}
             </span>
 
@@ -271,7 +286,9 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
       {/* Error message */}
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+          {props.error}
+        </p>
       </Show>
     </div>
   );

@@ -9,7 +9,8 @@ import type { SchemaFieldProps } from '../types';
  */
 export const SchemaField: Component<SchemaFieldProps> = (props) => {
   const schemaType = () => props.schema.type || 'string';
-  const isComplexType = () => schemaType() === 'object' || schemaType() === 'array';
+  const isComplexType = () =>
+    schemaType() === 'object' || schemaType() === 'array';
 
   return (
     <div class="space-y-2">
@@ -21,15 +22,21 @@ export const SchemaField: Component<SchemaFieldProps> = (props) => {
         <Show when={props.required}>
           <span class="text-rose-500 text-xs font-semibold">required</span>
         </Show>
-        <span class="text-xs text-surface-400 dark:text-surface-500">{schemaType()}</span>
+        <span class="text-xs text-surface-400 dark:text-surface-500">
+          {schemaType()}
+        </span>
         <Show when={props.schema.format}>
-          <span class="text-xs text-surface-400 dark:text-surface-500">({props.schema.format})</span>
+          <span class="text-xs text-surface-400 dark:text-surface-500">
+            ({props.schema.format})
+          </span>
         </Show>
       </div>
 
       {/* Description */}
       <Show when={props.schema.description}>
-        <p class="text-xs text-surface-400 dark:text-surface-500">{props.schema.description}</p>
+        <p class="text-xs text-surface-400 dark:text-surface-500">
+          {props.schema.description}
+        </p>
       </Show>
 
       {/* Field input */}

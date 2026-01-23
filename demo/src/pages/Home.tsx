@@ -1,8 +1,8 @@
-import { Card, Button } from 'glass-ui-solid';
 import { A } from '@solidjs/router';
-import { navigation } from '../config/navigation';
+import { Button, Card } from 'glass-ui-solid';
 import { For } from 'solid-js';
 import { PageHeader } from '../components/demo';
+import { navigation } from '../config/navigation';
 
 export default function Home() {
   return (

@@ -4,7 +4,8 @@ import type { CardProps, CardVariant } from './types';
 
 const variantStyles: Record<CardVariant, string> = {
   default: 'glass-card',
-  elevated: 'glass-thick shadow-xl dark:shadow-2xl dark:border-surface-600/50 dark:bg-surface-800/90',
+  elevated:
+    'glass-thick shadow-xl dark:shadow-2xl dark:border-surface-600/50 dark:bg-surface-800/90',
   outlined: 'bg-transparent border border-surface-200 dark:border-surface-700',
 };
 
@@ -12,7 +13,9 @@ export const Card: Component<CardProps> = (props) => {
   const variant = () => props.variant ?? 'default';
 
   return (
-    <div class={`rounded-xl overflow-hidden ${variantStyles[variant()]} ${props.class ?? ''}`}>
+    <div
+      class={`rounded-xl overflow-hidden ${variantStyles[variant()]} ${props.class ?? ''}`}
+    >
       <Show when={props.header}>
         <div class="px-4 py-3 border-b border-surface-200/50 dark:border-surface-700/50">
           {props.header}

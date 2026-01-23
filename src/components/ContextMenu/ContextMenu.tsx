@@ -1,7 +1,7 @@
-import { createSignal, createEffect, type JSX } from 'solid-js';
+import { type JSX, createEffect, createSignal } from 'solid-js';
 import type { Accessor } from 'solid-js';
 import { ContextMenuContext } from './ContextMenuContext';
-import type { ContextMenuProps, ContextMenuContextValue } from './types';
+import type { ContextMenuContextValue, ContextMenuProps } from './types';
 
 /**
  * Context menu wrapper component.
@@ -43,7 +43,9 @@ import type { ContextMenuProps, ContextMenuContextValue } from './types';
  * </ContextMenu>
  * ```
  */
-export function ContextMenu<T = unknown>(props: ContextMenuProps<T>): JSX.Element {
+export function ContextMenu<T = unknown>(
+  props: ContextMenuProps<T>,
+): JSX.Element {
   // Use internal state if provided (from createContextMenu), otherwise create our own
   const internal = props.__internal;
 
@@ -57,7 +59,10 @@ export function ContextMenu<T = unknown>(props: ContextMenuProps<T>): JSX.Elemen
 
   const [ownData, setOwnData] = internal
     ? [internal.data, internal.setData]
-    : (createSignal<T | null>(null) as [Accessor<T | null>, (v: T | null) => void]);
+    : (createSignal<T | null>(null) as [
+        Accessor<T | null>,
+        (v: T | null) => void,
+      ]);
 
   const close = () => {
     setOwnOpen(false);
@@ -86,7 +91,10 @@ export function ContextMenu<T = unknown>(props: ContextMenuProps<T>): JSX.Elemen
     position: ownPosition,
     data: ownData as Accessor<unknown>,
     close,
-    openMenu: openMenu as (pos: { x: number; y: number }, data: unknown) => void,
+    openMenu: openMenu as (
+      pos: { x: number; y: number },
+      data: unknown,
+    ) => void,
   };
 
   return (
@@ -96,4 +104,4 @@ export function ContextMenu<T = unknown>(props: ContextMenuProps<T>): JSX.Elemen
       </div>
     </ContextMenuContext.Provider>
   );
-};
+}

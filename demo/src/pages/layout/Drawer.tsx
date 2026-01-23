@@ -1,6 +1,11 @@
-import { Drawer, Button, useDisclosure, Card } from 'glass-ui-solid';
-import { createSignal, For } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, FeatureList } from '../../components/demo';
+import { Button, Card, Drawer, useDisclosure } from 'glass-ui-solid';
+import { For, createSignal } from 'solid-js';
+import {
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 const basicExample = `import { Drawer, Button, useDisclosure } from 'glass-ui-solid';
 
@@ -93,7 +98,10 @@ export default function DrawerPage() {
         description="Slide-in panel from left or right edge of the screen for secondary content or navigation."
       />
 
-      <DemoSection title="Import" code="import { Drawer, useDisclosure } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Drawer, useDisclosure } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Basic Example" code={basicExample}>
         <Button onClick={basicDrawer.onOpen}>Open Drawer</Button>
@@ -103,7 +111,8 @@ export default function DrawerPage() {
           title="Drawer Title"
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This is a basic drawer that slides in from the right. Click outside or press Escape to close.
+            This is a basic drawer that slides in from the right. Click outside
+            or press Escape to close.
           </p>
         </Drawer>
       </DemoSection>
@@ -153,7 +162,8 @@ export default function DrawerPage() {
           size={selectedSize()}
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This is a {selectedSize()} size drawer. The width changes based on the size prop.
+            This is a {selectedSize()} size drawer. The width changes based on
+            the size prop.
           </p>
         </Drawer>
       </DemoSection>
@@ -169,9 +179,7 @@ export default function DrawerPage() {
               <Button variant="secondary" onClick={footerDrawer.onClose}>
                 Cancel
               </Button>
-              <Button onClick={footerDrawer.onClose}>
-                Save Changes
-              </Button>
+              <Button onClick={footerDrawer.onClose}>Save Changes</Button>
             </div>
           }
         >
@@ -218,28 +226,40 @@ export default function DrawerPage() {
           <nav class="space-y-1">
             <a
               href="#"
-              onClick={(e) => { e.preventDefault(); navDrawer.onClose(); }}
+              onClick={(e) => {
+                e.preventDefault();
+                navDrawer.onClose();
+              }}
               class="block px-4 py-2 rounded-lg text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800"
             >
               Home
             </a>
             <a
               href="#"
-              onClick={(e) => { e.preventDefault(); navDrawer.onClose(); }}
+              onClick={(e) => {
+                e.preventDefault();
+                navDrawer.onClose();
+              }}
               class="block px-4 py-2 rounded-lg text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800"
             >
               About
             </a>
             <a
               href="#"
-              onClick={(e) => { e.preventDefault(); navDrawer.onClose(); }}
+              onClick={(e) => {
+                e.preventDefault();
+                navDrawer.onClose();
+              }}
               class="block px-4 py-2 rounded-lg text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800"
             >
               Services
             </a>
             <a
               href="#"
-              onClick={(e) => { e.preventDefault(); navDrawer.onClose(); }}
+              onClick={(e) => {
+                e.preventDefault();
+                navDrawer.onClose();
+              }}
               class="block px-4 py-2 rounded-lg text-surface-700 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800"
             >
               Contact
@@ -252,17 +272,70 @@ export default function DrawerPage() {
         <PropsTable
           compact
           props={[
-            { name: 'open', type: 'boolean', default: 'required', description: 'Whether the drawer is open' },
-            { name: 'onClose', type: '() => void', default: 'required', description: 'Callback when drawer should close' },
-            { name: 'title', type: 'string', description: 'Drawer title in header' },
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Drawer content' },
-            { name: 'position', type: "'left' | 'right'", default: "'right'", description: 'Slide-in direction' },
-            { name: 'size', type: "'sm' | 'md' | 'lg' | 'xl'", default: "'md'", description: 'Drawer width' },
-            { name: 'footer', type: 'JSX.Element', description: 'Footer content' },
-            { name: 'showClose', type: 'boolean', default: 'true', description: 'Show close button' },
-            { name: 'closeOnBackdrop', type: 'boolean', default: 'true', description: 'Close when clicking backdrop' },
-            { name: 'closeOnEscape', type: 'boolean', default: 'true', description: 'Close when pressing Escape' },
-            { name: 'noPadding', type: 'boolean', default: 'false', description: 'Remove padding from content area' },
+            {
+              name: 'open',
+              type: 'boolean',
+              default: 'required',
+              description: 'Whether the drawer is open',
+            },
+            {
+              name: 'onClose',
+              type: '() => void',
+              default: 'required',
+              description: 'Callback when drawer should close',
+            },
+            {
+              name: 'title',
+              type: 'string',
+              description: 'Drawer title in header',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Drawer content',
+            },
+            {
+              name: 'position',
+              type: "'left' | 'right'",
+              default: "'right'",
+              description: 'Slide-in direction',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg' | 'xl'",
+              default: "'md'",
+              description: 'Drawer width',
+            },
+            {
+              name: 'footer',
+              type: 'JSX.Element',
+              description: 'Footer content',
+            },
+            {
+              name: 'showClose',
+              type: 'boolean',
+              default: 'true',
+              description: 'Show close button',
+            },
+            {
+              name: 'closeOnBackdrop',
+              type: 'boolean',
+              default: 'true',
+              description: 'Close when clicking backdrop',
+            },
+            {
+              name: 'closeOnEscape',
+              type: 'boolean',
+              default: 'true',
+              description: 'Close when pressing Escape',
+            },
+            {
+              name: 'noPadding',
+              type: 'boolean',
+              default: 'false',
+              description: 'Remove padding from content area',
+            },
           ]}
         />
       </DemoSection>
@@ -270,10 +343,22 @@ export default function DrawerPage() {
       <DemoSection title="Behavior">
         <FeatureList
           items={[
-            <><strong>Body scroll lock:</strong> Prevents page scrolling when open</>,
-            <><strong>Escape key:</strong> Closes drawer by default (configurable)</>,
-            <><strong>Backdrop click:</strong> Closes drawer by default (configurable)</>,
-            <><strong>Exit animation:</strong> Waits for animation to complete before unmounting</>,
+            <>
+              <strong>Body scroll lock:</strong> Prevents page scrolling when
+              open
+            </>,
+            <>
+              <strong>Escape key:</strong> Closes drawer by default
+              (configurable)
+            </>,
+            <>
+              <strong>Backdrop click:</strong> Closes drawer by default
+              (configurable)
+            </>,
+            <>
+              <strong>Exit animation:</strong> Waits for animation to complete
+              before unmounting
+            </>,
           ]}
         />
       </DemoSection>
@@ -284,8 +369,12 @@ export default function DrawerPage() {
         </p>
         <FeatureList
           items={[
-            <><strong>Enter:</strong> Slides in from the edge with fade (300ms)</>,
-            <><strong>Exit:</strong> Slides out to the edge with fade (200ms)</>,
+            <>
+              <strong>Enter:</strong> Slides in from the edge with fade (300ms)
+            </>,
+            <>
+              <strong>Exit:</strong> Slides out to the edge with fade (200ms)
+            </>,
           ]}
         />
       </DemoSection>

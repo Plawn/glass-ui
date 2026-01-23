@@ -1,6 +1,6 @@
-import { Modal, Button, useDisclosure } from 'glass-ui-solid';
-import { createSignal, For } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { Button, Modal, useDisclosure } from 'glass-ui-solid';
+import { For, createSignal } from 'solid-js';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 const basicExample = `import { Modal, Button, useDisclosure } from 'glass-ui-solid';
 
@@ -74,7 +74,10 @@ export default function ModalPage() {
         description="Centered dialog with backdrop, escape key handling, and body scroll lock."
       />
 
-      <DemoSection title="Import" code="import { Modal, useDisclosure } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Modal, useDisclosure } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Basic Example" code={basicExample}>
         <Button onClick={basicModal.onOpen}>Open Modal</Button>
@@ -84,7 +87,8 @@ export default function ModalPage() {
           title="Modal Title"
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This is a basic modal with a title and some content. Click outside or press Escape to close.
+            This is a basic modal with a title and some content. Click outside
+            or press Escape to close.
           </p>
         </Modal>
       </DemoSection>
@@ -113,7 +117,8 @@ export default function ModalPage() {
           size={selectedSize()}
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This is a {selectedSize()} size modal. The modal width changes based on the size prop.
+            This is a {selectedSize()} size modal. The modal width changes based
+            on the size prop.
           </p>
         </Modal>
       </DemoSection>
@@ -129,9 +134,7 @@ export default function ModalPage() {
               <Button variant="secondary" onClick={footerModal.onClose}>
                 Cancel
               </Button>
-              <Button onClick={footerModal.onClose}>
-                Confirm
-              </Button>
+              <Button onClick={footerModal.onClose}>Confirm</Button>
             </div>
           }
         >
@@ -145,8 +148,15 @@ export default function ModalPage() {
         title="Prevent Close"
         description={
           <>
-            Use <code class="text-sm bg-surface-100 dark:bg-surface-800 px-1 py-0.5 rounded">closeOnBackdrop</code> and{' '}
-            <code class="text-sm bg-surface-100 dark:bg-surface-800 px-1 py-0.5 rounded">closeOnEscape</code> to control close behavior.
+            Use{' '}
+            <code class="text-sm bg-surface-100 dark:bg-surface-800 px-1 py-0.5 rounded">
+              closeOnBackdrop
+            </code>{' '}
+            and{' '}
+            <code class="text-sm bg-surface-100 dark:bg-surface-800 px-1 py-0.5 rounded">
+              closeOnEscape
+            </code>{' '}
+            to control close behavior.
           </>
         }
         code={preventCloseExample}
@@ -160,7 +170,8 @@ export default function ModalPage() {
           title="Locked Modal"
         >
           <p class="text-surface-600 dark:text-surface-400 mb-4">
-            This modal can only be closed using the close button. Clicking outside or pressing Escape won't close it.
+            This modal can only be closed using the close button. Clicking
+            outside or pressing Escape won't close it.
           </p>
           <Button onClick={lockedModal.onClose}>Close Modal</Button>
         </Modal>
@@ -170,15 +181,58 @@ export default function ModalPage() {
         <PropsTable
           compact
           props={[
-            { name: 'open', type: 'boolean', default: 'required', description: 'Whether the modal is open' },
-            { name: 'onClose', type: '() => void', default: 'required', description: 'Callback when modal should close' },
-            { name: 'title', type: 'string', description: 'Modal title in header' },
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Modal content' },
-            { name: 'size', type: "'sm' | 'md' | 'lg' | 'xl' | 'full'", default: "'md'", description: 'Modal size' },
-            { name: 'footer', type: 'JSX.Element', description: 'Footer content' },
-            { name: 'showClose', type: 'boolean', default: 'true', description: 'Show close button in header' },
-            { name: 'closeOnBackdrop', type: 'boolean', default: 'true', description: 'Close when clicking backdrop' },
-            { name: 'closeOnEscape', type: 'boolean', default: 'true', description: 'Close when pressing Escape' },
+            {
+              name: 'open',
+              type: 'boolean',
+              default: 'required',
+              description: 'Whether the modal is open',
+            },
+            {
+              name: 'onClose',
+              type: '() => void',
+              default: 'required',
+              description: 'Callback when modal should close',
+            },
+            {
+              name: 'title',
+              type: 'string',
+              description: 'Modal title in header',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Modal content',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg' | 'xl' | 'full'",
+              default: "'md'",
+              description: 'Modal size',
+            },
+            {
+              name: 'footer',
+              type: 'JSX.Element',
+              description: 'Footer content',
+            },
+            {
+              name: 'showClose',
+              type: 'boolean',
+              default: 'true',
+              description: 'Show close button in header',
+            },
+            {
+              name: 'closeOnBackdrop',
+              type: 'boolean',
+              default: 'true',
+              description: 'Close when clicking backdrop',
+            },
+            {
+              name: 'closeOnEscape',
+              type: 'boolean',
+              default: 'true',
+              description: 'Close when pressing Escape',
+            },
           ]}
         />
       </DemoSection>

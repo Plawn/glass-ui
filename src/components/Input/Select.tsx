@@ -32,7 +32,8 @@ import type { SelectProps } from './types';
 export function Select<T = string>(props: SelectProps<T>) {
   // Find the index of the currently selected value
   const getSelectedIndex = () => {
-    if (!props.options || props.value === null || props.value === undefined) return '';
+    if (!props.options || props.value === null || props.value === undefined)
+      return '';
     const index = props.options.findIndex((opt) => opt.value === props.value);
     return index >= 0 ? String(index) : '';
   };
@@ -43,7 +44,7 @@ export function Select<T = string>(props: SelectProps<T>) {
     if (indexStr === '') {
       (props.onChange as (value: T | null) => void)(null);
     } else {
-      const index = parseInt(indexStr, 10);
+      const index = Number.parseInt(indexStr, 10);
       const option = props.options[index];
       if (option) {
         (props.onChange as (value: T | null) => void)(option.value);
@@ -105,7 +106,9 @@ export function Select<T = string>(props: SelectProps<T>) {
         </div>
       </div>
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+          {props.error}
+        </p>
       </Show>
     </div>
   );

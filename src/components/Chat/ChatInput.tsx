@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { createSignal, Show, createEffect, onMount } from 'solid-js';
+import { Show, createEffect, createSignal, onMount } from 'solid-js';
 import { SendIcon, StopIcon } from './icons';
 import type { ChatInputProps } from './types';
 

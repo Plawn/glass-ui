@@ -1,10 +1,18 @@
 import type { JSX } from 'solid-js';
-import type { Placement, BaseComponentProps, DisableableProps, IconProps } from '../../types';
+import type {
+  BaseComponentProps,
+  DisableableProps,
+  IconProps,
+  Placement,
+} from '../../types';
 
 /**
  * Menu placement - subset of Placement for vertical menus
  */
-export type MenuPlacement = Extract<Placement, 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'>;
+export type MenuPlacement = Extract<
+  Placement,
+  'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'
+>;
 
 export type MenuItem =
   | ({
@@ -14,7 +22,8 @@ export type MenuItem =
       onClick?: () => void;
       /** Must be false or omitted for regular items */
       divider?: false;
-    } & DisableableProps & IconProps)
+    } & DisableableProps &
+      IconProps)
   | {
       /** Divider item - renders a horizontal line */
       divider: true;

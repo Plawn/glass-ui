@@ -1,6 +1,6 @@
-import { createSignal, For } from 'solid-js';
-import { Input, Button } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { Button, Input } from 'glass-ui-solid';
+import { For, createSignal } from 'solid-js';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function InputPage() {
   const [basicValue, setBasicValue] = createSignal('');
@@ -77,7 +77,11 @@ export default function InputPage() {
             value={username()}
             onInput={setUsername}
             placeholder="Enter username"
-            error={username().length > 0 && username().length < 3 ? 'Username must be at least 3 characters' : undefined}
+            error={
+              username().length > 0 && username().length < 3
+                ? 'Username must be at least 3 characters'
+                : undefined
+            }
           />
         </div>
       </DemoSection>
@@ -304,18 +308,65 @@ export default function InputPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'value', type: 'string', default: 'required', description: 'Current input value' },
-            { name: 'onInput', type: '(value: string) => void', default: 'required', description: 'Value change callback' },
+            {
+              name: 'value',
+              type: 'string',
+              default: 'required',
+              description: 'Current input value',
+            },
+            {
+              name: 'onInput',
+              type: '(value: string) => void',
+              default: 'required',
+              description: 'Value change callback',
+            },
             { name: 'label', type: 'string', description: 'Label text' },
-            { name: 'placeholder', type: 'string', description: 'Placeholder text' },
-            { name: 'type', type: "'text' | 'password' | 'email' | 'number' | 'url' | 'tel' | 'search'", default: "'text'", description: 'Input type' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Input size' },
+            {
+              name: 'placeholder',
+              type: 'string',
+              description: 'Placeholder text',
+            },
+            {
+              name: 'type',
+              type: "'text' | 'password' | 'email' | 'number' | 'url' | 'tel' | 'search'",
+              default: "'text'",
+              description: 'Input type',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Input size',
+            },
             { name: 'error', type: 'string', description: 'Error message' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the input' },
-            { name: 'readonly', type: 'boolean', default: 'false', description: 'Make input read-only' },
-            { name: 'required', type: 'boolean', default: 'false', description: 'Mark as required' },
-            { name: 'onKeyDown', type: '(e: KeyboardEvent) => void', description: 'Keyboard event handler' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Disable the input',
+            },
+            {
+              name: 'readonly',
+              type: 'boolean',
+              default: 'false',
+              description: 'Make input read-only',
+            },
+            {
+              name: 'required',
+              type: 'boolean',
+              default: 'false',
+              description: 'Mark as required',
+            },
+            {
+              name: 'onKeyDown',
+              type: '(e: KeyboardEvent) => void',
+              description: 'Keyboard event handler',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

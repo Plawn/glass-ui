@@ -30,7 +30,11 @@ export const ChevronIcon: Component<ChevronIconProps> = (props) => {
       stroke-width="2"
       aria-hidden="true"
     >
-      <path stroke-linecap="round" stroke-linejoin="round" d={paths[direction()]} />
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d={paths[direction()]}
+      />
     </svg>
   );
 };

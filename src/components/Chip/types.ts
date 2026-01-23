@@ -1,10 +1,10 @@
 import type { JSX } from 'solid-js';
 import type {
-  ComponentSize,
-  SemanticColor,
-  ChipVariant,
   BaseComponentProps,
+  ChipVariant,
+  ComponentSize,
   DisableableProps,
+  SemanticColor,
 } from '../../types';
 
 /**

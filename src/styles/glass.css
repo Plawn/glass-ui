@@ -28,9 +28,9 @@
 .glass-button,
 .glass-icon-btn,
 .glass-active {
-  transition: background var(--theme-transition), background-color var(--theme-transition), color
-    var(--theme-transition), border-color var(--theme-transition), box-shadow
-    var(--theme-transition);
+  transition: background var(--theme-transition), background-color
+    var(--theme-transition), color var(--theme-transition), border-color
+    var(--theme-transition), box-shadow var(--theme-transition);
 }
 
 /* ============================================
@@ -40,10 +40,13 @@
 /* iOS 26 Glass Effect - Primary */
 .glass {
   background: oklch(1 0 0 / 0.45);
-  backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
-  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
+  backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-standard));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-standard));
   border: 0.0625rem solid oklch(1 0 0 / 0.3);
-  box-shadow: 0 4px 6px -1px oklch(0 0 0 / 0.02), 0 2px 4px -2px oklch(0 0 0 / 0.02);
+  box-shadow: 0 4px 6px -1px oklch(0 0 0 / 0.02), 0 2px 4px -2px
+    oklch(0 0 0 / 0.02);
 }
 
 .dark .glass {
@@ -52,12 +55,13 @@
   box-shadow: none;
 }
 
-
 /* iOS 26 Glass - Thick (more opaque) */
 .glass-thick {
   background: oklch(1 0 0 / 0.65);
-  backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate-high));
-  -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(var(--glass-saturate-high));
+  backdrop-filter: blur(var(--glass-blur-thick))
+    saturate(var(--glass-saturate-high));
+  -webkit-backdrop-filter: blur(var(--glass-blur-thick))
+    saturate(var(--glass-saturate-high));
   border: 0.0625rem solid oklch(1 0 0 / 0.4);
 }
 
@@ -86,8 +90,10 @@
 /* iOS 26 Glass - Sidebar specific */
 .glass-sidebar {
   background: oklch(1 0 0 / 0.5);
-  backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
-  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
+  backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-standard));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-standard));
   border-right: 0.0625rem solid oklch(0 0 0 / 0.06);
 }
 
@@ -101,8 +107,10 @@
 /* iOS 26 Glass - Navbar specific */
 .glass-navbar {
   background: oklch(1 0 0 / 0.65);
-  backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
-  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(var(--glass-saturate-standard));
+  backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-standard));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-standard));
   border-bottom: 0.0625rem solid oklch(0 0 0 / 0.05);
   box-shadow: 0 4px 20px -5px oklch(0 0 0 / 0.03);
   transition: all var(--theme-transition);
@@ -155,14 +163,16 @@
   backdrop-filter: blur(2rem) saturate(160%);
   -webkit-backdrop-filter: blur(2rem) saturate(160%);
   border: 0.0625rem solid oklch(1 0 0 / 0.4);
-  box-shadow: 0 4px 20px -2px oklch(0 0 0 / 0.06), 0 0 0 1px oklch(1 0 0 / 0.4) inset;
+  box-shadow: 0 4px 20px -2px oklch(0 0 0 / 0.06), 0 0 0 1px oklch(1 0 0 / 0.4)
+    inset;
 }
 
 .dark .glass-card {
   background: oklch(0.15 0.02 260 / 0.55);
   border-color: oklch(1 0 0 / 0.08);
-  box-shadow: 0 0.125rem 0.5rem -0.125rem oklch(0 0 0 / 0.3), 0 0.5rem 1.5rem -0.25rem
-    oklch(0 0 0 / 0.25), inset 0 0.0625rem 0.0625rem oklch(1 0 0 / 0.05);
+  box-shadow: 0 0.125rem 0.5rem -0.125rem oklch(0 0 0 / 0.3), 0 0.5rem 1.5rem
+    -0.25rem oklch(0 0 0 / 0.25), inset 0 0.0625rem 0.0625rem
+    oklch(1 0 0 / 0.05);
 }
 
 /* iOS 26 Glass - Selected/Active state */
@@ -177,8 +187,8 @@
 .dark .glass-active {
   background: oklch(0.5 0.15 250 / 0.2);
   border-color: oklch(0.6 0.18 250 / 0.3);
-  box-shadow: 0 0.125rem 0.5rem -0.125rem oklch(0.5 0.18 250 / 0.25), inset 0 0.0625rem 0.0625rem
-    oklch(1 0 0 / 0.08);
+  box-shadow: 0 0.125rem 0.5rem -0.125rem oklch(0.5 0.18 250 / 0.25), inset 0
+    0.0625rem 0.0625rem oklch(1 0 0 / 0.08);
 }
 
 /* ============================================
@@ -360,14 +370,15 @@ select.glass-input {
   backdrop-filter: blur(1.5rem) saturate(180%);
   -webkit-backdrop-filter: blur(1.5rem) saturate(180%);
   border: 1px solid oklch(0 0 0 / 0.08);
-  box-shadow: 0 10px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px oklch(0 0 0 / 0.1);
+  box-shadow: 0 10px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px
+    oklch(0 0 0 / 0.1);
   color: var(--color-surface-900);
 }
 
 .dark .glass-tooltip {
   background: oklch(0.2 0.02 260 / 0.9);
   border-color: oklch(1 0 0 / 0.15);
-  box-shadow: 0 0.25rem 0.75rem -0.125rem oklch(0 0 0 / 0.4), 0 0.5rem 1.5rem -0.25rem
-    oklch(0 0 0 / 0.3);
+  box-shadow: 0 0.25rem 0.75rem -0.125rem oklch(0 0 0 / 0.4), 0 0.5rem 1.5rem
+    -0.25rem oklch(0 0 0 / 0.3);
   color: var(--color-surface-50);
 }

@@ -81,23 +81,31 @@ export const Pagination: Component<PaginationProps> = (props) => {
     'inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-medium transition-colors';
   const buttonInactiveClass =
     'text-surface-600 dark:text-surface-400 hover:bg-black/5 dark:hover:bg-white/5';
-  const buttonActiveClass = 'glass-active text-surface-900 dark:text-surface-100';
-  const buttonDisabledClass = 'text-surface-300 dark:text-surface-600 cursor-not-allowed';
+  const buttonActiveClass =
+    'glass-active text-surface-900 dark:text-surface-100';
+  const buttonDisabledClass =
+    'text-surface-300 dark:text-surface-600 cursor-not-allowed';
 
   return (
     <div class={`flex items-center gap-4 ${props.class ?? ''}`}>
       {/* Page size selector */}
       <Show when={props.showPageSize}>
         <div class="flex items-center gap-2">
-          <span class="text-sm text-surface-600 dark:text-surface-400">Show</span>
+          <span class="text-sm text-surface-600 dark:text-surface-400">
+            Show
+          </span>
           <select
             value={props.pageSize}
             onChange={handlePageSizeChange}
             class="glass-input px-2 py-1 text-sm rounded-lg"
           >
-            <For each={pageSizeOptions()}>{(size) => <option value={size}>{size}</option>}</For>
+            <For each={pageSizeOptions()}>
+              {(size) => <option value={size}>{size}</option>}
+            </For>
           </select>
-          <span class="text-sm text-surface-600 dark:text-surface-400">per page</span>
+          <span class="text-sm text-surface-600 dark:text-surface-400">
+            per page
+          </span>
         </div>
       </Show>
 

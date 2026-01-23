@@ -4,7 +4,10 @@ import type { RadioGroupProps, RadioGroupSize } from './types';
 /**
  * Size configuration for the radio indicator
  */
-const sizeConfig: Record<RadioGroupSize, { outer: string; inner: string; gap: string; label: string }> = {
+const sizeConfig: Record<
+  RadioGroupSize,
+  { outer: string; inner: string; gap: string; label: string }
+> = {
   sm: {
     outer: 'w-5 h-5',
     inner: 'w-2 h-2',
@@ -98,13 +101,15 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
                     transition-all duration-300 ease-out
                     backdrop-blur-xl
                     border
-                    ${isSelected()
-                      ? 'bg-accent-500/40 dark:bg-accent-400/30 border-accent-300/40 dark:border-accent-400/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_12px_rgba(0,0,0,0.1)]'
-                      : 'bg-white/10 dark:bg-white/5 border-white/20 dark:border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_6px_rgba(0,0,0,0.05)]'
+                    ${
+                      isSelected()
+                        ? 'bg-accent-500/40 dark:bg-accent-400/30 border-accent-300/40 dark:border-accent-400/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_12px_rgba(0,0,0,0.1)]'
+                        : 'bg-white/10 dark:bg-white/5 border-white/20 dark:border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_6px_rgba(0,0,0,0.05)]'
                     }
-                    ${!disabled() && !isSelected()
-                      ? 'hover:bg-white/20 dark:hover:bg-white/10 hover:border-white/30 dark:hover:border-white/20'
-                      : ''
+                    ${
+                      !disabled() && !isSelected()
+                        ? 'hover:bg-white/20 dark:hover:bg-white/10 hover:border-white/30 dark:hover:border-white/20'
+                        : ''
                     }
                     ${disabled() ? 'pointer-events-none' : ''}
                   `}
@@ -115,15 +120,18 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
                       ${config().inner}
                       rounded-full
                       transition-all duration-300 ease-out
-                      ${isSelected()
-                        ? 'opacity-100 scale-100 bg-white/80 dark:bg-white/70 shadow-[0_1px_3px_rgba(0,0,0,0.2)]'
-                        : 'opacity-0 scale-0 bg-white/50'
+                      ${
+                        isSelected()
+                          ? 'opacity-100 scale-100 bg-white/80 dark:bg-white/70 shadow-[0_1px_3px_rgba(0,0,0,0.2)]'
+                          : 'opacity-0 scale-0 bg-white/50'
                       }
                     `}
                   />
                 </div>
 
-                <span class={`${config().label} text-surface-700 dark:text-surface-300`}>
+                <span
+                  class={`${config().label} text-surface-700 dark:text-surface-300`}
+                >
                   {option.label}
                 </span>
               </label>
@@ -132,7 +140,9 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
         </For>
       </div>
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+          {props.error}
+        </p>
       </Show>
     </div>
   );

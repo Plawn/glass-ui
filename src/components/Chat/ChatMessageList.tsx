@@ -1,10 +1,13 @@
 import type { Component, JSX } from 'solid-js';
-import { createEffect, createSignal, Show, on } from 'solid-js';
+import { Show, createEffect, createSignal, on } from 'solid-js';
 import { VirtualList } from '../virtual';
 import type { VirtualHandle } from '../virtual';
 import { ChatMessage } from './ChatMessage';
 import { ChatTypingIndicator } from './ChatTypingIndicator';
-import type { ChatMessageListProps, ChatMessage as ChatMessageType } from './types';
+import type {
+  ChatMessageListProps,
+  ChatMessage as ChatMessageType,
+} from './types';
 
 /**
  * Custom scroller for chat message list (no glass-card styling)
@@ -49,8 +52,8 @@ export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
             });
           });
         }
-      }
-    )
+      },
+    ),
   );
 
   // Also scroll when streaming status changes (for typing indicator)
@@ -70,8 +73,8 @@ export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
             });
           }
         }
-      }
-    )
+      },
+    ),
   );
 
   const handleAtBottomChange = (atBottom: boolean) => {

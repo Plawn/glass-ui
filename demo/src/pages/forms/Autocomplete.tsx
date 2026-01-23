@@ -1,6 +1,13 @@
-import { Autocomplete, CodeBlock, Card } from 'glass-ui-solid';
+import { Autocomplete, Card, CodeBlock } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay, FeatureList } from '../../components/demo';
+import {
+  CodePill,
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 const fruits = [
   { value: 'apple', label: 'Apple' },
@@ -40,7 +47,7 @@ export default function AutocompletePage() {
     setIsLoading(true);
     setTimeout(() => {
       const filtered = fruits.filter((f) =>
-        f.label.toLowerCase().includes(input.toLowerCase())
+        f.label.toLowerCase().includes(input.toLowerCase()),
       );
       setAsyncOptions(filtered);
       setIsLoading(false);
@@ -104,7 +111,12 @@ export default function AutocompletePage() {
 
       <DemoSection
         title="Allow Custom Values"
-        description={<>Enable <CodePill>allowCustomValue</CodePill> to accept values not in the options list.</>}
+        description={
+          <>
+            Enable <CodePill>allowCustomValue</CodePill> to accept values not in
+            the options list.
+          </>
+        }
         code={`<Autocomplete
   options={fruits}
   value={value()}
@@ -181,7 +193,12 @@ export default function AutocompletePage() {
 
       <DemoSection
         title="Async Loading"
-        description={<>Use <CodePill>onInputChange</CodePill> and <CodePill>loading</CodePill> props for async data fetching.</>}
+        description={
+          <>
+            Use <CodePill>onInputChange</CodePill> and{' '}
+            <CodePill>loading</CodePill> props for async data fetching.
+          </>
+        }
         code={`const [isLoading, setIsLoading] = createSignal(false);
 const [options, setOptions] = createSignal([]);
 
@@ -215,7 +232,12 @@ const handleInputChange = async (input: string) => {
 
       <DemoSection
         title="Disabled Options"
-        description={<>Individual options can be disabled by setting <CodePill>disabled: true</CodePill>.</>}
+        description={
+          <>
+            Individual options can be disabled by setting{' '}
+            <CodePill>disabled: true</CodePill>.
+          </>
+        }
         code={`const options = [
   { value: 'us', label: 'United States' },
   { value: 'uk', label: 'United Kingdom' },
@@ -281,30 +303,96 @@ const customFilter = (option, input) =>
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'options', type: 'AutocompleteOption[]', default: 'required', description: 'List of available options' },
-            { name: 'value', type: 'string', default: 'required', description: 'Currently selected value' },
-            { name: 'onChange', type: '(value: string) => void', default: 'required', description: 'Callback when selection changes' },
-            { name: 'onInputChange', type: '(input: string) => void', description: 'Callback when input text changes (for async loading)' },
-            { name: 'label', type: 'string', description: 'Label displayed above the input' },
-            { name: 'placeholder', type: 'string', description: 'Placeholder text for the input' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the component is disabled' },
-            { name: 'error', type: 'string', description: 'Error message displayed below the input' },
-            { name: 'loading', type: 'boolean', default: 'false', description: 'Whether the component is in loading state' },
-            { name: 'emptyText', type: 'string', default: "'No options found'", description: 'Text to display when no options match' },
-            { name: 'allowCustomValue', type: 'boolean', default: 'false', description: 'Allow custom values not in options list' },
-            { name: 'filterFn', type: '(option, input) => boolean', description: 'Custom filter function for options' },
+            {
+              name: 'options',
+              type: 'AutocompleteOption[]',
+              default: 'required',
+              description: 'List of available options',
+            },
+            {
+              name: 'value',
+              type: 'string',
+              default: 'required',
+              description: 'Currently selected value',
+            },
+            {
+              name: 'onChange',
+              type: '(value: string) => void',
+              default: 'required',
+              description: 'Callback when selection changes',
+            },
+            {
+              name: 'onInputChange',
+              type: '(input: string) => void',
+              description:
+                'Callback when input text changes (for async loading)',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label displayed above the input',
+            },
+            {
+              name: 'placeholder',
+              type: 'string',
+              description: 'Placeholder text for the input',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the component is disabled',
+            },
+            {
+              name: 'error',
+              type: 'string',
+              description: 'Error message displayed below the input',
+            },
+            {
+              name: 'loading',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the component is in loading state',
+            },
+            {
+              name: 'emptyText',
+              type: 'string',
+              default: "'No options found'",
+              description: 'Text to display when no options match',
+            },
+            {
+              name: 'allowCustomValue',
+              type: 'boolean',
+              default: 'false',
+              description: 'Allow custom values not in options list',
+            },
+            {
+              name: 'filterFn',
+              type: '(option, input) => boolean',
+              description: 'Custom filter function for options',
+            },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
-            { name: 'name', type: 'string', description: 'HTML name attribute' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'name',
+              type: 'string',
+              description: 'HTML name attribute',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection
-        title="AutocompleteOption Interface"
-        card={false}
-      >
+      <DemoSection title="AutocompleteOption Interface" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`interface AutocompleteOption {
@@ -320,17 +408,18 @@ const customFilter = (option, input) =>
         </Card>
       </DemoSection>
 
-      <DemoSection
-        title="Keyboard Navigation"
-        card={false}
-      >
+      <DemoSection title="Keyboard Navigation" card={false}>
         <Card class="p-6">
           <div class="overflow-x-auto">
             <table class="w-full text-left text-sm">
               <thead>
                 <tr class="border-b border-surface-200 dark:border-surface-700">
-                  <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Key</th>
-                  <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">Action</th>
+                  <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">
+                    Key
+                  </th>
+                  <th class="py-3 px-4 font-semibold text-surface-900 dark:text-white">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody class="text-surface-600 dark:text-surface-400">

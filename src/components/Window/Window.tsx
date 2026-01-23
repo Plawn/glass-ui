@@ -1,11 +1,11 @@
+import clsx from 'clsx';
 import {
   type Component,
+  For,
   Show,
   createEffect,
   createSignal,
-  For,
 } from 'solid-js';
-import clsx from 'clsx';
 import {
   ANIMATION_DURATION,
   BACKDROP_ENTER,
@@ -13,18 +13,27 @@ import {
   MODAL_PANEL_ENTER,
 } from '../../constants';
 import {
-  useAnimationState,
-  useEscapeKey,
-  useDraggable,
-  useResizable,
   type Position,
+  useAnimationState,
+  useDraggable,
+  useEscapeKey,
+  useResizable,
 } from '../../hooks';
-import { PortalWithDarkMode, CloseButton } from '../shared';
+import { CloseButton, PortalWithDarkMode } from '../shared';
 import { WindowHandle } from './WindowHandle';
-import type { WindowProps, ResizeDirection } from './types';
+import type { ResizeDirection, WindowProps } from './types';
 
 /** All resize directions for the handles */
-const RESIZE_DIRECTIONS: ResizeDirection[] = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
+const RESIZE_DIRECTIONS: ResizeDirection[] = [
+  'n',
+  's',
+  'e',
+  'w',
+  'ne',
+  'nw',
+  'se',
+  'sw',
+];
 
 /**
  * A draggable and resizable window component.
@@ -82,7 +91,9 @@ export const Window: Component<WindowProps> = (props) => {
   let windowRef: HTMLDivElement | undefined;
 
   // Internal position state (for when resizable needs to adjust position)
-  const [internalPosition, setInternalPosition] = createSignal<Position>(calculateDefaultPosition());
+  const [internalPosition, setInternalPosition] = createSignal<Position>(
+    calculateDefaultPosition(),
+  );
 
   // Determine actual position (controlled or internal)
   const currentPosition = (): Position => {
@@ -112,10 +123,7 @@ export const Window: Component<WindowProps> = (props) => {
   });
 
   // Draggable hook
-  const {
-    isDragging,
-    dragHandleProps,
-  } = useDraggable({
+  const { isDragging, dragHandleProps } = useDraggable({
     defaultPosition: calculateDefaultPosition(),
     position: currentPosition,
     onPositionChange: handlePositionChange,
@@ -125,10 +133,7 @@ export const Window: Component<WindowProps> = (props) => {
   });
 
   // Resizable hook
-  const {
-    size,
-    getResizeHandleProps,
-  } = useResizable({
+  const { size, getResizeHandleProps } = useResizable({
     defaultSize: defaultSize(),
     size: () => props.size,
     onSizeChange: props.onSizeChange,
@@ -167,7 +172,10 @@ export const Window: Component<WindowProps> = (props) => {
 
   // Animation classes
   const backdropClasses = () => (isClosing() ? BACKDROP_EXIT : BACKDROP_ENTER);
-  const windowClasses = () => (isClosing() ? 'animate-out fade-out zoom-out-95 duration-200' : MODAL_PANEL_ENTER);
+  const windowClasses = () =>
+    isClosing()
+      ? 'animate-out fade-out zoom-out-95 duration-200'
+      : MODAL_PANEL_ENTER;
 
   // Cursor class for dragging state
   const cursorClass = () => {
@@ -185,7 +193,7 @@ export const Window: Component<WindowProps> = (props) => {
           <div
             class={clsx(
               'fixed inset-0 bg-black/50 backdrop-blur-sm',
-              backdropClasses()
+              backdropClasses(),
             )}
             style={{ 'z-index': zIndex() - 1 }}
             onClick={handleBackdropClick}
@@ -198,7 +206,7 @@ export const Window: Component<WindowProps> = (props) => {
           class={clsx(
             'fixed glass-card rounded-2xl shadow-2xl overflow-hidden flex flex-col',
             windowClasses(),
-            props.class
+            props.class,
           )}
           style={{
             'z-index': zIndex(),
@@ -217,10 +225,12 @@ export const Window: Component<WindowProps> = (props) => {
           <div
             class={clsx(
               'flex items-center justify-between px-4 py-3 border-b border-surface-200/50 dark:border-surface-700/50 select-none',
-              cursorClass()
+              cursorClass(),
             )}
             onMouseDown={draggable() ? dragHandleProps.onMouseDown : undefined}
-            onTouchStart={draggable() ? dragHandleProps.onTouchStart : undefined}
+            onTouchStart={
+              draggable() ? dragHandleProps.onTouchStart : undefined
+            }
             style={draggable() ? 'touch-action: none;' : undefined}
           >
             <Show when={props.title}>

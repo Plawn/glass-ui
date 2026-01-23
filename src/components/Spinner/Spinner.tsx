@@ -1,6 +1,6 @@
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
-import type { SpinnerProps, SpinnerSize, SpinnerColor } from './types';
+import type { SpinnerColor, SpinnerProps, SpinnerSize } from './types';
 
 const sizeClasses: Record<SpinnerSize, string> = {
   sm: 'h-4 w-4',
@@ -16,7 +16,10 @@ const labelSizeClasses: Record<SpinnerSize, string> = {
   xl: 'text-lg',
 };
 
-const colorClasses: Record<SpinnerColor, { track: string; fill: string; label: string }> = {
+const colorClasses: Record<
+  SpinnerColor,
+  { track: string; fill: string; label: string }
+> = {
   default: {
     track: 'text-surface-200 dark:text-surface-700',
     fill: 'text-accent-500',
@@ -41,7 +44,12 @@ export const Spinner: Component<SpinnerProps> = (props) => {
   };
 
   return (
-    <div class={wrapperClasses()} style={props.style} role="status" aria-label={props.label ?? 'Loading'}>
+    <div
+      class={wrapperClasses()}
+      style={props.style}
+      role="status"
+      aria-label={props.label ?? 'Loading'}
+    >
       <svg
         class={`animate-spin ${sizeClasses[size()]}`}
         xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +72,11 @@ export const Spinner: Component<SpinnerProps> = (props) => {
         />
       </svg>
       <Show when={props.label}>
-        <span class={`${labelSizeClasses[size()]} ${colorClasses[color()].label}`}>{props.label}</span>
+        <span
+          class={`${labelSizeClasses[size()]} ${colorClasses[color()].label}`}
+        >
+          {props.label}
+        </span>
       </Show>
     </div>
   );

@@ -1,6 +1,6 @@
-import { For, createSignal } from 'solid-js';
 import { A, useLocation } from '@solidjs/router';
-import { navigation, type NavGroup } from '../config/navigation';
+import { For, createSignal } from 'solid-js';
+import { type NavGroup, navigation } from '../config/navigation';
 
 function NavGroupComponent(props: { group: NavGroup; defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = createSignal(props.defaultOpen ?? true);
@@ -31,7 +31,9 @@ function NavGroupComponent(props: { group: NavGroup; defaultOpen?: boolean }) {
 
       <div
         class={`mt-1 space-y-1 transition-all duration-300 ease-in-out ${
-          isOpen() ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
+          isOpen()
+            ? 'max-h-[1000px] opacity-100'
+            : 'max-h-0 opacity-0 pointer-events-none'
         }`}
       >
         <For each={props.group.items}>

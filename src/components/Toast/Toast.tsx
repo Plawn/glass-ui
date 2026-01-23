@@ -1,7 +1,13 @@
 import { type Component, For, createSignal } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { TOAST_COLORS, TOAST_ENTER } from '../../constants';
-import { CheckIcon, CloseIcon, ErrorIcon, InfoIcon, WarningIcon } from '../shared/icons';
+import {
+  CheckIcon,
+  CloseIcon,
+  ErrorIcon,
+  InfoIcon,
+  WarningIcon,
+} from '../shared/icons';
 import { dismissToast, getToastStore } from './store';
 import type { Toast, ToastType } from './types';
 

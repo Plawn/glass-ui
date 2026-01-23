@@ -1,6 +1,11 @@
-import { Switch, Card } from 'glass-ui-solid';
+import { Card, Switch } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function SwitchPage() {
   const [isEnabled, setIsEnabled] = createSignal(false);
@@ -35,7 +40,10 @@ export default function SwitchPage() {
           onChange={setIsEnabled}
           label="Enable feature"
         />
-        <StateDisplay label="Status" value={isEnabled() ? 'Enabled' : 'Disabled'} />
+        <StateDisplay
+          label="Status"
+          value={isEnabled() ? 'Enabled' : 'Disabled'}
+        />
       </DemoSection>
 
       <DemoSection
@@ -99,10 +107,7 @@ export default function SwitchPage() {
         code={`<Switch checked={autoSave()} onChange={setAutoSave} />`}
       >
         <div class="flex items-center gap-4">
-          <Switch
-            checked={autoSave()}
-            onChange={setAutoSave}
-          />
+          <Switch checked={autoSave()} onChange={setAutoSave} />
           <span class="text-sm text-surface-700 dark:text-surface-300">
             Auto-save is {autoSave() ? 'on' : 'off'}
           </span>
@@ -139,33 +144,36 @@ export default function SwitchPage() {
           <div class="space-y-4">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-surface-900 dark:text-white">Notifications</p>
-                <p class="text-xs text-surface-500 dark:text-surface-400">Receive push notifications</p>
+                <p class="text-sm font-medium text-surface-900 dark:text-white">
+                  Notifications
+                </p>
+                <p class="text-xs text-surface-500 dark:text-surface-400">
+                  Receive push notifications
+                </p>
               </div>
-              <Switch
-                checked={notifications()}
-                onChange={setNotifications}
-              />
+              <Switch checked={notifications()} onChange={setNotifications} />
             </div>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-surface-900 dark:text-white">Dark Mode</p>
-                <p class="text-xs text-surface-500 dark:text-surface-400">Use dark theme</p>
+                <p class="text-sm font-medium text-surface-900 dark:text-white">
+                  Dark Mode
+                </p>
+                <p class="text-xs text-surface-500 dark:text-surface-400">
+                  Use dark theme
+                </p>
               </div>
-              <Switch
-                checked={darkMode()}
-                onChange={setDarkMode}
-              />
+              <Switch checked={darkMode()} onChange={setDarkMode} />
             </div>
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-surface-900 dark:text-white">Auto-save</p>
-                <p class="text-xs text-surface-500 dark:text-surface-400">Automatically save changes</p>
+                <p class="text-sm font-medium text-surface-900 dark:text-white">
+                  Auto-save
+                </p>
+                <p class="text-xs text-surface-500 dark:text-surface-400">
+                  Automatically save changes
+                </p>
               </div>
-              <Switch
-                checked={autoSave()}
-                onChange={setAutoSave}
-              />
+              <Switch checked={autoSave()} onChange={setAutoSave} />
             </div>
           </div>
         </Card>
@@ -174,14 +182,45 @@ export default function SwitchPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'checked', type: 'boolean', description: 'Whether the switch is on' },
-            { name: 'onChange', type: '(checked: boolean) => void', description: 'Callback when checked state changes' },
-            { name: 'label', type: 'string', description: 'Optional label text' },
-            { name: 'labelPosition', type: "'left' | 'right'", default: "'right'", description: 'Position of the label' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the switch is disabled' },
+            {
+              name: 'checked',
+              type: 'boolean',
+              description: 'Whether the switch is on',
+            },
+            {
+              name: 'onChange',
+              type: '(checked: boolean) => void',
+              description: 'Callback when checked state changes',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Optional label text',
+            },
+            {
+              name: 'labelPosition',
+              type: "'left' | 'right'",
+              default: "'right'",
+              description: 'Position of the label',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the switch is disabled',
+            },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
-            { name: 'name', type: 'string', description: 'HTML name attribute for form submission' },
+            {
+              name: 'name',
+              type: 'string',
+              description: 'HTML name attribute for form submission',
+            },
           ]}
         />
       </DemoSection>

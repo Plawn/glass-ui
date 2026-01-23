@@ -49,7 +49,9 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
   });
 
   return (
-    <div class={`relative group rounded-xl overflow-hidden ${props.class ?? ''}`}>
+    <div
+      class={`relative group rounded-xl overflow-hidden ${props.class ?? ''}`}
+    >
       {/* Copy button */}
       <Show when={!props.hideCopyButton}>
         <button
@@ -88,7 +90,11 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
               stroke-width="2"
               aria-hidden="true"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
             <span class="hidden sm:inline text-emerald-500 dark:text-emerald-400">
               {copiedLabel()}
@@ -110,7 +116,11 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
         class={`p-6 pt-10 text-sm font-mono overflow-auto scrollbar-thin glass-thin rounded-xl ${props.wrap ? 'whitespace-pre-wrap break-all' : ''}`}
         style={{ 'max-height': maxHeight() }}
       >
-        <code ref={codeRef} class={`language-${language()}`} innerHTML={highlightedCode()} />
+        <code
+          ref={codeRef}
+          class={`language-${language()}`}
+          innerHTML={highlightedCode()}
+        />
       </pre>
     </div>
   );

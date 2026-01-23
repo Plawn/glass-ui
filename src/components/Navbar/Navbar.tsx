@@ -1,4 +1,11 @@
-import { type Component, For, Show, createSignal, onCleanup, onMount } from 'solid-js';
+import {
+  type Component,
+  For,
+  Show,
+  createSignal,
+  onCleanup,
+  onMount,
+} from 'solid-js';
 import { useDisclosure } from '../../hooks';
 import type { NavbarItem, NavbarProps } from './types';
 
@@ -17,10 +24,18 @@ const HamburgerIcon: Component<{ open: boolean; class?: string }> = (props) => {
       <Show
         when={props.open}
         fallback={
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         }
       >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M6 18L18 6M6 6l12 12"
+        />
       </Show>
     </svg>
   );
@@ -66,7 +81,9 @@ const NavItem: Component<{ item: NavbarItem }> = (props) => {
 /**
  * Mobile navigation item component
  */
-const MobileNavItem: Component<{ item: NavbarItem; onClose: () => void }> = (props) => {
+const MobileNavItem: Component<{ item: NavbarItem; onClose: () => void }> = (
+  props,
+) => {
   const baseClasses =
     'block w-full px-4 py-3 text-base font-medium transition-colors text-left';
   const activeClasses = 'text-accent-600 dark:text-accent-400 bg-accent-500/10';
@@ -207,11 +224,15 @@ export const Navbar: Component<NavbarProps> = (props) => {
           <div class="flex items-center gap-3">
             {/* Desktop Actions */}
             <Show when={props.actions}>
-              <div class="hidden md:flex md:items-center md:gap-2">{props.actions}</div>
+              <div class="hidden md:flex md:items-center md:gap-2">
+                {props.actions}
+              </div>
             </Show>
 
             {/* Mobile Menu Button */}
-            <Show when={(props.items && props.items.length > 0) || props.actions}>
+            <Show
+              when={(props.items && props.items.length > 0) || props.actions}
+            >
               <button
                 type="button"
                 onClick={mobileMenu.onToggle}
@@ -228,13 +249,19 @@ export const Navbar: Component<NavbarProps> = (props) => {
       </div>
 
       {/* Mobile Menu Dropdown */}
-      <div id="mobile-menu" class={mobileMenuClasses()} aria-hidden={!mobileMenu.isOpen()}>
+      <div
+        id="mobile-menu"
+        class={mobileMenuClasses()}
+        aria-hidden={!mobileMenu.isOpen()}
+      >
         <div class="py-2">
           {/* Mobile Navigation Items */}
           <Show when={props.items && props.items.length > 0}>
             <div class="px-2 pb-2">
               <For each={props.items}>
-                {(item) => <MobileNavItem item={item} onClose={mobileMenu.onClose} />}
+                {(item) => (
+                  <MobileNavItem item={item} onClose={mobileMenu.onClose} />
+                )}
               </For>
             </div>
           </Show>

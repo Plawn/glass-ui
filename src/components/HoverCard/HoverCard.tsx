@@ -1,4 +1,9 @@
-import { type Component, createEffect, createSignal, onCleanup } from 'solid-js';
+import {
+  type Component,
+  createEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import { useFloatingContent } from '../../hooks/useFloatingContent';
 import type { HoverCardProps } from './types';
 

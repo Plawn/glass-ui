@@ -1,4 +1,10 @@
-import { type Component, Show, createEffect, createSignal, onCleanup } from 'solid-js';
+import {
+  type Component,
+  Show,
+  createEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import { POPOVER_ENTER } from '../../constants';
 import type { TooltipPosition, TooltipProps } from './types';
 
@@ -55,7 +61,10 @@ export const Tooltip: Component<TooltipProps> = (props) => {
           <div class="px-3 py-1.5 text-xs font-medium glass-tooltip rounded-lg whitespace-nowrap">
             {props.content}
           </div>
-          <div class={`absolute w-0 h-0 border-4 ${arrowStyles[position()]}`} aria-hidden="true" />
+          <div
+            class={`absolute w-0 h-0 border-4 ${arrowStyles[position()]}`}
+            aria-hidden="true"
+          />
         </div>
       </Show>
     </div>

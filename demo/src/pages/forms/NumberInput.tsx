@@ -1,6 +1,12 @@
-import { NumberInput, Card } from 'glass-ui-solid';
+import { Card, NumberInput } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay, FeatureList } from '../../components/demo';
+import {
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function NumberInputPage() {
   const [basicValue, setBasicValue] = createSignal(5);
@@ -87,7 +93,10 @@ export default function NumberInputPage() {
             min={0}
           />
         </div>
-        <StateDisplay label="Step: 0.25 | Current value" value={stepValue().toFixed(2)} />
+        <StateDisplay
+          label="Step: 0.25 | Current value"
+          value={stepValue().toFixed(2)}
+        />
       </DemoSection>
 
       <DemoSection
@@ -161,27 +170,77 @@ export default function NumberInputPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'value', type: 'number', default: 'required', description: 'Current numeric value' },
-            { name: 'onChange', type: '(value: number) => void', default: 'required', description: 'Callback when value changes' },
-            { name: 'min', type: 'number', description: 'Minimum allowed value' },
-            { name: 'max', type: 'number', description: 'Maximum allowed value' },
-            { name: 'step', type: 'number', default: '1', description: 'Step increment/decrement value' },
-            { name: 'label', type: 'string', description: 'Label text displayed above the input' },
-            { name: 'placeholder', type: 'string', description: 'Placeholder text' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the input is disabled' },
-            { name: 'error', type: 'string', description: 'Error message displayed below the input' },
+            {
+              name: 'value',
+              type: 'number',
+              default: 'required',
+              description: 'Current numeric value',
+            },
+            {
+              name: 'onChange',
+              type: '(value: number) => void',
+              default: 'required',
+              description: 'Callback when value changes',
+            },
+            {
+              name: 'min',
+              type: 'number',
+              description: 'Minimum allowed value',
+            },
+            {
+              name: 'max',
+              type: 'number',
+              description: 'Maximum allowed value',
+            },
+            {
+              name: 'step',
+              type: 'number',
+              default: '1',
+              description: 'Step increment/decrement value',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label text displayed above the input',
+            },
+            {
+              name: 'placeholder',
+              type: 'string',
+              description: 'Placeholder text',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the input is disabled',
+            },
+            {
+              name: 'error',
+              type: 'string',
+              description: 'Error message displayed below the input',
+            },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
-            { name: 'name', type: 'string', description: 'HTML name attribute' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'name',
+              type: 'string',
+              description: 'HTML name attribute',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection
-        title="Keyboard Navigation"
-        card={false}
-      >
+      <DemoSection title="Keyboard Navigation" card={false}>
         <Card class="p-6">
           <FeatureList
             items={[

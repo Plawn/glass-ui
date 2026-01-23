@@ -16,7 +16,9 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
     const content = (
       <>
         <Show when={item.icon}>
-          <span class="w-4 h-4 mr-1.5 flex items-center justify-center">{item.icon}</span>
+          <span class="w-4 h-4 mr-1.5 flex items-center justify-center">
+            {item.icon}
+          </span>
         </Show>
         <span>{item.label}</span>
       </>
@@ -65,18 +67,25 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
 
     // Non-clickable item
     return (
-      <span class="flex items-center text-sm text-surface-500 dark:text-surface-400">{content}</span>
+      <span class="flex items-center text-sm text-surface-500 dark:text-surface-400">
+        {content}
+      </span>
     );
   };
 
   return (
-    <nav class={`flex items-center ${props.class ?? ''}`} aria-label="Breadcrumb">
+    <nav
+      class={`flex items-center ${props.class ?? ''}`}
+      aria-label="Breadcrumb"
+    >
       <ol class="flex items-center">
         <For each={props.items}>
           {(item, index) => (
             <li class="flex items-center">
               {renderItem(item, index())}
-              <Show when={!isLast(index())}>{props.separator ?? <DefaultSeparator />}</Show>
+              <Show when={!isLast(index())}>
+                {props.separator ?? <DefaultSeparator />}
+              </Show>
             </li>
           )}
         </For>

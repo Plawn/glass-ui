@@ -1,4 +1,4 @@
-import { type Component } from 'solid-js';
+import type { Component } from 'solid-js';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { useControlled } from '../../hooks/useControlled';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
@@ -80,7 +80,10 @@ export const Popover: Component<PopoverProps> = (props) => {
   });
 
   return (
-    <div class={`relative inline-block ${props.class ?? ''}`} style={props.style}>
+    <div
+      class={`relative inline-block ${props.class ?? ''}`}
+      style={props.style}
+    >
       <button
         type="button"
         {...props.triggerProps}

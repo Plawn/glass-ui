@@ -1,5 +1,10 @@
-import { Markdown, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, FeatureList } from '../../components/demo';
+import { Card, Markdown } from 'glass-ui-solid';
+import {
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 const basicMarkdown = `# Hello World
 
@@ -88,7 +93,10 @@ export default function MarkdownPage() {
         description="Render markdown content with automatic sanitization for safe display of user-generated content."
       />
 
-      <DemoSection title="Import" code="import { Markdown } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Markdown } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Usage"
@@ -149,8 +157,18 @@ console.log(greeting);
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'content', type: 'string | undefined', default: 'required', description: 'Markdown content to render' },
-            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+            {
+              name: 'content',
+              type: 'string | undefined',
+              default: 'required',
+              description: 'Markdown content to render',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              default: '-',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>
@@ -168,7 +186,9 @@ console.log(greeting);
       <DemoSection title="Supported Syntax" card={false}>
         <div class="grid gap-4 md:grid-cols-2">
           <Card class="p-4">
-            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">Text Formatting</h3>
+            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">
+              Text Formatting
+            </h3>
             <ul class="list-disc list-inside space-y-1 text-sm text-surface-600 dark:text-surface-400">
               <li>Headers (#, ##, ###)</li>
               <li>Bold (**text**)</li>
@@ -177,21 +197,27 @@ console.log(greeting);
             </ul>
           </Card>
           <Card class="p-4">
-            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">Links & Media</h3>
+            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">
+              Links & Media
+            </h3>
             <ul class="list-disc list-inside space-y-1 text-sm text-surface-600 dark:text-surface-400">
               <li>Links [text](url)</li>
               <li>Images ![alt](url)</li>
             </ul>
           </Card>
           <Card class="p-4">
-            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">Code</h3>
+            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">
+              Code
+            </h3>
             <ul class="list-disc list-inside space-y-1 text-sm text-surface-600 dark:text-surface-400">
               <li>Code blocks (```)</li>
               <li>Inline code (`code`)</li>
             </ul>
           </Card>
           <Card class="p-4">
-            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">Structure</h3>
+            <h3 class="font-semibold text-surface-900 dark:text-white mb-2">
+              Structure
+            </h3>
             <ul class="list-disc list-inside space-y-1 text-sm text-surface-600 dark:text-surface-400">
               <li>Lists (-, *, 1.)</li>
               <li>Blockquotes (&gt;)</li>

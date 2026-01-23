@@ -56,7 +56,13 @@ export const JsonSchemaForm: Component<JsonSchemaFormProps> = (props) => {
 
   return (
     <Switch
-      fallback={<StringField schema={props.schema} value={props.value} onChange={props.onChange} />}
+      fallback={
+        <StringField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
+      }
     >
       <Match when={schemaType() === 'object'}>
         <ObjectField
@@ -75,19 +81,39 @@ export const JsonSchemaForm: Component<JsonSchemaFormProps> = (props) => {
         />
       </Match>
       <Match when={schemaType() === 'enum'}>
-        <EnumField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <EnumField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
       <Match when={schemaType() === 'boolean'}>
-        <BooleanField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <BooleanField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
       <Match when={schemaType() === 'number' || schemaType() === 'integer'}>
-        <NumberField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <NumberField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
       <Match when={schemaType() === 'string'}>
-        <StringField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <StringField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
       <Match when={schemaType() === 'oneOf' || schemaType() === 'anyOf'}>
-        <OneOfField schema={props.schema} value={props.value} onChange={props.onChange} />
+        <OneOfField
+          schema={props.schema}
+          value={props.value}
+          onChange={props.onChange}
+        />
       </Match>
     </Switch>
   );

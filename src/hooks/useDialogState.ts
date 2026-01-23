@@ -1,6 +1,6 @@
-import { type Accessor } from 'solid-js';
-import { useEscapeKey } from './useEscapeKey';
+import type { Accessor } from 'solid-js';
 import { useBodyScrollLock } from './useBodyScrollLock';
+import { useEscapeKey } from './useEscapeKey';
 
 export interface UseDialogStateOptions {
   open: Accessor<boolean>;
@@ -13,14 +13,19 @@ export interface UseDialogStateReturn {
   /** Whether clicking backdrop should close the dialog */
   shouldCloseOnBackdrop: Accessor<boolean>;
   /** Handler for backdrop click events */
-  handleBackdropClick: (e: MouseEvent, targetCheck?: (e: MouseEvent) => boolean) => void;
+  handleBackdropClick: (
+    e: MouseEvent,
+    targetCheck?: (e: MouseEvent) => boolean,
+  ) => void;
 }
 
 /**
  * Shared dialog state management for Modal and Drawer components.
  * Handles escape key, body scroll prevention, and backdrop clicks.
  */
-export function useDialogState(options: UseDialogStateOptions): UseDialogStateReturn {
+export function useDialogState(
+  options: UseDialogStateOptions,
+): UseDialogStateReturn {
   const { open, onClose, closeOnEscape, closeOnBackdrop } = options;
 
   const shouldCloseOnEscape = () => closeOnEscape?.() ?? true;
@@ -39,7 +44,8 @@ export function useDialogState(options: UseDialogStateOptions): UseDialogStateRe
 
   const handleBackdropClick = (
     e: MouseEvent,
-    targetCheck: (e: MouseEvent) => boolean = (ev) => ev.target === ev.currentTarget,
+    targetCheck: (e: MouseEvent) => boolean = (ev) =>
+      ev.target === ev.currentTarget,
   ) => {
     if (shouldCloseOnBackdrop() && targetCheck(e)) {
       onClose();

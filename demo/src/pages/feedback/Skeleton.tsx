@@ -1,5 +1,10 @@
 import { Skeleton } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, VariantShowcase } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  VariantShowcase,
+} from '../../components/demo';
 
 export default function SkeletonPage() {
   return (
@@ -9,7 +14,10 @@ export default function SkeletonPage() {
         description="Loading placeholder with pulse animation."
       />
 
-      <DemoSection title="Import" code="import { Skeleton } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Skeleton } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Basic Usage">
         <Skeleton width="200px" height="20px" />
@@ -22,12 +30,28 @@ export default function SkeletonPage() {
 <Skeleton variant="circular" width="48px" height="48px" />`}
         card={false}
       >
-        <VariantShowcase variants={['text', 'rectangular', 'circular'] as const} label="Variant" columns={3}>
+        <VariantShowcase
+          variants={['text', 'rectangular', 'circular'] as const}
+          label="Variant"
+          columns={3}
+        >
           {(variant) => (
             <Skeleton
               variant={variant}
-              width={variant === 'text' ? '100%' : variant === 'rectangular' ? '200px' : '48px'}
-              height={variant === 'text' ? undefined : variant === 'rectangular' ? '100px' : '48px'}
+              width={
+                variant === 'text'
+                  ? '100%'
+                  : variant === 'rectangular'
+                    ? '200px'
+                    : '48px'
+              }
+              height={
+                variant === 'text'
+                  ? undefined
+                  : variant === 'rectangular'
+                    ? '100px'
+                    : '48px'
+              }
             />
           )}
         </VariantShowcase>
@@ -119,10 +143,28 @@ export default function SkeletonPage() {
         <PropsTable
           props={[
             { name: 'width', type: 'string', description: 'Width (CSS value)' },
-            { name: 'height', type: 'string', description: 'Height (CSS value)' },
-            { name: 'variant', type: "'text' | 'rectangular' | 'circular'", default: "'rectangular'", description: 'Shape variant' },
-            { name: 'rounded', type: 'boolean', default: 'false', description: 'Apply rounded corners' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'height',
+              type: 'string',
+              description: 'Height (CSS value)',
+            },
+            {
+              name: 'variant',
+              type: "'text' | 'rectangular' | 'circular'",
+              default: "'rectangular'",
+              description: 'Shape variant',
+            },
+            {
+              name: 'rounded',
+              type: 'boolean',
+              default: 'false',
+              description: 'Apply rounded corners',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

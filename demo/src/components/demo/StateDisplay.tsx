@@ -18,8 +18,10 @@ export function StateDisplay(props: StateDisplayProps) {
       {props.label}:{' '}
       <span class={useMono() ? 'font-mono' : ''}>
         {typeof props.value === 'boolean'
-          ? props.value ? 'true' : 'false'
-          : props.value ?? 'null'}
+          ? props.value
+            ? 'true'
+            : 'false'
+          : (props.value ?? 'null')}
       </span>
     </p>
   );

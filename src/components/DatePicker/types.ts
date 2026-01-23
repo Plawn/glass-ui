@@ -1,4 +1,8 @@
-import type { BaseComponentProps, DisableableProps, ComponentSize } from '../../types';
+import type {
+  BaseComponentProps,
+  ComponentSize,
+  DisableableProps,
+} from '../../types';
 
 /**
  * Day of week enumeration for week start configuration
@@ -8,7 +12,12 @@ export type WeekStartDay = 0 | 1; // 0 = Sunday, 1 = Monday
 /**
  * Date format presets
  */
-export type DateFormat = 'yyyy-MM-dd' | 'MM/dd/yyyy' | 'dd/MM/yyyy' | 'dd.MM.yyyy' | 'MMM dd, yyyy';
+export type DateFormat =
+  | 'yyyy-MM-dd'
+  | 'MM/dd/yyyy'
+  | 'dd/MM/yyyy'
+  | 'dd.MM.yyyy'
+  | 'MMM dd, yyyy';
 
 /**
  * Props for the DatePicker component
@@ -103,7 +112,9 @@ export interface DateRange {
 /**
  * Props for the DateRangePicker component
  */
-export interface DateRangePickerProps extends BaseComponentProps, DisableableProps {
+export interface DateRangePickerProps
+  extends BaseComponentProps,
+    DisableableProps {
   /** Currently selected date range */
   value: DateRange;
   /** Callback when date range selection changes */

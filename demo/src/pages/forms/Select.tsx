@@ -1,6 +1,11 @@
 import { Select } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 interface User {
   id: number;
@@ -127,7 +132,14 @@ const userOptions = [
             emptyOption="Select a user..."
             options={userOptions}
           />
-          <StateDisplay label="Selected" value={selectedUser() ? `${selectedUser()!.name} (${selectedUser()!.role})` : '(none)'} />
+          <StateDisplay
+            label="Selected"
+            value={
+              selectedUser()
+                ? `${selectedUser()!.name} (${selectedUser()!.role})`
+                : '(none)'
+            }
+          />
         </div>
       </DemoSection>
 
@@ -145,11 +157,7 @@ const userOptions = [
 </Select>`}
       >
         <div class="max-w-xs">
-          <Select
-            value={country()}
-            onChange={setCountry}
-            label="Country"
-          >
+          <Select value={country()} onChange={setCountry} label="Country">
             <option value="">Select your country...</option>
             <option value="us">United States</option>
             <option value="uk">United Kingdom</option>
@@ -177,11 +185,7 @@ const userOptions = [
 </Select>`}
       >
         <div class="max-w-xs">
-          <Select
-            value={priority()}
-            onChange={setPriority}
-            label="Priority"
-          >
+          <Select value={priority()} onChange={setPriority} label="Priority">
             <option value="">Select priority...</option>
             <optgroup label="High Priority">
               <option value="critical">Critical</option>
@@ -279,17 +283,59 @@ const userOptions = [
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'value', type: 'string', description: 'Current selected value (required)' },
-            { name: 'onChange', type: '(value: string) => void', description: 'Callback when selection changes (required)' },
-            { name: 'children', type: 'JSX.Element', description: 'Option elements (use this OR options)' },
-            { name: 'options', type: 'SelectOption[]', description: 'Array of options (use this OR children)' },
-            { name: 'emptyOption', type: 'string', description: 'Placeholder text for empty option' },
-            { name: 'label', type: 'string', description: 'Label text displayed above the select' },
-            { name: 'error', type: 'string', description: 'Error message displayed below the select' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the select is disabled' },
-            { name: 'required', type: 'boolean', default: 'false', description: 'Whether the select is required' },
+            {
+              name: 'value',
+              type: 'string',
+              description: 'Current selected value (required)',
+            },
+            {
+              name: 'onChange',
+              type: '(value: string) => void',
+              description: 'Callback when selection changes (required)',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              description: 'Option elements (use this OR options)',
+            },
+            {
+              name: 'options',
+              type: 'SelectOption[]',
+              description: 'Array of options (use this OR children)',
+            },
+            {
+              name: 'emptyOption',
+              type: 'string',
+              description: 'Placeholder text for empty option',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label text displayed above the select',
+            },
+            {
+              name: 'error',
+              type: 'string',
+              description: 'Error message displayed below the select',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the select is disabled',
+            },
+            {
+              name: 'required',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the select is required',
+            },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
-            { name: 'name', type: 'string', description: 'HTML name attribute' },
+            {
+              name: 'name',
+              type: 'string',
+              description: 'HTML name attribute',
+            },
           ]}
         />
       </DemoSection>

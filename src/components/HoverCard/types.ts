@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { Direction, BaseComponentProps } from '../../types';
+import type { BaseComponentProps, Direction } from '../../types';
 
 /**
  * HoverCard placement options - simple 4-direction (alias for Direction)

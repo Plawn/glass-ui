@@ -7,11 +7,12 @@ const variantStyles: Record<SkeletonVariant, string> = {
   rectangular: 'rounded-lg',
 };
 
-const defaultSizes: Record<SkeletonVariant, { width: string; height: string }> = {
-  text: { width: '100%', height: '1em' },
-  circular: { width: '2.5rem', height: '2.5rem' },
-  rectangular: { width: '100%', height: '8rem' },
-};
+const defaultSizes: Record<SkeletonVariant, { width: string; height: string }> =
+  {
+    text: { width: '100%', height: '1em' },
+    circular: { width: '2.5rem', height: '2.5rem' },
+    rectangular: { width: '100%', height: '8rem' },
+  };
 
 export const Skeleton: Component<SkeletonProps> = (props) => {
   const variant = () => props.variant ?? 'text';

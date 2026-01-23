@@ -1,6 +1,11 @@
-import { Slider, Card, CodeBlock } from 'glass-ui-solid';
+import { Card, CodeBlock, Slider } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function SliderPage() {
   const [basicValue, setBasicValue] = createSignal(50);
@@ -178,12 +183,11 @@ export default function SliderPage() {
       >
         <Card class="p-6">
           <div class="flex items-center gap-4">
-            <span class="text-sm text-surface-700 dark:text-surface-300 w-16">Volume:</span>
+            <span class="text-sm text-surface-700 dark:text-surface-300 w-16">
+              Volume:
+            </span>
             <div class="flex-1">
-              <Slider
-                value={volume()}
-                onChange={setVolume}
-              />
+              <Slider value={volume()} onChange={setVolume} />
             </div>
             <span class="text-sm text-surface-600 dark:text-surface-400 w-12 text-right">
               {volume()}%
@@ -208,26 +212,73 @@ export default function SliderPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'value', type: 'number', description: 'Current value of the slider' },
-            { name: 'onChange', type: '(value: number) => void', description: 'Callback when the value changes' },
-            { name: 'min', type: 'number', default: '0', description: 'Minimum value' },
-            { name: 'max', type: 'number', default: '100', description: 'Maximum value' },
-            { name: 'step', type: 'number', default: '1', description: 'Step increment' },
-            { name: 'label', type: 'string', description: 'Label text displayed above the slider' },
-            { name: 'showValue', type: 'boolean', default: 'false', description: 'Whether to show the current value' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
-            { name: 'marks', type: 'SliderMark[]', description: 'Marks/ticks to display on the track' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the slider is disabled' },
+            {
+              name: 'value',
+              type: 'number',
+              description: 'Current value of the slider',
+            },
+            {
+              name: 'onChange',
+              type: '(value: number) => void',
+              description: 'Callback when the value changes',
+            },
+            {
+              name: 'min',
+              type: 'number',
+              default: '0',
+              description: 'Minimum value',
+            },
+            {
+              name: 'max',
+              type: 'number',
+              default: '100',
+              description: 'Maximum value',
+            },
+            {
+              name: 'step',
+              type: 'number',
+              default: '1',
+              description: 'Step increment',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label text displayed above the slider',
+            },
+            {
+              name: 'showValue',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether to show the current value',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant',
+            },
+            {
+              name: 'marks',
+              type: 'SliderMark[]',
+              description: 'Marks/ticks to display on the track',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the slider is disabled',
+            },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
-            { name: 'name', type: 'string', description: 'HTML name attribute for form submission' },
+            {
+              name: 'name',
+              type: 'string',
+              description: 'HTML name attribute for form submission',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection
-        title="SliderMark Type"
-        card={false}
-      >
+      <DemoSection title="SliderMark Type" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`interface SliderMark {

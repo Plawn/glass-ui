@@ -93,12 +93,15 @@ export interface SelectPropsWithOptions<T> extends BaseInputProps {
 /**
  * Props for the Select component
  */
-export type SelectProps<T = string> = SelectPropsWithChildren | SelectPropsWithOptions<T>;
+export type SelectProps<T = string> =
+  | SelectPropsWithChildren
+  | SelectPropsWithOptions<T>;
 
 /**
  * Props for the Checkbox component
  */
-export interface CheckboxProps extends Omit<BaseInputProps, 'placeholder' | 'size'> {
+export interface CheckboxProps
+  extends Omit<BaseInputProps, 'placeholder' | 'size'> {
   /** Whether the checkbox is checked */
   checked: boolean;
   /** Whether the checkbox is in indeterminate state (partially selected) */

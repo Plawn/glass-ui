@@ -18,7 +18,9 @@ export const EnumField: Component<BaseFieldProps> = (props) => {
     }
     // Try to preserve original type from enum values
     const enumValues = props.schema.enum || [];
-    const originalValue = enumValues.find((v: unknown) => String(v) === strValue);
+    const originalValue = enumValues.find(
+      (v: unknown) => String(v) === strValue,
+    );
     props.onChange(originalValue !== undefined ? originalValue : strValue);
   };
 
@@ -26,7 +28,9 @@ export const EnumField: Component<BaseFieldProps> = (props) => {
     <Select value={stringValue()} onChange={handleChange}>
       <option value="">-- Select --</option>
       <For each={props.schema.enum}>
-        {(enumValue) => <option value={String(enumValue)}>{String(enumValue)}</option>}
+        {(enumValue) => (
+          <option value={String(enumValue)}>{String(enumValue)}</option>
+        )}
       </For>
     </Select>
   );

@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { ComponentSize, BaseComponentProps } from '../../types';
+import type { BaseComponentProps, ComponentSize } from '../../types';
 
 /**
  * Stepper orientation - horizontal or vertical layout

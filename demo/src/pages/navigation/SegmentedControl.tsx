@@ -1,6 +1,13 @@
-import { SegmentedControl, Card } from 'glass-ui-solid';
-import { createSignal, Show } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay, FeatureList } from '../../components/demo';
+import { Card, SegmentedControl } from 'glass-ui-solid';
+import { Show, createSignal } from 'solid-js';
+import {
+  CodePill,
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function SegmentedControlPage() {
   const [view, setView] = createSignal<'list' | 'grid' | 'table'>('list');
@@ -8,7 +15,9 @@ export default function SegmentedControlPage() {
   const [plan, setPlan] = createSignal('pro');
   const [count, setCount] = createSignal(10);
   const [dataView, setDataView] = createSignal<'table' | 'json'>('table');
-  const [verticalOption, setVerticalOption] = createSignal<'top' | 'middle' | 'bottom'>('middle');
+  const [verticalOption, setVerticalOption] = createSignal<
+    'top' | 'middle' | 'bottom'
+  >('middle');
 
   return (
     <div class="space-y-8">
@@ -57,7 +66,9 @@ export default function SegmentedControlPage() {
       >
         <div class="space-y-4">
           <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">Size: sm</p>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">
+              Size: sm
+            </p>
             <SegmentedControl
               size="sm"
               value={size()}
@@ -70,7 +81,9 @@ export default function SegmentedControlPage() {
             />
           </div>
           <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">Size: md (default)</p>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">
+              Size: md (default)
+            </p>
             <SegmentedControl
               size="md"
               value={size()}
@@ -100,7 +113,9 @@ export default function SegmentedControlPage() {
       >
         <div class="flex gap-8 items-start">
           <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">Horizontal (default)</p>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">
+              Horizontal (default)
+            </p>
             <SegmentedControl
               value={verticalOption()}
               onChange={setVerticalOption}
@@ -113,7 +128,9 @@ export default function SegmentedControlPage() {
             />
           </div>
           <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">Vertical</p>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">
+              Vertical
+            </p>
             <SegmentedControl
               orientation="vertical"
               value={verticalOption()}
@@ -208,7 +225,9 @@ export default function SegmentedControlPage() {
 }`}
       >
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300">Data Preview</h3>
+          <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300">
+            Data Preview
+          </h3>
           <SegmentedControl
             value={dataView()}
             onChange={setDataView}
@@ -223,7 +242,7 @@ export default function SegmentedControlPage() {
           when={dataView() === 'table'}
           fallback={
             <pre class="p-4 bg-surface-100 dark:bg-surface-800 rounded-lg text-sm font-mono overflow-x-auto">
-{`{
+              {`{
   "users": [
     { "id": 1, "name": "Alice" },
     { "id": 2, "name": "Bob" }
@@ -235,8 +254,12 @@ export default function SegmentedControlPage() {
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-surface-200 dark:border-surface-700">
-                <th class="text-left py-2 pr-4 font-semibold text-surface-900 dark:text-white">ID</th>
-                <th class="text-left py-2 font-semibold text-surface-900 dark:text-white">Name</th>
+                <th class="text-left py-2 pr-4 font-semibold text-surface-900 dark:text-white">
+                  ID
+                </th>
+                <th class="text-left py-2 font-semibold text-surface-900 dark:text-white">
+                  Name
+                </th>
               </tr>
             </thead>
             <tbody class="text-surface-600 dark:text-surface-400">
@@ -256,13 +279,46 @@ export default function SegmentedControlPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'options', type: 'SegmentedControlOption<T>[]', default: 'required', description: 'Available options' },
-            { name: 'value', type: 'T', default: 'required', description: 'Current selected value' },
-            { name: 'onChange', type: '(value: T) => void', default: 'required', description: 'Value change callback' },
-            { name: 'size', type: "'sm' | 'md'", default: "'md'", description: 'Control size' },
-            { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Control orientation' },
-            { name: 'aria-label', type: 'string', description: 'Accessible label for the group' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'options',
+              type: 'SegmentedControlOption<T>[]',
+              default: 'required',
+              description: 'Available options',
+            },
+            {
+              name: 'value',
+              type: 'T',
+              default: 'required',
+              description: 'Current selected value',
+            },
+            {
+              name: 'onChange',
+              type: '(value: T) => void',
+              default: 'required',
+              description: 'Value change callback',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md'",
+              default: "'md'",
+              description: 'Control size',
+            },
+            {
+              name: 'orientation',
+              type: "'horizontal' | 'vertical'",
+              default: "'horizontal'",
+              description: 'Control orientation',
+            },
+            {
+              name: 'aria-label',
+              type: 'string',
+              description: 'Accessible label for the group',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>
@@ -271,19 +327,37 @@ export default function SegmentedControlPage() {
         <PropsTable
           compact
           props={[
-            { name: 'value', type: 'T', description: 'Option value (string or number)' },
-            { name: 'label', type: 'string | JSX.Element', description: 'Display label (can be an icon)' },
-            { name: 'disabled', type: 'boolean', description: 'Disable this option' },
+            {
+              name: 'value',
+              type: 'T',
+              description: 'Option value (string or number)',
+            },
+            {
+              name: 'label',
+              type: 'string | JSX.Element',
+              description: 'Display label (can be an icon)',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              description: 'Disable this option',
+            },
           ]}
         />
       </DemoSection>
 
       <DemoSection title="Accessibility" card={false}>
         <ul class="list-disc list-inside text-surface-600 dark:text-surface-400 space-y-2">
-          <li>Uses <CodePill>role="group"</CodePill> for the container</li>
+          <li>
+            Uses <CodePill>role="group"</CodePill> for the container
+          </li>
           <li>Each option is a button with clear focus states</li>
-          <li>Disabled options have <CodePill>disabled</CodePill> attribute</li>
-          <li>Always provide <CodePill>aria-label</CodePill> for screen readers</li>
+          <li>
+            Disabled options have <CodePill>disabled</CodePill> attribute
+          </li>
+          <li>
+            Always provide <CodePill>aria-label</CodePill> for screen readers
+          </li>
         </ul>
       </DemoSection>
     </div>

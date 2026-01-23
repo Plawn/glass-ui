@@ -1,9 +1,14 @@
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
-import { PortalWithDarkMode } from '../shared';
-import { useClickOutside, useEscapeKey, useContextMenuPositioning, useScrollBehavior } from '../../hooks';
-import { useContextMenuContext } from './ContextMenuContext';
 import { POPOVER_ENTER } from '../../constants/animations';
+import {
+  useClickOutside,
+  useContextMenuPositioning,
+  useEscapeKey,
+  useScrollBehavior,
+} from '../../hooks';
+import { PortalWithDarkMode } from '../shared';
+import { useContextMenuContext } from './ContextMenuContext';
 import type { ContextMenuContentProps } from './types';
 
 /**
@@ -19,7 +24,9 @@ import type { ContextMenuContentProps } from './types';
  * </ContextMenuContent>
  * ```
  */
-export const ContextMenuContent: Component<ContextMenuContentProps> = (props) => {
+export const ContextMenuContent: Component<ContextMenuContentProps> = (
+  props,
+) => {
   const context = useContextMenuContext();
   let contentRef: HTMLDivElement | undefined;
 

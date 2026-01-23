@@ -118,7 +118,10 @@ export const SEMANTIC_COLORS_FILLED: Record<SemanticColor, FilledColorStyle> = {
 /**
  * Extended outlined styles including primary and default
  */
-export const SEMANTIC_COLORS_OUTLINED: Record<SemanticColor, OutlinedColorStyle> = {
+export const SEMANTIC_COLORS_OUTLINED: Record<
+  SemanticColor,
+  OutlinedColorStyle
+> = {
   ...STATUS_COLORS_OUTLINED,
   primary: {
     border: 'border-violet-300 dark:border-violet-600',
@@ -204,7 +207,10 @@ export const PROGRESS_COLORS: Record<SemanticColor, ProgressColorStyle> = {
  * Circular progress indicator color styles (using stroke classes)
  * Used for circular/radial progress indicators
  */
-export const PROGRESS_COLORS_CIRCULAR: Record<SemanticColor, ProgressColorStyle> = {
+export const PROGRESS_COLORS_CIRCULAR: Record<
+  SemanticColor,
+  ProgressColorStyle
+> = {
   primary: {
     track: 'stroke-surface-200 dark:stroke-surface-700',
     fill: 'stroke-violet-500 dark:stroke-violet-400',
@@ -310,7 +316,10 @@ export const TOAST_COLORS: Record<StatusColor, ToastColorStyle> = {
  * @param style - The filled color style object
  * @param includeBorder - Whether to include the border class (default: false)
  */
-export function getFilledClasses(style: FilledColorStyle, includeBorder = false): string {
+export function getFilledClasses(
+  style: FilledColorStyle,
+  includeBorder = false,
+): string {
   const classes = [style.bg, style.text];
   if (includeBorder && style.border) {
     classes.push('border', style.border);
@@ -333,7 +342,9 @@ export function getOutlinedClasses(style: OutlinedColorStyle): string {
  */
 export function getSemanticColorStyle(
   color: SemanticColor,
-  variant: 'filled' | 'outlined'
+  variant: 'filled' | 'outlined',
 ): FilledColorStyle | OutlinedColorStyle {
-  return variant === 'filled' ? SEMANTIC_COLORS_FILLED[color] : SEMANTIC_COLORS_OUTLINED[color];
+  return variant === 'filled'
+    ? SEMANTIC_COLORS_FILLED[color]
+    : SEMANTIC_COLORS_OUTLINED[color];
 }

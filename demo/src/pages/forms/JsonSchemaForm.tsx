@@ -1,6 +1,11 @@
-import { JsonSchemaForm, CodeBlock, Card, type Schema } from 'glass-ui-solid';
+import { Card, CodeBlock, JsonSchemaForm, type Schema } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import {
+  CodePill,
+  DemoSection,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 // Simple user schema
 const simpleUserSchema: Schema = {
@@ -152,7 +157,9 @@ export default function JsonSchemaFormPage() {
     priority: 'medium',
   });
 
-  const [settingsValue, setSettingsValue] = createSignal<Record<string, unknown>>({
+  const [settingsValue, setSettingsValue] = createSignal<
+    Record<string, unknown>
+  >({
     notifications: true,
     darkMode: false,
     newsletter: true,
@@ -163,15 +170,17 @@ export default function JsonSchemaFormPage() {
     tags: ['javascript', 'solidjs'],
   });
 
-  const [addressValue, setAddressValue] = createSignal<Record<string, unknown>>({
-    name: 'John Doe',
-    address: {
-      street: '123 Main St',
-      city: 'Paris',
-      zipCode: '75001',
-      country: 'France',
+  const [addressValue, setAddressValue] = createSignal<Record<string, unknown>>(
+    {
+      name: 'John Doe',
+      address: {
+        street: '123 Main St',
+        city: 'Paris',
+        zipCode: '75001',
+        country: 'France',
+      },
     },
-  });
+  );
 
   const [oneOfValue, setOneOfValue] = createSignal<Record<string, unknown>>({
     paymentMethod: {
@@ -181,15 +190,17 @@ export default function JsonSchemaFormPage() {
     },
   });
 
-  const [complexValue, setComplexValue] = createSignal<Record<string, unknown>>({
-    projectName: 'Glass UI',
-    description: 'A beautiful component library',
-    isPublic: true,
-    team: [
-      { name: 'Alice', role: 'developer', email: 'alice@example.com' },
-      { name: 'Bob', role: 'designer', email: 'bob@example.com' },
-    ],
-  });
+  const [complexValue, setComplexValue] = createSignal<Record<string, unknown>>(
+    {
+      projectName: 'Glass UI',
+      description: 'A beautiful component library',
+      isPublic: true,
+      team: [
+        { name: 'Alice', role: 'developer', email: 'alice@example.com' },
+        { name: 'Bob', role: 'designer', email: 'bob@example.com' },
+      ],
+    },
+  );
 
   return (
     <div class="space-y-8">
@@ -238,7 +249,12 @@ const [value, setValue] = createSignal({});
 
       <DemoSection
         title="Enum Fields"
-        description={<>Use <CodePill>enum</CodePill> in the schema to render a select dropdown.</>}
+        description={
+          <>
+            Use <CodePill>enum</CodePill> in the schema to render a select
+            dropdown.
+          </>
+        }
         code={`const schema: Schema = {
   type: 'object',
   properties: {
@@ -357,7 +373,12 @@ const [value, setValue] = createSignal({});
 
       <DemoSection
         title="Union Types (oneOf)"
-        description={<>Use <CodePill>oneOf</CodePill> to allow selecting between different schema variants.</>}
+        description={
+          <>
+            Use <CodePill>oneOf</CodePill> to allow selecting between different
+            schema variants.
+          </>
+        }
         code={`const schema: Schema = {
   type: 'object',
   properties: {
@@ -443,19 +464,41 @@ const [value, setValue] = createSignal({});
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'schema', type: 'Schema', default: 'required', description: 'The JSON Schema definition to render' },
-            { name: 'value', type: 'unknown', default: 'required', description: 'Current form value' },
-            { name: 'onChange', type: '(value: unknown) => void', default: 'required', description: 'Callback when value changes' },
-            { name: 'required', type: 'boolean', default: 'false', description: 'Whether the root field is required' },
-            { name: 'path', type: 'string[]', default: '[]', description: 'Path to this field (for nested forms)' },
+            {
+              name: 'schema',
+              type: 'Schema',
+              default: 'required',
+              description: 'The JSON Schema definition to render',
+            },
+            {
+              name: 'value',
+              type: 'unknown',
+              default: 'required',
+              description: 'Current form value',
+            },
+            {
+              name: 'onChange',
+              type: '(value: unknown) => void',
+              default: 'required',
+              description: 'Callback when value changes',
+            },
+            {
+              name: 'required',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the root field is required',
+            },
+            {
+              name: 'path',
+              type: 'string[]',
+              default: '[]',
+              description: 'Path to this field (for nested forms)',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection
-        title="Schema Interface"
-        card={false}
-      >
+      <DemoSection title="Schema Interface" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`interface Schema {

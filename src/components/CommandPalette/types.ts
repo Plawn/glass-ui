@@ -58,7 +58,10 @@ export interface CommandPaletteProps<T = unknown> {
   /** Callback when an item is selected */
   onSelect: (item: CommandPaletteItem<T>) => void;
   /** Optional custom search function */
-  searchFn?: (query: string, items: CommandPaletteItem<T>[]) => CommandPaletteSearchResult<T>[];
+  searchFn?: (
+    query: string,
+    items: CommandPaletteItem<T>[],
+  ) => CommandPaletteSearchResult<T>[];
   /** Keyboard shortcut key (default: 'k' for Cmd/Ctrl+K) */
   shortcutKey?: string;
   /** Disable the keyboard shortcut */

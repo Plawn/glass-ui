@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import {
   type Component,
   Show,
@@ -5,7 +6,6 @@ import {
   createSignal,
   onCleanup,
 } from 'solid-js';
-import clsx from 'clsx';
 import { ANIMATION_DURATION_SLOW } from '../../constants';
 import { PortalOverlay } from '../shared';
 import type { SheetProps } from './types';
@@ -22,7 +22,7 @@ export const Sheet: Component<SheetProps> = (props) => {
 
   // Current snap point index
   const [currentSnapIndex, setCurrentSnapIndex] = createSignal(
-    defaultSnapIndex()
+    defaultSnapIndex(),
   );
 
   // Drag state
@@ -174,7 +174,7 @@ export const Sheet: Component<SheetProps> = (props) => {
               'flex flex-col',
               !isDragging() && 'transition-[height] duration-300 ease-out',
               sheetClasses(),
-              props.class
+              props.class,
             )}
             style={{ height: `${currentHeight()}vh` }}
             onClick={stopPropagation}

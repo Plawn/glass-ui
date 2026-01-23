@@ -6,10 +6,13 @@ import type { SidebarItem, SidebarItemComponentProps } from './types';
  * Individual sidebar navigation item component.
  * Supports nested items, icons, badges, and active states.
  */
-export const SidebarItemComponent: Component<SidebarItemComponentProps> = (props) => {
+export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
+  props,
+) => {
   const depth = () => props.depth ?? 0;
   const collapsed = () => props.collapsed ?? false;
-  const hasChildren = () => Boolean(props.item.children && props.item.children.length > 0);
+  const hasChildren = () =>
+    Boolean(props.item.children && props.item.children.length > 0);
   const isActive = () => props.activeId === props.item.id;
   const isExpanded = () => props.expandedIds?.includes(props.item.id) ?? false;
 
@@ -55,7 +58,9 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (props
     `;
 
     const paddingLeft = collapsed() ? 'px-3' : `pl-${3 + depth() * 3}`;
-    const padding = collapsed() ? 'p-3 justify-center' : `${paddingLeft} pr-3 py-2.5`;
+    const padding = collapsed()
+      ? 'p-3 justify-center'
+      : `${paddingLeft} pr-3 py-2.5`;
 
     const stateClasses = props.item.disabled
       ? 'opacity-50 cursor-not-allowed text-surface-400 dark:text-surface-600'
@@ -101,14 +106,16 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (props
 
       {/* Badge */}
       <Show when={props.item.badge !== undefined && !collapsed()}>
-        <span class="
+        <span
+          class="
           flex-shrink-0 px-2 py-0.5 text-xs font-medium rounded-full
           backdrop-blur-sm
           bg-accent-500/20 dark:bg-accent-400/20
           border border-accent-300/30 dark:border-accent-400/20
           text-accent-700 dark:text-accent-300
           shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]
-        ">
+        "
+        >
           {props.item.badge}
         </span>
       </Show>

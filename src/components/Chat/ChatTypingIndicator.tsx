@@ -4,7 +4,9 @@ import type { ChatTypingIndicatorProps } from './types';
 /**
  * Animated typing indicator with three bouncing dots
  */
-export const ChatTypingIndicator: Component<ChatTypingIndicatorProps> = (props) => {
+export const ChatTypingIndicator: Component<ChatTypingIndicatorProps> = (
+  props,
+) => {
   return (
     <div class={`flex items-center gap-1 ${props.class ?? ''}`}>
       <span

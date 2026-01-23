@@ -1,6 +1,6 @@
-import { createSignal, For } from 'solid-js';
 import { Button, Spinner } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { For, createSignal } from 'solid-js';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function ButtonPage() {
   const [loading, setLoading] = createSignal(false);
@@ -10,7 +10,13 @@ export default function ButtonPage() {
     setTimeout(() => setLoading(false), 2000);
   };
 
-  const variants = ['primary', 'secondary', 'tertiary', 'ghost', 'danger'] as const;
+  const variants = [
+    'primary',
+    'secondary',
+    'tertiary',
+    'ghost',
+    'danger',
+  ] as const;
   const sizes = ['sm', 'md', 'lg'] as const;
 
   return (
@@ -61,11 +67,7 @@ export default function ButtonPage() {
       >
         <div class="flex flex-wrap items-center gap-3">
           <For each={sizes}>
-            {(size) => (
-              <Button size={size}>
-                {size.toUpperCase()}
-              </Button>
-            )}
+            {(size) => <Button size={size}>{size.toUpperCase()}</Button>}
           </For>
         </div>
       </DemoSection>
@@ -81,8 +83,18 @@ export default function ButtonPage() {
         <div class="flex flex-wrap gap-3">
           <Button
             leftIcon={
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
             }
           >
@@ -91,8 +103,18 @@ export default function ButtonPage() {
           <Button
             variant="secondary"
             rightIcon={
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             }
           >
@@ -166,17 +188,68 @@ export default function ButtonPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Button content' },
-            { name: 'variant', type: "'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger'", default: "'primary'", description: 'Visual variant' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Button size' },
-            { name: 'type', type: "'button' | 'submit' | 'reset'", default: "'button'", description: 'HTML button type' },
-            { name: 'onClick', type: '() => void', description: 'Click handler' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the button' },
-            { name: 'loading', type: 'boolean', default: 'false', description: 'Show loading spinner' },
-            { name: 'fullWidth', type: 'boolean', default: 'false', description: 'Take full width of container' },
-            { name: 'leftIcon', type: 'JSX.Element', description: 'Icon on the left' },
-            { name: 'rightIcon', type: 'JSX.Element', description: 'Icon on the right' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Button content',
+            },
+            {
+              name: 'variant',
+              type: "'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger'",
+              default: "'primary'",
+              description: 'Visual variant',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Button size',
+            },
+            {
+              name: 'type',
+              type: "'button' | 'submit' | 'reset'",
+              default: "'button'",
+              description: 'HTML button type',
+            },
+            {
+              name: 'onClick',
+              type: '() => void',
+              description: 'Click handler',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Disable the button',
+            },
+            {
+              name: 'loading',
+              type: 'boolean',
+              default: 'false',
+              description: 'Show loading spinner',
+            },
+            {
+              name: 'fullWidth',
+              type: 'boolean',
+              default: 'false',
+              description: 'Take full width of container',
+            },
+            {
+              name: 'leftIcon',
+              type: 'JSX.Element',
+              description: 'Icon on the left',
+            },
+            {
+              name: 'rightIcon',
+              type: 'JSX.Element',
+              description: 'Icon on the right',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

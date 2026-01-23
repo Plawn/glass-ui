@@ -52,7 +52,9 @@ export interface UseDraggableReturn {
  * </div>
  * ```
  */
-export function useDraggable(options: UseDraggableOptions = {}): UseDraggableReturn {
+export function useDraggable(
+  options: UseDraggableOptions = {},
+): UseDraggableReturn {
   const {
     defaultPosition = { x: 0, y: 0 },
     position: controlledPosition,
@@ -63,9 +65,13 @@ export function useDraggable(options: UseDraggableOptions = {}): UseDraggableRet
   } = options;
 
   // Internal position state (used when uncontrolled)
-  const [internalPosition, setInternalPosition] = createSignal<Position>(defaultPosition);
+  const [internalPosition, setInternalPosition] =
+    createSignal<Position>(defaultPosition);
   const [isDragging, setIsDragging] = createSignal(false);
-  const [startPosition, setStartPosition] = createSignal<Position>({ x: 0, y: 0 });
+  const [startPosition, setStartPosition] = createSignal<Position>({
+    x: 0,
+    y: 0,
+  });
   const [startMouse, setStartMouse] = createSignal<Position>({ x: 0, y: 0 });
 
   // Determine actual position (controlled or internal)

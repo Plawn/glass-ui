@@ -1,7 +1,14 @@
 /**
  * JSON Schema type enumeration
  */
-export type SchemaType = 'string' | 'number' | 'integer' | 'boolean' | 'array' | 'object' | 'null';
+export type SchemaType =
+  | 'string'
+  | 'number'
+  | 'integer'
+  | 'boolean'
+  | 'array'
+  | 'object'
+  | 'null';
 
 /**
  * JSON Schema definition for form generation

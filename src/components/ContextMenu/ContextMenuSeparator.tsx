@@ -14,7 +14,9 @@ import type { ContextMenuSeparatorProps } from './types';
  * </ContextMenuContent>
  * ```
  */
-export const ContextMenuSeparator: Component<ContextMenuSeparatorProps> = (props) => {
+export const ContextMenuSeparator: Component<ContextMenuSeparatorProps> = (
+  props,
+) => {
   return (
     <div
       role="separator"

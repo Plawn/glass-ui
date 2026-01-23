@@ -1,13 +1,19 @@
 import {
   ContextMenu,
-  ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
+  ContextMenuTrigger,
   createContextMenu,
 } from 'glass-ui-solid';
-import { createSignal, For } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
+import { For, createSignal } from 'solid-js';
+import {
+  CodePill,
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 interface FileItem {
   id: string;
@@ -99,7 +105,8 @@ export default function ContextMenuPage() {
         title="With Data (For Lists)"
         description={
           <>
-            Use <CodePill>createContextMenu&lt;T&gt;()</CodePill> for typed context menus where each trigger passes its own data.
+            Use <CodePill>createContextMenu&lt;T&gt;()</CodePill> for typed
+            context menus where each trigger passes its own data.
           </>
         }
         code={`interface FileItem {
@@ -151,25 +158,39 @@ function FileList() {
               {(file) => (
                 <ContextMenuTrigger data={file}>
                   <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-white/5 cursor-context-menu transition-colors">
-                    <span class="text-xl">{file.type === 'folder' ? '\uD83D\uDCC1' : '\uD83D\uDCC4'}</span>
-                    <span class="text-surface-700 dark:text-surface-200">{file.name}</span>
+                    <span class="text-xl">
+                      {file.type === 'folder' ? '\uD83D\uDCC1' : '\uD83D\uDCC4'}
+                    </span>
+                    <span class="text-surface-700 dark:text-surface-200">
+                      {file.name}
+                    </span>
                   </div>
                 </ContextMenuTrigger>
               )}
             </For>
           </div>
           <ContextMenuContent>
-            <ContextMenuItem onSelect={() => setLastAction(`Open "${menu.data()?.name}"`)}>
+            <ContextMenuItem
+              onSelect={() => setLastAction(`Open "${menu.data()?.name}"`)}
+            >
               Open "{menu.data()?.name}"
             </ContextMenuItem>
-            <ContextMenuItem shortcut="Cmd+C" onSelect={() => setLastAction(`Copy "${menu.data()?.name}"`)}>
+            <ContextMenuItem
+              shortcut="Cmd+C"
+              onSelect={() => setLastAction(`Copy "${menu.data()?.name}"`)}
+            >
               Copy
             </ContextMenuItem>
-            <ContextMenuItem shortcut="Cmd+X" onSelect={() => setLastAction(`Cut "${menu.data()?.name}"`)}>
+            <ContextMenuItem
+              shortcut="Cmd+X"
+              onSelect={() => setLastAction(`Cut "${menu.data()?.name}"`)}
+            >
               Cut
             </ContextMenuItem>
             <ContextMenuSeparator />
-            <ContextMenuItem onSelect={() => setLastAction(`Rename "${menu.data()?.name}"`)}>
+            <ContextMenuItem
+              onSelect={() => setLastAction(`Rename "${menu.data()?.name}"`)}
+            >
               Rename
             </ContextMenuItem>
             <ContextMenuItem
@@ -218,20 +239,35 @@ function FileList() {
             </div>
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem shortcut="Cmd+Z" onSelect={() => setLastAction('Undo')}>
+            <ContextMenuItem
+              shortcut="Cmd+Z"
+              onSelect={() => setLastAction('Undo')}
+            >
               Undo
             </ContextMenuItem>
-            <ContextMenuItem shortcut="Cmd+Shift+Z" onSelect={() => setLastAction('Redo')}>
+            <ContextMenuItem
+              shortcut="Cmd+Shift+Z"
+              onSelect={() => setLastAction('Redo')}
+            >
               Redo
             </ContextMenuItem>
             <ContextMenuSeparator />
-            <ContextMenuItem shortcut="Cmd+X" onSelect={() => setLastAction('Cut')}>
+            <ContextMenuItem
+              shortcut="Cmd+X"
+              onSelect={() => setLastAction('Cut')}
+            >
               Cut
             </ContextMenuItem>
-            <ContextMenuItem shortcut="Cmd+C" onSelect={() => setLastAction('Copy')}>
+            <ContextMenuItem
+              shortcut="Cmd+C"
+              onSelect={() => setLastAction('Copy')}
+            >
               Copy
             </ContextMenuItem>
-            <ContextMenuItem shortcut="Cmd+V" onSelect={() => setLastAction('Paste')}>
+            <ContextMenuItem
+              shortcut="Cmd+V"
+              onSelect={() => setLastAction('Paste')}
+            >
               Paste
             </ContextMenuItem>
           </ContextMenuContent>
@@ -242,7 +278,8 @@ function FileList() {
         title="Disabled and Destructive Items"
         description={
           <>
-            Use <CodePill>disabled</CodePill> for unavailable actions and <CodePill>destructive</CodePill> for dangerous actions.
+            Use <CodePill>disabled</CodePill> for unavailable actions and{' '}
+            <CodePill>destructive</CodePill> for dangerous actions.
           </>
         }
         code={`<ContextMenuContent>
@@ -264,13 +301,18 @@ function FileList() {
             </div>
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem onSelect={() => setLastAction('Edit')}>Edit</ContextMenuItem>
-            <ContextMenuItem onSelect={() => setLastAction('Duplicate')}>Duplicate</ContextMenuItem>
-            <ContextMenuItem disabled>
-              Paste (clipboard empty)
+            <ContextMenuItem onSelect={() => setLastAction('Edit')}>
+              Edit
             </ContextMenuItem>
+            <ContextMenuItem onSelect={() => setLastAction('Duplicate')}>
+              Duplicate
+            </ContextMenuItem>
+            <ContextMenuItem disabled>Paste (clipboard empty)</ContextMenuItem>
             <ContextMenuSeparator />
-            <ContextMenuItem destructive onSelect={() => setLastAction('Delete')}>
+            <ContextMenuItem
+              destructive
+              onSelect={() => setLastAction('Delete')}
+            >
               Delete
             </ContextMenuItem>
           </ContextMenuContent>
@@ -303,8 +345,16 @@ menu.close();`}
           <PropsTable
             compact
             props={[
-              { name: 'children', type: 'JSX.Element', description: 'Child components' },
-              { name: 'onOpenChange', type: '(open: boolean, data: T | null) => void', description: 'Open state change callback' },
+              {
+                name: 'children',
+                type: 'JSX.Element',
+                description: 'Child components',
+              },
+              {
+                name: 'onOpenChange',
+                type: '(open: boolean, data: T | null) => void',
+                description: 'Open state change callback',
+              },
             ]}
           />
         </DemoSection>
@@ -313,9 +363,17 @@ menu.close();`}
           <PropsTable
             compact
             props={[
-              { name: 'children', type: 'JSX.Element', description: 'Trigger content' },
+              {
+                name: 'children',
+                type: 'JSX.Element',
+                description: 'Trigger content',
+              },
               { name: 'data', type: 'T', description: 'Data to pass to menu' },
-              { name: 'disabled', type: 'boolean', description: 'Disable the trigger' },
+              {
+                name: 'disabled',
+                type: 'boolean',
+                description: 'Disable the trigger',
+              },
             ]}
           />
         </DemoSection>
@@ -324,12 +382,36 @@ menu.close();`}
           <PropsTable
             compact
             props={[
-              { name: 'children', type: 'JSX.Element', description: 'Item label' },
-              { name: 'onSelect', type: '() => void', description: 'Selection callback' },
-              { name: 'disabled', type: 'boolean', description: 'Disable the item' },
-              { name: 'icon', type: 'JSX.Element', description: 'Icon on the left' },
-              { name: 'shortcut', type: 'string', description: 'Keyboard shortcut display' },
-              { name: 'destructive', type: 'boolean', description: 'Red styling for dangerous actions' },
+              {
+                name: 'children',
+                type: 'JSX.Element',
+                description: 'Item label',
+              },
+              {
+                name: 'onSelect',
+                type: '() => void',
+                description: 'Selection callback',
+              },
+              {
+                name: 'disabled',
+                type: 'boolean',
+                description: 'Disable the item',
+              },
+              {
+                name: 'icon',
+                type: 'JSX.Element',
+                description: 'Icon on the left',
+              },
+              {
+                name: 'shortcut',
+                type: 'string',
+                description: 'Keyboard shortcut display',
+              },
+              {
+                name: 'destructive',
+                type: 'boolean',
+                description: 'Red styling for dangerous actions',
+              },
             ]}
           />
         </DemoSection>
@@ -348,10 +430,18 @@ menu.close();`}
 
       <DemoSection title="Accessibility" card={false}>
         <ul class="list-disc list-inside text-surface-600 dark:text-surface-400 space-y-2">
-          <li><CodePill>role="menu"</CodePill> on content</li>
-          <li><CodePill>role="menuitem"</CodePill> on items</li>
-          <li><CodePill>role="separator"</CodePill> on separators</li>
-          <li><CodePill>aria-disabled</CodePill> for disabled items</li>
+          <li>
+            <CodePill>role="menu"</CodePill> on content
+          </li>
+          <li>
+            <CodePill>role="menuitem"</CodePill> on items
+          </li>
+          <li>
+            <CodePill>role="separator"</CodePill> on separators
+          </li>
+          <li>
+            <CodePill>aria-disabled</CodePill> for disabled items
+          </li>
           <li>Keyboard navigation (Arrow keys, Enter, Escape)</li>
         </ul>
       </DemoSection>

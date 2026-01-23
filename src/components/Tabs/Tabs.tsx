@@ -8,8 +8,13 @@ import {
   on,
   onMount,
 } from 'solid-js';
+import {
+  GAP_SIZES,
+  ICON_SIZES,
+  TAB_PADDING,
+  TEXT_SIZES,
+} from '../../constants';
 import { useControlled } from '../../hooks';
-import { GAP_SIZES, ICON_SIZES, TAB_PADDING, TEXT_SIZES } from '../../constants';
 import type { ComponentSize } from '../../types';
 import type { TabsProps } from './types';
 
@@ -17,7 +22,10 @@ import type { TabsProps } from './types';
 // STYLE CONSTANTS
 // =============================================================================
 
-const sizeStyles: Record<ComponentSize, { tab: string; icon: string; badge: string }> = {
+const sizeStyles: Record<
+  ComponentSize,
+  { tab: string; icon: string; badge: string }
+> = {
   sm: {
     tab: `${TAB_PADDING.sm} ${TEXT_SIZES.sm} ${GAP_SIZES.sm}`,
     icon: ICON_SIZES.sm,
@@ -45,7 +53,12 @@ export const Tabs: Component<TabsProps> = (props) => {
   const buttonRefs: Map<string, HTMLButtonElement> = new Map();
 
   // --- Indicator state ---
-  const [indicatorStyle, setIndicatorStyle] = createSignal({ x: 0, y: 0, width: 0, height: 0 });
+  const [indicatorStyle, setIndicatorStyle] = createSignal({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   const [isInitialized, setIsInitialized] = createSignal(false);
 
   // --- Defaults ---
@@ -96,8 +109,8 @@ export const Tabs: Component<TabsProps> = (props) => {
         if (isInitialized()) {
           updateIndicator();
         }
-      }
-    )
+      },
+    ),
   );
 
   const handleTabChange = (tabId: string) => {
@@ -147,7 +160,9 @@ export const Tabs: Component<TabsProps> = (props) => {
   });
 
   return (
-    <div class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${props.class ?? ''}`}>
+    <div
+      class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${props.class ?? ''}`}
+    >
       {/* Tab List - Segmented Control Style */}
       <div
         ref={containerRef}
@@ -204,7 +219,9 @@ export const Tabs: Component<TabsProps> = (props) => {
       </div>
 
       {/* Tab Content */}
-      <div class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${props.contentClass ?? ''}`}>
+      <div
+        class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${props.contentClass ?? ''}`}
+      >
         <For each={props.items}>
           {(item) => (
             <Show when={shouldRenderContent(item.id)}>

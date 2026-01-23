@@ -47,7 +47,9 @@ export const Avatar: Component<AvatarProps> = (props) => {
   const styles = () => sizeStyles[size()];
 
   const initials = createMemo(() => getInitials(props.name));
-  const fallbackBg = createMemo(() => props.fallbackColor ?? getColorFromName(props.name));
+  const fallbackBg = createMemo(
+    () => props.fallbackColor ?? getColorFromName(props.name),
+  );
 
   const showImage = () => props.src && !imageError();
 

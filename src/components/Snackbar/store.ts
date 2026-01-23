@@ -13,11 +13,15 @@ export interface SnackbarStore {
 }
 
 // Create the snackbar notification store using the factory
-const { store: internalStore, add, dismiss, clear } =
-  createNotificationStore<SnackbarItem>({
-    defaultDuration: 4000,
-    idPrefix: 'snackbar',
-  });
+const {
+  store: internalStore,
+  add,
+  dismiss,
+  clear,
+} = createNotificationStore<SnackbarItem>({
+  defaultDuration: 4000,
+  idPrefix: 'snackbar',
+});
 
 // Adapt the internal store shape to match the expected SnackbarStore interface
 // The factory uses { items: T[] } but Snackbar expects { snackbars: SnackbarItem[] }

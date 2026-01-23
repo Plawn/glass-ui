@@ -7,5 +7,6 @@
  */
 export function useIsDark() {
   return () =>
-    document.documentElement.classList.contains('dark') || document.querySelector('.dark') !== null;
+    document.documentElement.classList.contains('dark') ||
+    document.querySelector('.dark') !== null;
 }

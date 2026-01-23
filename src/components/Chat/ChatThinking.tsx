@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { createSignal, For, Show, createMemo } from 'solid-js';
+import { For, Show, createMemo, createSignal } from 'solid-js';
 import { Markdown } from '../Markdown';
 import { ChevronDownIcon, ThinkingIcon } from './icons';
 import type { ChatThinkingProps } from './types';
@@ -43,10 +43,7 @@ export const ChatThinking: Component<ChatThinkingProps> = (props) => {
       </button>
 
       {/* Content with CSS grid animation */}
-      <div
-        class="grid transition-grid-rows"
-        style={contentStyle()}
-      >
+      <div class="grid transition-grid-rows" style={contentStyle()}>
         <div class="overflow-hidden">
           <div class="mt-2 space-y-2">
             <For each={props.steps}>

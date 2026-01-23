@@ -3,7 +3,10 @@ export { CloseButton } from './CloseButton';
 export type { CloseButtonProps, CloseButtonSize } from './CloseButton';
 
 // Notification store factory
-export { createNotificationStore, createTypedNotificationStore } from './createNotificationStore';
+export {
+  createNotificationStore,
+  createTypedNotificationStore,
+} from './createNotificationStore';
 export type {
   BaseNotification,
   TypedNotification,

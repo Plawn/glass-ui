@@ -56,7 +56,7 @@ export interface ListItem<D = unknown> {
 export type ComputeItemKey<D = unknown, C = unknown> = (
   index: number,
   data: D,
-  context: C
+  context: C,
 ) => string | number;
 
 /**
@@ -65,7 +65,7 @@ export type ComputeItemKey<D = unknown, C = unknown> = (
 export type ItemContent<D = unknown, C = unknown> = (
   index: number,
   data: D,
-  context: C
+  context: C,
 ) => JSX.Element;
 
 /**
@@ -92,7 +92,7 @@ export interface VirtualListProps<D = unknown, C = unknown> {
   totalCount?: number;
   /** Array of data items */
   data?: readonly D[];
-  
+
   // --- Rendering ---
   /** Render function for each item */
   itemContent: ItemContent<D, C>;
@@ -100,7 +100,7 @@ export interface VirtualListProps<D = unknown, C = unknown> {
   context?: C;
   /** Compute unique key for each item */
   computeItemKey?: ComputeItemKey<D, C>;
-  
+
   // --- Sizing ---
   /** Fixed height for all items (optimization) */
   fixedItemHeight?: number;
@@ -110,7 +110,7 @@ export interface VirtualListProps<D = unknown, C = unknown> {
   overscan?: number;
   /** Increase viewport by this amount (pixels or {top, bottom}) */
   increaseViewportBy?: number | { top: number; bottom: number };
-  
+
   // --- Scroll ---
   /** Initial scroll top position */
   initialScrollTop?: number;
@@ -122,7 +122,7 @@ export interface VirtualListProps<D = unknown, C = unknown> {
   useWindowScroll?: boolean;
   /** Custom scroll parent element */
   customScrollParent?: HTMLElement;
-  
+
   // --- Components ---
   /** Header component */
   Header?: () => JSX.Element;
@@ -131,12 +131,25 @@ export interface VirtualListProps<D = unknown, C = unknown> {
   /** Empty placeholder when no items */
   EmptyPlaceholder?: () => JSX.Element;
   /** Custom scroller component */
-  Scroller?: (props: { ref: (el: HTMLDivElement) => void; style: JSX.CSSProperties; children: JSX.Element }) => JSX.Element;
+  Scroller?: (props: {
+    ref: (el: HTMLDivElement) => void;
+    style: JSX.CSSProperties;
+    children: JSX.Element;
+  }) => JSX.Element;
   /** Custom item wrapper component */
-  Item?: (props: { children: JSX.Element; 'data-index': number; 'data-known-size': number; style?: JSX.CSSProperties }) => JSX.Element;
+  Item?: (props: {
+    children: JSX.Element;
+    'data-index': number;
+    'data-known-size': number;
+    style?: JSX.CSSProperties;
+  }) => JSX.Element;
   /** Custom list container */
-  List?: (props: { ref: (el: HTMLElement) => void; style: JSX.CSSProperties; children: JSX.Element }) => JSX.Element;
-  
+  List?: (props: {
+    ref: (el: HTMLElement) => void;
+    style: JSX.CSSProperties;
+    children: JSX.Element;
+  }) => JSX.Element;
+
   // --- Events ---
   /** Called when visible range changes */
   rangeChanged?: (range: ListRange) => void;
@@ -154,17 +167,17 @@ export interface VirtualListProps<D = unknown, C = unknown> {
   totalListHeightChanged?: (height: number) => void;
   /** Called when items are rendered */
   itemsRendered?: (items: ListItem<D>[]) => void;
-  
+
   // --- Thresholds ---
   /** Threshold for atBottom detection (pixels from bottom) */
   atBottomThreshold?: number;
   /** Threshold for atTop detection (pixels from top) */
   atTopThreshold?: number;
-  
+
   // --- Styling ---
   class?: string;
   style?: JSX.CSSProperties;
-  
+
   // --- Ref ---
   ref?: (handle: VirtualHandle) => void;
 }
@@ -178,17 +191,47 @@ export interface VirtualListProps<D = unknown, C = unknown> {
  */
 export interface TableComponents<D = unknown, C = unknown> {
   /** Custom table element */
-  Table?: (props: { style: JSX.CSSProperties; children: JSX.Element; context?: C }) => JSX.Element;
+  Table?: (props: {
+    style: JSX.CSSProperties;
+    children: JSX.Element;
+    context?: C;
+  }) => JSX.Element;
   /** Custom table head */
-  TableHead?: (props: { ref: (el: HTMLTableSectionElement) => void; style: JSX.CSSProperties; children: JSX.Element; context?: C }) => JSX.Element;
+  TableHead?: (props: {
+    ref: (el: HTMLTableSectionElement) => void;
+    style: JSX.CSSProperties;
+    children: JSX.Element;
+    context?: C;
+  }) => JSX.Element;
   /** Custom table body */
-  TableBody?: (props: { ref: (el: HTMLTableSectionElement) => void; children: JSX.Element; context?: C }) => JSX.Element;
+  TableBody?: (props: {
+    ref: (el: HTMLTableSectionElement) => void;
+    children: JSX.Element;
+    context?: C;
+  }) => JSX.Element;
   /** Custom table foot */
-  TableFoot?: (props: { ref: (el: HTMLTableSectionElement) => void; style: JSX.CSSProperties; children: JSX.Element; context?: C }) => JSX.Element;
+  TableFoot?: (props: {
+    ref: (el: HTMLTableSectionElement) => void;
+    style: JSX.CSSProperties;
+    children: JSX.Element;
+    context?: C;
+  }) => JSX.Element;
   /** Custom table row */
-  TableRow?: (props: { children: JSX.Element; 'data-index': number; 'data-known-size': number; style?: JSX.CSSProperties; item?: D; context?: C }) => JSX.Element;
+  TableRow?: (props: {
+    children: JSX.Element;
+    'data-index': number;
+    'data-known-size': number;
+    style?: JSX.CSSProperties;
+    item?: D;
+    context?: C;
+  }) => JSX.Element;
   /** Custom scroller */
-  Scroller?: (props: { ref: (el: HTMLDivElement) => void; style: JSX.CSSProperties; children: JSX.Element; context?: C }) => JSX.Element;
+  Scroller?: (props: {
+    ref: (el: HTMLDivElement) => void;
+    style: JSX.CSSProperties;
+    children: JSX.Element;
+    context?: C;
+  }) => JSX.Element;
   /** Empty placeholder */
   EmptyPlaceholder?: (props: { context?: C }) => JSX.Element;
   /** Filler row for spacing */
@@ -201,7 +244,7 @@ export interface TableComponents<D = unknown, C = unknown> {
 export type TableRowContent<D = unknown, C = unknown> = (
   index: number,
   data: D,
-  context: C
+  context: C,
 ) => JSX.Element;
 
 /**
@@ -268,7 +311,7 @@ export interface VirtualTableProps<D = unknown, C = unknown> {
   computeItemKey?: ComputeItemKey<D, C>;
   /** Custom components */
   components?: TableComponents<D, C>;
-  
+
   // --- Sizing ---
   /** Fixed height for all rows (optimization) */
   fixedItemHeight?: number;
@@ -278,7 +321,7 @@ export interface VirtualTableProps<D = unknown, C = unknown> {
   overscan?: number;
   /** Increase viewport by this amount */
   increaseViewportBy?: number | { top: number; bottom: number };
-  
+
   // --- Scroll ---
   /** Initial scroll top position */
   initialScrollTop?: number;
@@ -290,7 +333,7 @@ export interface VirtualTableProps<D = unknown, C = unknown> {
   useWindowScroll?: boolean;
   /** Custom scroll parent element */
   customScrollParent?: HTMLElement;
-  
+
   // --- Events ---
   /** Called when visible range changes */
   rangeChanged?: (range: ListRange) => void;
@@ -308,17 +351,17 @@ export interface VirtualTableProps<D = unknown, C = unknown> {
   totalListHeightChanged?: (height: number) => void;
   /** Called when rows are rendered */
   itemsRendered?: (items: ListItem<D>[]) => void;
-  
+
   // --- Thresholds ---
   /** Threshold for atBottom detection */
   atBottomThreshold?: number;
   /** Threshold for atTop detection */
   atTopThreshold?: number;
-  
+
   // --- Styling ---
   class?: string;
   style?: JSX.CSSProperties;
-  
+
   // --- Ref ---
   ref?: (handle: VirtualHandle) => void;
 }

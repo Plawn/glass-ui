@@ -1,6 +1,6 @@
 import { Pagination } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function PaginationPage() {
   const [page1, setPage1] = createSignal(1);
@@ -88,14 +88,52 @@ const [pageSize, setPageSize] = createSignal(10);
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'total', type: 'number', default: 'required', description: 'Total number of items' },
-            { name: 'page', type: 'number', default: 'required', description: 'Current page (1-indexed)' },
-            { name: 'pageSize', type: 'number', default: 'required', description: 'Items per page' },
-            { name: 'onChange', type: '(page: number) => void', default: 'required', description: 'Page change callback' },
-            { name: 'showPageSize', type: 'boolean', default: 'false', description: 'Show page size selector' },
-            { name: 'pageSizeOptions', type: 'number[]', default: '[10, 20, 50, 100]', description: 'Available page sizes' },
-            { name: 'onPageSizeChange', type: '(size: number) => void', description: 'Page size change callback' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'total',
+              type: 'number',
+              default: 'required',
+              description: 'Total number of items',
+            },
+            {
+              name: 'page',
+              type: 'number',
+              default: 'required',
+              description: 'Current page (1-indexed)',
+            },
+            {
+              name: 'pageSize',
+              type: 'number',
+              default: 'required',
+              description: 'Items per page',
+            },
+            {
+              name: 'onChange',
+              type: '(page: number) => void',
+              default: 'required',
+              description: 'Page change callback',
+            },
+            {
+              name: 'showPageSize',
+              type: 'boolean',
+              default: 'false',
+              description: 'Show page size selector',
+            },
+            {
+              name: 'pageSizeOptions',
+              type: 'number[]',
+              default: '[10, 20, 50, 100]',
+              description: 'Available page sizes',
+            },
+            {
+              name: 'onPageSizeChange',
+              type: '(size: number) => void',
+              description: 'Page size change callback',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

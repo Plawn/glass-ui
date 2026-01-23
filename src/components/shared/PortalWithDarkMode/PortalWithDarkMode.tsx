@@ -21,12 +21,16 @@ export interface PortalWithDarkModeProps {
  * </PortalWithDarkMode>
  * ```
  */
-export function PortalWithDarkMode(props: PortalWithDarkModeProps): JSX.Element {
+export function PortalWithDarkMode(
+  props: PortalWithDarkModeProps,
+): JSX.Element {
   const isDark = useIsDark();
 
   return (
     <Portal mount={document.body}>
-      <div class={`${isDark() ? 'dark' : ''} ${props.class ?? ''}`}>{props.children}</div>
+      <div class={`${isDark() ? 'dark' : ''} ${props.class ?? ''}`}>
+        {props.children}
+      </div>
     </Portal>
   );
 }

@@ -1,4 +1,11 @@
-import { type Component, For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
+import {
+  type Component,
+  For,
+  Show,
+  createEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import {
   ANIMATION_DURATION_SLOW,
   BACKDROP_ENTER,
@@ -74,10 +81,11 @@ export const Sidebar: Component<SidebarProps> = (props) => {
   });
 
   // Animation state for mobile drawer
-  const { visible: mobileVisible, isClosing: mobileClosing } = useAnimationState({
-    open: mobileOpen,
-    duration: () => ANIMATION_DURATION_SLOW,
-  });
+  const { visible: mobileVisible, isClosing: mobileClosing } =
+    useAnimationState({
+      open: mobileOpen,
+      duration: () => ANIMATION_DURATION_SLOW,
+    });
 
   // Handle item click
   const handleItemClick = (item: SidebarItem) => {
@@ -95,7 +103,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
   // Toggle expanded state for groups
   const toggleExpand = (id: string) => {
     setExpandedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -197,7 +205,9 @@ export const Sidebar: Component<SidebarProps> = (props) => {
         <Show
           when={props.footer}
           fallback={
-            <div class={collapsed() ? 'flex justify-center' : 'flex justify-end'}>
+            <div
+              class={collapsed() ? 'flex justify-center' : 'flex justify-end'}
+            >
               <CollapseButton />
             </div>
           }
@@ -205,7 +215,9 @@ export const Sidebar: Component<SidebarProps> = (props) => {
           <div class="space-y-3">
             {props.footer}
             <Show when={!isMobile()}>
-              <div class={collapsed() ? 'flex justify-center' : 'flex justify-end'}>
+              <div
+                class={collapsed() ? 'flex justify-center' : 'flex justify-end'}
+              >
                 <CollapseButton />
               </div>
             </Show>
@@ -242,7 +254,11 @@ export const Sidebar: Component<SidebarProps> = (props) => {
         stroke="currentColor"
         stroke-width="2"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
       </svg>
     </button>
   );

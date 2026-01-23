@@ -1,6 +1,12 @@
-import { Dropdown, Button, Checkbox } from 'glass-ui-solid';
+import { Button, Checkbox, Dropdown } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
+import {
+  CodePill,
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 export default function DropdownPage() {
   const [open, setOpen] = createSignal(false);
@@ -42,7 +48,9 @@ export default function DropdownPage() {
         title="Controlled State"
         description={
           <>
-            Control the dropdown's open state externally using <CodePill>open</CodePill> and <CodePill>onOpenChange</CodePill> props.
+            Control the dropdown's open state externally using{' '}
+            <CodePill>open</CodePill> and <CodePill>onOpenChange</CodePill>{' '}
+            props.
           </>
         }
         code={`const [open, setOpen] = createSignal(false);
@@ -68,7 +76,9 @@ export default function DropdownPage() {
               <p class="text-sm text-surface-700 dark:text-surface-200 mb-3">
                 This dropdown is controlled externally.
               </p>
-              <Button size="sm" onClick={() => setOpen(false)}>Close</Button>
+              <Button size="sm" onClick={() => setOpen(false)}>
+                Close
+              </Button>
             </div>
           </Dropdown>
           <span class="text-sm text-surface-500 dark:text-surface-400">
@@ -81,7 +91,8 @@ export default function DropdownPage() {
         title="Placement Options"
         description={
           <>
-            Position the dropdown relative to its trigger using the <CodePill>placement</CodePill> prop.
+            Position the dropdown relative to its trigger using the{' '}
+            <CodePill>placement</CodePill> prop.
           </>
         }
         code={`<Dropdown trigger={trigger} placement="bottom">
@@ -99,17 +110,37 @@ export default function DropdownPage() {
         cardClass="p-6"
       >
         <div class="flex flex-wrap gap-3">
-          <Dropdown trigger={<Button variant="secondary">Bottom Start</Button>} placement="bottom-start">
-            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">Bottom start aligned</div>
+          <Dropdown
+            trigger={<Button variant="secondary">Bottom Start</Button>}
+            placement="bottom-start"
+          >
+            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">
+              Bottom start aligned
+            </div>
           </Dropdown>
-          <Dropdown trigger={<Button variant="secondary">Bottom</Button>} placement="bottom">
-            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">Bottom centered</div>
+          <Dropdown
+            trigger={<Button variant="secondary">Bottom</Button>}
+            placement="bottom"
+          >
+            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">
+              Bottom centered
+            </div>
           </Dropdown>
-          <Dropdown trigger={<Button variant="secondary">Bottom End</Button>} placement="bottom-end">
-            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">Bottom end aligned</div>
+          <Dropdown
+            trigger={<Button variant="secondary">Bottom End</Button>}
+            placement="bottom-end"
+          >
+            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">
+              Bottom end aligned
+            </div>
           </Dropdown>
-          <Dropdown trigger={<Button variant="secondary">Top</Button>} placement="top">
-            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">Top centered</div>
+          <Dropdown
+            trigger={<Button variant="secondary">Top</Button>}
+            placement="top"
+          >
+            <div class="p-3 w-40 text-sm text-surface-700 dark:text-surface-200">
+              Top centered
+            </div>
           </Dropdown>
         </div>
       </DemoSection>
@@ -118,7 +149,8 @@ export default function DropdownPage() {
         title="Settings Panel"
         description={
           <>
-            Use <CodePill>contentClass</CodePill> to control the width of the dropdown content.
+            Use <CodePill>contentClass</CodePill> to control the width of the
+            dropdown content.
           </>
         }
         code={`<Dropdown
@@ -135,7 +167,9 @@ export default function DropdownPage() {
       >
         <Dropdown trigger={<Button>Settings</Button>} contentClass="w-72">
           <div class="p-4 space-y-4">
-            <h3 class="font-semibold text-surface-900 dark:text-white">Quick Settings</h3>
+            <h3 class="font-semibold text-surface-900 dark:text-white">
+              Quick Settings
+            </h3>
             <Checkbox
               label="Dark mode"
               checked={darkMode()}
@@ -182,7 +216,9 @@ export default function DropdownPage() {
               <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white text-sm font-medium">
                 JD
               </div>
-              <span class="text-surface-700 dark:text-surface-200">John Doe</span>
+              <span class="text-surface-700 dark:text-surface-200">
+                John Doe
+              </span>
             </button>
           }
         >
@@ -204,13 +240,45 @@ export default function DropdownPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'trigger', type: 'JSX.Element', default: 'required', description: 'Trigger element that opens the dropdown' },
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Dropdown content' },
-            { name: 'open', type: 'boolean', description: 'Controlled open state' },
-            { name: 'onOpenChange', type: '(open: boolean) => void', description: 'Open state callback' },
-            { name: 'placement', type: "'bottom' | 'bottom-start' | ...", default: "'bottom-start'", description: 'Dropdown placement relative to trigger' },
-            { name: 'contentClass', type: 'string', description: 'CSS classes for content container' },
-            { name: 'scrollBehavior', type: "'close' | 'lock' | 'none'", default: "'close'", description: 'How to handle scroll when open' },
+            {
+              name: 'trigger',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Trigger element that opens the dropdown',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Dropdown content',
+            },
+            {
+              name: 'open',
+              type: 'boolean',
+              description: 'Controlled open state',
+            },
+            {
+              name: 'onOpenChange',
+              type: '(open: boolean) => void',
+              description: 'Open state callback',
+            },
+            {
+              name: 'placement',
+              type: "'bottom' | 'bottom-start' | ...",
+              default: "'bottom-start'",
+              description: 'Dropdown placement relative to trigger',
+            },
+            {
+              name: 'contentClass',
+              type: 'string',
+              description: 'CSS classes for content container',
+            },
+            {
+              name: 'scrollBehavior',
+              type: "'close' | 'lock' | 'none'",
+              default: "'close'",
+              description: 'How to handle scroll when open',
+            },
           ]}
         />
       </DemoSection>

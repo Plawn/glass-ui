@@ -68,7 +68,9 @@ export const Menu: Component<MenuProps> = (props) => {
         e.preventDefault();
         if (items.length === 0) return;
         const nextIndex =
-          focusedIndex() === -1 ? 0 : Math.min(focusedIndex() + 1, items.length - 1);
+          focusedIndex() === -1
+            ? 0
+            : Math.min(focusedIndex() + 1, items.length - 1);
         setFocusedIndex(nextIndex);
         break;
       }
@@ -76,7 +78,9 @@ export const Menu: Component<MenuProps> = (props) => {
         e.preventDefault();
         if (items.length === 0) return;
         const prevIndex =
-          focusedIndex() === -1 ? items.length - 1 : Math.max(focusedIndex() - 1, 0);
+          focusedIndex() === -1
+            ? items.length - 1
+            : Math.max(focusedIndex() - 1, 0);
         setFocusedIndex(prevIndex);
         break;
       }
@@ -116,12 +120,18 @@ export const Menu: Component<MenuProps> = (props) => {
         'aria-haspopup': 'menu',
       }}
     >
-      <div role="menu" aria-orientation="vertical" onKeyDown={handleMenuKeyDown}>
+      <div
+        role="menu"
+        aria-orientation="vertical"
+        onKeyDown={handleMenuKeyDown}
+      >
         <For each={props.items}>
           {(item, index) => (
             <Show
               when={!item.divider}
-              fallback={<hr class="my-1.5 border-t border-surface-200 dark:border-white/10" />}
+              fallback={
+                <hr class="my-1.5 border-t border-surface-200 dark:border-white/10" />
+              }
             >
               <button
                 type="button"

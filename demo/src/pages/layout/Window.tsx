@@ -1,6 +1,11 @@
-import { Window, Button, useDisclosure, useWindowManager } from 'glass-ui-solid';
+import {
+  Button,
+  Window,
+  useDisclosure,
+  useWindowManager,
+} from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 const basicExample = `import { Window, Button, useDisclosure } from 'glass-ui-solid';
 
@@ -153,7 +158,10 @@ export default function WindowPage() {
         description="A draggable and resizable window component. Supports position/size control, constraints, and optional backdrop."
       />
 
-      <DemoSection title="Import" code="import { Window, useDisclosure } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Window, useDisclosure } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Basic Example" code={basicExample}>
         <Button onClick={basicWindow.onOpen}>Open Window</Button>
@@ -164,8 +172,8 @@ export default function WindowPage() {
           defaultPosition="center"
         >
           <p class="text-surface-600 dark:text-surface-400">
-            Drag the title bar to move the window. Resize from any edge or corner.
-            The window is bounded to the viewport by default.
+            Drag the title bar to move the window. Resize from any edge or
+            corner. The window is bounded to the viewport by default.
           </p>
         </Window>
       </DemoSection>
@@ -182,9 +190,7 @@ export default function WindowPage() {
               <Button variant="secondary" onClick={footerWindow.onClose}>
                 Cancel
               </Button>
-              <Button onClick={footerWindow.onClose}>
-                Save
-              </Button>
+              <Button onClick={footerWindow.onClose}>Save</Button>
             </div>
           }
         >
@@ -205,13 +211,16 @@ export default function WindowPage() {
           closeOnBackdrop={true}
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This window has a backdrop like a modal. Click outside or press Escape to close.
+            This window has a backdrop like a modal. Click outside or press
+            Escape to close.
           </p>
         </Window>
       </DemoSection>
 
       <DemoSection title="Size Constraints" code={constraintsExample}>
-        <Button onClick={constraintsWindow.onOpen}>Open Constrained Window</Button>
+        <Button onClick={constraintsWindow.onOpen}>
+          Open Constrained Window
+        </Button>
         <Window
           open={constraintsWindow.isOpen()}
           onClose={constraintsWindow.onClose}
@@ -225,15 +234,17 @@ export default function WindowPage() {
           }}
         >
           <p class="text-surface-600 dark:text-surface-400">
-            This window has size constraints: min 300x200, max 600x400.
-            Try resizing to see the limits.
+            This window has size constraints: min 300x200, max 600x400. Try
+            resizing to see the limits.
           </p>
         </Window>
       </DemoSection>
 
       <DemoSection title="Controlled Position/Size" code={controlledExample}>
         <div class="flex gap-2 flex-wrap items-center">
-          <Button onClick={controlledWindow.onOpen}>Open Controlled Window</Button>
+          <Button onClick={controlledWindow.onOpen}>
+            Open Controlled Window
+          </Button>
           <Button
             variant="secondary"
             size="sm"
@@ -245,7 +256,8 @@ export default function WindowPage() {
             Reset
           </Button>
           <span class="text-sm text-surface-500">
-            Position: ({position().x}, {position().y}) | Size: {size().width}x{size().height}
+            Position: ({position().x}, {position().y}) | Size: {size().width}x
+            {size().height}
           </span>
         </div>
         <Window
@@ -258,8 +270,12 @@ export default function WindowPage() {
           onSizeChange={setSize}
         >
           <div class="space-y-2 text-surface-600 dark:text-surface-400">
-            <p>Position: ({position().x}, {position().y})</p>
-            <p>Size: {size().width} x {size().height}</p>
+            <p>
+              Position: ({position().x}, {position().y})
+            </p>
+            <p>
+              Size: {size().width} x {size().height}
+            </p>
           </div>
         </Window>
       </DemoSection>
@@ -287,9 +303,15 @@ export default function WindowPage() {
       >
         <div class="flex gap-2">
           <Button onClick={openAllWindows}>Open All Windows</Button>
-          <Button variant="secondary" onClick={multiWindow1.onOpen}>Window 1</Button>
-          <Button variant="secondary" onClick={multiWindow2.onOpen}>Window 2</Button>
-          <Button variant="secondary" onClick={multiWindow3.onOpen}>Window 3</Button>
+          <Button variant="secondary" onClick={multiWindow1.onOpen}>
+            Window 1
+          </Button>
+          <Button variant="secondary" onClick={multiWindow2.onOpen}>
+            Window 2
+          </Button>
+          <Button variant="secondary" onClick={multiWindow3.onOpen}>
+            Window 3
+          </Button>
         </div>
         <Window
           open={multiWindow1.isOpen()}
@@ -348,28 +370,130 @@ export default function WindowPage() {
         <PropsTable
           compact
           props={[
-            { name: 'open', type: 'boolean', default: 'required', description: 'Whether the window is open' },
-            { name: 'onClose', type: '() => void', default: 'required', description: 'Callback when window should close' },
-            { name: 'title', type: 'string', description: 'Window title in header' },
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Window content' },
-            { name: 'footer', type: 'JSX.Element', description: 'Footer content' },
-            { name: 'defaultPosition', type: "Position | 'center'", default: "'center'", description: 'Initial position' },
-            { name: 'defaultSize', type: '{ width, height }', default: '{ 400, 300 }', description: 'Initial size' },
-            { name: 'position', type: '{ x, y }', description: 'Controlled position' },
-            { name: 'onPositionChange', type: '(pos) => void', description: 'Position change callback' },
-            { name: 'size', type: '{ width, height }', description: 'Controlled size' },
-            { name: 'onSizeChange', type: '(size) => void', description: 'Size change callback' },
-            { name: 'constraints', type: '{ minWidth?, maxWidth?, minHeight?, maxHeight? }', description: 'Size constraints' },
-            { name: 'draggable', type: 'boolean', default: 'true', description: 'Enable dragging' },
-            { name: 'resizable', type: 'boolean', default: 'true', description: 'Enable resizing' },
-            { name: 'bounded', type: 'boolean', default: 'true', description: 'Bound to viewport' },
-            { name: 'showBackdrop', type: 'boolean', default: 'false', description: 'Show backdrop overlay' },
-            { name: 'closeOnBackdrop', type: 'boolean', default: 'true', description: 'Close on backdrop click' },
-            { name: 'showClose', type: 'boolean', default: 'true', description: 'Show close button' },
-            { name: 'closeOnEscape', type: 'boolean', default: 'true', description: 'Close on Escape key' },
-            { name: 'zIndex', type: 'number', default: '50', description: 'Z-index for stacking' },
-            { name: 'onFocus', type: '() => void', description: 'Callback when window is clicked (for focus management)' },
-            { name: 'class', type: 'string', description: 'Additional CSS class' },
+            {
+              name: 'open',
+              type: 'boolean',
+              default: 'required',
+              description: 'Whether the window is open',
+            },
+            {
+              name: 'onClose',
+              type: '() => void',
+              default: 'required',
+              description: 'Callback when window should close',
+            },
+            {
+              name: 'title',
+              type: 'string',
+              description: 'Window title in header',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Window content',
+            },
+            {
+              name: 'footer',
+              type: 'JSX.Element',
+              description: 'Footer content',
+            },
+            {
+              name: 'defaultPosition',
+              type: "Position | 'center'",
+              default: "'center'",
+              description: 'Initial position',
+            },
+            {
+              name: 'defaultSize',
+              type: '{ width, height }',
+              default: '{ 400, 300 }',
+              description: 'Initial size',
+            },
+            {
+              name: 'position',
+              type: '{ x, y }',
+              description: 'Controlled position',
+            },
+            {
+              name: 'onPositionChange',
+              type: '(pos) => void',
+              description: 'Position change callback',
+            },
+            {
+              name: 'size',
+              type: '{ width, height }',
+              description: 'Controlled size',
+            },
+            {
+              name: 'onSizeChange',
+              type: '(size) => void',
+              description: 'Size change callback',
+            },
+            {
+              name: 'constraints',
+              type: '{ minWidth?, maxWidth?, minHeight?, maxHeight? }',
+              description: 'Size constraints',
+            },
+            {
+              name: 'draggable',
+              type: 'boolean',
+              default: 'true',
+              description: 'Enable dragging',
+            },
+            {
+              name: 'resizable',
+              type: 'boolean',
+              default: 'true',
+              description: 'Enable resizing',
+            },
+            {
+              name: 'bounded',
+              type: 'boolean',
+              default: 'true',
+              description: 'Bound to viewport',
+            },
+            {
+              name: 'showBackdrop',
+              type: 'boolean',
+              default: 'false',
+              description: 'Show backdrop overlay',
+            },
+            {
+              name: 'closeOnBackdrop',
+              type: 'boolean',
+              default: 'true',
+              description: 'Close on backdrop click',
+            },
+            {
+              name: 'showClose',
+              type: 'boolean',
+              default: 'true',
+              description: 'Show close button',
+            },
+            {
+              name: 'closeOnEscape',
+              type: 'boolean',
+              default: 'true',
+              description: 'Close on Escape key',
+            },
+            {
+              name: 'zIndex',
+              type: 'number',
+              default: '50',
+              description: 'Z-index for stacking',
+            },
+            {
+              name: 'onFocus',
+              type: '() => void',
+              description:
+                'Callback when window is clicked (for focus management)',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS class',
+            },
           ]}
         />
       </DemoSection>

@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { Position, Size, ResizeDirection } from '../../hooks';
+import type { Position, ResizeDirection, Size } from '../../hooks';
 
 export type { ResizeDirection };
 

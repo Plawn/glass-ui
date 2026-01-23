@@ -1,12 +1,21 @@
-import { type JSX, type Accessor, createSignal, createEffect, onCleanup } from 'solid-js';
-import type { Placement, Direction } from '../types';
+import {
+  type Accessor,
+  type JSX,
+  createEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
+import type { Direction, Placement } from '../types';
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
 /** Position style properties for positioned elements */
-export type PositionStyles = Pick<JSX.CSSProperties, 'top' | 'bottom' | 'left' | 'right' | 'transform'>;
+export type PositionStyles = Pick<
+  JSX.CSSProperties,
+  'top' | 'bottom' | 'left' | 'right' | 'transform'
+>;
 
 /** Alignment options for positioned elements */
 export type PositionAlignment = 'start' | 'end' | 'center';
@@ -89,7 +98,9 @@ const ARROW_SIZE = 8;
 /**
  * Get the primary direction from a placement string
  */
-export const getPrimaryDirection = (placement: Placement | Direction): Direction => {
+export const getPrimaryDirection = (
+  placement: Placement | Direction,
+): Direction => {
   if (placement.startsWith('top')) return 'top';
   if (placement.startsWith('bottom')) return 'bottom';
   if (placement.startsWith('left')) return 'left';
@@ -99,7 +110,9 @@ export const getPrimaryDirection = (placement: Placement | Direction): Direction
 /**
  * Get the alignment from a placement string
  */
-export const getAlignment = (placement: Placement | Direction): PositionAlignment => {
+export const getAlignment = (
+  placement: Placement | Direction,
+): PositionAlignment => {
   if (placement.includes('start')) return 'start';
   if (placement.includes('end')) return 'end';
   return 'center';
@@ -108,7 +121,9 @@ export const getAlignment = (placement: Placement | Direction): PositionAlignmen
 /**
  * Calculate arrow position styles based on placement
  */
-export const calculateArrowStyles = (placement: Placement | Direction): JSX.CSSProperties => {
+export const calculateArrowStyles = (
+  placement: Placement | Direction,
+): JSX.CSSProperties => {
   const direction = getPrimaryDirection(placement);
   const alignment = getAlignment(placement);
 
@@ -177,7 +192,7 @@ function calculatePositionStyles(
   placement: Placement,
   offset: number,
   viewportPadding: number,
-  estimatedSize: number
+  estimatedSize: number,
 ): PositionStyles {
   const rect = triggerEl.getBoundingClientRect();
 
@@ -196,13 +211,29 @@ function calculatePositionStyles(
 
   // Determine actual direction (with auto-flip if needed)
   let actualDirection = primaryDirection;
-  if (primaryDirection === 'bottom' && spaceBelow < contentHeight && spaceAbove > spaceBelow) {
+  if (
+    primaryDirection === 'bottom' &&
+    spaceBelow < contentHeight &&
+    spaceAbove > spaceBelow
+  ) {
     actualDirection = 'top';
-  } else if (primaryDirection === 'top' && spaceAbove < contentHeight && spaceBelow > spaceAbove) {
+  } else if (
+    primaryDirection === 'top' &&
+    spaceAbove < contentHeight &&
+    spaceBelow > spaceAbove
+  ) {
     actualDirection = 'bottom';
-  } else if (primaryDirection === 'right' && spaceRight < contentWidth && spaceLeft > spaceRight) {
+  } else if (
+    primaryDirection === 'right' &&
+    spaceRight < contentWidth &&
+    spaceLeft > spaceRight
+  ) {
     actualDirection = 'left';
-  } else if (primaryDirection === 'left' && spaceLeft < contentWidth && spaceRight > spaceLeft) {
+  } else if (
+    primaryDirection === 'left' &&
+    spaceLeft < contentWidth &&
+    spaceRight > spaceLeft
+  ) {
     actualDirection = 'right';
   }
 
@@ -226,7 +257,10 @@ function calculatePositionStyles(
       // Center alignment
       let left = rect.left + rect.width / 2 - contentWidth / 2;
       // Clamp to viewport bounds
-      left = Math.max(viewportPadding, Math.min(left, window.innerWidth - contentWidth - viewportPadding));
+      left = Math.max(
+        viewportPadding,
+        Math.min(left, window.innerWidth - contentWidth - viewportPadding),
+      );
       styles.left = `${left}px`;
     }
   } else if (actualDirection === 'top') {
@@ -243,7 +277,10 @@ function calculatePositionStyles(
     } else {
       // Center alignment
       let left = rect.left + rect.width / 2 - contentWidth / 2;
-      left = Math.max(viewportPadding, Math.min(left, window.innerWidth - contentWidth - viewportPadding));
+      left = Math.max(
+        viewportPadding,
+        Math.min(left, window.innerWidth - contentWidth - viewportPadding),
+      );
       styles.left = `${left}px`;
     }
   } else if (actualDirection === 'right') {
@@ -254,13 +291,19 @@ function calculatePositionStyles(
       const maxTop = window.innerHeight - contentHeight - viewportPadding;
       styles.top = `${Math.min(top, maxTop)}px`;
     } else if (alignment === 'end') {
-      const bottom = Math.max(viewportPadding, window.innerHeight - rect.bottom);
+      const bottom = Math.max(
+        viewportPadding,
+        window.innerHeight - rect.bottom,
+      );
       const maxBottom = window.innerHeight - contentHeight - viewportPadding;
       styles.bottom = `${Math.min(bottom, maxBottom)}px`;
     } else {
       // Center alignment
       let top = rect.top + rect.height / 2 - contentHeight / 2;
-      top = Math.max(viewportPadding, Math.min(top, window.innerHeight - contentHeight - viewportPadding));
+      top = Math.max(
+        viewportPadding,
+        Math.min(top, window.innerHeight - contentHeight - viewportPadding),
+      );
       styles.top = `${top}px`;
     }
   } else if (actualDirection === 'left') {
@@ -271,13 +314,19 @@ function calculatePositionStyles(
       const maxTop = window.innerHeight - contentHeight - viewportPadding;
       styles.top = `${Math.min(top, maxTop)}px`;
     } else if (alignment === 'end') {
-      const bottom = Math.max(viewportPadding, window.innerHeight - rect.bottom);
+      const bottom = Math.max(
+        viewportPadding,
+        window.innerHeight - rect.bottom,
+      );
       const maxBottom = window.innerHeight - contentHeight - viewportPadding;
       styles.bottom = `${Math.min(bottom, maxBottom)}px`;
     } else {
       // Center alignment
       let top = rect.top + rect.height / 2 - contentHeight / 2;
-      top = Math.max(viewportPadding, Math.min(top, window.innerHeight - contentHeight - viewportPadding));
+      top = Math.max(
+        viewportPadding,
+        Math.min(top, window.innerHeight - contentHeight - viewportPadding),
+      );
       styles.top = `${top}px`;
     }
   }
@@ -309,7 +358,9 @@ function calculatePositionStyles(
  * </div>
  * ```
  */
-export function usePositioning(options: UsePositioningOptions): UsePositioningReturn {
+export function usePositioning(
+  options: UsePositioningOptions,
+): UsePositioningReturn {
   const viewportPadding = options.viewportPadding ?? DEFAULT_VIEWPORT_PADDING;
   const estimatedSize = options.estimatedSize ?? DEFAULT_ESTIMATED_SIZE;
   const updateOnScroll = options.updateOnScroll ?? false;
@@ -352,7 +403,7 @@ export function usePositioning(options: UsePositioningOptions): UsePositioningRe
       placement,
       options.offset(),
       viewportPadding,
-      estimatedSize
+      estimatedSize,
     );
 
     setPositionStyles(styles);
@@ -429,7 +480,7 @@ export function usePositioning(options: UsePositioningOptions): UsePositioningRe
  * ```
  */
 export function useContextMenuPositioning(
-  options: UseContextMenuPositioningOptions
+  options: UseContextMenuPositioningOptions,
 ): UseContextMenuPositioningReturn {
   const viewportPadding = options.viewportPadding ?? DEFAULT_VIEWPORT_PADDING;
   const estimatedHeight = options.estimatedHeight ?? DEFAULT_ESTIMATED_SIZE;

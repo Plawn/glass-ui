@@ -1,5 +1,10 @@
-import { Button, toast, clearToasts } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { Button, clearToasts, toast } from 'glass-ui-solid';
+import {
+  CodePill,
+  DemoSection,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 export default function ToastPage() {
   return (
@@ -16,7 +21,12 @@ export default function ToastPage() {
 
       <DemoSection
         title="Setup"
-        description={<>Add <CodePill>ToastContainer</CodePill> once at the root of your app:</>}
+        description={
+          <>
+            Add <CodePill>ToastContainer</CodePill> once at the root of your
+            app:
+          </>
+        }
         code={`function App() {
   return (
     <>
@@ -43,7 +53,9 @@ toast.info('New updates are available.');`}
           <Button onClick={() => toast.error('Failed to save changes.')}>
             Error
           </Button>
-          <Button onClick={() => toast.warning('Your session will expire soon.')}>
+          <Button
+            onClick={() => toast.warning('Your session will expire soon.')}
+          >
             Warning
           </Button>
           <Button onClick={() => toast.info('New updates are available.')}>
@@ -105,7 +117,11 @@ clearToasts();`}
         card={false}
       >
         <div class="flex flex-wrap gap-3 mb-4">
-          <Button onClick={() => toast.info('Toast ' + Math.floor(Math.random() * 100))}>
+          <Button
+            onClick={() =>
+              toast.info('Toast ' + Math.floor(Math.random() * 100))
+            }
+          >
             Add Toast
           </Button>
           <Button variant="secondary" onClick={() => clearToasts()}>
@@ -114,10 +130,7 @@ clearToasts();`}
         </div>
       </DemoSection>
 
-      <DemoSection
-        title="Common Patterns"
-        card={false}
-      >
+      <DemoSection title="Common Patterns" card={false}>
         <DemoSection
           title="In Event Handlers"
           subsection
@@ -154,13 +167,41 @@ clearToasts();`}
           <PropsTable
             compact
             props={[
-              { name: 'toast(message, type?, duration?)', type: 'string, ToastType, number', description: 'Show a toast with custom type' },
-              { name: 'toast.success(message, duration?)', type: 'string, number', description: 'Show a success toast' },
-              { name: 'toast.error(message, duration?)', type: 'string, number', description: 'Show an error toast' },
-              { name: 'toast.warning(message, duration?)', type: 'string, number', description: 'Show a warning toast' },
-              { name: 'toast.info(message, duration?)', type: 'string, number', description: 'Show an info toast' },
-              { name: 'dismissToast(id)', type: 'string', description: 'Dismiss a specific toast' },
-              { name: 'clearToasts()', type: '-', description: 'Clear all toasts' },
+              {
+                name: 'toast(message, type?, duration?)',
+                type: 'string, ToastType, number',
+                description: 'Show a toast with custom type',
+              },
+              {
+                name: 'toast.success(message, duration?)',
+                type: 'string, number',
+                description: 'Show a success toast',
+              },
+              {
+                name: 'toast.error(message, duration?)',
+                type: 'string, number',
+                description: 'Show an error toast',
+              },
+              {
+                name: 'toast.warning(message, duration?)',
+                type: 'string, number',
+                description: 'Show a warning toast',
+              },
+              {
+                name: 'toast.info(message, duration?)',
+                type: 'string, number',
+                description: 'Show an info toast',
+              },
+              {
+                name: 'dismissToast(id)',
+                type: 'string',
+                description: 'Dismiss a specific toast',
+              },
+              {
+                name: 'clearToasts()',
+                type: '-',
+                description: 'Clear all toasts',
+              },
             ]}
           />
         </DemoSection>
@@ -169,10 +210,22 @@ clearToasts();`}
           <PropsTable
             compact
             props={[
-              { name: 'success', type: 'Green', description: 'Successful operations' },
+              {
+                name: 'success',
+                type: 'Green',
+                description: 'Successful operations',
+              },
               { name: 'error', type: 'Red', description: 'Errors, failures' },
-              { name: 'warning', type: 'Amber', description: 'Cautions, confirmations needed' },
-              { name: 'info', type: 'Blue', description: 'General information' },
+              {
+                name: 'warning',
+                type: 'Amber',
+                description: 'Cautions, confirmations needed',
+              },
+              {
+                name: 'info',
+                type: 'Blue',
+                description: 'General information',
+              },
             ]}
           />
         </DemoSection>

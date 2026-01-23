@@ -26,7 +26,9 @@ export const ErrorDisplay: Component<ErrorDisplayProps> = (props) => (
         <h4 class="text-base font-bold text-red-800 dark:text-red-200">
           {props.title ?? 'Request Failed'}
         </h4>
-        <p class="text-sm text-red-600 dark:text-red-400 mt-1 leading-relaxed">{props.message}</p>
+        <p class="text-sm text-red-600 dark:text-red-400 mt-1 leading-relaxed">
+          {props.message}
+        </p>
       </div>
     </div>
   </div>

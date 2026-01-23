@@ -1,6 +1,6 @@
 import { type Component, For, createMemo, createSignal } from 'solid-js';
 import { ChevronLeftIcon, ChevronRightIcon } from '../shared/icons/ChevronIcon';
-import type { CalendarProps, CalendarDay, WeekStartDay } from './types';
+import type { CalendarDay, CalendarProps, WeekStartDay } from './types';
 
 /** Day names for header */
 const DAY_NAMES_SUNDAY_START = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -8,8 +8,18 @@ const DAY_NAMES_MONDAY_START = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
 /** Month names for header */
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 /**
@@ -28,7 +38,11 @@ const isSameDay = (date1: Date, date2: Date): boolean => {
  */
 const isBeforeDay = (date: Date, compareDate: Date): boolean => {
   const d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const d2 = new Date(compareDate.getFullYear(), compareDate.getMonth(), compareDate.getDate());
+  const d2 = new Date(
+    compareDate.getFullYear(),
+    compareDate.getMonth(),
+    compareDate.getDate(),
+  );
   return d1.getTime() < d2.getTime();
 };
 
@@ -37,7 +51,11 @@ const isBeforeDay = (date: Date, compareDate: Date): boolean => {
  */
 const isAfterDay = (date: Date, compareDate: Date): boolean => {
   const d1 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const d2 = new Date(compareDate.getFullYear(), compareDate.getMonth(), compareDate.getDate());
+  const d2 = new Date(
+    compareDate.getFullYear(),
+    compareDate.getMonth(),
+    compareDate.getDate(),
+  );
   return d1.getTime() > d2.getTime();
 };
 
@@ -45,9 +63,21 @@ const isAfterDay = (date: Date, compareDate: Date): boolean => {
  * Check if a date is between two dates (exclusive of endpoints)
  */
 const isBetweenDays = (date: Date, start: Date, end: Date): boolean => {
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
-  const s = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
-  const e = new Date(end.getFullYear(), end.getMonth(), end.getDate()).getTime();
+  const d = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  ).getTime();
+  const s = new Date(
+    start.getFullYear(),
+    start.getMonth(),
+    start.getDate(),
+  ).getTime();
+  const e = new Date(
+    end.getFullYear(),
+    end.getMonth(),
+    end.getDate(),
+  ).getTime();
   return d > s && d < e;
 };
 
@@ -80,8 +110,20 @@ interface GenerateCalendarDaysOptions {
 /**
  * Generate calendar days for display
  */
-const generateCalendarDays = (options: GenerateCalendarDaysOptions): CalendarDay[] => {
-  const { year, month, selectedDate, min, max, weekStartsOn, rangeStart, rangeEnd, hoverDate } = options;
+const generateCalendarDays = (
+  options: GenerateCalendarDaysOptions,
+): CalendarDay[] => {
+  const {
+    year,
+    month,
+    selectedDate,
+    min,
+    max,
+    weekStartsOn,
+    rangeStart,
+    rangeEnd,
+    hoverDate,
+  } = options;
   const days: CalendarDay[] = [];
   const today = new Date();
   const firstDay = getFirstDayOfMonth(year, month);
@@ -105,13 +147,23 @@ const generateCalendarDays = (options: GenerateCalendarDaysOptions): CalendarDay
     }
   }
 
-  const createDay = (date: Date, day: number, isCurrentMonth: boolean): CalendarDay => {
-    const isDisabled = (min && isBeforeDay(date, min)) || (max && isAfterDay(date, max)) || false;
+  const createDay = (
+    date: Date,
+    day: number,
+    isCurrentMonth: boolean,
+  ): CalendarDay => {
+    const isDisabled =
+      (min && isBeforeDay(date, min)) ||
+      (max && isAfterDay(date, max)) ||
+      false;
 
     // Range calculations
     const isRangeStart = rangeStart ? isSameDay(date, rangeStart) : false;
     const isRangeEnd = effectiveEnd ? isSameDay(date, effectiveEnd) : false;
-    const isInRange = rangeStart && effectiveEnd ? isBetweenDays(date, rangeStart, effectiveEnd) : false;
+    const isInRange =
+      rangeStart && effectiveEnd
+        ? isBetweenDays(date, rangeStart, effectiveEnd)
+        : false;
 
     return {
       date,
@@ -175,7 +227,7 @@ export const Calendar: Component<CalendarProps> = (props) => {
       rangeStart: props.rangeStart,
       rangeEnd: props.rangeEnd,
       hoverDate: props.hoverDate,
-    })
+    }),
   );
 
   const monthYear = () => `${MONTH_NAMES[viewMonth()]} ${viewYear()}`;
@@ -217,7 +269,8 @@ export const Calendar: Component<CalendarProps> = (props) => {
   };
 
   const getDayClasses = (day: CalendarDay): string => {
-    const base = 'w-8 h-8 flex items-center justify-center text-sm transition-colors cursor-pointer';
+    const base =
+      'w-8 h-8 flex items-center justify-center text-sm transition-colors cursor-pointer';
 
     if (day.isDisabled) {
       return `${base} text-surface-300 dark:text-surface-600 cursor-not-allowed rounded-full`;
@@ -306,7 +359,9 @@ export const Calendar: Component<CalendarProps> = (props) => {
               class={getDayClasses(day)}
               disabled={day.isDisabled}
               aria-label={day.date.toLocaleDateString()}
-              aria-selected={day.isSelected || day.isRangeStart || day.isRangeEnd}
+              aria-selected={
+                day.isSelected || day.isRangeStart || day.isRangeEnd
+              }
             >
               {day.day}
             </button>

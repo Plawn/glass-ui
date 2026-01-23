@@ -18,7 +18,7 @@
 export function getAnimationClass(
   isExiting: boolean,
   enterClass: string,
-  exitClass: string
+  exitClass: string,
 ): string {
   return isExiting ? exitClass : enterClass;
 }
@@ -46,7 +46,7 @@ export function getDirectionalAnimationClass<T extends string>(
   isExiting: boolean,
   direction: T,
   enterClasses: Record<T, string>,
-  exitClasses: Record<T, string>
+  exitClasses: Record<T, string>,
 ): string {
   return isExiting ? exitClasses[direction] : enterClasses[direction];
 }

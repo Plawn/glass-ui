@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { StatusColor, BaseComponentProps, IconProps } from '../../types';
+import type { BaseComponentProps, IconProps, StatusColor } from '../../types';
 
 export interface AlertProps extends BaseComponentProps, IconProps {
   /** Type of alert, determines color styling */

@@ -1,12 +1,26 @@
-import { DatePicker, DateRangePicker, CodeBlock, Card, type DateRange } from 'glass-ui-solid';
+import {
+  Card,
+  CodeBlock,
+  DatePicker,
+  type DateRange,
+  DateRangePicker,
+} from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay } from '../../components/demo';
+import {
+  CodePill,
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function DatePickerPage() {
   const [basicDate, setBasicDate] = createSignal<Date | null>(null);
   const [labeledDate, setLabeledDate] = createSignal<Date | null>(null);
   const [formatDate, setFormatDate] = createSignal<Date | null>(new Date());
-  const [clearableDate, setClearableDate] = createSignal<Date | null>(new Date());
+  const [clearableDate, setClearableDate] = createSignal<Date | null>(
+    new Date(),
+  );
   const [constrainedDate, setConstrainedDate] = createSignal<Date | null>(null);
   const [sizeSmDate, setSizeSmDate] = createSignal<Date | null>(null);
   const [sizeLgDate, setSizeLgDate] = createSignal<Date | null>(null);
@@ -14,22 +28,39 @@ export default function DatePickerPage() {
   const [mondayDate, setMondayDate] = createSignal<Date | null>(null);
 
   // DateRangePicker signals
-  const [basicRange, setBasicRange] = createSignal<DateRange>({ start: null, end: null });
-  const [labeledRange, setLabeledRange] = createSignal<DateRange>({ start: null, end: null });
+  const [basicRange, setBasicRange] = createSignal<DateRange>({
+    start: null,
+    end: null,
+  });
+  const [labeledRange, setLabeledRange] = createSignal<DateRange>({
+    start: null,
+    end: null,
+  });
   const [formatRange, setFormatRange] = createSignal<DateRange>({
     start: new Date(),
-    end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   });
   const [clearableRange, setClearableRange] = createSignal<DateRange>({
     start: new Date(),
-    end: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
+    end: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
   });
-  const [constrainedRange, setConstrainedRange] = createSignal<DateRange>({ start: null, end: null });
+  const [constrainedRange, setConstrainedRange] = createSignal<DateRange>({
+    start: null,
+    end: null,
+  });
 
   // Calculate min and max dates for the constrained example
   const today = new Date();
-  const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-  const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
+  const minDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() - 7,
+  );
+  const maxDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 30,
+  );
 
   return (
     <div class="space-y-8">
@@ -58,7 +89,10 @@ export default function DatePickerPage() {
           onChange={setBasicDate}
           placeholder="Select a date..."
         />
-        <StateDisplay label="Selected" value={basicDate()?.toLocaleDateString() || 'None'} />
+        <StateDisplay
+          label="Selected"
+          value={basicDate()?.toLocaleDateString() || 'None'}
+        />
       </DemoSection>
 
       <DemoSection
@@ -80,7 +114,12 @@ export default function DatePickerPage() {
 
       <DemoSection
         title="Date Formats"
-        description={<>The DatePicker supports multiple display formats via the <CodePill>format</CodePill> prop.</>}
+        description={
+          <>
+            The DatePicker supports multiple display formats via the{' '}
+            <CodePill>format</CodePill> prop.
+          </>
+        }
         code={`<DatePicker format="yyyy-MM-dd" ... />  // 2024-01-15
 <DatePicker format="MM/dd/yyyy" ... />  // 01/15/2024
 <DatePicker format="dd/MM/yyyy" ... />  // 15/01/2024
@@ -141,7 +180,13 @@ export default function DatePickerPage() {
 
       <DemoSection
         title="Min/Max Date Constraints"
-        description={<>Restrict the selectable date range using <CodePill>min</CodePill> and <CodePill>max</CodePill> props. In this example, dates from 7 days ago to 30 days from now are selectable.</>}
+        description={
+          <>
+            Restrict the selectable date range using <CodePill>min</CodePill>{' '}
+            and <CodePill>max</CodePill> props. In this example, dates from 7
+            days ago to 30 days from now are selectable.
+          </>
+        }
         code={`const today = new Date();
 const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
 const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
@@ -163,7 +208,10 @@ const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() 
           max={maxDate}
           clearable
         />
-        <StateDisplay label="Range" value={`${minDate.toLocaleDateString()} to ${maxDate.toLocaleDateString()}`} />
+        <StateDisplay
+          label="Range"
+          value={`${minDate.toLocaleDateString()} to ${maxDate.toLocaleDateString()}`}
+        />
       </DemoSection>
 
       <DemoSection
@@ -257,29 +305,90 @@ const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() 
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'value', type: 'Date | null', default: 'required', description: 'Currently selected date value' },
-            { name: 'onChange', type: '(date: Date | null) => void', default: 'required', description: 'Callback when date selection changes' },
-            { name: 'label', type: 'string', description: 'Label text displayed above the input' },
-            { name: 'placeholder', type: 'string', default: "'Select date'", description: 'Placeholder text when no date is selected' },
-            { name: 'format', type: 'DateFormat', default: "'yyyy-MM-dd'", description: 'Date format string for display' },
-            { name: 'min', type: 'Date', description: 'Minimum selectable date' },
-            { name: 'max', type: 'Date', description: 'Maximum selectable date' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant of the input' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the component is disabled' },
-            { name: 'error', type: 'string', description: 'Error message displayed below the input' },
-            { name: 'clearable', type: 'boolean', default: 'false', description: 'Whether to show the clear button' },
-            { name: 'weekStartsOn', type: '0 | 1', default: '0', description: 'Day of week to start calendar (0=Sunday, 1=Monday)' },
+            {
+              name: 'value',
+              type: 'Date | null',
+              default: 'required',
+              description: 'Currently selected date value',
+            },
+            {
+              name: 'onChange',
+              type: '(date: Date | null) => void',
+              default: 'required',
+              description: 'Callback when date selection changes',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label text displayed above the input',
+            },
+            {
+              name: 'placeholder',
+              type: 'string',
+              default: "'Select date'",
+              description: 'Placeholder text when no date is selected',
+            },
+            {
+              name: 'format',
+              type: 'DateFormat',
+              default: "'yyyy-MM-dd'",
+              description: 'Date format string for display',
+            },
+            {
+              name: 'min',
+              type: 'Date',
+              description: 'Minimum selectable date',
+            },
+            {
+              name: 'max',
+              type: 'Date',
+              description: 'Maximum selectable date',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant of the input',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the component is disabled',
+            },
+            {
+              name: 'error',
+              type: 'string',
+              description: 'Error message displayed below the input',
+            },
+            {
+              name: 'clearable',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether to show the clear button',
+            },
+            {
+              name: 'weekStartsOn',
+              type: '0 | 1',
+              default: '0',
+              description: 'Day of week to start calendar (0=Sunday, 1=Monday)',
+            },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
-            { name: 'name', type: 'string', description: 'HTML name attribute' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'name',
+              type: 'string',
+              description: 'HTML name attribute',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection
-        title="DateFormat Type"
-        card={false}
-      >
+      <DemoSection title="DateFormat Type" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`type DateFormat =
@@ -293,10 +402,7 @@ const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() 
         </Card>
       </DemoSection>
 
-      <DemoSection
-        title="Form Example"
-        card={false}
-      >
+      <DemoSection title="Form Example" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`import { DatePicker, Button } from 'glass-ui-solid';
@@ -364,7 +470,10 @@ function EventForm() {
           onChange={setBasicRange}
           placeholder="Select date range..."
         />
-        <StateDisplay label="Selected" value={`${basicRange().start?.toLocaleDateString() || 'None'} - ${basicRange().end?.toLocaleDateString() || 'None'}`} />
+        <StateDisplay
+          label="Selected"
+          value={`${basicRange().start?.toLocaleDateString() || 'None'} - ${basicRange().end?.toLocaleDateString() || 'None'}`}
+        />
       </DemoSection>
 
       <DemoSection
@@ -457,28 +566,54 @@ function EventForm() {
           max={maxDate}
           clearable
         />
-        <StateDisplay label="Available" value={`${minDate.toLocaleDateString()} to ${maxDate.toLocaleDateString()}`} />
+        <StateDisplay
+          label="Available"
+          value={`${minDate.toLocaleDateString()} to ${maxDate.toLocaleDateString()}`}
+        />
       </DemoSection>
 
       <DemoSection title="DateRangePicker Props">
         <PropsTable
           props={[
-            { name: 'value', type: 'DateRange', default: 'required', description: 'Currently selected date range' },
-            { name: 'onChange', type: '(range: DateRange) => void', default: 'required', description: 'Callback when range selection changes' },
-            { name: 'separator', type: 'string', default: "' - '", description: 'Separator text between start and end dates' },
-            { name: 'startPlaceholder', type: 'string', default: "'Start date'", description: 'Placeholder for start date' },
-            { name: 'endPlaceholder', type: 'string', default: "'End date'", description: 'Placeholder for end date' },
+            {
+              name: 'value',
+              type: 'DateRange',
+              default: 'required',
+              description: 'Currently selected date range',
+            },
+            {
+              name: 'onChange',
+              type: '(range: DateRange) => void',
+              default: 'required',
+              description: 'Callback when range selection changes',
+            },
+            {
+              name: 'separator',
+              type: 'string',
+              default: "' - '",
+              description: 'Separator text between start and end dates',
+            },
+            {
+              name: 'startPlaceholder',
+              type: 'string',
+              default: "'Start date'",
+              description: 'Placeholder for start date',
+            },
+            {
+              name: 'endPlaceholder',
+              type: 'string',
+              default: "'End date'",
+              description: 'Placeholder for end date',
+            },
           ]}
         />
         <p class="mt-2 text-sm text-surface-500 dark:text-surface-400 italic">
-          + All props from DatePicker (label, format, min, max, size, disabled, error, clearable, weekStartsOn)
+          + All props from DatePicker (label, format, min, max, size, disabled,
+          error, clearable, weekStartsOn)
         </p>
       </DemoSection>
 
-      <DemoSection
-        title="DateRange Type"
-        card={false}
-      >
+      <DemoSection title="DateRange Type" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`interface DateRange {

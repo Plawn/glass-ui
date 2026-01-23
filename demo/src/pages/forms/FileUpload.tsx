@@ -1,6 +1,12 @@
-import { FileUpload, Card, CodeBlock } from 'glass-ui-solid';
+import { Card, CodeBlock, FileUpload } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay, FeatureList } from '../../components/demo';
+import {
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function FileUploadPage() {
   const [basicFiles, setBasicFiles] = createSignal<File[]>([]);
@@ -76,7 +82,12 @@ export default function FileUploadPage() {
           description="Upload a single image file"
           accept="image/*"
         />
-        <StateDisplay label="Selected" value={singleFile().length > 0 ? singleFile()[0].name : 'No file selected'} />
+        <StateDisplay
+          label="Selected"
+          value={
+            singleFile().length > 0 ? singleFile()[0].name : 'No file selected'
+          }
+        />
       </DemoSection>
 
       <DemoSection
@@ -140,24 +151,66 @@ export default function FileUploadPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'onFilesChange', type: '(files: File[]) => void', default: 'required', description: 'Callback when files are added or removed' },
-            { name: 'accept', type: 'string', description: 'Accepted file types (e.g., "image/*,.pdf")' },
-            { name: 'multiple', type: 'boolean', default: 'false', description: 'Whether to allow multiple files' },
-            { name: 'maxSize', type: 'number', default: 'Infinity', description: 'Maximum file size in bytes' },
-            { name: 'maxFiles', type: 'number', default: 'Infinity', description: 'Maximum number of files allowed' },
-            { name: 'label', type: 'string', description: 'Label text above the upload zone' },
-            { name: 'description', type: 'string', description: 'Description text (e.g., "PNG, JPG up to 10MB")' },
-            { name: 'error', type: 'string', description: 'Error message to display' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the upload is disabled' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'onFilesChange',
+              type: '(files: File[]) => void',
+              default: 'required',
+              description: 'Callback when files are added or removed',
+            },
+            {
+              name: 'accept',
+              type: 'string',
+              description: 'Accepted file types (e.g., "image/*,.pdf")',
+            },
+            {
+              name: 'multiple',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether to allow multiple files',
+            },
+            {
+              name: 'maxSize',
+              type: 'number',
+              default: 'Infinity',
+              description: 'Maximum file size in bytes',
+            },
+            {
+              name: 'maxFiles',
+              type: 'number',
+              default: 'Infinity',
+              description: 'Maximum number of files allowed',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label text above the upload zone',
+            },
+            {
+              name: 'description',
+              type: 'string',
+              description: 'Description text (e.g., "PNG, JPG up to 10MB")',
+            },
+            {
+              name: 'error',
+              type: 'string',
+              description: 'Error message to display',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the upload is disabled',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection
-        title="Features"
-        card={false}
-      >
+      <DemoSection title="Features" card={false}>
         <Card class="p-6">
           <FeatureList
             items={[
@@ -173,10 +226,7 @@ export default function FileUploadPage() {
         </Card>
       </DemoSection>
 
-      <DemoSection
-        title="Form Example"
-        card={false}
-      >
+      <DemoSection title="Form Example" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`function DocumentUploadForm() {

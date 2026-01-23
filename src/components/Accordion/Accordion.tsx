@@ -20,7 +20,9 @@ export const Accordion: Component<AccordionProps> = (props) => {
 
   const toggle = (id: string) => {
     if (props.multiple) {
-      setOpenItems((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+      setOpenItems((prev) =>
+        prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+      );
     } else {
       setOpenItems((prev) => (prev.includes(id) ? [] : [id]));
     }

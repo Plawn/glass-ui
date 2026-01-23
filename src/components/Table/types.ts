@@ -1,5 +1,10 @@
 import type { JSX } from 'solid-js';
-import type { Alignment, BaseComponentProps, ComponentSize, LoadableProps } from '../../types';
+import type {
+  Alignment,
+  BaseComponentProps,
+  ComponentSize,
+  LoadableProps,
+} from '../../types';
 
 // =============================================================================
 // SORT TYPES

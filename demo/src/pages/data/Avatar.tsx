@@ -1,5 +1,5 @@
 import { Avatar, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function AvatarPage() {
   return (
@@ -9,7 +9,10 @@ export default function AvatarPage() {
         description="User avatars with image or initials fallback. Automatically generates initials and consistent colors from names."
       />
 
-      <DemoSection title="Import" code="import { Avatar } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Avatar } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Usage"
@@ -46,10 +49,7 @@ export default function AvatarPage() {
             src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
             name="Emily Davis"
           />
-          <Avatar
-            src="invalid-url.jpg"
-            name="Fallback User"
-          />
+          <Avatar src="invalid-url.jpg" name="Fallback User" />
         </div>
       </DemoSection>
 
@@ -160,8 +160,12 @@ export default function AvatarPage() {
               size="lg"
             />
             <div>
-              <div class="font-medium text-surface-900 dark:text-white">Tom Cook</div>
-              <div class="text-sm text-surface-500 dark:text-surface-400">tom@example.com</div>
+              <div class="font-medium text-surface-900 dark:text-white">
+                Tom Cook
+              </div>
+              <div class="text-sm text-surface-500 dark:text-surface-400">
+                tom@example.com
+              </div>
             </div>
           </div>
         </Card>
@@ -170,12 +174,42 @@ export default function AvatarPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'name', type: 'string', default: 'required', description: 'Name for generating initials' },
-            { name: 'src', type: 'string', default: '-', description: 'Image source URL' },
-            { name: 'size', type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'", default: "'md'", description: 'Avatar size' },
-            { name: 'fallbackColor', type: 'string', default: 'auto', description: 'Custom background color for initials' },
-            { name: 'alt', type: 'string', default: 'name', description: 'Alt text for the image' },
-            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+            {
+              name: 'name',
+              type: 'string',
+              default: 'required',
+              description: 'Name for generating initials',
+            },
+            {
+              name: 'src',
+              type: 'string',
+              default: '-',
+              description: 'Image source URL',
+            },
+            {
+              name: 'size',
+              type: "'xs' | 'sm' | 'md' | 'lg' | 'xl'",
+              default: "'md'",
+              description: 'Avatar size',
+            },
+            {
+              name: 'fallbackColor',
+              type: 'string',
+              default: 'auto',
+              description: 'Custom background color for initials',
+            },
+            {
+              name: 'alt',
+              type: 'string',
+              default: 'name',
+              description: 'Alt text for the image',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              default: '-',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

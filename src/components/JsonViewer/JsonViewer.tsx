@@ -41,11 +41,15 @@ const getValueColor = (type: string): string => {
 const JsonNode: Component<JsonNodeProps> = (props) => {
   const type = () => getValueType(props.value);
   const isExpandable = () => type() === 'object' || type() === 'array';
-  const [expanded, setExpanded] = createSignal(props.depth < props.initialExpandDepth);
+  const [expanded, setExpanded] = createSignal(
+    props.depth < props.initialExpandDepth,
+  );
 
   const entries = createMemo(() => {
     if (type() === 'array') {
-      return (props.value as JsonValue[]).map((v, i) => [String(i), v] as [string, JsonValue]);
+      return (props.value as JsonValue[]).map(
+        (v, i) => [String(i), v] as [string, JsonValue],
+      );
     }
     if (type() === 'object' && props.value !== null) {
       return Object.entries(props.value as Record<string, JsonValue>);
@@ -91,7 +95,11 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
               stroke-width="2"
               aria-hidden="true"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         </Show>
@@ -101,7 +109,9 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
 
         {/* Key name */}
         <Show when={props.keyName !== undefined}>
-          <span class="text-violet-600 dark:text-violet-400">"{props.keyName}"</span>
+          <span class="text-violet-600 dark:text-violet-400">
+            "{props.keyName}"
+          </span>
           <span class="text-surface-500 dark:text-surface-400 mx-1">:</span>
         </Show>
 
@@ -138,7 +148,9 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
               </>
             }
           >
-            <span class="text-surface-500 dark:text-surface-400">{brackets()[0]}</span>
+            <span class="text-surface-500 dark:text-surface-400">
+              {brackets()[0]}
+            </span>
           </Show>
         </Show>
       </div>
@@ -160,7 +172,9 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
         </div>
         <div class="flex items-center">
           <span class="w-4 flex-shrink-0" />
-          <span class="text-surface-500 dark:text-surface-400">{brackets()[1]}</span>
+          <span class="text-surface-500 dark:text-surface-400">
+            {brackets()[1]}
+          </span>
           <Show when={!props.isLast}>
             <span class="text-surface-500 dark:text-surface-400">,</span>
           </Show>
@@ -203,7 +217,9 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
   };
 
   return (
-    <div class={`relative group rounded-xl overflow-hidden glass-card ${props.class ?? ''}`}>
+    <div
+      class={`relative group rounded-xl overflow-hidden glass-card ${props.class ?? ''}`}
+    >
       {/* Toolbar */}
       <div class="absolute top-3 right-3 z-10 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         <button
@@ -283,9 +299,15 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
               stroke-width="2"
               aria-hidden="true"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5 13l4 4L19 7"
+              />
             </svg>
-            <span class="text-emerald-600 dark:text-emerald-400">{copiedLabel()}</span>
+            <span class="text-emerald-600 dark:text-emerald-400">
+              {copiedLabel()}
+            </span>
           </Show>
         </button>
       </div>

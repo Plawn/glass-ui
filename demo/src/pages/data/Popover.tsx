@@ -1,6 +1,12 @@
+import { Avatar, Button, Popover } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { Popover, Button, Avatar } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill, FeatureList } from '../../components/demo';
+import {
+  CodePill,
+  DemoSection,
+  FeatureList,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 export default function PopoverPage() {
   const [controlled, setControlled] = createSignal(false);
@@ -12,7 +18,10 @@ export default function PopoverPage() {
         description="Click-triggered floating content panels for displaying rich interactive content."
       />
 
-      <DemoSection title="Import" code="import { Popover } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Popover } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Usage"
@@ -25,11 +34,11 @@ export default function PopoverPage() {
 </Popover>`}
       >
         <div class="flex items-center justify-center">
-          <Popover
-            trigger={<Button>Open Popover</Button>}
-          >
+          <Popover trigger={<Button>Open Popover</Button>}>
             <div class="p-4">
-              <p class="text-surface-700 dark:text-surface-300">This is the popover content!</p>
+              <p class="text-surface-700 dark:text-surface-300">
+                This is the popover content!
+              </p>
             </div>
           </Popover>
         </div>
@@ -57,7 +66,9 @@ export default function PopoverPage() {
             placement="bottom"
           >
             <div class="p-4 w-48">
-              <p class="text-sm text-surface-600 dark:text-surface-400">Placed at the bottom (default)</p>
+              <p class="text-sm text-surface-600 dark:text-surface-400">
+                Placed at the bottom (default)
+              </p>
             </div>
           </Popover>
           <Popover
@@ -65,7 +76,9 @@ export default function PopoverPage() {
             placement="top"
           >
             <div class="p-4 w-48">
-              <p class="text-sm text-surface-600 dark:text-surface-400">Placed at the top</p>
+              <p class="text-sm text-surface-600 dark:text-surface-400">
+                Placed at the top
+              </p>
             </div>
           </Popover>
           <Popover
@@ -73,7 +86,9 @@ export default function PopoverPage() {
             placement="left"
           >
             <div class="p-4 w-48">
-              <p class="text-sm text-surface-600 dark:text-surface-400">Placed on the left</p>
+              <p class="text-sm text-surface-600 dark:text-surface-400">
+                Placed on the left
+              </p>
             </div>
           </Popover>
           <Popover
@@ -81,7 +96,9 @@ export default function PopoverPage() {
             placement="right"
           >
             <div class="p-4 w-48">
-              <p class="text-sm text-surface-600 dark:text-surface-400">Placed on the right</p>
+              <p class="text-sm text-surface-600 dark:text-surface-400">
+                Placed on the right
+              </p>
             </div>
           </Popover>
         </div>
@@ -97,12 +114,11 @@ export default function PopoverPage() {
 </Popover>`}
       >
         <div class="flex items-center justify-center gap-4">
-          <Popover
-            trigger={<Button>With Arrow</Button>}
-            showArrow
-          >
+          <Popover trigger={<Button>With Arrow</Button>} showArrow>
             <div class="p-4 w-48">
-              <p class="text-sm text-surface-600 dark:text-surface-400">This popover has an arrow pointing to the trigger</p>
+              <p class="text-sm text-surface-600 dark:text-surface-400">
+                This popover has an arrow pointing to the trigger
+              </p>
             </div>
           </Popover>
         </div>
@@ -137,7 +153,10 @@ export default function PopoverPage() {
               </Button>
             </div>
           </Popover>
-          <Button variant="outline" onClick={() => setControlled(!controlled())}>
+          <Button
+            variant="outline"
+            onClick={() => setControlled(!controlled())}
+          >
             Toggle: {controlled() ? 'Open' : 'Closed'}
           </Button>
         </div>
@@ -181,9 +200,21 @@ export default function PopoverPage() {
             trigger={
               <div class="flex items-center gap-2 cursor-pointer">
                 <Avatar name="Sarah Wilson" size="sm" />
-                <span class="text-surface-900 dark:text-white font-medium">Sarah Wilson</span>
-                <svg class="w-4 h-4 text-surface-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <span class="text-surface-900 dark:text-white font-medium">
+                  Sarah Wilson
+                </span>
+                <svg
+                  class="w-4 h-4 text-surface-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </div>
             }
@@ -193,7 +224,9 @@ export default function PopoverPage() {
               <div class="flex items-center gap-3 mb-4">
                 <Avatar name="Sarah Wilson" size="lg" />
                 <div>
-                  <p class="font-semibold text-surface-900 dark:text-white">Sarah Wilson</p>
+                  <p class="font-semibold text-surface-900 dark:text-white">
+                    Sarah Wilson
+                  </p>
                   <p class="text-sm text-surface-500">sarah@example.com</p>
                 </div>
               </div>
@@ -237,7 +270,9 @@ export default function PopoverPage() {
             scrollBehavior="close"
           >
             <div class="p-4 w-48">
-              <p class="text-sm text-surface-600 dark:text-surface-400">Closes when you scroll (default)</p>
+              <p class="text-sm text-surface-600 dark:text-surface-400">
+                Closes when you scroll (default)
+              </p>
             </div>
           </Popover>
           <Popover
@@ -245,7 +280,9 @@ export default function PopoverPage() {
             scrollBehavior="none"
           >
             <div class="p-4 w-48">
-              <p class="text-sm text-surface-600 dark:text-surface-400">Stays open when scrolling</p>
+              <p class="text-sm text-surface-600 dark:text-surface-400">
+                Stays open when scrolling
+              </p>
             </div>
           </Popover>
         </div>
@@ -258,7 +295,10 @@ export default function PopoverPage() {
             'Closes on click outside the popover',
             'Closes on Escape key press',
             'Positions with viewport boundary detection',
-            <>Uses <CodePill>aria-expanded</CodePill> and <CodePill>aria-haspopup</CodePill> for accessibility</>,
+            <>
+              Uses <CodePill>aria-expanded</CodePill> and{' '}
+              <CodePill>aria-haspopup</CodePill> for accessibility
+            </>,
           ]}
         />
       </DemoSection>
@@ -266,16 +306,66 @@ export default function PopoverPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'trigger', type: 'JSX.Element', default: 'required', description: 'Trigger element' },
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Popover content' },
-            { name: 'placement', type: 'Placement', default: "'bottom'", description: 'Position relative to trigger' },
-            { name: 'open', type: 'boolean', default: '-', description: 'Controlled open state' },
-            { name: 'onOpenChange', type: '(open: boolean) => void', default: '-', description: 'Open state change callback' },
-            { name: 'showArrow', type: 'boolean', default: 'false', description: 'Show arrow pointing to trigger' },
-            { name: 'offset', type: 'number', default: '8', description: 'Distance from trigger (px)' },
-            { name: 'contentClass', type: 'string', default: '-', description: 'CSS classes for content' },
-            { name: 'scrollBehavior', type: "'close' | 'lock' | 'none'", default: "'close'", description: 'Behavior on scroll' },
-            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+            {
+              name: 'trigger',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Trigger element',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Popover content',
+            },
+            {
+              name: 'placement',
+              type: 'Placement',
+              default: "'bottom'",
+              description: 'Position relative to trigger',
+            },
+            {
+              name: 'open',
+              type: 'boolean',
+              default: '-',
+              description: 'Controlled open state',
+            },
+            {
+              name: 'onOpenChange',
+              type: '(open: boolean) => void',
+              default: '-',
+              description: 'Open state change callback',
+            },
+            {
+              name: 'showArrow',
+              type: 'boolean',
+              default: 'false',
+              description: 'Show arrow pointing to trigger',
+            },
+            {
+              name: 'offset',
+              type: 'number',
+              default: '8',
+              description: 'Distance from trigger (px)',
+            },
+            {
+              name: 'contentClass',
+              type: 'string',
+              default: '-',
+              description: 'CSS classes for content',
+            },
+            {
+              name: 'scrollBehavior',
+              type: "'close' | 'lock' | 'none'",
+              default: "'close'",
+              description: 'Behavior on scroll',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              default: '-',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

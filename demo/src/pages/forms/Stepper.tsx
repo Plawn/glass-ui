@@ -1,6 +1,12 @@
-import { Stepper, CodeBlock, Card, Button } from 'glass-ui-solid';
+import { Button, Card, CodeBlock, Stepper } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay, VariantShowcase } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+  VariantShowcase,
+} from '../../components/demo';
 
 export default function StepperPage() {
   const [currentStep, setCurrentStep] = createSignal(1);
@@ -56,10 +62,7 @@ const steps = [
   currentStep={currentStep()}
 />`}
       >
-        <Stepper
-          steps={basicSteps}
-          currentStep={currentStep()}
-        />
+        <Stepper steps={basicSteps} currentStep={currentStep()} />
         <div class="flex gap-2 mt-6 justify-center">
           <Button
             variant="secondary"
@@ -71,13 +74,18 @@ const steps = [
           </Button>
           <Button
             size="sm"
-            onClick={() => setCurrentStep((s) => Math.min(basicSteps.length - 1, s + 1))}
+            onClick={() =>
+              setCurrentStep((s) => Math.min(basicSteps.length - 1, s + 1))
+            }
             disabled={currentStep() === basicSteps.length - 1}
           >
             Next
           </Button>
         </div>
-        <StateDisplay label="Step" value={`${currentStep() + 1} of ${basicSteps.length}`} />
+        <StateDisplay
+          label="Step"
+          value={`${currentStep() + 1} of ${basicSteps.length}`}
+        />
       </DemoSection>
 
       <DemoSection
@@ -94,10 +102,7 @@ const steps = [
   currentStep={1}
 />`}
       >
-        <Stepper
-          steps={detailedSteps}
-          currentStep={1}
-        />
+        <Stepper steps={detailedSteps} currentStep={1} />
       </DemoSection>
 
       <DemoSection
@@ -124,7 +129,9 @@ const steps = [
           </Button>
           <Button
             size="sm"
-            onClick={() => setVerticalStep((s) => Math.min(checkoutSteps.length - 1, s + 1))}
+            onClick={() =>
+              setVerticalStep((s) => Math.min(checkoutSteps.length - 1, s + 1))
+            }
             disabled={verticalStep() === checkoutSteps.length - 1}
           >
             Next
@@ -147,7 +154,10 @@ const steps = [
           onStepClick={setClickableStep}
           allowClickPrevious
         />
-        <StateDisplay label="Tip" value="Click on completed steps to navigate back" />
+        <StateDisplay
+          label="Tip"
+          value="Click on completed steps to navigate back"
+        />
       </DemoSection>
 
       <DemoSection
@@ -157,31 +167,28 @@ const steps = [
 <Stepper steps={steps} currentStep={1} size="lg" />`}
       >
         <VariantShowcase variants={['sm', 'md', 'lg'] as const} label="Size">
-          {(size) => (
-            <Stepper
-              steps={basicSteps}
-              currentStep={1}
-              size={size}
-            />
-          )}
+          {(size) => <Stepper steps={basicSteps} currentStep={1} size={size} />}
         </VariantShowcase>
       </DemoSection>
 
-      <DemoSection
-        title="Step States"
-        card={false}
-      >
+      <DemoSection title="Step States" card={false}>
         <Card class="p-6 space-y-6">
           <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">All completed</p>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
+              All completed
+            </p>
             <Stepper steps={basicSteps} currentStep={4} />
           </div>
           <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">First step</p>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
+              First step
+            </p>
             <Stepper steps={basicSteps} currentStep={0} />
           </div>
           <div>
-            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">Middle step</p>
+            <p class="text-sm text-surface-500 dark:text-surface-400 mb-3">
+              Middle step
+            </p>
             <Stepper steps={basicSteps} currentStep={2} />
           </div>
         </Card>
@@ -190,21 +197,51 @@ const steps = [
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'steps', type: 'StepperStep[]', default: 'required', description: 'Array of step configurations' },
-            { name: 'currentStep', type: 'number', default: 'required', description: 'Current active step index (0-based)' },
-            { name: 'onStepClick', type: '(step: number) => void', description: 'Callback when a step is clicked' },
-            { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Layout orientation' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
-            { name: 'allowClickPrevious', type: 'boolean', default: 'false', description: 'Allow clicking on completed steps' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'steps',
+              type: 'StepperStep[]',
+              default: 'required',
+              description: 'Array of step configurations',
+            },
+            {
+              name: 'currentStep',
+              type: 'number',
+              default: 'required',
+              description: 'Current active step index (0-based)',
+            },
+            {
+              name: 'onStepClick',
+              type: '(step: number) => void',
+              description: 'Callback when a step is clicked',
+            },
+            {
+              name: 'orientation',
+              type: "'horizontal' | 'vertical'",
+              default: "'horizontal'",
+              description: 'Layout orientation',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant',
+            },
+            {
+              name: 'allowClickPrevious',
+              type: 'boolean',
+              default: 'false',
+              description: 'Allow clicking on completed steps',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection
-        title="StepperStep Interface"
-        card={false}
-      >
+      <DemoSection title="StepperStep Interface" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`interface StepperStep {
@@ -220,10 +257,7 @@ const steps = [
         </Card>
       </DemoSection>
 
-      <DemoSection
-        title="Multi-Step Form Example"
-        card={false}
-      >
+      <DemoSection title="Multi-Step Form Example" card={false}>
         <Card class="p-6">
           <CodeBlock
             code={`function MultiStepForm() {

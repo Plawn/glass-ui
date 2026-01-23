@@ -1,10 +1,20 @@
 /* Glass Background */
 .glass-background {
-  background: linear-gradient(to bottom right, var(--bg-from), var(--bg-via), var(--bg-to));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-from),
+    var(--bg-via),
+    var(--bg-to)
+  );
 }
 
 .dark .glass-background {
-  background: linear-gradient(to bottom right, var(--bg-from-dark), var(--bg-via-dark), var(--bg-to-dark));
+  background: linear-gradient(
+    to bottom right,
+    var(--bg-from-dark),
+    var(--bg-via-dark),
+    var(--bg-to-dark)
+  );
 }
 
 /* Blob opacity */
@@ -18,7 +28,8 @@
 
 /* Blob animations */
 @keyframes blob-float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1) rotate(0deg);
   }
   10% {
@@ -51,7 +62,8 @@
 }
 
 @keyframes blob-morph {
-  0%, 100% {
+  0%,
+  100% {
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
   }
   25% {
@@ -66,7 +78,8 @@
 }
 
 @keyframes blob-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: var(--blob-opacity, 0.25);
     filter: blur(48px);
   }
@@ -77,15 +90,15 @@
 }
 
 .dark .glass-blob-animate {
-  animation:
-    blob-float var(--blob-duration, 20s) ease-in-out infinite,
+  animation: blob-float var(--blob-duration, 20s) ease-in-out infinite,
     blob-morph calc(var(--blob-duration, 20s) * 0.8) ease-in-out infinite,
     blob-pulse-dark calc(var(--blob-duration, 20s) * 0.6) ease-in-out infinite;
   animation-delay: var(--blob-delay, 0s);
 }
 
 @keyframes blob-pulse-dark {
-  0%, 100% {
+  0%,
+  100% {
     opacity: var(--blob-opacity-dark, 0.15);
     filter: blur(48px);
   }
@@ -97,8 +110,7 @@
 
 .glass-blob-animate {
   border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-  animation:
-    blob-float var(--blob-duration, 20s) ease-in-out infinite,
+  animation: blob-float var(--blob-duration, 20s) ease-in-out infinite,
     blob-morph calc(var(--blob-duration, 20s) * 0.8) ease-in-out infinite,
     blob-pulse calc(var(--blob-duration, 20s) * 0.6) ease-in-out infinite;
   animation-delay: var(--blob-delay, 0s);

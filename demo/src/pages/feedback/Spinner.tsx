@@ -1,5 +1,10 @@
-import { Spinner, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, VariantShowcase } from '../../components/demo';
+import { Card, Spinner } from 'glass-ui-solid';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  VariantShowcase,
+} from '../../components/demo';
 
 export default function SpinnerPage() {
   return (
@@ -9,7 +14,10 @@ export default function SpinnerPage() {
         description="A loading indicator component with multiple sizes, colors, and optional label support."
       />
 
-      <DemoSection title="Import" code="import { Spinner } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Spinner } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Basic Usage">
         <Spinner />
@@ -68,7 +76,9 @@ export default function SpinnerPage() {
             <Spinner color="default" label="Loading..." />
           </Card>
           <Card class="p-6 bg-surface-800">
-            <p class="text-sm text-surface-400 mb-3">White (for dark backgrounds)</p>
+            <p class="text-sm text-surface-400 mb-3">
+              White (for dark backgrounds)
+            </p>
             <Spinner color="white" label="Loading..." />
           </Card>
         </div>
@@ -88,11 +98,34 @@ export default function SpinnerPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'size', type: "'sm' | 'md' | 'lg' | 'xl'", default: "'md'", description: 'Spinner size' },
-            { name: 'color', type: "'default' | 'white'", default: "'default'", description: 'Color variant' },
-            { name: 'label', type: 'string', description: 'Optional label text' },
-            { name: 'centered', type: 'boolean', default: 'false', description: 'Center in parent container' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg' | 'xl'",
+              default: "'md'",
+              description: 'Spinner size',
+            },
+            {
+              name: 'color',
+              type: "'default' | 'white'",
+              default: "'default'",
+              description: 'Color variant',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Optional label text',
+            },
+            {
+              name: 'centered',
+              type: 'boolean',
+              default: 'false',
+              description: 'Center in parent container',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

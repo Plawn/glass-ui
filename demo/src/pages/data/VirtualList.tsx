@@ -1,7 +1,12 @@
-import { createSignal, For } from 'solid-js';
-import { VirtualList, Avatar, Badge, Button } from 'glass-ui-solid';
+import { Avatar, Badge, Button, VirtualList } from 'glass-ui-solid';
 import type { VirtualHandle } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import { For, createSignal } from 'solid-js';
+import {
+  CodePill,
+  DemoSection,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 // Sample data generator
 interface ListItem {
@@ -38,12 +43,14 @@ const generateVariableItems = (count: number): VariableItem[] =>
       id: i + 1,
       type,
       title: `Item ${i + 1}`,
-      description: type !== 'compact'
-        ? `This is a ${type} item with more content. Lorem ipsum dolor sit amet.`
-        : undefined,
-      tags: type === 'expanded'
-        ? ['Tag A', 'Tag B', 'Tag C', 'Important']
-        : undefined,
+      description:
+        type !== 'compact'
+          ? `This is a ${type} item with more content. Lorem ipsum dolor sit amet.`
+          : undefined,
+      tags:
+        type === 'expanded'
+          ? ['Tag A', 'Tag B', 'Tag C', 'Important']
+          : undefined,
     };
   });
 
@@ -66,7 +73,10 @@ export default function VirtualListPage() {
         description="Virtualized list component for efficiently rendering large datasets. Only renders visible items, enabling smooth scrolling through thousands of items."
       />
 
-      <DemoSection title="Import" code="import { VirtualList } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { VirtualList } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Example"
@@ -105,9 +115,7 @@ export default function VirtualListPage() {
                   {item.email}
                 </div>
               </div>
-              <Badge size="sm">
-                {item.status}
-              </Badge>
+              <Badge size="sm">{item.status}</Badge>
             </div>
           )}
           style={{ height: '400px' }}
@@ -116,7 +124,13 @@ export default function VirtualListPage() {
 
       <DemoSection
         title="Fixed Item Height (Optimized)"
-        description={<>When all items have the same height, use <CodePill>fixedItemHeight</CodePill> for better performance. This avoids measuring each item dynamically.</>}
+        description={
+          <>
+            When all items have the same height, use{' '}
+            <CodePill>fixedItemHeight</CodePill> for better performance. This
+            avoids measuring each item dynamically.
+          </>
+        }
         code={`<VirtualList
   data={items}
   fixedItemHeight={64}
@@ -137,7 +151,9 @@ export default function VirtualListPage() {
             <div class="flex items-center gap-3 h-16 px-4 border-b border-surface-200 dark:border-surface-700">
               <span class="text-surface-400 w-12 text-right">#{item.id}</span>
               <Avatar src={item.avatar} name={item.name} size="sm" />
-              <span class="font-medium text-surface-900 dark:text-white">{item.name}</span>
+              <span class="font-medium text-surface-900 dark:text-white">
+                {item.name}
+              </span>
             </div>
           )}
           style={{ height: '320px' }}
@@ -146,7 +162,14 @@ export default function VirtualListPage() {
 
       <DemoSection
         title="Variable Height Items"
-        description={<>Items can have different heights. The virtualizer automatically measures each item and adjusts. Use <CodePill>defaultItemHeight</CodePill> to set an estimated height for initial render.</>}
+        description={
+          <>
+            Items can have different heights. The virtualizer automatically
+            measures each item and adjusts. Use{' '}
+            <CodePill>defaultItemHeight</CodePill> to set an estimated height
+            for initial render.
+          </>
+        }
         code={`interface VariableItem {
   id: number;
   type: 'compact' | 'normal' | 'expanded';
@@ -187,14 +210,26 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
           data={variableItems}
           defaultItemHeight={80}
           itemContent={(index, item) => (
-            <div class={`p-4 border-b border-surface-200 dark:border-surface-700 ${
-              item.type === 'compact' ? 'bg-surface-50 dark:bg-surface-800/50' :
-              item.type === 'expanded' ? 'bg-primary-50/30 dark:bg-primary-900/10' : ''
-            }`}>
+            <div
+              class={`p-4 border-b border-surface-200 dark:border-surface-700 ${
+                item.type === 'compact'
+                  ? 'bg-surface-50 dark:bg-surface-800/50'
+                  : item.type === 'expanded'
+                    ? 'bg-primary-50/30 dark:bg-primary-900/10'
+                    : ''
+              }`}
+            >
               <div class="flex items-center gap-2">
-                <span class="text-xs text-surface-400 font-mono w-8">#{item.id}</span>
-                <span class="font-medium text-surface-900 dark:text-white">{item.title}</span>
-                <Badge size="sm" variant={item.type === 'expanded' ? 'info' : 'default'}>
+                <span class="text-xs text-surface-400 font-mono w-8">
+                  #{item.id}
+                </span>
+                <span class="font-medium text-surface-900 dark:text-white">
+                  {item.title}
+                </span>
+                <Badge
+                  size="sm"
+                  variant={item.type === 'expanded' ? 'info' : 'default'}
+                >
                   {item.type}
                 </Badge>
               </div>
@@ -220,7 +255,12 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
 
       <DemoSection
         title="Scroll to Index"
-        description={<>Use the <CodePill>ref</CodePill> prop to get a handle for programmatic scrolling.</>}
+        description={
+          <>
+            Use the <CodePill>ref</CodePill> prop to get a handle for
+            programmatic scrolling.
+          </>
+        }
         code={`let listRef: VirtualHandle;
 
 <Button onClick={() => listRef.scrollToIndex(500)}>
@@ -247,7 +287,9 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
             <input
               type="number"
               value={scrollIndex()}
-              onInput={(e) => setScrollIndex(parseInt(e.currentTarget.value) || 0)}
+              onInput={(e) =>
+                setScrollIndex(Number.parseInt(e.currentTarget.value) || 0)
+              }
               class="w-24 px-3 py-2 border border-surface-300 dark:border-surface-600 rounded-lg bg-white dark:bg-surface-800 text-surface-900 dark:text-white"
               min={0}
               max={9999}
@@ -255,7 +297,16 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
             <Button onClick={() => listRef?.scrollToIndex(scrollIndex())}>
               Scroll to Index
             </Button>
-            <Button variant="secondary" onClick={() => listRef?.scrollToIndex({ index: scrollIndex(), align: 'center', behavior: 'smooth' })}>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                listRef?.scrollToIndex({
+                  index: scrollIndex(),
+                  align: 'center',
+                  behavior: 'smooth',
+                })
+              }
+            >
               Smooth Scroll (Center)
             </Button>
           </div>
@@ -266,7 +317,9 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
             itemContent={(index, item) => (
               <div class="flex items-center gap-3 h-12 px-4 border-b border-surface-200 dark:border-surface-700">
                 <span class="text-surface-400 w-16">Row {index}</span>
-                <span class="font-medium text-surface-900 dark:text-white">{item.name}</span>
+                <span class="font-medium text-surface-900 dark:text-white">
+                  {item.name}
+                </span>
               </div>
             )}
             style={{ height: '300px' }}
@@ -276,7 +329,12 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
 
       <DemoSection
         title="With Header and Footer"
-        description={<>Add static header and footer content using the <CodePill>Header</CodePill> and <CodePill>Footer</CodePill> props.</>}
+        description={
+          <>
+            Add static header and footer content using the{' '}
+            <CodePill>Header</CodePill> and <CodePill>Footer</CodePill> props.
+          </>
+        }
         code={`<VirtualList
   data={items}
   Header={() => (
@@ -319,7 +377,13 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
 
       <DemoSection
         title="With Total Count"
-        description={<>When you don't have all data upfront, use <CodePill>totalCount</CodePill> instead of <CodePill>data</CodePill>. This is useful for infinite scroll scenarios.</>}
+        description={
+          <>
+            When you don't have all data upfront, use{' '}
+            <CodePill>totalCount</CodePill> instead of <CodePill>data</CodePill>
+            . This is useful for infinite scroll scenarios.
+          </>
+        }
         code={`<VirtualList
   totalCount={10000}
   itemContent={(index) => (
@@ -333,7 +397,9 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
           fixedItemHeight={48}
           itemContent={(index) => (
             <div class="flex items-center h-12 px-4 border-b border-surface-200 dark:border-surface-700">
-              <span class="text-surface-900 dark:text-white">Row {index + 1}</span>
+              <span class="text-surface-900 dark:text-white">
+                Row {index + 1}
+              </span>
             </div>
           )}
           style={{ height: '300px' }}
@@ -343,19 +409,84 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'data', type: 'readonly D[]', default: '-', description: 'Array of data items' },
-            { name: 'totalCount', type: 'number', default: '-', description: 'Total count (alternative to data)' },
-            { name: 'itemContent', type: '(index, data, context) => JSX.Element', default: 'required', description: 'Item renderer function' },
-            { name: 'fixedItemHeight', type: 'number', default: '-', description: 'Fixed height optimization' },
-            { name: 'defaultItemHeight', type: 'number', default: '50', description: 'Estimated item height' },
-            { name: 'overscan', type: 'number', default: '5', description: 'Extra items to render outside viewport' },
-            { name: 'initialScrollTop', type: 'number', default: '-', description: 'Initial scroll position' },
-            { name: 'initialTopMostItemIndex', type: 'number', default: '-', description: 'Initial item to show' },
-            { name: 'Header', type: '() => JSX.Element', default: '-', description: 'Header component' },
-            { name: 'Footer', type: '() => JSX.Element', default: '-', description: 'Footer component' },
-            { name: 'EmptyPlaceholder', type: '() => JSX.Element', default: '-', description: 'Empty state component' },
-            { name: 'endReached', type: '(index) => void', default: '-', description: 'Called when end is reached' },
-            { name: 'ref', type: '(handle) => void', default: '-', description: 'Get imperative handle' },
+            {
+              name: 'data',
+              type: 'readonly D[]',
+              default: '-',
+              description: 'Array of data items',
+            },
+            {
+              name: 'totalCount',
+              type: 'number',
+              default: '-',
+              description: 'Total count (alternative to data)',
+            },
+            {
+              name: 'itemContent',
+              type: '(index, data, context) => JSX.Element',
+              default: 'required',
+              description: 'Item renderer function',
+            },
+            {
+              name: 'fixedItemHeight',
+              type: 'number',
+              default: '-',
+              description: 'Fixed height optimization',
+            },
+            {
+              name: 'defaultItemHeight',
+              type: 'number',
+              default: '50',
+              description: 'Estimated item height',
+            },
+            {
+              name: 'overscan',
+              type: 'number',
+              default: '5',
+              description: 'Extra items to render outside viewport',
+            },
+            {
+              name: 'initialScrollTop',
+              type: 'number',
+              default: '-',
+              description: 'Initial scroll position',
+            },
+            {
+              name: 'initialTopMostItemIndex',
+              type: 'number',
+              default: '-',
+              description: 'Initial item to show',
+            },
+            {
+              name: 'Header',
+              type: '() => JSX.Element',
+              default: '-',
+              description: 'Header component',
+            },
+            {
+              name: 'Footer',
+              type: '() => JSX.Element',
+              default: '-',
+              description: 'Footer component',
+            },
+            {
+              name: 'EmptyPlaceholder',
+              type: '() => JSX.Element',
+              default: '-',
+              description: 'Empty state component',
+            },
+            {
+              name: 'endReached',
+              type: '(index) => void',
+              default: '-',
+              description: 'Called when end is reached',
+            },
+            {
+              name: 'ref',
+              type: '(handle) => void',
+              default: '-',
+              description: 'Get imperative handle',
+            },
           ]}
         />
       </DemoSection>
@@ -364,10 +495,27 @@ const variableItems = Array.from({ length: 5000 }, (_, i) => ({
         <PropsTable
           compact
           props={[
-            { name: 'scrollToIndex(location)', type: '', description: 'Scroll to a specific index. Accepts number or { index, align, behavior }' },
-            { name: 'scrollTo({ top, behavior })', type: '', description: 'Scroll to a specific offset' },
-            { name: 'scrollBy({ top, behavior })', type: '', description: 'Scroll by a delta amount' },
-            { name: 'getScrollTop()', type: '', description: 'Get current scroll position' },
+            {
+              name: 'scrollToIndex(location)',
+              type: '',
+              description:
+                'Scroll to a specific index. Accepts number or { index, align, behavior }',
+            },
+            {
+              name: 'scrollTo({ top, behavior })',
+              type: '',
+              description: 'Scroll to a specific offset',
+            },
+            {
+              name: 'scrollBy({ top, behavior })',
+              type: '',
+              description: 'Scroll by a delta amount',
+            },
+            {
+              name: 'getScrollTop()',
+              type: '',
+              description: 'Get current scroll position',
+            },
           ]}
         />
       </DemoSection>

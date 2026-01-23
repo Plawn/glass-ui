@@ -15,7 +15,9 @@ export interface VariantShowcaseProps<T extends string> {
  *   {(size) => <Button size={size}>Button</Button>}
  * </VariantShowcase>
  */
-export function VariantShowcase<T extends string>(props: VariantShowcaseProps<T>) {
+export function VariantShowcase<T extends string>(
+  props: VariantShowcaseProps<T>,
+) {
   const label = () => props.label ?? 'Variant';
   const columns = () => props.columns ?? 1;
 

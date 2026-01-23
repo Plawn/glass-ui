@@ -26,7 +26,10 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
   });
 
   const hasThinking = createMemo(
-    () => isAssistant() && props.message.thinking && props.message.thinking.length > 0
+    () =>
+      isAssistant() &&
+      props.message.thinking &&
+      props.message.thinking.length > 0,
   );
 
   const isError = createMemo(() => props.message.status === 'error');
@@ -34,7 +37,8 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
 
   const bubbleStyleClass = createMemo(() => {
     if (isUser()) return 'bg-accent-500 text-white rounded-br-md';
-    if (isSystem()) return 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 text-center text-sm italic';
+    if (isSystem())
+      return 'bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-400 text-center text-sm italic';
     return 'glass-card rounded-bl-md';
   });
 
@@ -45,18 +49,12 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
       {/* Avatar */}
       <Show when={!isSystem()}>
         <div class="shrink-0 pt-1">
-          <Avatar
-            name={displayName()}
-            src={avatarUrl()}
-            size="sm"
-          />
+          <Avatar name={displayName()} src={avatarUrl()} size="sm" />
         </div>
       </Show>
 
       {/* Message bubble */}
-      <div
-        class={`max-w-[80%] ${isSystem() ? 'max-w-[90%]' : ''}`}
-      >
+      <div class={`max-w-[80%] ${isSystem() ? 'max-w-[90%]' : ''}`}>
         {/* Message content */}
         <div
           class={`rounded-2xl px-4 py-2.5 ${bubbleStyleClass()} ${isError() ? 'border border-red-500/50' : ''} ${

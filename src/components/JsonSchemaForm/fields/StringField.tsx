@@ -13,7 +13,10 @@ export const StringField: Component<BaseFieldProps> = (props) => {
 
   const isMultiline = () => {
     const format = props.schema.format;
-    return format === 'textarea' || (props.schema.maxLength && props.schema.maxLength > 200);
+    return (
+      format === 'textarea' ||
+      (props.schema.maxLength && props.schema.maxLength > 200)
+    );
   };
 
   return (

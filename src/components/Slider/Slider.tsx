@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { createMemo, For, Show } from 'solid-js';
+import { For, Show, createMemo } from 'solid-js';
 import { TEXT_SIZES } from '../../constants';
 import type { SliderProps, SliderSize } from './types';
 
@@ -96,12 +96,18 @@ export const Slider: Component<SliderProps> = (props) => {
 
       {/* Marks */}
       <Show when={props.marks && props.marks.length > 0}>
-        <div class="relative mt-1" style={{ height: props.marks?.some((m) => m.label) ? '20px' : '8px' }}>
+        <div
+          class="relative mt-1"
+          style={{ height: props.marks?.some((m) => m.label) ? '20px' : '8px' }}
+        >
           <For each={props.marks}>
             {(mark) => (
               <div
                 class="absolute flex flex-col items-center"
-                style={{ left: `${getMarkPosition(mark.value)}%`, transform: 'translateX(-50%)' }}
+                style={{
+                  left: `${getMarkPosition(mark.value)}%`,
+                  transform: 'translateX(-50%)',
+                }}
               >
                 {/* Mark tick */}
                 <div

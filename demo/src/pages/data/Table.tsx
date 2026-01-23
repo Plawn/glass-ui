@@ -1,7 +1,12 @@
-import { Table, Badge, Button } from 'glass-ui-solid';
+import { Badge, Button, Table } from 'glass-ui-solid';
 import type { TableColumn } from 'glass-ui-solid';
-import { createSignal, For, Show } from 'solid-js';
-import { PageHeader, DemoSection, StateDisplay, VariantShowcase } from '../../components/demo';
+import { For, Show, createSignal } from 'solid-js';
+import {
+  DemoSection,
+  PageHeader,
+  StateDisplay,
+  VariantShowcase,
+} from '../../components/demo';
 
 interface User {
   id: number;
@@ -20,11 +25,41 @@ interface UserWithDetails extends User {
 }
 
 const sampleData: User[] = [
-  { id: 1, name: 'Alice Johnson', email: 'alice@example.com', role: 'Admin', status: 'active' },
-  { id: 2, name: 'Bob Smith', email: 'bob@example.com', role: 'User', status: 'active' },
-  { id: 3, name: 'Carol White', email: 'carol@example.com', role: 'Editor', status: 'inactive' },
-  { id: 4, name: 'David Brown', email: 'david@example.com', role: 'User', status: 'active' },
-  { id: 5, name: 'Eve Davis', email: 'eve@example.com', role: 'Moderator', status: 'pending' },
+  {
+    id: 1,
+    name: 'Alice Johnson',
+    email: 'alice@example.com',
+    role: 'Admin',
+    status: 'active',
+  },
+  {
+    id: 2,
+    name: 'Bob Smith',
+    email: 'bob@example.com',
+    role: 'User',
+    status: 'active',
+  },
+  {
+    id: 3,
+    name: 'Carol White',
+    email: 'carol@example.com',
+    role: 'Editor',
+    status: 'inactive',
+  },
+  {
+    id: 4,
+    name: 'David Brown',
+    email: 'david@example.com',
+    role: 'User',
+    status: 'active',
+  },
+  {
+    id: 5,
+    name: 'Eve Davis',
+    email: 'eve@example.com',
+    role: 'Moderator',
+    status: 'pending',
+  },
 ];
 
 // Expanded data with more details for expandable rows demo
@@ -112,7 +147,12 @@ const columnsWithStatus: TableColumn<User>[] = [
     header: 'Status',
     render: (value: unknown) => {
       const status = value as string;
-      const variant = status === 'active' ? 'success' : status === 'pending' ? 'warning' : 'error';
+      const variant =
+        status === 'active'
+          ? 'success'
+          : status === 'pending'
+            ? 'warning'
+            : 'error';
       return <Badge variant={variant}>{status}</Badge>;
     },
   },
@@ -186,13 +226,18 @@ const data = [
         card={false}
       >
         <div class="space-y-4">
-          <StateDisplay label="Selected" value={`${selectedKeys().size} row(s)`} />
+          <StateDisplay
+            label="Selected"
+            value={`${selectedKeys().size} row(s)`}
+          />
           <Table
             columns={basicColumns}
             data={sampleData}
             selectable="multiple"
             selectedKeys={selectedKeys()}
-            onSelectionChange={(keys: Set<number | string>) => setSelectedKeys(keys as Set<number>)}
+            onSelectionChange={(keys: Set<number | string>) =>
+              setSelectedKeys(keys as Set<number>)
+            }
           />
         </div>
       </DemoSection>
@@ -226,8 +271,17 @@ const data = [
 <Table variant="striped" {...props} />`}
         card={false}
       >
-        <VariantShowcase variants={['default', 'bordered', 'striped']} label="Variant">
-          {(variant) => <Table columns={basicColumns} data={sampleData.slice(0, 3)} variant={variant} />}
+        <VariantShowcase
+          variants={['default', 'bordered', 'striped']}
+          label="Variant"
+        >
+          {(variant) => (
+            <Table
+              columns={basicColumns}
+              data={sampleData.slice(0, 3)}
+              variant={variant}
+            />
+          )}
         </VariantShowcase>
       </DemoSection>
 
@@ -239,7 +293,13 @@ const data = [
         card={false}
       >
         <VariantShowcase variants={['sm', 'md', 'lg']} label="Size">
-          {(size) => <Table columns={basicColumns} data={sampleData.slice(0, 2)} size={size} />}
+          {(size) => (
+            <Table
+              columns={basicColumns}
+              data={sampleData.slice(0, 2)}
+              size={size}
+            />
+          )}
         </VariantShowcase>
       </DemoSection>
 
@@ -271,7 +331,11 @@ const data = [
 />`}
         card={false}
       >
-        <Table columns={basicColumns} data={[]} emptyMessage="No users found." />
+        <Table
+          columns={basicColumns}
+          data={[]}
+          emptyMessage="No users found."
+        />
       </DemoSection>
 
       <DemoSection
@@ -284,7 +348,12 @@ const data = [
 />`}
         card={false}
       >
-        <Table columns={basicColumns} data={sampleData} maxHeight="200px" stickyHeader />
+        <Table
+          columns={basicColumns}
+          data={sampleData}
+          maxHeight="200px"
+          stickyHeader
+        />
       </DemoSection>
 
       {/* Expandable Rows Prototype Demo */}
@@ -305,15 +374,22 @@ const ChevronIcon = (props: { expanded: boolean; class?: string }) => (
     stroke="currentColor"
     viewBox="0 0 24 24"
   >
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9 5l7 7-7 7"
+    />
   </svg>
 );
 
 function ExpandableRowsDemo() {
-  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(new Set([1])); // First row expanded by default
+  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(
+    new Set([1]),
+  ); // First row expanded by default
 
   const toggleExpand = (id: number) => {
-    setExpandedKeys(prev => {
+    setExpandedKeys((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -325,7 +401,7 @@ function ExpandableRowsDemo() {
   };
 
   const expandAll = () => {
-    setExpandedKeys(new Set(expandableData.map(u => u.id)));
+    setExpandedKeys(new Set(expandableData.map((u) => u.id)));
   };
 
   const collapseAll = () => {
@@ -369,11 +445,17 @@ interface ExpandableConfig<T> {
           <Button size="sm" variant="secondary" onClick={collapseAll}>
             Collapse All
           </Button>
-          <StateDisplay label="Expanded" value={`${expandedKeys().size} row(s)`} />
+          <StateDisplay
+            label="Expanded"
+            value={`${expandedKeys().size} row(s)`}
+          />
         </div>
 
         {/* Custom expandable table implementation */}
-        <div class="glass-card rounded-xl overflow-hidden" style={{ height: "400px", "overflow-y": "auto" }}>
+        <div
+          class="glass-card rounded-xl overflow-hidden"
+          style={{ height: '400px', 'overflow-y': 'auto' }}
+        >
           <table class="w-full">
             <thead class="sticky top-0 z-10 bg-white/90 dark:bg-surface-900/90 backdrop-blur-sm">
               <tr class="border-b border-surface-200/50 dark:border-surface-700/50">
@@ -416,7 +498,10 @@ interface ExpandableConfig<T> {
                               toggleExpand(user.id);
                             }}
                           >
-                            <ChevronIcon expanded={isExpanded()} class="text-surface-500" />
+                            <ChevronIcon
+                              expanded={isExpanded()}
+                              class="text-surface-500"
+                            />
                           </button>
                         </td>
                         <td class="px-4 py-3 text-sm font-medium text-surface-900 dark:text-white">
@@ -431,8 +516,11 @@ interface ExpandableConfig<T> {
                         <td class="px-4 py-3">
                           <Badge
                             variant={
-                              user.status === 'active' ? 'success' :
-                              user.status === 'pending' ? 'warning' : 'error'
+                              user.status === 'active'
+                                ? 'success'
+                                : user.status === 'pending'
+                                  ? 'warning'
+                                  : 'error'
                             }
                           >
                             {user.status}
@@ -445,7 +533,11 @@ interface ExpandableConfig<T> {
                         <td colspan={5} class="p-0">
                           <div
                             class="grid transition-[grid-template-rows] duration-200 ease-out"
-                            style={{ 'grid-template-rows': isExpanded() ? '1fr' : '0fr' }}
+                            style={{
+                              'grid-template-rows': isExpanded()
+                                ? '1fr'
+                                : '0fr',
+                            }}
                           >
                             <div class="overflow-hidden">
                               <div class="px-4 py-4 bg-surface-50/50 dark:bg-surface-800/30 border-b border-surface-200/50 dark:border-surface-700/50">
@@ -489,7 +581,9 @@ interface ExpandableConfig<T> {
                                     <div class="flex flex-wrap gap-2">
                                       <For each={user.projects}>
                                         {(project) => (
-                                          <Badge variant="info" size="sm">{project}</Badge>
+                                          <Badge variant="info" size="sm">
+                                            {project}
+                                          </Badge>
                                         )}
                                       </For>
                                     </div>

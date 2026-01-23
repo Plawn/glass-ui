@@ -1,6 +1,6 @@
-import { Section, Card, Input, Checkbox, Button } from 'glass-ui-solid';
+import { Button, Card, Checkbox, Input, Section } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function SectionPage() {
   const [name, setName] = createSignal('');
@@ -15,23 +15,32 @@ export default function SectionPage() {
         description="Content section with title for organizing page content."
       />
 
-      <DemoSection title="Import" code="import { Section } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Section } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Examples" card={false}>
         <div class="space-y-6">
           {/* Basic */}
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Basic</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Basic
+            </h3>
             <Card>
               <Section title="User Information">
-                <p class="text-surface-700 dark:text-surface-300">Section content goes here.</p>
+                <p class="text-surface-700 dark:text-surface-300">
+                  Section content goes here.
+                </p>
               </Section>
             </Card>
           </div>
 
           {/* Multiple Sections */}
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Multiple Sections</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Multiple Sections
+            </h3>
             <Card>
               <div class="space-y-4">
                 <Section title="Personal Details">
@@ -76,13 +85,19 @@ export default function SectionPage() {
 
           {/* Settings Page Layout */}
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Settings Page Layout</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Settings Page Layout
+            </h3>
             <div class="space-y-4">
               <Section title="Account">
                 <Card>
                   <div class="space-y-3">
                     <Input label="Username" placeholder="johndoe" />
-                    <Input label="Email" type="email" placeholder="john@example.com" />
+                    <Input
+                      label="Email"
+                      type="email"
+                      placeholder="john@example.com"
+                    />
                   </div>
                 </Card>
               </Section>
@@ -91,7 +106,9 @@ export default function SectionPage() {
                 <Card class="border border-red-200 dark:border-red-900/50">
                   <div class="flex items-center justify-between">
                     <div>
-                      <p class="font-medium text-surface-900 dark:text-white">Delete Account</p>
+                      <p class="font-medium text-surface-900 dark:text-white">
+                        Delete Account
+                      </p>
                       <p class="text-sm text-surface-500 dark:text-surface-400">
                         Permanently delete your account and all data.
                       </p>
@@ -108,9 +125,23 @@ export default function SectionPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'title', type: 'string', default: 'required', description: 'Section title' },
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Section content' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'title',
+              type: 'string',
+              default: 'required',
+              description: 'Section title',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Section content',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

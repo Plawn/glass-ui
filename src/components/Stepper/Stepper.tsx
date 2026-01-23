@@ -1,9 +1,9 @@
-import type { Component } from 'solid-js';
-import { createMemo, For, Show } from 'solid-js';
 import clsx from 'clsx';
+import type { Component } from 'solid-js';
+import { For, Show, createMemo } from 'solid-js';
 import type { ComponentSize } from '../../types';
-import type { StepperProps } from './types';
 import { CheckIcon } from '../shared';
+import type { StepperProps } from './types';
 
 // =============================================================================
 // STYLE CONSTANTS
@@ -54,7 +54,10 @@ const sizeStyles: Record<
   },
 };
 
-const verticalConnectorStyles: Record<ComponentSize, { left: string; thickness: string }> = {
+const verticalConnectorStyles: Record<
+  ComponentSize,
+  { left: string; thickness: string }
+> = {
   sm: { left: 'left-3', thickness: 'w-0.5' }, // half of circle width
   md: { left: 'left-4', thickness: 'w-0.5' },
   lg: { left: 'left-5', thickness: 'w-1' },
@@ -97,7 +100,7 @@ export const Stepper: Component<StepperProps> = (props) => {
   const getCircleClasses = (index: number) => {
     const base = clsx(
       'flex items-center justify-center rounded-full shrink-0 transition-all duration-200',
-      styles().circle
+      styles().circle,
     );
 
     if (isCompleted(index)) {
@@ -108,14 +111,14 @@ export const Stepper: Component<StepperProps> = (props) => {
       return clsx(
         base,
         'bg-violet-500 dark:bg-violet-400 text-white',
-        'ring-4 ring-violet-500/20 dark:ring-violet-400/20'
+        'ring-4 ring-violet-500/20 dark:ring-violet-400/20',
       );
     }
 
     // Pending
     return clsx(
       base,
-      'bg-surface-200 dark:bg-surface-700 text-surface-500 dark:text-surface-400'
+      'bg-surface-200 dark:bg-surface-700 text-surface-500 dark:text-surface-400',
     );
   };
 
@@ -158,7 +161,10 @@ export const Stepper: Component<StepperProps> = (props) => {
   };
 
   // --- Render horizontal step ---
-  const renderHorizontalStep = (step: typeof props.steps[0], index: number) => {
+  const renderHorizontalStep = (
+    step: (typeof props.steps)[0],
+    index: number,
+  ) => {
     const clickable = () => isClickable(index);
 
     return (
@@ -166,7 +172,7 @@ export const Stepper: Component<StepperProps> = (props) => {
         class={clsx(
           'flex flex-col items-center relative',
           styles().gap,
-          clickable() && 'cursor-pointer group'
+          clickable() && 'cursor-pointer group',
         )}
         onClick={() => handleStepClick(index)}
         role={clickable() ? 'button' : undefined}
@@ -182,7 +188,7 @@ export const Stepper: Component<StepperProps> = (props) => {
         <div
           class={clsx(
             getCircleClasses(index),
-            clickable() && 'group-hover:scale-110'
+            clickable() && 'group-hover:scale-110',
           )}
         >
           <Show
@@ -198,7 +204,9 @@ export const Stepper: Component<StepperProps> = (props) => {
         </div>
 
         {/* Label and description */}
-        <div class={clsx('flex flex-col items-center text-center', styles().gap)}>
+        <div
+          class={clsx('flex flex-col items-center text-center', styles().gap)}
+        >
           <span class={getLabelClasses(index)}>{step.label}</span>
           <Show when={step.description}>
             <span class={getDescriptionClasses(index)}>{step.description}</span>
@@ -209,7 +217,7 @@ export const Stepper: Component<StepperProps> = (props) => {
   };
 
   // --- Render vertical step ---
-  const renderVerticalStep = (step: typeof props.steps[0], index: number) => {
+  const renderVerticalStep = (step: (typeof props.steps)[0], index: number) => {
     const clickable = () => isClickable(index);
     const verticalStyles = () => verticalConnectorStyles[size()];
     const isLast = () => index === props.steps.length - 1;
@@ -224,7 +232,7 @@ export const Stepper: Component<StepperProps> = (props) => {
               verticalStyles().left,
               verticalStyles().thickness,
               'top-10 bottom-0 -translate-x-1/2',
-              getConnectorClasses(index)
+              getConnectorClasses(index),
             )}
             style={verticalConnectorStyle()}
           />
@@ -234,7 +242,7 @@ export const Stepper: Component<StepperProps> = (props) => {
           class={clsx(
             'flex items-start gap-3',
             clickable() && 'cursor-pointer group',
-            !isLast() && 'pb-6'
+            !isLast() && 'pb-6',
           )}
           onClick={() => handleStepClick(index)}
           role={clickable() ? 'button' : undefined}
@@ -251,7 +259,7 @@ export const Stepper: Component<StepperProps> = (props) => {
             class={clsx(
               getCircleClasses(index),
               'relative z-10',
-              clickable() && 'group-hover:scale-110'
+              clickable() && 'group-hover:scale-110',
             )}
           >
             <Show
@@ -270,7 +278,9 @@ export const Stepper: Component<StepperProps> = (props) => {
           <div class={clsx('flex flex-col pt-1', styles().gap)}>
             <span class={getLabelClasses(index)}>{step.label}</span>
             <Show when={step.description}>
-              <span class={getDescriptionClasses(index)}>{step.description}</span>
+              <span class={getDescriptionClasses(index)}>
+                {step.description}
+              </span>
             </Show>
           </div>
         </div>
@@ -296,7 +306,7 @@ export const Stepper: Component<StepperProps> = (props) => {
                       'flex-1 mx-2 relative',
                       styles().connector,
                       styles().connectorThickness,
-                      getConnectorClasses(index())
+                      getConnectorClasses(index()),
                     )}
                     style={{ 'min-width': '2rem' }}
                   />

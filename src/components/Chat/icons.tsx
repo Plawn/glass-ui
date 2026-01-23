@@ -54,7 +54,6 @@ export const StopIcon: Component<IconProps> = (props) => {
   );
 };
 
-
 /**
  * Brain/thinking icon for thinking sections
  */

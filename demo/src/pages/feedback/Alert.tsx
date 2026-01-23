@@ -1,6 +1,6 @@
 import { Alert } from 'glass-ui-solid';
-import { createSignal, Show } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { Show, createSignal } from 'solid-js';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function AlertPage() {
   const [dismissibleVisible, setDismissibleVisible] = createSignal(true);
@@ -12,7 +12,10 @@ export default function AlertPage() {
         description="Inline alert messages for feedback and notifications."
       />
 
-      <DemoSection title="Import" code="import { Alert } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Alert } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Usage"
@@ -107,12 +110,32 @@ export default function AlertPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'type', type: "'info' | 'success' | 'warning' | 'error'", description: 'Alert type' },
+            {
+              name: 'type',
+              type: "'info' | 'success' | 'warning' | 'error'",
+              description: 'Alert type',
+            },
             { name: 'title', type: 'string', description: 'Alert title' },
-            { name: 'children', type: 'JSX.Element', description: 'Alert content' },
-            { name: 'icon', type: 'JSX.Element', description: 'Custom icon (overrides default)' },
-            { name: 'onClose', type: '() => void', description: 'Close callback (shows close button when provided)' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              description: 'Alert content',
+            },
+            {
+              name: 'icon',
+              type: 'JSX.Element',
+              description: 'Custom icon (overrides default)',
+            },
+            {
+              name: 'onClose',
+              type: '() => void',
+              description: 'Close callback (shows close button when provided)',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

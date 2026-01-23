@@ -1,14 +1,18 @@
 import type { JSX } from 'solid-js';
 import type {
-  ComponentSize,
-  ButtonVariant,
   BaseComponentProps,
+  ButtonVariant,
+  ComponentSize,
   DisableableProps,
-  LoadableProps,
   DualIconProps,
+  LoadableProps,
 } from '../../types';
 
-export interface ButtonProps extends BaseComponentProps, DisableableProps, LoadableProps, DualIconProps {
+export interface ButtonProps
+  extends BaseComponentProps,
+    DisableableProps,
+    LoadableProps,
+    DualIconProps {
   /** Button content */
   children: JSX.Element;
   /** Click handler */

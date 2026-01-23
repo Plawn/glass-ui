@@ -152,7 +152,9 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
         </button>
       </div>
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+          {props.error}
+        </p>
       </Show>
     </div>
   );

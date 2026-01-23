@@ -12,7 +12,8 @@ export const Badge: Component<BadgeProps> = (props) => {
   const variant = () => props.variant ?? 'default';
   const size = () => props.size ?? 'md';
 
-  const variantStyle = () => getFilledClasses(SEMANTIC_COLORS_FILLED[variant()]);
+  const variantStyle = () =>
+    getFilledClasses(SEMANTIC_COLORS_FILLED[variant()]);
 
   return (
     <span

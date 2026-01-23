@@ -1,5 +1,5 @@
 import { CodeBlock as CB, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function CodeBlockPage() {
   const jsCode = `function greet(name) {
@@ -49,7 +49,10 @@ bun run dev`;
         description="Syntax-highlighted code display with copy functionality. Uses PrismJS for syntax highlighting and includes a built-in copy button."
       />
 
-      <DemoSection title="Import" code="import { CodeBlock } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { CodeBlock } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Usage"
@@ -78,22 +81,30 @@ bun run dev`;
       >
         <div class="space-y-6">
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">JavaScript</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              JavaScript
+            </h3>
             <CB code={jsCode} language="javascript" />
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">TypeScript</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              TypeScript
+            </h3>
             <CB code={tsCode} language="typescript" />
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">JSON</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              JSON
+            </h3>
             <CB code={jsonCode} language="json" />
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Bash</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              Bash
+            </h3>
             <CB code={bashCode} language="bash" />
           </div>
         </div>
@@ -111,12 +122,16 @@ bun run dev`;
       >
         <div class="space-y-4">
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">Without wrapping (default)</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              Without wrapping (default)
+            </h3>
             <CB code={longLineCode} language="json" />
           </div>
 
           <div>
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">With wrapping enabled</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              With wrapping enabled
+            </h3>
             <CB code={longLineCode} language="json" wrap />
           </div>
         </div>
@@ -145,7 +160,11 @@ bun run dev`;
 />`}
         card={false}
       >
-        <CB code={`const message = "No copy button here";`} language="javascript" hideCopyButton />
+        <CB
+          code={`const message = "No copy button here";`}
+          language="javascript"
+          hideCopyButton
+        />
       </DemoSection>
 
       <DemoSection
@@ -174,15 +193,35 @@ bun run dev`;
       >
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-sm">
           {[
-            'javascript', 'typescript', 'jsx', 'tsx',
-            'json', 'yaml', 'xml', 'html',
-            'css', 'scss', 'python', 'ruby',
-            'go', 'rust', 'java', 'c',
-            'cpp', 'csharp', 'php', 'sql',
-            'bash', 'shell', 'markdown', 'diff'
+            'javascript',
+            'typescript',
+            'jsx',
+            'tsx',
+            'json',
+            'yaml',
+            'xml',
+            'html',
+            'css',
+            'scss',
+            'python',
+            'ruby',
+            'go',
+            'rust',
+            'java',
+            'c',
+            'cpp',
+            'csharp',
+            'php',
+            'sql',
+            'bash',
+            'shell',
+            'markdown',
+            'diff',
           ].map((lang) => (
             <Card class="px-3 py-2 text-center">
-              <code class="text-xs font-mono text-surface-700 dark:text-surface-300">{lang}</code>
+              <code class="text-xs font-mono text-surface-700 dark:text-surface-300">
+                {lang}
+              </code>
             </Card>
           ))}
         </div>
@@ -191,14 +230,54 @@ bun run dev`;
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'code', type: 'string', default: 'required', description: 'The code to display' },
-            { name: 'language', type: 'string', default: "'json'", description: 'Programming language for syntax highlighting' },
-            { name: 'maxHeight', type: 'string', default: "'31.25rem'", description: 'Maximum height of the code block' },
-            { name: 'wrap', type: 'boolean', default: 'false', description: 'Whether to wrap long lines' },
-            { name: 'hideCopyButton', type: 'boolean', default: 'false', description: 'Hide the copy button' },
-            { name: 'copyLabel', type: 'string', default: "'Copy'", description: 'Label for the copy button' },
-            { name: 'copiedLabel', type: 'string', default: "'Copied'", description: 'Label shown after copying' },
-            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+            {
+              name: 'code',
+              type: 'string',
+              default: 'required',
+              description: 'The code to display',
+            },
+            {
+              name: 'language',
+              type: 'string',
+              default: "'json'",
+              description: 'Programming language for syntax highlighting',
+            },
+            {
+              name: 'maxHeight',
+              type: 'string',
+              default: "'31.25rem'",
+              description: 'Maximum height of the code block',
+            },
+            {
+              name: 'wrap',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether to wrap long lines',
+            },
+            {
+              name: 'hideCopyButton',
+              type: 'boolean',
+              default: 'false',
+              description: 'Hide the copy button',
+            },
+            {
+              name: 'copyLabel',
+              type: 'string',
+              default: "'Copy'",
+              description: 'Label for the copy button',
+            },
+            {
+              name: 'copiedLabel',
+              type: 'string',
+              default: "'Copied'",
+              description: 'Label shown after copying',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              default: '-',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { OverlaySize, OverlayProps } from '../../types';
+import type { OverlayProps, OverlaySize } from '../../types';
 
 export interface ModalProps extends OverlayProps {
   /** Modal content */

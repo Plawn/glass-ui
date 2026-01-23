@@ -1,5 +1,10 @@
 import { Button, snackbar } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill } from '../../components/demo';
+import {
+  CodePill,
+  DemoSection,
+  PageHeader,
+  PropsTable,
+} from '../../components/demo';
 
 export default function SnackbarPage() {
   return (
@@ -19,7 +24,12 @@ import { showSnackbar, dismissSnackbar, clearSnackbars } from 'glass-ui-solid';`
 
       <DemoSection
         title="Setup"
-        description={<>Add <CodePill>SnackbarContainer</CodePill> once at the root of your app:</>}
+        description={
+          <>
+            Add <CodePill>SnackbarContainer</CodePill> once at the root of your
+            app:
+          </>
+        }
         code={`function App() {
   return (
     <>
@@ -88,15 +98,23 @@ snackbar.dismiss(id);`}
         card={false}
       >
         <div class="flex flex-wrap gap-3 mb-4">
-          <Button onClick={() => snackbar.show('Quick message!', { duration: 2000 })}>
+          <Button
+            onClick={() => snackbar.show('Quick message!', { duration: 2000 })}
+          >
             Quick (2s)
           </Button>
-          <Button onClick={() => snackbar.show('This stays longer', { duration: 8000 })}>
+          <Button
+            onClick={() =>
+              snackbar.show('This stays longer', { duration: 8000 })
+            }
+          >
             Long (8s)
           </Button>
           <Button
             onClick={() => {
-              const id = snackbar.show('This stays until dismissed', { duration: 0 });
+              const id = snackbar.show('This stays until dismissed', {
+                duration: 0,
+              });
               setTimeout(() => snackbar.dismiss(id), 5000);
             }}
           >
@@ -118,7 +136,9 @@ snackbar.clear();`}
         card={false}
       >
         <div class="flex flex-wrap gap-3 mb-4">
-          <Button onClick={() => snackbar.show('Snackbar 1')}>Add Snackbar</Button>
+          <Button onClick={() => snackbar.show('Snackbar 1')}>
+            Add Snackbar
+          </Button>
           <Button variant="secondary" onClick={() => snackbar.clear()}>
             Clear All
           </Button>
@@ -130,9 +150,22 @@ snackbar.clear();`}
           <PropsTable
             compact
             props={[
-              { name: 'action', type: 'string', description: 'Action button label' },
-              { name: 'onAction', type: '() => void', description: 'Action button callback' },
-              { name: 'duration', type: 'number', default: '4000', description: 'Auto-dismiss delay in ms (0 = never)' },
+              {
+                name: 'action',
+                type: 'string',
+                description: 'Action button label',
+              },
+              {
+                name: 'onAction',
+                type: '() => void',
+                description: 'Action button callback',
+              },
+              {
+                name: 'duration',
+                type: 'number',
+                default: '4000',
+                description: 'Auto-dismiss delay in ms (0 = never)',
+              },
             ]}
           />
         </DemoSection>
@@ -141,8 +174,16 @@ snackbar.clear();`}
           <PropsTable
             compact
             props={[
-              { name: 'snackbar.dismiss(id)', type: '', description: 'Dismiss a specific snackbar by ID' },
-              { name: 'snackbar.clear()', type: '', description: 'Clear all snackbars' },
+              {
+                name: 'snackbar.dismiss(id)',
+                type: '',
+                description: 'Dismiss a specific snackbar by ID',
+              },
+              {
+                name: 'snackbar.clear()',
+                type: '',
+                description: 'Clear all snackbars',
+              },
             ]}
           />
         </DemoSection>

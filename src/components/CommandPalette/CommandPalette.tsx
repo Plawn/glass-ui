@@ -1,9 +1,23 @@
-import { type Component, For, Show, createEffect, createMemo, createSignal, on, onCleanup, onMount } from 'solid-js';
+import {
+  type Component,
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  on,
+  onCleanup,
+  onMount,
+} from 'solid-js';
 import { BACKDROP_ENTER, COMMAND_PALETTE_PANEL_ENTER } from '../../constants';
-import { useControlled, useBodyScrollLock } from '../../hooks';
+import { useBodyScrollLock, useControlled } from '../../hooks';
 import { PortalWithDarkMode } from '../shared';
 import { CommandPaletteItem } from './CommandPaletteItem';
-import type { CommandPaletteItem as ItemType, CommandPaletteProps, CommandPaletteSearchResult } from './types';
+import type {
+  CommandPaletteProps,
+  CommandPaletteSearchResult,
+  CommandPaletteItem as ItemType,
+} from './types';
 
 const MAX_RESULTS = 50;
 
@@ -27,13 +41,15 @@ function fuzzySearch<T>(
     const labelMatches = findMatches(labelLower, lowerQuery);
 
     // Check description match
-    const descMatches = item.description ? findMatches(descLower, lowerQuery) : undefined;
+    const descMatches = item.description
+      ? findMatches(descLower, lowerQuery)
+      : undefined;
 
     // Check keywords match
     const keywordMatch = keywordsLower.some((kw) => kw.includes(lowerQuery));
 
     // Calculate score (lower is better)
-    let score = Infinity;
+    let score = Number.POSITIVE_INFINITY;
     if (labelMatches.length > 0) {
       score = labelMatches[0][0]; // Prefer earlier matches
     } else if (descMatches && descMatches.length > 0) {
@@ -42,18 +58,25 @@ function fuzzySearch<T>(
       score = 200;
     }
 
-    if (score < Infinity) {
+    if (score < Number.POSITIVE_INFINITY) {
       results.push({
         item,
         labelMatches: labelMatches.length > 0 ? labelMatches : undefined,
-        descriptionMatches: descMatches && descMatches.length > 0 ? descMatches : undefined,
+        descriptionMatches:
+          descMatches && descMatches.length > 0 ? descMatches : undefined,
         score,
       });
     }
   }
 
   // Sort by score
-  return results.sort((a, b) => (a.score ?? Infinity) - (b.score ?? Infinity)).slice(0, MAX_RESULTS);
+  return results
+    .sort(
+      (a, b) =>
+        (a.score ?? Number.POSITIVE_INFINITY) -
+        (b.score ?? Number.POSITIVE_INFINITY),
+    )
+    .slice(0, MAX_RESULTS);
 }
 
 /**
@@ -75,8 +98,18 @@ function findMatches(text: string, query: string): [number, number][] {
  * Search icon SVG
  */
 const SearchIcon: Component = () => (
-  <svg class="w-5 h-5 text-surface-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  <svg
+    class="w-5 h-5 text-surface-400"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    stroke-width="2"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+    />
   </svg>
 );
 
@@ -157,7 +190,9 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   const recentItems = createMemo(() => {
     const ids = recentIds();
     const map = itemMap();
-    return ids.map((id) => map.get(id)).filter((item): item is ItemType => item !== undefined);
+    return ids
+      .map((id) => map.get(id))
+      .filter((item): item is ItemType => item !== undefined);
   });
 
   // Search results
@@ -172,7 +207,9 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
       return [
         ...recent.map((item) => ({ item, isRecent: true })),
-        ...others.slice(0, MAX_RESULTS - recent.length).map((item) => ({ item })),
+        ...others
+          .slice(0, MAX_RESULTS - recent.length)
+          .map((item) => ({ item })),
       ] as CommandPaletteSearchResult[];
     }
 
@@ -254,7 +291,12 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   });
 
   // Reset selection when results change
-  createEffect(on(() => flatResults(), () => setSelectedIndex(0)));
+  createEffect(
+    on(
+      () => flatResults(),
+      () => setSelectedIndex(0),
+    ),
+  );
 
   // Scroll selected item into view
   createEffect(() => {
@@ -369,11 +411,17 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                       <CommandPaletteItem
                         item={result.item}
                         selected={selectedIndex() === index()}
-                        isRecent={'isRecent' in result ? (result as { isRecent?: boolean }).isRecent : false}
+                        isRecent={
+                          'isRecent' in result
+                            ? (result as { isRecent?: boolean }).isRecent
+                            : false
+                        }
                         labelMatches={result.labelMatches}
                         descriptionMatches={result.descriptionMatches}
                         onClick={() => handleSelect(result.item)}
-                        onMouseEnter={() => mouseEnabled() && setSelectedIndex(index())}
+                        onMouseEnter={() =>
+                          mouseEnabled() && setSelectedIndex(index())
+                        }
                       />
                     </div>
                   )}
@@ -382,57 +430,66 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                 {/* Grouped items */}
                 <For each={Array.from(groupedResults().groups.entries())}>
                   {([groupName, results]) => (
-                      <>
-                        <div class="px-4 py-2 text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider bg-surface-50 dark:bg-white/5">
-                          {groupName}
-                        </div>
-                        <For each={results}>
-                          {(result, idx) => {
-                            const globalIndex = () => {
-                              // Calculate global index for this item
-                              let offset = groupedResults().noGroup.length;
-                              for (const [name, items] of groupedResults().groups.entries()) {
-                                if (name === groupName) break;
-                                offset += items.length;
-                              }
-                              return offset + idx();
-                            };
-                            return (
-                              <div data-command-item>
-                                <CommandPaletteItem
-                                  item={result.item}
-                                  selected={selectedIndex() === globalIndex()}
-                                  labelMatches={result.labelMatches}
-                                  descriptionMatches={result.descriptionMatches}
-                                  onClick={() => handleSelect(result.item)}
-                                  onMouseEnter={() => mouseEnabled() && setSelectedIndex(globalIndex())}
-                                />
-                              </div>
-                            );
-                          }}
-                        </For>
-                      </>
+                    <>
+                      <div class="px-4 py-2 text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider bg-surface-50 dark:bg-white/5">
+                        {groupName}
+                      </div>
+                      <For each={results}>
+                        {(result, idx) => {
+                          const globalIndex = () => {
+                            // Calculate global index for this item
+                            let offset = groupedResults().noGroup.length;
+                            for (const [
+                              name,
+                              items,
+                            ] of groupedResults().groups.entries()) {
+                              if (name === groupName) break;
+                              offset += items.length;
+                            }
+                            return offset + idx();
+                          };
+                          return (
+                            <div data-command-item>
+                              <CommandPaletteItem
+                                item={result.item}
+                                selected={selectedIndex() === globalIndex()}
+                                labelMatches={result.labelMatches}
+                                descriptionMatches={result.descriptionMatches}
+                                onClick={() => handleSelect(result.item)}
+                                onMouseEnter={() =>
+                                  mouseEnabled() &&
+                                  setSelectedIndex(globalIndex())
+                                }
+                              />
+                            </div>
+                          );
+                        }}
+                      </For>
+                    </>
                   )}
                 </For>
               </Show>
             </div>
 
             {/* Footer */}
-            <Show when={props.footer} fallback={
-              <div class="flex items-center justify-between px-4 py-2 border-t border-surface-200 dark:border-white/10 text-xs text-surface-500 dark:text-surface-400">
-                <div class="flex items-center gap-3">
-                  <span class="flex items-center gap-1">
-                    <Kbd>↑</Kbd>
-                    <Kbd>↓</Kbd>
-                    <span>navigate</span>
-                  </span>
-                  <span class="flex items-center gap-1">
-                    <Kbd>↵</Kbd>
-                    <span>select</span>
-                  </span>
+            <Show
+              when={props.footer}
+              fallback={
+                <div class="flex items-center justify-between px-4 py-2 border-t border-surface-200 dark:border-white/10 text-xs text-surface-500 dark:text-surface-400">
+                  <div class="flex items-center gap-3">
+                    <span class="flex items-center gap-1">
+                      <Kbd>↑</Kbd>
+                      <Kbd>↓</Kbd>
+                      <span>navigate</span>
+                    </span>
+                    <span class="flex items-center gap-1">
+                      <Kbd>↵</Kbd>
+                      <span>select</span>
+                    </span>
+                  </div>
                 </div>
-              </div>
-            }>
+              }
+            >
               {props.footer}
             </Show>
           </div>

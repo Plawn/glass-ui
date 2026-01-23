@@ -1,2 +1,6 @@
 export { GlassBackground } from './GlassBackground';
-export type { GlassBackgroundProps, GlassBackgroundBlob, GlassBackgroundGradient } from './types';
+export type {
+  GlassBackgroundProps,
+  GlassBackgroundBlob,
+  GlassBackgroundGradient,
+} from './types';

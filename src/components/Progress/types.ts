@@ -1,7 +1,7 @@
 import type {
+  BaseComponentProps,
   ComponentSize,
   ProgressVariant,
-  BaseComponentProps,
 } from '../../types';
 
 /**
@@ -23,4 +23,7 @@ export interface ProgressProps extends BaseComponentProps {
 }
 
 // Re-export shared types for convenience
-export type { ProgressVariant, ComponentSize as ProgressSize } from '../../types';
+export type {
+  ProgressVariant,
+  ComponentSize as ProgressSize,
+} from '../../types';

@@ -1,4 +1,8 @@
-import type { BaseComponentProps, DisableableProps, ComponentSize } from '../../types/index';
+import type {
+  BaseComponentProps,
+  ComponentSize,
+  DisableableProps,
+} from '../../types/index';
 
 /**
  * RadioGroup size variants

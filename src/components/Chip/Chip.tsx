@@ -6,18 +6,27 @@ import {
   INLINE_PADDING,
   SEMANTIC_COLORS_FILLED,
   SEMANTIC_COLORS_OUTLINED,
+  type SemanticColor,
   TEXT_SIZES,
   getFilledClasses,
   getOutlinedClasses,
-  type SemanticColor,
 } from '../../constants';
 import { CloseIcon } from '../shared/icons';
 import type { ChipColor, ChipProps, ChipSize } from './types';
 
 const sizeStyles: Record<ChipSize, { container: string; icon: string }> = {
-  sm: { container: `${INLINE_PADDING.sm} ${TEXT_SIZES.sm} gap-1`, icon: ICON_SIZES_SMALL.sm },
-  md: { container: `${INLINE_PADDING.md} ${TEXT_SIZES.md} ${GAP_SIZES.sm}`, icon: ICON_SIZES_SMALL.md },
-  lg: { container: `${INLINE_PADDING.lg} ${TEXT_SIZES.lg} ${GAP_SIZES.md}`, icon: ICON_SIZES_SMALL.lg },
+  sm: {
+    container: `${INLINE_PADDING.sm} ${TEXT_SIZES.sm} gap-1`,
+    icon: ICON_SIZES_SMALL.sm,
+  },
+  md: {
+    container: `${INLINE_PADDING.md} ${TEXT_SIZES.md} ${GAP_SIZES.sm}`,
+    icon: ICON_SIZES_SMALL.md,
+  },
+  lg: {
+    container: `${INLINE_PADDING.lg} ${TEXT_SIZES.lg} ${GAP_SIZES.md}`,
+    icon: ICON_SIZES_SMALL.lg,
+  },
 };
 
 /** Map chip colors to semantic color keys */

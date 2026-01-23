@@ -11,7 +11,9 @@ export interface UseCopyToClipboardReturn {
  *
  * @param resetDelay - Time in ms before copied state resets (default: 2000)
  */
-export function useCopyToClipboard(resetDelay = 2000): UseCopyToClipboardReturn {
+export function useCopyToClipboard(
+  resetDelay = 2000,
+): UseCopyToClipboardReturn {
   const [copied, setCopied] = createSignal(false);
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 

@@ -68,7 +68,9 @@ const CURSOR_MAP: Record<ResizeDirection, string> = {
  * Hook to make an element resizable.
  * Supports 8 resize directions and position adjustment for n/w/nw/ne/sw handles.
  */
-export function useResizable(options: UseResizableOptions = {}): UseResizableReturn {
+export function useResizable(
+  options: UseResizableOptions = {},
+): UseResizableReturn {
   const {
     defaultSize = { width: 400, height: 300 },
     size: controlledSize,
@@ -76,9 +78,9 @@ export function useResizable(options: UseResizableOptions = {}): UseResizableRet
     onPositionChange,
     position = () => ({ x: 0, y: 0 }),
     minWidth = 100,
-    maxWidth = Infinity,
+    maxWidth = Number.POSITIVE_INFINITY,
     minHeight = 100,
-    maxHeight = Infinity,
+    maxHeight = Number.POSITIVE_INFINITY,
     enabled = () => true,
     bounded = () => false,
   } = options;
@@ -86,12 +88,16 @@ export function useResizable(options: UseResizableOptions = {}): UseResizableRet
   // Internal size state (used when uncontrolled)
   const [internalSize, setInternalSize] = createSignal<Size>(defaultSize);
   const [isResizing, setIsResizing] = createSignal(false);
-  const [resizeDirection, setResizeDirection] = createSignal<ResizeDirection | null>(null);
+  const [resizeDirection, setResizeDirection] =
+    createSignal<ResizeDirection | null>(null);
 
   // Captured at resize start - immutable during resize
   const [startSize, setStartSize] = createSignal<Size>({ width: 0, height: 0 });
   const [startMouse, setStartMouse] = createSignal<Position>({ x: 0, y: 0 });
-  const [startPosition, setStartPosition] = createSignal<Position>({ x: 0, y: 0 });
+  const [startPosition, setStartPosition] = createSignal<Position>({
+    x: 0,
+    y: 0,
+  });
 
   // Determine actual size (controlled or internal)
   const size = (): Size => {
@@ -106,7 +112,11 @@ export function useResizable(options: UseResizableOptions = {}): UseResizableRet
   };
 
   // Handle resize start
-  const handleResizeStart = (direction: ResizeDirection, clientX: number, clientY: number) => {
+  const handleResizeStart = (
+    direction: ResizeDirection,
+    clientX: number,
+    clientY: number,
+  ) => {
     if (!enabled()) return;
 
     setIsResizing(true);
@@ -192,7 +202,10 @@ export function useResizable(options: UseResizableOptions = {}): UseResizableRet
     setSize({ width: finalWidth, height: finalHeight });
 
     // Step 7: Update position if needed (for n/w directions)
-    if (onPositionChange && (direction.includes('n') || direction.includes('w'))) {
+    if (
+      onPositionChange &&
+      (direction.includes('n') || direction.includes('w'))
+    ) {
       onPositionChange({ x: finalX, y: finalY });
     }
   };
@@ -205,7 +218,9 @@ export function useResizable(options: UseResizableOptions = {}): UseResizableRet
   };
 
   // Get props for a resize handle
-  const getResizeHandleProps = (direction: ResizeDirection): ResizeHandleProps => {
+  const getResizeHandleProps = (
+    direction: ResizeDirection,
+  ): ResizeHandleProps => {
     const handleMouseDown = (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();

@@ -1,6 +1,24 @@
-import { createMemo, createEffect, createSignal, Index, Show, For, onMount, onCleanup, type JSX, type Component } from 'solid-js';
+import {
+  type Component,
+  For,
+  Index,
+  type JSX,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+} from 'solid-js';
+import type {
+  ListItem,
+  TableComponents,
+  TableRowContent,
+  VirtualHandle,
+  VirtualTableColumn,
+  VirtualTableProps,
+} from './types';
 import { useVirtualizer } from './useVirtualizer';
-import type { VirtualTableProps, VirtualHandle, ListItem, TableComponents, VirtualTableColumn, TableRowContent } from './types';
 
 // =============================================================================
 // CELL VALUE HELPER
@@ -38,12 +56,19 @@ function getCellValue<T>(row: T, key: string): unknown {
 /**
  * Creates an itemContent function from column definitions
  */
-function createColumnRenderer<D>(columns: VirtualTableColumn<D>[]): TableRowContent<D, unknown> {
+function createColumnRenderer<D>(
+  columns: VirtualTableColumn<D>[],
+): TableRowContent<D, unknown> {
   return (index: number, row: D) => (
     <For each={columns}>
       {(column) => {
         const value = getCellValue(row, column.key);
-        const alignClass = column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left';
+        const alignClass =
+          column.align === 'center'
+            ? 'text-center'
+            : column.align === 'right'
+              ? 'text-right'
+              : 'text-left';
 
         return (
           <td
@@ -53,7 +78,9 @@ function createColumnRenderer<D>(columns: VirtualTableColumn<D>[]): TableRowCont
               'min-width': column.minWidth,
             }}
           >
-            {column.render ? column.render(value, row, index) : String(value ?? '')}
+            {column.render
+              ? column.render(value, row, index)
+              : String(value ?? '')}
           </td>
         );
       }}
@@ -64,12 +91,19 @@ function createColumnRenderer<D>(columns: VirtualTableColumn<D>[]): TableRowCont
 /**
  * Creates a header renderer from column definitions
  */
-function createColumnHeader<D>(columns: VirtualTableColumn<D>[]): () => JSX.Element {
+function createColumnHeader<D>(
+  columns: VirtualTableColumn<D>[],
+): () => JSX.Element {
   return () => (
     <tr>
       <For each={columns}>
         {(column) => {
-          const alignClass = column.align === 'center' ? 'text-center' : column.align === 'right' ? 'text-right' : 'text-left';
+          const alignClass =
+            column.align === 'center'
+              ? 'text-center'
+              : column.align === 'right'
+                ? 'text-right'
+                : 'text-left';
 
           if (column.headerRender) {
             return column.headerRender(column);
@@ -115,18 +149,18 @@ const DefaultScroller: Component<{
 const DefaultTable: Component<{
   style: JSX.CSSProperties;
   children: JSX.Element;
-}> = (props) => (
-  <table style={props.style}>
-    {props.children}
-  </table>
-);
+}> = (props) => <table style={props.style}>{props.children}</table>;
 
 const DefaultTableHead: Component<{
   ref: (el: HTMLTableSectionElement) => void;
   style: JSX.CSSProperties;
   children: JSX.Element;
 }> = (props) => (
-  <thead ref={props.ref} style={props.style} class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm">
+  <thead
+    ref={props.ref}
+    style={props.style}
+    class="bg-white/80 dark:bg-surface-900/80 backdrop-blur-sm"
+  >
     {props.children}
   </thead>
 );
@@ -223,7 +257,7 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
   onCleanup(() => {
     resizeObserver?.disconnect();
   });
-  
+
   return (
     <tr
       ref={rowRef}
@@ -234,7 +268,7 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
       {props.itemContent(
         props.item.index + props.firstItemIndex,
         itemData(),
-        props.context as C
+        props.context as C,
       )}
     </tr>
   );
@@ -245,21 +279,27 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
 // =============================================================================
 
 export function VirtualTable<D = unknown, C = unknown>(
-  props: VirtualTableProps<D, C>
+  props: VirtualTableProps<D, C>,
 ): JSX.Element {
   let theadRef: HTMLTableSectionElement | undefined;
   let tfootRef: HTMLTableSectionElement | undefined;
 
   // --- Use signal for scroller ref to ensure reactivity ---
-  const [scrollerRef, setScrollerRef] = createSignal<HTMLDivElement | undefined>(undefined);
+  const [scrollerRef, setScrollerRef] = createSignal<
+    HTMLDivElement | undefined
+  >(undefined);
 
   // --- State for header/footer heights ---
   const [headerHeight, setHeaderHeight] = createSignal(0);
   const [footerHeight, setFooterHeight] = createSignal(0);
-  
+
   // --- Computed props ---
-  const totalCount = createMemo(() => props.totalCount ?? props.data?.length ?? 0);
-  const defaultItemHeight = createMemo(() => props.defaultItemHeight ?? props.fixedItemHeight ?? 48);
+  const totalCount = createMemo(
+    () => props.totalCount ?? props.data?.length ?? 0,
+  );
+  const defaultItemHeight = createMemo(
+    () => props.defaultItemHeight ?? props.fixedItemHeight ?? 48,
+  );
   const fixedItemHeight = createMemo(() => props.fixedItemHeight);
   const overscan = createMemo(() => props.overscan ?? 5);
   const firstItemIndex = createMemo(() => props.firstItemIndex ?? 0);
@@ -270,7 +310,8 @@ export function VirtualTable<D = unknown, C = unknown>(
   // Create itemContent from columns if provided
   const effectiveItemContent = createMemo(() => {
     if (props.itemContent) return props.itemContent;
-    if (props.columns) return createColumnRenderer(props.columns) as TableRowContent<D, C>;
+    if (props.columns)
+      return createColumnRenderer(props.columns) as TableRowContent<D, C>;
     // Fallback - should never happen in proper usage
     return (() => null) as TableRowContent<D, C>;
   });
@@ -281,26 +322,30 @@ export function VirtualTable<D = unknown, C = unknown>(
     if (props.columns) return createColumnHeader(props.columns);
     return undefined;
   });
-  
-  const increaseViewportBy = createMemo((): number | { top: number; bottom: number } => {
-    const val = props.increaseViewportBy;
-    if (!val) return 0;
-    if (typeof val === 'number') return val;
-    return val;
-  });
-  
+
+  const increaseViewportBy = createMemo(
+    (): number | { top: number; bottom: number } => {
+      const val = props.increaseViewportBy;
+      if (!val) return 0;
+      if (typeof val === 'number') return val;
+      return val;
+    },
+  );
+
   // --- Get components with defaults ---
-  const components = createMemo((): Required<TableComponents<D, C>> => ({
-    Table: props.components?.Table ?? DefaultTable,
-    TableHead: props.components?.TableHead ?? DefaultTableHead,
-    TableBody: props.components?.TableBody ?? DefaultTableBody,
-    TableFoot: props.components?.TableFoot ?? DefaultTableFoot,
-    TableRow: props.components?.TableRow ?? DefaultTableRow,
-    Scroller: props.components?.Scroller ?? DefaultScroller,
-    EmptyPlaceholder: props.components?.EmptyPlaceholder ?? (() => null),
-    FillerRow: props.components?.FillerRow ?? DefaultFillerRow,
-  }));
-  
+  const components = createMemo(
+    (): Required<TableComponents<D, C>> => ({
+      Table: props.components?.Table ?? DefaultTable,
+      TableHead: props.components?.TableHead ?? DefaultTableHead,
+      TableBody: props.components?.TableBody ?? DefaultTableBody,
+      TableFoot: props.components?.TableFoot ?? DefaultTableFoot,
+      TableRow: props.components?.TableRow ?? DefaultTableRow,
+      Scroller: props.components?.Scroller ?? DefaultScroller,
+      EmptyPlaceholder: props.components?.EmptyPlaceholder ?? (() => null),
+      FillerRow: props.components?.FillerRow ?? DefaultFillerRow,
+    }),
+  );
+
   // --- Virtualizer ---
   const virtualizer = useVirtualizer({
     totalCount,
@@ -319,7 +364,7 @@ export function VirtualTable<D = unknown, C = unknown>(
     onEndReached: props.endReached,
     onStartReached: props.startReached,
   });
-  
+
   // --- Measure header/footer ---
   const measureHeader = () => {
     if (theadRef) {
@@ -329,7 +374,7 @@ export function VirtualTable<D = unknown, C = unknown>(
       }
     }
   };
-  
+
   const measureFooter = () => {
     if (tfootRef) {
       const height = tfootRef.offsetHeight;
@@ -338,22 +383,22 @@ export function VirtualTable<D = unknown, C = unknown>(
       }
     }
   };
-  
+
   // Observe header/footer size changes
   createEffect(() => {
     if (typeof ResizeObserver === 'undefined') return;
-    
+
     const observer = new ResizeObserver(() => {
       measureHeader();
       measureFooter();
     });
-    
+
     if (theadRef) observer.observe(theadRef);
     if (tfootRef) observer.observe(tfootRef);
-    
+
     return () => observer.disconnect();
   });
-  
+
   // --- Expose handle ---
   createEffect(() => {
     if (props.ref) {
@@ -375,7 +420,7 @@ export function VirtualTable<D = unknown, C = unknown>(
       props.ref(handle);
     }
   });
-  
+
   // --- Initial scroll ---
   onMount(() => {
     const scroller = scrollerRef();
@@ -391,48 +436,58 @@ export function VirtualTable<D = unknown, C = unknown>(
       measureFooter();
     });
   });
-  
+
   // --- Items rendered callback ---
   createEffect(() => {
     const items = virtualizer.items();
     if (props.itemsRendered) {
-      props.itemsRendered(items.map(item => ({
-        index: item.index,
-        offset: item.offset,
-        size: item.size,
-        data: props.data?.[item.index],
-      })) as ListItem<D>[]);
+      props.itemsRendered(
+        items.map((item) => ({
+          index: item.index,
+          offset: item.offset,
+          size: item.size,
+          data: props.data?.[item.index],
+        })) as ListItem<D>[],
+      );
     }
   });
-  
+
   // --- Styles ---
-  const scrollerStyle = createMemo((): JSX.CSSProperties => ({
-    height: '100%',
-    'overflow-y': 'auto',
-    position: 'relative',
-    outline: 'none',
-    '-webkit-overflow-scrolling': 'touch',
-    ...props.style,
-  }));
-  
-  const tableStyle = createMemo((): JSX.CSSProperties => ({
-    'border-spacing': '0',
-    'table-layout': 'fixed',
-    width: '100%',
-  }));
-  
-  const theadStyle = createMemo((): JSX.CSSProperties => ({
-    position: 'sticky',
-    top: 0,
-    'z-index': 20,
-  }));
-  
-  const tfootStyle = createMemo((): JSX.CSSProperties => ({
-    position: 'sticky',
-    bottom: 0,
-    'z-index': 1,
-  }));
-  
+  const scrollerStyle = createMemo(
+    (): JSX.CSSProperties => ({
+      height: '100%',
+      'overflow-y': 'auto',
+      position: 'relative',
+      outline: 'none',
+      '-webkit-overflow-scrolling': 'touch',
+      ...props.style,
+    }),
+  );
+
+  const tableStyle = createMemo(
+    (): JSX.CSSProperties => ({
+      'border-spacing': '0',
+      'table-layout': 'fixed',
+      width: '100%',
+    }),
+  );
+
+  const theadStyle = createMemo(
+    (): JSX.CSSProperties => ({
+      position: 'sticky',
+      top: 0,
+      'z-index': 20,
+    }),
+  );
+
+  const tfootStyle = createMemo(
+    (): JSX.CSSProperties => ({
+      position: 'sticky',
+      bottom: 0,
+      'z-index': 1,
+    }),
+  );
+
   // --- Render ---
   const Scroller = components().Scroller;
   const Table = components().Table;
@@ -441,7 +496,7 @@ export function VirtualTable<D = unknown, C = unknown>(
   const TableFoot = components().TableFoot;
   const FillerRow = components().FillerRow;
   const EmptyPlaceholder = components().EmptyPlaceholder;
-  
+
   return (
     <Scroller
       ref={setScrollerRef}
@@ -452,22 +507,29 @@ export function VirtualTable<D = unknown, C = unknown>(
         {/* Fixed Header */}
         <Show when={effectiveHeaderContent()}>
           <TableHead
-            ref={(el: HTMLTableSectionElement) => { theadRef = el; }}
+            ref={(el: HTMLTableSectionElement) => {
+              theadRef = el;
+            }}
             style={theadStyle()}
             context={props.context}
           >
             {effectiveHeaderContent()!()}
           </TableHead>
         </Show>
-        
+
         {/* Table Body with virtualization using filler rows */}
         <TableBody
-          ref={() => {/* ref required by TableComponents interface */}}
+          ref={() => {
+            /* ref required by TableComponents interface */
+          }}
           context={props.context}
         >
           {/* Top filler row for scroll positioning */}
           <Show when={virtualizer.offsetTop() > 0}>
-            <FillerRow height={virtualizer.offsetTop()} context={props.context} />
+            <FillerRow
+              height={virtualizer.offsetTop()}
+              context={props.context}
+            />
           </Show>
 
           {/* Empty state */}
@@ -478,7 +540,7 @@ export function VirtualTable<D = unknown, C = unknown>(
               </td>
             </tr>
           </Show>
-          
+
           {/* Virtualized rows */}
           <Index each={virtualizer.items()}>
             {(item) => (
@@ -494,17 +556,22 @@ export function VirtualTable<D = unknown, C = unknown>(
               />
             )}
           </Index>
-          
+
           {/* Bottom filler row for scroll positioning */}
           <Show when={virtualizer.offsetBottom() > 0}>
-            <FillerRow height={virtualizer.offsetBottom()} context={props.context} />
+            <FillerRow
+              height={virtualizer.offsetBottom()}
+              context={props.context}
+            />
           </Show>
         </TableBody>
-        
+
         {/* Fixed Footer */}
         <Show when={props.fixedFooterContent}>
           <TableFoot
-            ref={(el: HTMLTableSectionElement) => { tfootRef = el; }}
+            ref={(el: HTMLTableSectionElement) => {
+              tfootRef = el;
+            }}
             style={tfootStyle()}
             context={props.context}
           >

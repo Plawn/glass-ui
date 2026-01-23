@@ -1,7 +1,14 @@
-import { type Component, For, Show, createEffect, createSignal, onCleanup } from 'solid-js';
+import {
+  type Component,
+  For,
+  Show,
+  createEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import { SNACKBAR_ENTER } from '../../constants';
-import { CloseIcon } from '../shared/icons';
 import { PortalWithDarkMode } from '../shared';
+import { CloseIcon } from '../shared/icons';
 import { type SnackbarItem, dismissSnackbar, getSnackbarStore } from './store';
 import type { SnackbarPosition } from './types';
 
@@ -96,7 +103,9 @@ export const SnackbarContainer: Component<SnackbarContainerProps> = (props) => {
         aria-live="polite"
       >
         <For each={store.snackbars}>
-          {(snackbar) => <SnackbarItemComponent snackbar={snackbar} position={position()} />}
+          {(snackbar) => (
+            <SnackbarItemComponent snackbar={snackbar} position={position()} />
+          )}
         </For>
       </div>
     </PortalWithDarkMode>

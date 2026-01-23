@@ -1,6 +1,11 @@
 import { Textarea } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function TextareaPage() {
   const [value, setValue] = createSignal('');
@@ -108,7 +113,11 @@ export default function TextareaPage() {
           label="Feedback"
           placeholder="Please provide your feedback..."
           rows={3}
-          error={feedbackValue().length > 0 && feedbackValue().length < 10 ? 'Feedback must be at least 10 characters' : undefined}
+          error={
+            feedbackValue().length > 0 && feedbackValue().length < 10
+              ? 'Feedback must be at least 10 characters'
+              : undefined
+          }
         />
       </DemoSection>
 
@@ -154,16 +163,60 @@ export default function TextareaPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'value', type: 'string', description: 'Current textarea value (required)' },
-            { name: 'onInput', type: '(value: string) => void', description: 'Callback when value changes (required)' },
-            { name: 'label', type: 'string', description: 'Label text displayed above the textarea' },
-            { name: 'placeholder', type: 'string', description: 'Placeholder text' },
-            { name: 'rows', type: 'number', description: 'Number of visible text rows' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
-            { name: 'error', type: 'string', description: 'Error message displayed below the textarea' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the textarea is disabled' },
-            { name: 'readonly', type: 'boolean', default: 'false', description: 'Whether the textarea is readonly' },
-            { name: 'required', type: 'boolean', default: 'false', description: 'Whether the textarea is required' },
+            {
+              name: 'value',
+              type: 'string',
+              description: 'Current textarea value (required)',
+            },
+            {
+              name: 'onInput',
+              type: '(value: string) => void',
+              description: 'Callback when value changes (required)',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label text displayed above the textarea',
+            },
+            {
+              name: 'placeholder',
+              type: 'string',
+              description: 'Placeholder text',
+            },
+            {
+              name: 'rows',
+              type: 'number',
+              description: 'Number of visible text rows',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant',
+            },
+            {
+              name: 'error',
+              type: 'string',
+              description: 'Error message displayed below the textarea',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the textarea is disabled',
+            },
+            {
+              name: 'readonly',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the textarea is readonly',
+            },
+            {
+              name: 'required',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the textarea is required',
+            },
           ]}
         />
       </DemoSection>

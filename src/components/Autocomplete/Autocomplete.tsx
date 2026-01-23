@@ -8,23 +8,31 @@ import {
   on,
   onCleanup,
 } from 'solid-js';
-import { PortalWithDarkMode, ChevronDownIcon } from '../shared';
-import { Spinner } from '../Spinner';
+import {
+  DROPDOWN_ITEM_SIZE_CLASSES,
+  INPUT_SIZE_CLASSES,
+} from '../../constants';
 import { useClickOutside } from '../../hooks';
-import { INPUT_SIZE_CLASSES, DROPDOWN_ITEM_SIZE_CLASSES } from '../../constants';
+import { Spinner } from '../Spinner';
+import { ChevronDownIcon, PortalWithDarkMode } from '../shared';
 import type { AutocompleteOption, AutocompleteProps } from './types';
 
 /**
  * Default filter function - case-insensitive substring match
  */
-const defaultFilterFn = (option: AutocompleteOption, inputValue: string): boolean => {
+const defaultFilterFn = (
+  option: AutocompleteOption,
+  inputValue: string,
+): boolean => {
   return option.label.toLowerCase().includes(inputValue.toLowerCase());
 };
 
 /**
  * Highlight matching text in a string
  */
-const HighlightedText: Component<{ text: string; highlight: string }> = (props) => {
+const HighlightedText: Component<{ text: string; highlight: string }> = (
+  props,
+) => {
   const parts = createMemo(() => {
     if (!props.highlight.trim()) {
       return [{ text: props.text, match: false }];
@@ -40,7 +48,10 @@ const HighlightedText: Component<{ text: string; highlight: string }> = (props) 
       if (index > lastIndex) {
         result.push({ text: props.text.slice(lastIndex, index), match: false });
       }
-      result.push({ text: props.text.slice(index, index + props.highlight.length), match: true });
+      result.push({
+        text: props.text.slice(index, index + props.highlight.length),
+        match: true,
+      });
       lastIndex = index + props.highlight.length;
       index = lowerText.indexOf(lowerHighlight, lastIndex);
     }
@@ -66,7 +77,6 @@ const HighlightedText: Component<{ text: string; highlight: string }> = (props) 
     </span>
   );
 };
-
 
 /**
  * A glassmorphic Autocomplete/Combobox component with dropdown suggestions.
@@ -113,7 +123,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
   // Sync input value with selected value
   createEffect(() => {
-    const selectedOption = props.options.find((opt) => opt.value === props.value);
+    const selectedOption = props.options.find(
+      (opt) => opt.value === props.value,
+    );
     if (selectedOption) {
       setInputValue(selectedOption.label);
     } else if (props.allowCustomValue) {
@@ -138,7 +150,12 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   });
 
   // Reset focused index when options change
-  createEffect(on(() => filteredOptions(), () => setFocusedIndex(-1)));
+  createEffect(
+    on(
+      () => filteredOptions(),
+      () => setFocusedIndex(-1),
+    ),
+  );
 
   // Scroll focused item into view
   createEffect(() => {
@@ -195,7 +212,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
       if (!isOpen()) return;
 
       const matchingOption = props.options.find(
-        (opt) => opt.label.toLowerCase() === inputValue().toLowerCase()
+        (opt) => opt.label.toLowerCase() === inputValue().toLowerCase(),
       );
 
       if (matchingOption) {
@@ -205,7 +222,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         props.onChange(inputValue());
       } else {
         // Reset to current value
-        const selectedOption = props.options.find((opt) => opt.value === props.value);
+        const selectedOption = props.options.find(
+          (opt) => opt.value === props.value,
+        );
         setInputValue(selectedOption?.label ?? '');
       }
 
@@ -250,8 +269,12 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         if (open) {
           e.preventDefault();
           handleClose();
-          const selected = props.options.find((opt) => opt.value === props.value);
-          setInputValue(selected?.label ?? (props.allowCustomValue ? props.value : ''));
+          const selected = props.options.find(
+            (opt) => opt.value === props.value,
+          );
+          setInputValue(
+            selected?.label ?? (props.allowCustomValue ? props.value : ''),
+          );
         }
         break;
 
@@ -360,18 +383,23 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
         {/* Right side indicator */}
         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <Show when={props.loading} fallback={
-            <ChevronDownIcon
-              class={`text-surface-400 transition-transform duration-150 ${isOpen() ? 'rotate-180' : ''}`}
-            />
-          }>
+          <Show
+            when={props.loading}
+            fallback={
+              <ChevronDownIcon
+                class={`text-surface-400 transition-transform duration-150 ${isOpen() ? 'rotate-180' : ''}`}
+              />
+            }
+          >
             <Spinner size="sm" />
           </Show>
         </div>
       </div>
 
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">{props.error}</p>
+        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+          {props.error}
+        </p>
       </Show>
 
       {/* Dropdown */}
@@ -387,7 +415,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
               <Show
                 when={filteredOptions().length > 0}
                 fallback={
-                  <div class={`text-surface-500 dark:text-surface-400 text-center ${itemSizeClasses()}`}>
+                  <div
+                    class={`text-surface-500 dark:text-surface-400 text-center ${itemSizeClasses()}`}
+                  >
                     {emptyText()}
                   </div>
                 }
@@ -405,9 +435,10 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
                         type="button"
                         data-option
                         class={`w-full text-left transition-colors ${itemSizeClasses()}
-                          ${option.disabled
-                            ? 'text-surface-400 dark:text-surface-600 cursor-not-allowed'
-                            : 'text-surface-700 dark:text-surface-200 cursor-pointer'
+                          ${
+                            option.disabled
+                              ? 'text-surface-400 dark:text-surface-600 cursor-not-allowed'
+                              : 'text-surface-700 dark:text-surface-200 cursor-pointer'
                           }
                           ${isFocused() ? 'bg-black/5 dark:bg-white/5' : ''}
                           ${isSelected() ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' : ''}
@@ -416,7 +447,8 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
                         onClick={() => handleSelect(option)}
                         onMouseEnter={() => {
                           if (!option.disabled) {
-                            const focusableIdx = focusableOptions().indexOf(option);
+                            const focusableIdx =
+                              focusableOptions().indexOf(option);
                             setFocusedIndex(focusableIdx);
                           }
                         }}
@@ -425,7 +457,10 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
                         aria-selected={isSelected()}
                         tabIndex={-1}
                       >
-                        <HighlightedText text={option.label} highlight={inputValue()} />
+                        <HighlightedText
+                          text={option.label}
+                          highlight={inputValue()}
+                        />
                       </button>
                     );
                   }}

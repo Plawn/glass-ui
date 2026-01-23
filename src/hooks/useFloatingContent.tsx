@@ -1,9 +1,9 @@
-import type { JSX, Accessor } from 'solid-js';
+import type { Accessor, JSX } from 'solid-js';
 import { Show } from 'solid-js';
 import { PortalWithDarkMode } from '../components/shared/PortalWithDarkMode/PortalWithDarkMode';
 import { POPOVER_ENTER } from '../constants/animations';
+import type { Direction, Placement } from '../types';
 import { usePositioning } from './usePositioning';
-import type { Placement, Direction } from '../types';
 
 // =============================================================================
 // TYPES
@@ -94,7 +94,9 @@ export interface FloatingContentProps {
  * );
  * ```
  */
-export function useFloatingContent(options: UseFloatingContentOptions): UseFloatingContentReturn {
+export function useFloatingContent(
+  options: UseFloatingContentOptions,
+): UseFloatingContentReturn {
   const role = options.role ?? 'dialog';
   const ariaModal = options.ariaModal ?? false;
   const updateOnScroll = options.updateOnScroll ?? false;

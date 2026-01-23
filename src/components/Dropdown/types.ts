@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js';
-import type { DropdownPlacement, BaseComponentProps } from '../../types';
 import type { OverlayScrollBehavior } from '../../hooks';
+import type { BaseComponentProps, DropdownPlacement } from '../../types';
 
 // Re-export from central types for backwards compatibility
 export type { DropdownPlacement } from '../../types';

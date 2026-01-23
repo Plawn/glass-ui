@@ -89,7 +89,14 @@ export type SemanticColor = 'default' | 'primary' | StatusColor;
 /**
  * HTTP method colors for API-related badges
  */
-export type HttpMethodColor = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'head' | 'options';
+export type HttpMethodColor =
+  | 'get'
+  | 'post'
+  | 'put'
+  | 'patch'
+  | 'delete'
+  | 'head'
+  | 'options';
 
 // =============================================================================
 // VARIANT SYSTEM
@@ -98,7 +105,12 @@ export type HttpMethodColor = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'hea
 /**
  * Button variants - semantic action types
  */
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger';
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'tertiary'
+  | 'ghost'
+  | 'danger';
 
 /**
  * Card variants - visual styles
@@ -164,7 +176,10 @@ export type SnackbarPosition = 'bottom-left' | 'bottom-center' | 'bottom-right';
 /**
  * Dropdown placement - vertical placements only (subset of Placement)
  */
-export type DropdownPlacement = Extract<Placement, 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'bottom' | 'top'>;
+export type DropdownPlacement = Extract<
+  Placement,
+  'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'bottom' | 'top'
+>;
 
 /**
  * Table column alignment

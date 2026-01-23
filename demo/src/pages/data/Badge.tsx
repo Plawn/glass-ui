@@ -1,5 +1,5 @@
 import { Badge } from 'glass-ui-solid';
-import { PageHeader, DemoSection } from '../../components/demo';
+import { DemoSection, PageHeader } from '../../components/demo';
 
 export default function BadgePage() {
   return (
@@ -9,7 +9,10 @@ export default function BadgePage() {
         description="Status badges and labels with multiple variants for displaying status and labels."
       />
 
-      <DemoSection title="Import" code="import { Badge } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Badge } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Basic Usage" code="<Badge>Default</Badge>">
         <div class="flex flex-wrap items-center gap-2">
@@ -54,9 +57,15 @@ export default function BadgePage() {
 <Badge variant="error" size="lg">Large Error</Badge>`}
       >
         <div class="flex flex-wrap items-center gap-3">
-          <Badge variant="success" size="sm">Small Success</Badge>
-          <Badge variant="warning" size="md">Medium Warning</Badge>
-          <Badge variant="error" size="lg">Large Error</Badge>
+          <Badge variant="success" size="sm">
+            Small Success
+          </Badge>
+          <Badge variant="warning" size="md">
+            Medium Warning
+          </Badge>
+          <Badge variant="error" size="lg">
+            Large Error
+          </Badge>
         </div>
       </DemoSection>
 
@@ -114,27 +123,37 @@ export default function BadgePage() {
             <tbody class="text-surface-800 dark:text-surface-200">
               <tr>
                 <td class="pr-8 py-1">default</td>
-                <td class="pr-8 py-1"><Badge variant="default">Default</Badge></td>
+                <td class="pr-8 py-1">
+                  <Badge variant="default">Default</Badge>
+                </td>
                 <td class="py-1">Neutral labels</td>
               </tr>
               <tr>
                 <td class="pr-8 py-1">success</td>
-                <td class="pr-8 py-1"><Badge variant="success">Success</Badge></td>
+                <td class="pr-8 py-1">
+                  <Badge variant="success">Success</Badge>
+                </td>
                 <td class="py-1">Active, completed, approved</td>
               </tr>
               <tr>
                 <td class="pr-8 py-1">warning</td>
-                <td class="pr-8 py-1"><Badge variant="warning">Warning</Badge></td>
+                <td class="pr-8 py-1">
+                  <Badge variant="warning">Warning</Badge>
+                </td>
                 <td class="py-1">Pending, in progress</td>
               </tr>
               <tr>
                 <td class="pr-8 py-1">error</td>
-                <td class="pr-8 py-1"><Badge variant="error">Error</Badge></td>
+                <td class="pr-8 py-1">
+                  <Badge variant="error">Error</Badge>
+                </td>
                 <td class="py-1">Failed, inactive, rejected</td>
               </tr>
               <tr>
                 <td class="pr-8 py-1">info</td>
-                <td class="pr-8 py-1"><Badge variant="info">Info</Badge></td>
+                <td class="pr-8 py-1">
+                  <Badge variant="info">Info</Badge>
+                </td>
                 <td class="py-1">New, informational</td>
               </tr>
             </tbody>

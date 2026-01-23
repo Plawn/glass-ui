@@ -46,7 +46,9 @@ const HighlightedText: Component<{
       <For each={segments()}>
         {(segment) =>
           segment.highlight ? (
-            <span class="text-accent-600 dark:text-accent-400 font-semibold">{segment.text}</span>
+            <span class="text-accent-600 dark:text-accent-400 font-semibold">
+              {segment.text}
+            </span>
           ) : (
             <span>{segment.text}</span>
           )
@@ -67,14 +69,20 @@ const ClockIcon: Component = () => (
     stroke="currentColor"
     stroke-width="2"
   >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
   </svg>
 );
 
 /**
  * A single item in the command palette list
  */
-export const CommandPaletteItem: Component<CommandPaletteItemProps> = (props) => {
+export const CommandPaletteItem: Component<CommandPaletteItemProps> = (
+  props,
+) => {
   return (
     <button
       type="button"
@@ -116,8 +124,18 @@ export const CommandPaletteItem: Component<CommandPaletteItemProps> = (props) =>
       {/* Selection indicator */}
       <Show when={props.selected}>
         <div class="flex-shrink-0">
-          <svg class="w-4 h-4 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          <svg
+            class="w-4 h-4 text-accent-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </div>
       </Show>

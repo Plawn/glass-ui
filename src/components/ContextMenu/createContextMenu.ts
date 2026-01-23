@@ -1,6 +1,10 @@
 import { createSignal } from 'solid-js';
 import type { Accessor } from 'solid-js';
-import type { CreateContextMenuReturn, ContextMenuProps, ContextMenuInternalState } from './types';
+import type {
+  ContextMenuInternalState,
+  ContextMenuProps,
+  CreateContextMenuReturn,
+} from './types';
 
 /**
  * Creates a typed context menu with data support.

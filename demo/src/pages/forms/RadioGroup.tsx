@@ -1,6 +1,11 @@
 import { RadioGroup } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function RadioGroupPage() {
   const [selectedFruit, setSelectedFruit] = createSignal('apple');
@@ -182,15 +187,55 @@ const options = [
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'options', type: 'RadioOption[]', description: 'Available options to choose from' },
-            { name: 'value', type: 'string', description: 'Current selected value' },
-            { name: 'onChange', type: '(value: string) => void', description: 'Callback when selection changes' },
-            { name: 'label', type: 'string', description: 'Label for the entire group' },
-            { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'vertical'", description: 'Layout orientation of options' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Size variant' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable entire group' },
-            { name: 'error', type: 'string', description: 'Error message to display' },
-            { name: 'name', type: 'string', default: 'auto', description: 'HTML name attribute for form submission' },
+            {
+              name: 'options',
+              type: 'RadioOption[]',
+              description: 'Available options to choose from',
+            },
+            {
+              name: 'value',
+              type: 'string',
+              description: 'Current selected value',
+            },
+            {
+              name: 'onChange',
+              type: '(value: string) => void',
+              description: 'Callback when selection changes',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label for the entire group',
+            },
+            {
+              name: 'orientation',
+              type: "'horizontal' | 'vertical'",
+              default: "'vertical'",
+              description: 'Layout orientation of options',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Size variant',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Disable entire group',
+            },
+            {
+              name: 'error',
+              type: 'string',
+              description: 'Error message to display',
+            },
+            {
+              name: 'name',
+              type: 'string',
+              default: 'auto',
+              description: 'HTML name attribute for form submission',
+            },
           ]}
         />
       </DemoSection>

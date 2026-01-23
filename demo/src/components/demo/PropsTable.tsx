@@ -1,8 +1,8 @@
 import DOMPurify from 'dompurify';
 import Prism from 'prismjs';
 import 'prismjs/components/prism-typescript';
-import { createMemo } from 'solid-js';
 import { Table, type TableColumn } from 'glass-ui-solid';
+import { createMemo } from 'solid-js';
 
 export interface PropDefinition {
   name: string;
@@ -20,7 +20,9 @@ export interface PropsTableProps {
 /** Highlight TypeScript type syntax */
 function highlightType(type: string): string {
   const grammar = Prism.languages.typescript;
-  if (!grammar) return type;
+  if (!grammar) {
+    return type;
+  }
   return DOMPurify.sanitize(Prism.highlight(type, grammar, 'typescript'), {
     ALLOWED_TAGS: ['span'],
     ALLOWED_ATTR: ['class'],
@@ -43,12 +45,21 @@ export function PropsTable(props: Readonly<PropsTableProps>) {
         key: 'name',
         header: 'Prop',
         width: '140px',
-        render: (value: unknown) => <code class="font-mono text-xs text-primary-600 dark:text-primary-400">{value as string}</code>,
+        render: (value: unknown) => (
+          <code class="font-mono text-xs text-primary-600 dark:text-primary-400">
+            {value as string}
+          </code>
+        ),
       },
       {
         key: 'type',
         header: 'Type',
-        render: (value: unknown) => <code class="font-mono text-xs" innerHTML={highlightType(value as string)} />,
+        render: (value: unknown) => (
+          <code
+            class="font-mono text-xs"
+            innerHTML={highlightType(value as string)}
+          />
+        ),
       },
     ];
 
@@ -57,7 +68,9 @@ export function PropsTable(props: Readonly<PropsTableProps>) {
         key: 'default',
         header: 'Default',
         width: '120px',
-        render: (value: unknown) => <span class="text-surface-500">{(value as string) ?? '-'}</span>,
+        render: (value: unknown) => (
+          <span class="text-surface-500">{(value as string) ?? '-'}</span>
+        ),
       });
     }
 

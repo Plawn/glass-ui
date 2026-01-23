@@ -1,6 +1,11 @@
 import { Checkbox } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable, StateDisplay } from '../../components/demo';
+import {
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 export default function CheckboxPage() {
   const [checked, setChecked] = createSignal(false);
@@ -31,10 +36,7 @@ export default function CheckboxPage() {
 />`}
       >
         <div class="space-y-4">
-          <Checkbox
-            checked={checked()}
-            onChange={setChecked}
-          />
+          <Checkbox checked={checked()} onChange={setChecked} />
           <StateDisplay label="Checked" value={checked()} />
         </div>
       </DemoSection>
@@ -186,14 +188,44 @@ const [updates, setUpdates] = createSignal(true);
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'checked', type: 'boolean', description: 'Whether the checkbox is checked (required)' },
-            { name: 'onChange', type: '(checked: boolean) => void', description: 'Callback when checked state changes' },
-            { name: 'label', type: 'string', description: 'Label text displayed next to the checkbox' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Whether the checkbox is disabled' },
-            { name: 'required', type: 'boolean', default: 'false', description: 'Whether the checkbox is required' },
+            {
+              name: 'checked',
+              type: 'boolean',
+              description: 'Whether the checkbox is checked (required)',
+            },
+            {
+              name: 'onChange',
+              type: '(checked: boolean) => void',
+              description: 'Callback when checked state changes',
+            },
+            {
+              name: 'label',
+              type: 'string',
+              description: 'Label text displayed next to the checkbox',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the checkbox is disabled',
+            },
+            {
+              name: 'required',
+              type: 'boolean',
+              default: 'false',
+              description: 'Whether the checkbox is required',
+            },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
-            { name: 'name', type: 'string', description: 'HTML name attribute' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'name',
+              type: 'string',
+              description: 'HTML name attribute',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

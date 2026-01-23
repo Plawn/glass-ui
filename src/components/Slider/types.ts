@@ -1,4 +1,8 @@
-import type { ComponentSize, BaseComponentProps, DisableableProps } from '../../types';
+import type {
+  BaseComponentProps,
+  ComponentSize,
+  DisableableProps,
+} from '../../types';
 
 /**
  * Slider mark definition

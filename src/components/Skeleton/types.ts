@@ -1,4 +1,4 @@
-import type { SkeletonVariant, BaseComponentProps } from '../../types';
+import type { BaseComponentProps, SkeletonVariant } from '../../types';
 
 export interface SkeletonProps extends BaseComponentProps {
   /** Width of the skeleton (CSS value) */

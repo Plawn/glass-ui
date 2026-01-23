@@ -1,5 +1,5 @@
-import { ErrorDisplay, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { Card, ErrorDisplay } from 'glass-ui-solid';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function ErrorDisplayPage() {
   return (
@@ -9,7 +9,10 @@ export default function ErrorDisplayPage() {
         description="A styled error message component for displaying errors with a title and message."
       />
 
-      <DemoSection title="Import" code="import { ErrorDisplay } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { ErrorDisplay } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Usage"
@@ -35,21 +38,27 @@ export default function ErrorDisplayPage() {
       <DemoSection title="Common Use Cases" card={false}>
         <div class="space-y-4">
           <Card class="p-6">
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">API Error</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              API Error
+            </h3>
             <ErrorDisplay
               title="Failed to Load Data"
               message="The server returned an error (500). Please try again later."
             />
           </Card>
           <Card class="p-6">
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Validation Error</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Validation Error
+            </h3>
             <ErrorDisplay
               title="Validation Failed"
               message="Please ensure all required fields are filled out correctly."
             />
           </Card>
           <Card class="p-6">
-            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">Authentication Error</h3>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Authentication Error
+            </h3>
             <ErrorDisplay
               title="Session Expired"
               message="Your session has expired. Please log in again to continue."
@@ -112,9 +121,22 @@ function Form() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'message', type: 'string', description: 'The error message to display' },
-            { name: 'title', type: 'string', default: "'Request Failed'", description: 'The error title' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
+            {
+              name: 'message',
+              type: 'string',
+              description: 'The error message to display',
+            },
+            {
+              name: 'title',
+              type: 'string',
+              default: "'Request Failed'",
+              description: 'The error title',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

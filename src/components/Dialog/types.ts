@@ -1,4 +1,8 @@
-import type { DialogVariant, DialogSize, BaseComponentProps } from '../../types';
+import type {
+  BaseComponentProps,
+  DialogSize,
+  DialogVariant,
+} from '../../types';
 
 // Re-export from central types for backwards compatibility
 export type { DialogSize } from '../../types';

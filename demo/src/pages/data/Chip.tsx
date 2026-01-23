@@ -1,6 +1,6 @@
 import { Chip } from 'glass-ui-solid';
-import { createSignal, For } from 'solid-js';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { For, createSignal } from 'solid-js';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 export default function ChipPage() {
   const [tags, setTags] = createSignal(['React', 'Solid', 'Vue', 'Angular']);
@@ -37,7 +37,10 @@ export default function ChipPage() {
         description="Compact elements for tags, filters, and selections."
       />
 
-      <DemoSection title="Import" code="import { Chip } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Chip } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Basic Usage" code="<Chip>Label</Chip>">
         <div class="flex flex-wrap items-center gap-2">
@@ -70,11 +73,21 @@ export default function ChipPage() {
               Filled Variant
             </h3>
             <div class="flex flex-wrap items-center gap-2">
-              <Chip color="default" variant="filled">Default</Chip>
-              <Chip color="primary" variant="filled">Primary</Chip>
-              <Chip color="success" variant="filled">Success</Chip>
-              <Chip color="warning" variant="filled">Warning</Chip>
-              <Chip color="error" variant="filled">Error</Chip>
+              <Chip color="default" variant="filled">
+                Default
+              </Chip>
+              <Chip color="primary" variant="filled">
+                Primary
+              </Chip>
+              <Chip color="success" variant="filled">
+                Success
+              </Chip>
+              <Chip color="warning" variant="filled">
+                Warning
+              </Chip>
+              <Chip color="error" variant="filled">
+                Error
+              </Chip>
             </div>
           </div>
           <div>
@@ -82,11 +95,21 @@ export default function ChipPage() {
               Outlined Variant
             </h3>
             <div class="flex flex-wrap items-center gap-2">
-              <Chip color="default" variant="outlined">Default</Chip>
-              <Chip color="primary" variant="outlined">Primary</Chip>
-              <Chip color="success" variant="outlined">Success</Chip>
-              <Chip color="warning" variant="outlined">Warning</Chip>
-              <Chip color="error" variant="outlined">Error</Chip>
+              <Chip color="default" variant="outlined">
+                Default
+              </Chip>
+              <Chip color="primary" variant="outlined">
+                Primary
+              </Chip>
+              <Chip color="success" variant="outlined">
+                Success
+              </Chip>
+              <Chip color="warning" variant="outlined">
+                Warning
+              </Chip>
+              <Chip color="error" variant="outlined">
+                Error
+              </Chip>
             </div>
           </div>
         </div>
@@ -135,7 +158,9 @@ export default function ChipPage() {
       <DemoSection title="Disabled" code="<Chip disabled>Disabled</Chip>">
         <div class="flex flex-wrap items-center gap-2">
           <Chip disabled>Disabled</Chip>
-          <Chip disabled variant="outlined">Disabled Outlined</Chip>
+          <Chip disabled variant="outlined">
+            Disabled Outlined
+          </Chip>
           <Chip disabled onRemove={() => {}}>
             Disabled Removable
           </Chip>
@@ -175,7 +200,11 @@ export default function ChipPage() {
           <div class="flex flex-wrap gap-2">
             <For each={filters()}>
               {(filter) => (
-                <Chip variant="outlined" size="sm" onRemove={() => removeFilter(filter.id)}>
+                <Chip
+                  variant="outlined"
+                  size="sm"
+                  onRemove={() => removeFilter(filter.id)}
+                >
                   {filter.label}
                 </Chip>
               )}
@@ -215,7 +244,12 @@ export default function ChipPage() {
           <Chip variant="filled" color="error" size="lg">
             Large Error
           </Chip>
-          <Chip variant="outlined" color="primary" size="sm" onRemove={() => {}}>
+          <Chip
+            variant="outlined"
+            color="primary"
+            size="sm"
+            onRemove={() => {}}
+          >
             Removable Primary
           </Chip>
         </div>
@@ -224,13 +258,48 @@ export default function ChipPage() {
       <DemoSection title="Props Reference" card={false}>
         <PropsTable
           props={[
-            { name: 'children', type: 'JSX.Element', default: 'required', description: 'Chip content' },
-            { name: 'variant', type: "'filled' | 'outlined'", default: "'filled'", description: 'Visual variant' },
-            { name: 'color', type: "'default' | 'primary' | 'success' | 'warning' | 'error'", default: "'default'", description: 'Color theme' },
-            { name: 'size', type: "'sm' | 'md' | 'lg'", default: "'md'", description: 'Chip size' },
-            { name: 'onRemove', type: '() => void', default: '-', description: 'Show remove button and handle click' },
-            { name: 'disabled', type: 'boolean', default: 'false', description: 'Disable the chip' },
-            { name: 'class', type: 'string', default: '-', description: 'Additional CSS classes' },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              default: 'required',
+              description: 'Chip content',
+            },
+            {
+              name: 'variant',
+              type: "'filled' | 'outlined'",
+              default: "'filled'",
+              description: 'Visual variant',
+            },
+            {
+              name: 'color',
+              type: "'default' | 'primary' | 'success' | 'warning' | 'error'",
+              default: "'default'",
+              description: 'Color theme',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description: 'Chip size',
+            },
+            {
+              name: 'onRemove',
+              type: '() => void',
+              default: '-',
+              description: 'Show remove button and handle click',
+            },
+            {
+              name: 'disabled',
+              type: 'boolean',
+              default: 'false',
+              description: 'Disable the chip',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              default: '-',
+              description: 'Additional CSS classes',
+            },
           ]}
         />
       </DemoSection>

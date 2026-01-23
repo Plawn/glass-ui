@@ -1,5 +1,5 @@
-import { Divider, Card } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable } from '../../components/demo';
+import { Card, Divider } from 'glass-ui-solid';
+import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
 
 const basicCode = `<p>Content above the divider</p>
 <Divider />
@@ -29,36 +29,59 @@ export default function DividerPage() {
         description="A visual separator for dividing content. Supports horizontal and vertical orientations, labels, and various line styles."
       />
 
-      <DemoSection title="Import" code="import { Divider } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { Divider } from 'glass-ui-solid';"
+      />
 
       <DemoSection title="Examples" card={false}>
         {/* Basic Horizontal Divider */}
         <div class="space-y-6">
           <DemoSection title="Basic Horizontal" subsection code={basicCode}>
-            <p class="text-surface-600 dark:text-surface-400 mb-4">Content above the divider</p>
+            <p class="text-surface-600 dark:text-surface-400 mb-4">
+              Content above the divider
+            </p>
             <Divider />
-            <p class="text-surface-600 dark:text-surface-400 mt-4">Content below the divider</p>
+            <p class="text-surface-600 dark:text-surface-400 mt-4">
+              Content below the divider
+            </p>
           </DemoSection>
 
           {/* Divider with Label */}
-          <DemoSection title="With Label" subsection code={labelCode} cardClass="p-6 space-y-4">
+          <DemoSection
+            title="With Label"
+            subsection
+            code={labelCode}
+            cardClass="p-6 space-y-4"
+          >
             <Divider label="OR" />
             <Divider label="Section Title" labelPosition="start" />
             <Divider label="End Label" labelPosition="end" />
           </DemoSection>
 
           {/* Line Variants */}
-          <DemoSection title="Line Variants" subsection code={variantCode} cardClass="p-6 space-y-4">
+          <DemoSection
+            title="Line Variants"
+            subsection
+            code={variantCode}
+            cardClass="p-6 space-y-4"
+          >
             <div class="space-y-2">
-              <span class="text-sm text-surface-500 dark:text-surface-400">Solid (default)</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">
+                Solid (default)
+              </span>
               <Divider variant="solid" />
             </div>
             <div class="space-y-2">
-              <span class="text-sm text-surface-500 dark:text-surface-400">Dashed</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">
+                Dashed
+              </span>
               <Divider variant="dashed" />
             </div>
             <div class="space-y-2">
-              <span class="text-sm text-surface-500 dark:text-surface-400">Dotted</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">
+                Dotted
+              </span>
               <Divider variant="dotted" />
             </div>
           </DemoSection>
@@ -79,12 +102,39 @@ export default function DividerPage() {
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'orientation', type: "'horizontal' | 'vertical'", default: "'horizontal'", description: 'Orientation of the divider' },
-            { name: 'label', type: 'string | JSX.Element', description: 'Optional label in the middle of the divider' },
-            { name: 'labelPosition', type: "'start' | 'center' | 'end'", default: "'center'", description: 'Position of the label' },
-            { name: 'variant', type: "'solid' | 'dashed' | 'dotted'", default: "'solid'", description: 'Line style variant' },
-            { name: 'class', type: 'string', description: 'Additional CSS classes' },
-            { name: 'style', type: 'JSX.CSSProperties', description: 'Inline styles' },
+            {
+              name: 'orientation',
+              type: "'horizontal' | 'vertical'",
+              default: "'horizontal'",
+              description: 'Orientation of the divider',
+            },
+            {
+              name: 'label',
+              type: 'string | JSX.Element',
+              description: 'Optional label in the middle of the divider',
+            },
+            {
+              name: 'labelPosition',
+              type: "'start' | 'center' | 'end'",
+              default: "'center'",
+              description: 'Position of the label',
+            },
+            {
+              name: 'variant',
+              type: "'solid' | 'dashed' | 'dotted'",
+              default: "'solid'",
+              description: 'Line style variant',
+            },
+            {
+              name: 'class',
+              type: 'string',
+              description: 'Additional CSS classes',
+            },
+            {
+              name: 'style',
+              type: 'JSX.CSSProperties',
+              description: 'Inline styles',
+            },
           ]}
         />
       </DemoSection>

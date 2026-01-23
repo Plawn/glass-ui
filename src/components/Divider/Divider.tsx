@@ -1,6 +1,10 @@
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
-import type { DividerProps, DividerLabelPosition, DividerVariant } from './types';
+import type {
+  DividerLabelPosition,
+  DividerProps,
+  DividerVariant,
+} from './types';
 
 const variantStyles: Record<DividerVariant, string> = {
   solid: 'border-solid',
@@ -8,7 +12,10 @@ const variantStyles: Record<DividerVariant, string> = {
   dotted: 'border-dotted',
 };
 
-const labelFlexGrow: Record<DividerLabelPosition, { before: string; after: string }> = {
+const labelFlexGrow: Record<
+  DividerLabelPosition,
+  { before: string; after: string }
+> = {
   start: { before: 'grow-0 w-4', after: 'grow' },
   center: { before: 'grow', after: 'grow' },
   end: { before: 'grow', after: 'grow-0 w-4' },

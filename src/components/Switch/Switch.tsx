@@ -4,7 +4,10 @@ import type { SwitchProps, SwitchSize } from './types';
 /**
  * Size configuration for the switch track and thumb
  */
-const sizeConfig: Record<SwitchSize, { track: string; thumb: string; translate: string }> = {
+const sizeConfig: Record<
+  SwitchSize,
+  { track: string; thumb: string; translate: string }
+> = {
   sm: {
     track: 'w-8 h-5',
     thumb: 'w-4 h-4',
@@ -55,7 +58,9 @@ export const Switch: Component<SwitchProps> = (props) => {
 
   const Label = () => (
     <Show when={props.label}>
-      <span class="text-sm text-surface-700 dark:text-surface-300">{props.label}</span>
+      <span class="text-sm text-surface-700 dark:text-surface-300">
+        {props.label}
+      </span>
     </Show>
   );
 

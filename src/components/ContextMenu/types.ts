@@ -1,6 +1,6 @@
 import type { Accessor, JSX } from 'solid-js';
-import type { BaseComponentProps } from '../../types';
 import type { OverlayScrollBehavior } from '../../hooks';
+import type { BaseComponentProps } from '../../types';
 
 // =============================================================================
 // HOOK RETURN TYPE
@@ -40,7 +40,8 @@ export interface ContextMenuProps<T = unknown> extends BaseComponentProps {
 /**
  * Props for ContextMenuTrigger component
  */
-export interface ContextMenuTriggerProps<T = unknown> extends BaseComponentProps {
+export interface ContextMenuTriggerProps<T = unknown>
+  extends BaseComponentProps {
   children: JSX.Element;
   /** Data associated with this trigger (passed to menu) */
   data?: T;

@@ -1,6 +1,6 @@
 import type { Component } from 'solid-js';
 import { For, mergeProps } from 'solid-js';
-import type { GlassBackgroundProps, GlassBackgroundBlob } from './types';
+import type { GlassBackgroundBlob, GlassBackgroundProps } from './types';
 import './GlassBackground.css';
 
 const defaultBlobs: GlassBackgroundBlob[] = [
@@ -62,7 +62,7 @@ export const GlassBackground: Component<GlassBackgroundProps> = (rawProps) => {
         to: 'rgb(8, 51, 68)', // cyan-950
       },
     },
-    rawProps
+    rawProps,
   );
 
   return (

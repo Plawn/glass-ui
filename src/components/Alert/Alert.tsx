@@ -43,9 +43,13 @@ export const Alert: Component<AlertProps> = (props) => {
         {/* Content */}
         <div class="flex-1 min-w-0">
           <Show when={props.title}>
-            <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-100 mb-1">{props.title}</h3>
+            <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-100 mb-1">
+              {props.title}
+            </h3>
           </Show>
-          <div class="text-sm text-surface-700 dark:text-surface-300">{props.children}</div>
+          <div class="text-sm text-surface-700 dark:text-surface-300">
+            {props.children}
+          </div>
         </div>
 
         {/* Close button */}

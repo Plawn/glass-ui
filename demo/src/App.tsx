@@ -1,16 +1,16 @@
-import { createSignal, onMount, lazy, Suspense } from 'solid-js';
-import { Router, Route, useNavigate } from '@solidjs/router';
-import { version } from '../../package.json';
+import { Route, Router, useNavigate } from '@solidjs/router';
 import {
   Button,
-  GlassBackground,
-  ToastContainer,
-  SnackbarContainer,
-  useIsDark,
-  Skeleton,
   CommandPalette,
   type CommandPaletteItemType,
+  GlassBackground,
+  Skeleton,
+  SnackbarContainer,
+  ToastContainer,
+  useIsDark,
 } from 'glass-ui-solid';
+import { Suspense, createSignal, lazy, onMount } from 'solid-js';
+import { version } from '../../package.json';
 import DocSidebar from './components/DocSidebar';
 import { navigation } from './config/navigation';
 
@@ -60,13 +60,17 @@ const ChatPage = lazy(() => import('./pages/feedback/Chat'));
 
 // Navigation pages
 const TabsPage = lazy(() => import('./pages/navigation/Tabs'));
-const SegmentedControlPage = lazy(() => import('./pages/navigation/SegmentedControl'));
+const SegmentedControlPage = lazy(
+  () => import('./pages/navigation/SegmentedControl'),
+);
 const BreadcrumbPage = lazy(() => import('./pages/navigation/Breadcrumb'));
 const PaginationPage = lazy(() => import('./pages/navigation/Pagination'));
 const MenuPage = lazy(() => import('./pages/navigation/Menu'));
 const DropdownPage = lazy(() => import('./pages/navigation/Dropdown'));
 const ContextMenuPage = lazy(() => import('./pages/navigation/ContextMenu'));
-const CommandPalettePage = lazy(() => import('./pages/navigation/CommandPalette'));
+const CommandPalettePage = lazy(
+  () => import('./pages/navigation/CommandPalette'),
+);
 
 // Data Display pages
 const TablePage = lazy(() => import('./pages/data/Table'));
@@ -133,7 +137,7 @@ function Layout(props: { children: any }) {
         keywords: [group.label.toLowerCase(), item.label.toLowerCase()],
         group: group.label,
         data: item.path,
-      }))
+      })),
     ),
   ];
 
@@ -169,13 +173,44 @@ function Layout(props: { children: any }) {
               <span class="opacity-50">COMMAND</span>
               <span class="text-xs">K</span>
             </div>
-            <span class="text-xs font-medium text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded-md">v{version}</span>
+            <span class="text-xs font-medium text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-800 px-2 py-1 rounded-md">
+              v{version}
+            </span>
             <div class="h-6 w-[1px] bg-surface-200 dark:bg-surface-800 mx-1"></div>
-            <Button variant="ghost" size="sm" onClick={toggleDarkMode} class="rounded-full w-9 h-9 p-0 flex items-center justify-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleDarkMode}
+              class="rounded-full w-9 h-9 p-0 flex items-center justify-center"
+            >
               {darkMode() ? (
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
               ) : (
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  />
+                </svg>
               )}
             </Button>
           </div>
@@ -186,9 +221,7 @@ function Layout(props: { children: any }) {
         <DocSidebar />
 
         <main class="flex-1 min-w-0">
-          <Suspense fallback={<PageLoader />}>
-            {props.children}
-          </Suspense>
+          <Suspense fallback={<PageLoader />}>{props.children}</Suspense>
         </main>
       </div>
     </GlassBackground>
@@ -246,13 +279,19 @@ export default function App() {
 
       {/* Navigation */}
       <Route path="/navigation/tabs" component={TabsPage} />
-      <Route path="/navigation/segmented-control" component={SegmentedControlPage} />
+      <Route
+        path="/navigation/segmented-control"
+        component={SegmentedControlPage}
+      />
       <Route path="/navigation/breadcrumb" component={BreadcrumbPage} />
       <Route path="/navigation/pagination" component={PaginationPage} />
       <Route path="/navigation/menu" component={MenuPage} />
       <Route path="/navigation/dropdown" component={DropdownPage} />
       <Route path="/navigation/context-menu" component={ContextMenuPage} />
-      <Route path="/navigation/command-palette" component={CommandPalettePage} />
+      <Route
+        path="/navigation/command-palette"
+        component={CommandPalettePage}
+      />
 
       {/* Data Display */}
       <Route path="/data/table" component={TablePage} />

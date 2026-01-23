@@ -88,7 +88,10 @@ export const DIALOG_MAX_WIDTHS: Record<ComponentSize, string> = {
 /**
  * Drawer-specific widths (narrower than modals).
  */
-export const DRAWER_MAX_WIDTHS: Record<Exclude<OverlaySizeKey, 'full'>, string> = {
+export const DRAWER_MAX_WIDTHS: Record<
+  Exclude<OverlaySizeKey, 'full'>,
+  string
+> = {
   sm: 'max-w-xs',
   md: 'max-w-sm',
   lg: 'max-w-md',

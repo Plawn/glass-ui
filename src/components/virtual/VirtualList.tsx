@@ -1,6 +1,16 @@
-import { createMemo, createEffect, createSignal, For, Show, onMount, onCleanup, type JSX, type Component } from 'solid-js';
+import {
+  type Component,
+  For,
+  type JSX,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+} from 'solid-js';
+import type { ListItem, VirtualHandle, VirtualListProps } from './types';
 import { useVirtualizer } from './useVirtualizer';
-import type { VirtualListProps, VirtualHandle, ListItem } from './types';
 
 // =============================================================================
 // DEFAULT COMPONENTS
@@ -75,16 +85,18 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
   });
 
   // Style computed reactively
-  const itemStyle = createMemo((): JSX.CSSProperties => ({
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    transform: `translateY(${props.getOffset()}px)`,
-    visibility: props.isVisible() ? 'visible' : 'hidden',
-    'pointer-events': props.isVisible() ? 'auto' : 'none',
-    'overflow-anchor': 'none',
-  }));
+  const itemStyle = createMemo(
+    (): JSX.CSSProperties => ({
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      transform: `translateY(${props.getOffset()}px)`,
+      visibility: props.isVisible() ? 'visible' : 'hidden',
+      'pointer-events': props.isVisible() ? 'auto' : 'none',
+      'overflow-anchor': 'none',
+    }),
+  );
 
   return (
     <div
@@ -96,7 +108,7 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
       {props.itemContent(
         props.index + props.firstItemIndex,
         itemData(),
-        props.context as C
+        props.context as C,
       )}
     </div>
   );
@@ -107,10 +119,12 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
 // =============================================================================
 
 export function VirtualList<D = unknown, C = unknown>(
-  props: VirtualListProps<D, C>
+  props: VirtualListProps<D, C>,
 ): JSX.Element {
   // --- Use signal for scroller ref to ensure reactivity ---
-  const [scrollerRef, setScrollerRef] = createSignal<HTMLDivElement | undefined>(undefined);
+  const [scrollerRef, setScrollerRef] = createSignal<
+    HTMLDivElement | undefined
+  >(undefined);
 
   // --- Stable list of cached indices (numbers are compared by value in For) ---
   const [cachedIndices, setCachedIndices] = createSignal<number[]>([]);
@@ -119,20 +133,26 @@ export function VirtualList<D = unknown, C = unknown>(
   const MAX_CACHE_SIZE = 100;
 
   // --- Computed props ---
-  const totalCount = createMemo(() => props.totalCount ?? props.data?.length ?? 0);
-  const defaultItemHeight = createMemo(() => props.defaultItemHeight ?? props.fixedItemHeight ?? 50);
+  const totalCount = createMemo(
+    () => props.totalCount ?? props.data?.length ?? 0,
+  );
+  const defaultItemHeight = createMemo(
+    () => props.defaultItemHeight ?? props.fixedItemHeight ?? 50,
+  );
   const fixedItemHeight = createMemo(() => props.fixedItemHeight);
   const overscan = createMemo(() => props.overscan ?? 5);
   const firstItemIndex = createMemo(() => props.firstItemIndex ?? 0);
   const atBottomThreshold = createMemo(() => props.atBottomThreshold ?? 4);
   const atTopThreshold = createMemo(() => props.atTopThreshold ?? 0);
 
-  const increaseViewportBy = createMemo((): number | { top: number; bottom: number } => {
-    const val = props.increaseViewportBy;
-    if (!val) return 0;
-    if (typeof val === 'number') return val;
-    return val;
-  });
+  const increaseViewportBy = createMemo(
+    (): number | { top: number; bottom: number } => {
+      const val = props.increaseViewportBy;
+      if (!val) return 0;
+      if (typeof val === 'number') return val;
+      return val;
+    },
+  );
 
   // --- Virtualizer ---
   const virtualizer = useVirtualizer({
@@ -161,8 +181,8 @@ export function VirtualList<D = unknown, C = unknown>(
 
     // If totalCount decreased, remove invalid indices from cache
     if (count < prevTotalCount) {
-      setCachedIndices(prev => {
-        const filtered = prev.filter(index => index < count);
+      setCachedIndices((prev) => {
+        const filtered = prev.filter((index) => index < count);
         if (filtered.length === prev.length) return prev;
         return filtered;
       });
@@ -182,7 +202,7 @@ export function VirtualList<D = unknown, C = unknown>(
     const items = virtualizer.items();
     const range = virtualizer.range();
 
-    setCachedIndices(prev => {
+    setCachedIndices((prev) => {
       const indexSet = new Set(prev);
 
       // Add new visible indices
@@ -196,7 +216,9 @@ export function VirtualList<D = unknown, C = unknown>(
       // Prune if too large - keep items closest to current viewport
       if (indices.length > MAX_CACHE_SIZE) {
         const centerIndex = Math.floor((range.startIndex + range.endIndex) / 2);
-        indices.sort((a, b) => Math.abs(a - centerIndex) - Math.abs(b - centerIndex));
+        indices.sort(
+          (a, b) => Math.abs(a - centerIndex) - Math.abs(b - centerIndex),
+        );
         indices = indices.slice(0, MAX_CACHE_SIZE);
       }
 
@@ -204,7 +226,10 @@ export function VirtualList<D = unknown, C = unknown>(
       indices.sort((a, b) => a - b);
 
       // Only update if the array actually changed
-      if (indices.length === prev.length && indices.every((v, i) => v === prev[i])) {
+      if (
+        indices.length === prev.length &&
+        indices.every((v, i) => v === prev[i])
+      ) {
         return prev;
       }
 
@@ -215,7 +240,7 @@ export function VirtualList<D = unknown, C = unknown>(
   // --- Helper to get item info by index ---
   const getItemInfo = (index: number) => {
     const items = virtualizer.items();
-    return items.find(i => i.index === index);
+    return items.find((i) => i.index === index);
   };
 
   // --- Check if an index is currently visible ---
@@ -260,12 +285,14 @@ export function VirtualList<D = unknown, C = unknown>(
   createEffect(() => {
     const items = virtualizer.items();
     if (props.itemsRendered) {
-      props.itemsRendered(items.map(item => ({
-        index: item.index,
-        offset: item.offset,
-        size: item.size,
-        data: props.data?.[item.index],
-      })) as ListItem<D>[]);
+      props.itemsRendered(
+        items.map((item) => ({
+          index: item.index,
+          offset: item.offset,
+          size: item.size,
+          data: props.data?.[item.index],
+        })) as ListItem<D>[],
+      );
     }
   });
 
@@ -273,28 +300,29 @@ export function VirtualList<D = unknown, C = unknown>(
   const Scroller = props.Scroller ?? DefaultScroller;
 
   // --- Styles ---
-  const scrollerStyle = createMemo((): JSX.CSSProperties => ({
-    height: '100%',
-    'overflow-y': 'auto',
-    position: 'relative',
-    outline: 'none',
-    '-webkit-overflow-scrolling': 'touch',
-    ...props.style,
-  }));
+  const scrollerStyle = createMemo(
+    (): JSX.CSSProperties => ({
+      height: '100%',
+      'overflow-y': 'auto',
+      position: 'relative',
+      outline: 'none',
+      '-webkit-overflow-scrolling': 'touch',
+      ...props.style,
+    }),
+  );
 
   // Container with total height for scroll
-  const containerStyle = createMemo((): JSX.CSSProperties => ({
-    height: `${virtualizer.totalSize()}px`,
-    position: 'relative',
-    width: '100%',
-  }));
+  const containerStyle = createMemo(
+    (): JSX.CSSProperties => ({
+      height: `${virtualizer.totalSize()}px`,
+      position: 'relative',
+      width: '100%',
+    }),
+  );
 
   // --- Render ---
   return (
-    <Scroller
-      ref={setScrollerRef}
-      style={scrollerStyle()}
-    >
+    <Scroller ref={setScrollerRef} style={scrollerStyle()}>
       <Show when={props.Header}>
         <div data-virtual-header>{props.Header!()}</div>
       </Show>
@@ -302,9 +330,7 @@ export function VirtualList<D = unknown, C = unknown>(
       <Show
         when={totalCount() > 0}
         fallback={
-          <Show when={props.EmptyPlaceholder}>
-            {props.EmptyPlaceholder!()}
-          </Show>
+          <Show when={props.EmptyPlaceholder}>{props.EmptyPlaceholder!()}</Show>
         }
       >
         {/* Container with total height for scroll */}

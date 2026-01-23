@@ -41,12 +41,20 @@ export const navigation: NavGroup[] = [
       { id: 'radio-group', label: 'RadioGroup', path: '/forms/radio-group' },
       { id: 'switch', label: 'Switch', path: '/forms/switch' },
       { id: 'slider', label: 'Slider', path: '/forms/slider' },
-      { id: 'autocomplete', label: 'Autocomplete', path: '/forms/autocomplete' },
+      {
+        id: 'autocomplete',
+        label: 'Autocomplete',
+        path: '/forms/autocomplete',
+      },
       { id: 'date-picker', label: 'DatePicker', path: '/forms/date-picker' },
       { id: 'number-input', label: 'NumberInput', path: '/forms/number-input' },
       { id: 'file-upload', label: 'FileUpload', path: '/forms/file-upload' },
       { id: 'stepper', label: 'Stepper', path: '/forms/stepper' },
-      { id: 'json-schema-form', label: 'JsonSchemaForm', path: '/forms/json-schema-form' },
+      {
+        id: 'json-schema-form',
+        label: 'JsonSchemaForm',
+        path: '/forms/json-schema-form',
+      },
     ],
   },
   {
@@ -57,7 +65,11 @@ export const navigation: NavGroup[] = [
       { id: 'progress', label: 'Progress', path: '/feedback/progress' },
       { id: 'skeleton', label: 'Skeleton', path: '/feedback/skeleton' },
       { id: 'spinner', label: 'Spinner', path: '/feedback/spinner' },
-      { id: 'error-display', label: 'ErrorDisplay', path: '/feedback/error-display' },
+      {
+        id: 'error-display',
+        label: 'ErrorDisplay',
+        path: '/feedback/error-display',
+      },
       { id: 'snackbar', label: 'Snackbar', path: '/feedback/snackbar' },
       { id: 'toast', label: 'Toast', path: '/feedback/toast' },
       { id: 'empty-state', label: 'EmptyState', path: '/feedback/empty-state' },
@@ -69,13 +81,25 @@ export const navigation: NavGroup[] = [
     label: 'Navigation',
     items: [
       { id: 'tabs', label: 'Tabs', path: '/navigation/tabs' },
-      { id: 'segmented-control', label: 'SegmentedControl', path: '/navigation/segmented-control' },
+      {
+        id: 'segmented-control',
+        label: 'SegmentedControl',
+        path: '/navigation/segmented-control',
+      },
       { id: 'breadcrumb', label: 'Breadcrumb', path: '/navigation/breadcrumb' },
       { id: 'pagination', label: 'Pagination', path: '/navigation/pagination' },
       { id: 'menu', label: 'Menu', path: '/navigation/menu' },
       { id: 'dropdown', label: 'Dropdown', path: '/navigation/dropdown' },
-      { id: 'context-menu', label: 'ContextMenu', path: '/navigation/context-menu' },
-      { id: 'command-palette', label: 'CommandPalette', path: '/navigation/command-palette' },
+      {
+        id: 'context-menu',
+        label: 'ContextMenu',
+        path: '/navigation/context-menu',
+      },
+      {
+        id: 'command-palette',
+        label: 'CommandPalette',
+        path: '/navigation/command-palette',
+      },
     ],
   },
   {
@@ -93,7 +117,11 @@ export const navigation: NavGroup[] = [
       { id: 'json-viewer', label: 'JsonViewer', path: '/data/json-viewer' },
       { id: 'markdown', label: 'Markdown', path: '/data/markdown' },
       { id: 'virtual-list', label: 'VirtualList', path: '/data/virtual-list' },
-      { id: 'virtual-table', label: 'VirtualTable', path: '/data/virtual-table' },
+      {
+        id: 'virtual-table',
+        label: 'VirtualTable',
+        path: '/data/virtual-table',
+      },
     ],
   },
 ];

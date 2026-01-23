@@ -24,7 +24,10 @@ export interface UseControlledOptions<T> {
 /**
  * Return type for the useControlled hook
  */
-export type UseControlledReturn<T> = [value: Accessor<T>, setValue: (value: T) => void];
+export type UseControlledReturn<T> = [
+  value: Accessor<T>,
+  setValue: (value: T) => void,
+];
 
 /**
  * A hook for managing controlled/uncontrolled component state.
@@ -47,7 +50,9 @@ export type UseControlledReturn<T> = [value: Accessor<T>, setValue: (value: T) =
  * // Use setIsOpen(newValue) to update it
  * ```
  */
-export function useControlled<T>(options: UseControlledOptions<T>): UseControlledReturn<T> {
+export function useControlled<T>(
+  options: UseControlledOptions<T>,
+): UseControlledReturn<T> {
   const [internal, setInternal] = createSignal<T>(options.defaultValue);
 
   // Resolve value - support both direct values and accessor functions
@@ -58,7 +63,9 @@ export function useControlled<T>(options: UseControlledOptions<T>): UseControlle
 
   const isControlled = createMemo(() => getValue() !== undefined);
 
-  const value = createMemo(() => (isControlled() ? (getValue() as T) : internal()));
+  const value = createMemo(() =>
+    isControlled() ? (getValue() as T) : internal(),
+  );
 
   const setValue = (newValue: T) => {
     if (!isControlled()) {

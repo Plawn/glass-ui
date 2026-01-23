@@ -1,4 +1,10 @@
-import { type Accessor, type Component, type JSX, Show, createMemo } from 'solid-js';
+import {
+  type Accessor,
+  type Component,
+  type JSX,
+  Show,
+  createMemo,
+} from 'solid-js';
 import {
   ANIMATION_DURATION,
   BACKDROP_ENTER,
@@ -48,7 +54,7 @@ import type { PortalOverlayProps, PortalOverlayRenderProps } from './types';
 export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
   // Normalize open to an accessor
   const openAccessor: Accessor<boolean> = createMemo(() =>
-    typeof props.open === 'function' ? props.open() : props.open
+    typeof props.open === 'function' ? props.open() : props.open,
   );
 
   const animated = () => props.animated ?? false;

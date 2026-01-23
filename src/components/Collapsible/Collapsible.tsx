@@ -1,10 +1,12 @@
 import type { Component } from 'solid-js';
-import { createSignal, createEffect, Show } from 'solid-js';
+import { Show, createEffect, createSignal } from 'solid-js';
 import type { CollapsibleProps } from './types';
 
 export const Collapsible: Component<CollapsibleProps> = (props) => {
   // Internal state for uncontrolled mode
-  const [internalOpen, setInternalOpen] = createSignal(props.defaultOpen ?? false);
+  const [internalOpen, setInternalOpen] = createSignal(
+    props.defaultOpen ?? false,
+  );
 
   // Determine if controlled
   const isControlled = () => props.open !== undefined;
@@ -51,7 +53,10 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
 
       {/* Content */}
       <Show when={isOpen()}>
-        <div id={id} class="animate-in fade-in slide-in-from-top-2 duration-200">
+        <div
+          id={id}
+          class="animate-in fade-in slide-in-from-top-2 duration-200"
+        >
           {props.children}
         </div>
       </Show>

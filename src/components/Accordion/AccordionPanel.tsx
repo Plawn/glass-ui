@@ -18,7 +18,9 @@ export const AccordionPanel: Component<AccordionPanelProps> = (props) => {
           <ChevronRightIcon
             class={`w-3.5 h-3.5 text-surface-500 dark:text-surface-400 transition-transform duration-200 ${open() ? 'rotate-90' : ''}`}
           />
-          <span class="text-xs font-medium text-surface-700 dark:text-surface-200">{props.title}</span>
+          <span class="text-xs font-medium text-surface-700 dark:text-surface-200">
+            {props.title}
+          </span>
         </div>
         <ChevronDownIcon
           class={`w-3.5 h-3.5 text-surface-400 dark:text-surface-500 transition-transform duration-200 ${open() ? 'rotate-180' : ''}`}

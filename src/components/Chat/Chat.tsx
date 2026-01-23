@@ -1,7 +1,7 @@
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
-import { ChatMessageList } from './ChatMessageList';
 import { ChatInput } from './ChatInput';
+import { ChatMessageList } from './ChatMessageList';
 import type { ChatProps } from './types';
 
 /**
@@ -37,7 +37,9 @@ import type { ChatProps } from './types';
  */
 export const Chat: Component<ChatProps> = (props) => {
   return (
-    <div class={`flex flex-col h-full bg-white/30 dark:bg-surface-900/30 backdrop-blur-sm rounded-2xl overflow-hidden ${props.class ?? ''}`}>
+    <div
+      class={`flex flex-col h-full bg-white/30 dark:bg-surface-900/30 backdrop-blur-sm rounded-2xl overflow-hidden ${props.class ?? ''}`}
+    >
       {/* Optional header */}
       <Show when={props.header}>
         <div class="border-b border-surface-200 dark:border-surface-700">

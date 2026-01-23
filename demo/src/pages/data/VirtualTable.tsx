@@ -1,7 +1,13 @@
-import { createSignal, For, Show, createMemo, type JSX } from 'solid-js';
-import { VirtualTable, Badge, Button } from 'glass-ui-solid';
+import { Badge, Button, VirtualTable } from 'glass-ui-solid';
 import type { VirtualHandle, VirtualTableColumn } from 'glass-ui-solid';
-import { PageHeader, DemoSection, PropsTable, CodePill, StateDisplay } from '../../components/demo';
+import { For, type JSX, Show, createMemo, createSignal } from 'solid-js';
+import {
+  CodePill,
+  DemoSection,
+  PageHeader,
+  PropsTable,
+  StateDisplay,
+} from '../../components/demo';
 
 // Sample data generator
 interface User {
@@ -14,7 +20,15 @@ interface User {
   joinDate: string;
 }
 
-const departments = ['Engineering', 'Design', 'Marketing', 'Sales', 'Support', 'HR', 'Finance'];
+const departments = [
+  'Engineering',
+  'Design',
+  'Marketing',
+  'Sales',
+  'Support',
+  'HR',
+  'Finance',
+];
 const roles: User['role'][] = ['Admin', 'User', 'Moderator'];
 const statuses: User['status'][] = ['active', 'inactive', 'pending'];
 
@@ -26,9 +40,12 @@ const generateUsers = (count: number): User[] =>
     role: roles[i % roles.length],
     status: statuses[i % statuses.length],
     department: departments[i % departments.length],
-    joinDate: new Date(2020 + Math.floor(i / 365), i % 12, (i % 28) + 1).toLocaleDateString(),
+    joinDate: new Date(
+      2020 + Math.floor(i / 365),
+      i % 12,
+      (i % 28) + 1,
+    ).toLocaleDateString(),
   }));
-
 
 export default function VirtualTablePage() {
   const users = generateUsers(10000);
@@ -54,7 +71,10 @@ export default function VirtualTablePage() {
         description="Virtualized table component for large datasets with sticky headers and footers. Perfect for displaying tabular data with thousands of rows while maintaining smooth scrolling performance."
       />
 
-      <DemoSection title="Import" code="import { VirtualTable } from 'glass-ui-solid';" />
+      <DemoSection
+        title="Import"
+        code="import { VirtualTable } from 'glass-ui-solid';"
+      />
 
       <DemoSection
         title="Basic Example"
@@ -94,18 +114,34 @@ export default function VirtualTablePage() {
           data={users}
           fixedHeaderContent={() => (
             <tr class="text-left">
-              <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">ID</th>
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name</th>
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Email</th>
-              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Role</th>
-              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Status</th>
+              <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">
+                ID
+              </th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Name
+              </th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Email
+              </th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">
+                Role
+              </th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">
+                Status
+              </th>
             </tr>
           )}
           itemContent={(index, user) => (
             <>
-              <td class="p-3 text-surface-500 dark:text-surface-400">{user.id}</td>
-              <td class="p-3 font-medium text-surface-900 dark:text-white">{user.name}</td>
-              <td class="p-3 text-surface-600 dark:text-surface-400">{user.email}</td>
+              <td class="p-3 text-surface-500 dark:text-surface-400">
+                {user.id}
+              </td>
+              <td class="p-3 font-medium text-surface-900 dark:text-white">
+                {user.name}
+              </td>
+              <td class="p-3 text-surface-600 dark:text-surface-400">
+                {user.email}
+              </td>
               <td class="p-3">
                 <Badge size="sm">{user.role}</Badge>
               </td>
@@ -120,7 +156,14 @@ export default function VirtualTablePage() {
 
       <DemoSection
         title="Column-Based Rendering"
-        description={<>Use <CodePill>columns</CodePill> prop for declarative cell rendering instead of <CodePill>itemContent</CodePill>. Each column can have its own render function. Header is auto-generated from column definitions.</>}
+        description={
+          <>
+            Use <CodePill>columns</CodePill> prop for declarative cell rendering
+            instead of <CodePill>itemContent</CodePill>. Each column can have
+            its own render function. Header is auto-generated from column
+            definitions.
+          </>
+        }
         code={`import type { VirtualTableColumn } from 'glass-ui-solid';
 
 const columns: VirtualTableColumn<User>[] = [
@@ -153,27 +196,52 @@ const columns: VirtualTableColumn<User>[] = [
       >
         <VirtualTable
           data={users}
-          columns={[
-            { key: 'id', header: 'ID', width: '80px', align: 'right', cellClass: 'text-surface-500 dark:text-surface-400' },
-            { key: 'name', header: 'Name', cellClass: 'font-medium text-surface-900 dark:text-white' },
-            { key: 'email', header: 'Email', cellClass: 'text-surface-600 dark:text-surface-400' },
-            {
-              key: 'role',
-              header: 'Role',
-              width: '120px',
-              render: (value) => <Badge size="sm">{String(value)}</Badge>,
-            },
-            {
-              key: 'status',
-              header: 'Status',
-              width: '120px',
-              render: (value) => (
-                <Badge size="sm" variant={value === 'active' ? 'success' : value === 'pending' ? 'warning' : 'default'}>
-                  {String(value)}
-                </Badge>
-              ),
-            },
-          ] satisfies VirtualTableColumn<User>[]}
+          columns={
+            [
+              {
+                key: 'id',
+                header: 'ID',
+                width: '80px',
+                align: 'right',
+                cellClass: 'text-surface-500 dark:text-surface-400',
+              },
+              {
+                key: 'name',
+                header: 'Name',
+                cellClass: 'font-medium text-surface-900 dark:text-white',
+              },
+              {
+                key: 'email',
+                header: 'Email',
+                cellClass: 'text-surface-600 dark:text-surface-400',
+              },
+              {
+                key: 'role',
+                header: 'Role',
+                width: '120px',
+                render: (value) => <Badge size="sm">{String(value)}</Badge>,
+              },
+              {
+                key: 'status',
+                header: 'Status',
+                width: '120px',
+                render: (value) => (
+                  <Badge
+                    size="sm"
+                    variant={
+                      value === 'active'
+                        ? 'success'
+                        : value === 'pending'
+                          ? 'warning'
+                          : 'default'
+                    }
+                  >
+                    {String(value)}
+                  </Badge>
+                ),
+              },
+            ] satisfies VirtualTableColumn<User>[]
+          }
           fixedItemHeight={48}
           style={{ height: '400px' }}
         />
@@ -181,7 +249,12 @@ const columns: VirtualTableColumn<User>[] = [
 
       <DemoSection
         title="Fixed Row Height (Optimized)"
-        description={<>Use <CodePill>fixedItemHeight</CodePill> when all rows have the same height for optimal performance.</>}
+        description={
+          <>
+            Use <CodePill>fixedItemHeight</CodePill> when all rows have the same
+            height for optimal performance.
+          </>
+        }
         code={`<VirtualTable
   data={users}
   fixedItemHeight={48}
@@ -209,18 +282,34 @@ const columns: VirtualTableColumn<User>[] = [
           fixedItemHeight={48}
           fixedHeaderContent={() => (
             <tr class="text-left">
-              <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">ID</th>
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name</th>
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Department</th>
-              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">Join Date</th>
+              <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">
+                ID
+              </th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Name
+              </th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Department
+              </th>
+              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">
+                Join Date
+              </th>
             </tr>
           )}
           itemContent={(index, user) => (
             <>
-              <td class="p-3 text-surface-500 dark:text-surface-400">{user.id}</td>
-              <td class="p-3 font-medium text-surface-900 dark:text-white">{user.name}</td>
-              <td class="p-3 text-surface-600 dark:text-surface-400">{user.department}</td>
-              <td class="p-3 text-surface-500 dark:text-surface-400">{user.joinDate}</td>
+              <td class="p-3 text-surface-500 dark:text-surface-400">
+                {user.id}
+              </td>
+              <td class="p-3 font-medium text-surface-900 dark:text-white">
+                {user.name}
+              </td>
+              <td class="p-3 text-surface-600 dark:text-surface-400">
+                {user.department}
+              </td>
+              <td class="p-3 text-surface-500 dark:text-surface-400">
+                {user.joinDate}
+              </td>
             </>
           )}
           style={{ height: '350px' }}
@@ -229,7 +318,12 @@ const columns: VirtualTableColumn<User>[] = [
 
       <DemoSection
         title="With Header and Footer"
-        description={<>Add a sticky footer using <CodePill>fixedFooterContent</CodePill>. Both header and footer remain visible while scrolling.</>}
+        description={
+          <>
+            Add a sticky footer using <CodePill>fixedFooterContent</CodePill>.
+            Both header and footer remain visible while scrolling.
+          </>
+        }
         code={`<VirtualTable
   data={users}
   fixedHeaderContent={() => (
@@ -262,25 +356,44 @@ const columns: VirtualTableColumn<User>[] = [
           fixedItemHeight={48}
           fixedHeaderContent={() => (
             <tr class="text-left">
-              <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">ID</th>
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name</th>
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Email</th>
-              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Status</th>
+              <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">
+                ID
+              </th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Name
+              </th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Email
+              </th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">
+                Status
+              </th>
             </tr>
           )}
           itemContent={(index, user) => (
             <>
-              <td class="p-3 text-surface-500 dark:text-surface-400">{user.id}</td>
-              <td class="p-3 font-medium text-surface-900 dark:text-white">{user.name}</td>
-              <td class="p-3 text-surface-600 dark:text-surface-400">{user.email}</td>
+              <td class="p-3 text-surface-500 dark:text-surface-400">
+                {user.id}
+              </td>
+              <td class="p-3 font-medium text-surface-900 dark:text-white">
+                {user.name}
+              </td>
+              <td class="p-3 text-surface-600 dark:text-surface-400">
+                {user.email}
+              </td>
               <td class="p-3">
-                <Badge variant={statusColors[user.status]} size="sm">{user.status}</Badge>
+                <Badge variant={statusColors[user.status]} size="sm">
+                  {user.status}
+                </Badge>
               </td>
             </>
           )}
           fixedFooterContent={() => (
             <tr class="bg-surface-100 dark:bg-surface-800">
-              <td class="p-3 font-semibold text-surface-900 dark:text-white" colspan={3}>
+              <td
+                class="p-3 font-semibold text-surface-900 dark:text-white"
+                colspan={3}
+              >
                 Total Users
               </td>
               <td class="p-3 font-semibold text-surface-900 dark:text-white">
@@ -294,7 +407,12 @@ const columns: VirtualTableColumn<User>[] = [
 
       <DemoSection
         title="Scroll to Index"
-        description={<>Use the <CodePill>ref</CodePill> prop to get a handle for programmatic scrolling.</>}
+        description={
+          <>
+            Use the <CodePill>ref</CodePill> prop to get a handle for
+            programmatic scrolling.
+          </>
+        }
         code={`let tableRef: VirtualHandle;
 
 <Button onClick={() => tableRef.scrollToIndex(500)}>
@@ -322,7 +440,9 @@ const columns: VirtualTableColumn<User>[] = [
             <input
               type="number"
               value={scrollIndex()}
-              onInput={(e) => setScrollIndex(parseInt(e.currentTarget.value) || 0)}
+              onInput={(e) =>
+                setScrollIndex(Number.parseInt(e.currentTarget.value) || 0)
+              }
               class="w-24 px-3 py-2 border border-surface-300 dark:border-surface-600 rounded-lg bg-white dark:bg-surface-800 text-surface-900 dark:text-white"
               min={0}
               max={9999}
@@ -330,7 +450,16 @@ const columns: VirtualTableColumn<User>[] = [
             <Button onClick={() => tableRef?.scrollToIndex(scrollIndex())}>
               Scroll to Row
             </Button>
-            <Button variant="secondary" onClick={() => tableRef?.scrollToIndex({ index: scrollIndex(), align: 'center', behavior: 'smooth' })}>
+            <Button
+              variant="secondary"
+              onClick={() =>
+                tableRef?.scrollToIndex({
+                  index: scrollIndex(),
+                  align: 'center',
+                  behavior: 'smooth',
+                })
+              }
+            >
               Smooth Scroll (Center)
             </Button>
           </div>
@@ -340,16 +469,28 @@ const columns: VirtualTableColumn<User>[] = [
             fixedItemHeight={48}
             fixedHeaderContent={() => (
               <tr class="text-left">
-                <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">Row</th>
-                <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name</th>
-                <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Email</th>
+                <th class="p-3 w-20 text-surface-600 dark:text-surface-400 font-semibold">
+                  Row
+                </th>
+                <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                  Name
+                </th>
+                <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                  Email
+                </th>
               </tr>
             )}
             itemContent={(index, user) => (
               <>
-                <td class="p-3 text-surface-500 dark:text-surface-400">{index}</td>
-                <td class="p-3 font-medium text-surface-900 dark:text-white">{user.name}</td>
-                <td class="p-3 text-surface-600 dark:text-surface-400">{user.email}</td>
+                <td class="p-3 text-surface-500 dark:text-surface-400">
+                  {index}
+                </td>
+                <td class="p-3 font-medium text-surface-900 dark:text-white">
+                  {user.name}
+                </td>
+                <td class="p-3 text-surface-600 dark:text-surface-400">
+                  {user.email}
+                </td>
               </>
             )}
             style={{ height: '300px' }}
@@ -366,36 +507,141 @@ const columns: VirtualTableColumn<User>[] = [
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
-            { name: 'data', type: 'readonly D[]', default: '-', description: 'Array of data items' },
-            { name: 'totalCount', type: 'number', default: '-', description: 'Total count (alternative to data)' },
-            { name: 'itemContent', type: '(index, data, context) => JSX.Element', default: '-', description: 'Row cell renderer (returns <td> elements)' },
-            { name: 'columns', type: 'VirtualTableColumn<D>[]', default: '-', description: 'Column definitions for per-cell rendering (alternative to itemContent)' },
-            { name: 'fixedHeaderContent', type: '() => JSX.Element', default: '-', description: 'Sticky header content (auto-generated from columns if not provided)' },
-            { name: 'fixedFooterContent', type: '() => JSX.Element', default: '-', description: 'Sticky footer content' },
-            { name: 'fixedItemHeight', type: 'number', default: '-', description: 'Fixed row height optimization' },
-            { name: 'defaultItemHeight', type: 'number', default: '48', description: 'Estimated row height' },
-            { name: 'overscan', type: 'number', default: '5', description: 'Extra rows to render outside viewport' },
-            { name: 'initialScrollTop', type: 'number', default: '-', description: 'Initial scroll position' },
-            { name: 'initialTopMostItemIndex', type: 'number', default: '-', description: 'Initial row to show' },
-            { name: 'components', type: 'TableComponents', default: '-', description: 'Custom table components' },
-            { name: 'endReached', type: '(index) => void', default: '-', description: 'Called when end is reached' },
-            { name: 'ref', type: '(handle) => void', default: '-', description: 'Get imperative handle' },
+            {
+              name: 'data',
+              type: 'readonly D[]',
+              default: '-',
+              description: 'Array of data items',
+            },
+            {
+              name: 'totalCount',
+              type: 'number',
+              default: '-',
+              description: 'Total count (alternative to data)',
+            },
+            {
+              name: 'itemContent',
+              type: '(index, data, context) => JSX.Element',
+              default: '-',
+              description: 'Row cell renderer (returns <td> elements)',
+            },
+            {
+              name: 'columns',
+              type: 'VirtualTableColumn<D>[]',
+              default: '-',
+              description:
+                'Column definitions for per-cell rendering (alternative to itemContent)',
+            },
+            {
+              name: 'fixedHeaderContent',
+              type: '() => JSX.Element',
+              default: '-',
+              description:
+                'Sticky header content (auto-generated from columns if not provided)',
+            },
+            {
+              name: 'fixedFooterContent',
+              type: '() => JSX.Element',
+              default: '-',
+              description: 'Sticky footer content',
+            },
+            {
+              name: 'fixedItemHeight',
+              type: 'number',
+              default: '-',
+              description: 'Fixed row height optimization',
+            },
+            {
+              name: 'defaultItemHeight',
+              type: 'number',
+              default: '48',
+              description: 'Estimated row height',
+            },
+            {
+              name: 'overscan',
+              type: 'number',
+              default: '5',
+              description: 'Extra rows to render outside viewport',
+            },
+            {
+              name: 'initialScrollTop',
+              type: 'number',
+              default: '-',
+              description: 'Initial scroll position',
+            },
+            {
+              name: 'initialTopMostItemIndex',
+              type: 'number',
+              default: '-',
+              description: 'Initial row to show',
+            },
+            {
+              name: 'components',
+              type: 'TableComponents',
+              default: '-',
+              description: 'Custom table components',
+            },
+            {
+              name: 'endReached',
+              type: '(index) => void',
+              default: '-',
+              description: 'Called when end is reached',
+            },
+            {
+              name: 'ref',
+              type: '(handle) => void',
+              default: '-',
+              description: 'Get imperative handle',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection title="TableComponents" description={<>Customize table elements using the <CodePill>components</CodePill> prop.</>} card={false}>
+      <DemoSection
+        title="TableComponents"
+        description={
+          <>
+            Customize table elements using the <CodePill>components</CodePill>{' '}
+            prop.
+          </>
+        }
+        card={false}
+      >
         <PropsTable
           compact
           props={[
             { name: 'Table', type: '', description: 'Custom table element' },
-            { name: 'TableHead', type: '', description: 'Custom thead element' },
-            { name: 'TableBody', type: '', description: 'Custom tbody element' },
-            { name: 'TableFoot', type: '', description: 'Custom tfoot element' },
+            {
+              name: 'TableHead',
+              type: '',
+              description: 'Custom thead element',
+            },
+            {
+              name: 'TableBody',
+              type: '',
+              description: 'Custom tbody element',
+            },
+            {
+              name: 'TableFoot',
+              type: '',
+              description: 'Custom tfoot element',
+            },
             { name: 'TableRow', type: '', description: 'Custom tr element' },
-            { name: 'Scroller', type: '', description: 'Custom scroll container' },
-            { name: 'EmptyPlaceholder', type: '', description: 'Empty state component' },
-            { name: 'FillerRow', type: '', description: 'Spacing row for virtualization' },
+            {
+              name: 'Scroller',
+              type: '',
+              description: 'Custom scroll container',
+            },
+            {
+              name: 'EmptyPlaceholder',
+              type: '',
+              description: 'Empty state component',
+            },
+            {
+              name: 'FillerRow',
+              type: '',
+              description: 'Spacing row for virtualization',
+            },
           ]}
         />
       </DemoSection>
@@ -404,27 +650,85 @@ const columns: VirtualTableColumn<User>[] = [
         <PropsTable
           compact
           props={[
-            { name: 'scrollToIndex(location)', type: '', description: 'Scroll to a specific row. Accepts number or { index, align, behavior }' },
-            { name: 'scrollTo({ top, behavior })', type: '', description: 'Scroll to a specific offset' },
-            { name: 'scrollBy({ top, behavior })', type: '', description: 'Scroll by a delta amount' },
-            { name: 'getScrollTop()', type: '', description: 'Get current scroll position' },
+            {
+              name: 'scrollToIndex(location)',
+              type: '',
+              description:
+                'Scroll to a specific row. Accepts number or { index, align, behavior }',
+            },
+            {
+              name: 'scrollTo({ top, behavior })',
+              type: '',
+              description: 'Scroll to a specific offset',
+            },
+            {
+              name: 'scrollBy({ top, behavior })',
+              type: '',
+              description: 'Scroll by a delta amount',
+            },
+            {
+              name: 'getScrollTop()',
+              type: '',
+              description: 'Get current scroll position',
+            },
           ]}
         />
       </DemoSection>
 
-      <DemoSection title="VirtualTableColumn" description="Column definition for column-based rendering" card={false}>
+      <DemoSection
+        title="VirtualTableColumn"
+        description="Column definition for column-based rendering"
+        card={false}
+      >
         <PropsTable
           compact
           props={[
-            { name: 'key', type: 'string', description: 'Data accessor key (supports dot notation, e.g., "user.name")' },
-            { name: 'header', type: 'string', description: 'Column header label' },
-            { name: 'render', type: '(value, row, index) => JSX.Element', description: 'Custom cell render function' },
-            { name: 'width', type: 'string', description: 'Column width (CSS value)' },
-            { name: 'minWidth', type: 'string', description: 'Minimum column width' },
-            { name: 'align', type: "'left' | 'center' | 'right'", description: 'Text alignment' },
-            { name: 'cellClass', type: 'string', description: 'Custom CSS class for cells' },
-            { name: 'headerClass', type: 'string', description: 'Custom CSS class for header' },
-            { name: 'headerRender', type: '(column) => JSX.Element', description: 'Custom header render function' },
+            {
+              name: 'key',
+              type: 'string',
+              description:
+                'Data accessor key (supports dot notation, e.g., "user.name")',
+            },
+            {
+              name: 'header',
+              type: 'string',
+              description: 'Column header label',
+            },
+            {
+              name: 'render',
+              type: '(value, row, index) => JSX.Element',
+              description: 'Custom cell render function',
+            },
+            {
+              name: 'width',
+              type: 'string',
+              description: 'Column width (CSS value)',
+            },
+            {
+              name: 'minWidth',
+              type: 'string',
+              description: 'Minimum column width',
+            },
+            {
+              name: 'align',
+              type: "'left' | 'center' | 'right'",
+              description: 'Text alignment',
+            },
+            {
+              name: 'cellClass',
+              type: 'string',
+              description: 'Custom CSS class for cells',
+            },
+            {
+              name: 'headerClass',
+              type: 'string',
+              description: 'Custom CSS class for header',
+            },
+            {
+              name: 'headerRender',
+              type: '(column) => JSX.Element',
+              description: 'Custom header render function',
+            },
           ]}
         />
       </DemoSection>
@@ -476,7 +780,12 @@ const ChevronIcon = (props: { expanded: boolean; class?: string }) => (
     stroke="currentColor"
     viewBox="0 0 24 24"
   >
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9 5l7 7-7 7"
+    />
   </svg>
 );
 
@@ -515,7 +824,9 @@ const ExpandedUserContent = (props: { user: UserWithDetails }) => (
         <div class="flex flex-wrap gap-2">
           <For each={props.user.projects}>
             {(project) => (
-              <Badge variant="info" size="sm">{project}</Badge>
+              <Badge variant="info" size="sm">
+                {project}
+              </Badge>
             )}
           </For>
         </div>
@@ -526,11 +837,13 @@ const ExpandedUserContent = (props: { user: UserWithDetails }) => (
 
 function ExpandableVirtualTableDemo() {
   const usersWithDetails = generateUsersWithDetails(1000);
-  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(new Set([1, 2])); // First two expanded
+  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(
+    new Set([1, 2]),
+  ); // First two expanded
 
   const toggleExpand = (id: number, e?: MouseEvent) => {
     e?.stopPropagation();
-    setExpandedKeys(prev => {
+    setExpandedKeys((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -599,7 +912,11 @@ const toggleExpand = (id: number) => {
           <Button
             size="sm"
             variant="secondary"
-            onClick={() => setExpandedKeys(new Set(usersWithDetails.slice(0, 10).map(u => u.id)))}
+            onClick={() =>
+              setExpandedKeys(
+                new Set(usersWithDetails.slice(0, 10).map((u) => u.id)),
+              )
+            }
           >
             Expand First 10
           </Button>
@@ -610,7 +927,10 @@ const toggleExpand = (id: number) => {
           >
             Collapse All
           </Button>
-          <StateDisplay label="Expanded" value={`${expandedKeys().size} row(s)`} />
+          <StateDisplay
+            label="Expanded"
+            value={`${expandedKeys().size} row(s)`}
+          />
         </div>
 
         <VirtualTable
@@ -620,16 +940,27 @@ const toggleExpand = (id: number) => {
           fixedHeaderContent={() => (
             <tr class="text-left">
               <th class="w-10 p-3 text-surface-600 dark:text-surface-400 font-semibold" />
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name</th>
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Email</th>
-              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Role</th>
-              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Status</th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Name
+              </th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Email
+              </th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">
+                Role
+              </th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">
+                Status
+              </th>
             </tr>
           )}
           itemContent={(index, user, ctx) => {
             const isExpanded = () => ctx.expandedKeys().has(user.id);
             return (
-              <td class="p-0 border-b border-surface-100/50 dark:border-surface-800/50" colspan={5}>
+              <td
+                class="p-0 border-b border-surface-100/50 dark:border-surface-800/50"
+                colspan={5}
+              >
                 {/* Main row content */}
                 <div
                   class={`flex items-center cursor-pointer hover:bg-surface-50/50 dark:hover:bg-surface-800/30 transition-colors ${isExpanded() ? 'bg-primary-50/30 dark:bg-primary-900/10' : ''}`}
@@ -637,7 +968,10 @@ const toggleExpand = (id: number) => {
                 >
                   <div class="w-10 p-3 text-center">
                     <button class="p-1 rounded hover:bg-surface-200/50 dark:hover:bg-surface-700/50 transition-colors">
-                      <ChevronIcon expanded={isExpanded()} class="text-surface-500" />
+                      <ChevronIcon
+                        expanded={isExpanded()}
+                        class="text-surface-500"
+                      />
                     </button>
                   </div>
                   <div class="flex-1 p-3 font-medium text-surface-900 dark:text-white">
@@ -650,13 +984,15 @@ const toggleExpand = (id: number) => {
                     <Badge size="sm">{user.role}</Badge>
                   </div>
                   <div class="w-28 p-3">
-                    <Badge variant={statusColors[user.status]} size="sm">{user.status}</Badge>
+                    <Badge variant={statusColors[user.status]} size="sm">
+                      {user.status}
+                    </Badge>
                   </div>
                 </div>
                 {/* Expanded content with CSS Grid animation */}
                 <div
                   class="grid transition-[grid-template-rows] duration-150 ease-out"
-                  style={{ "grid-template-rows": isExpanded() ? "1fr" : "0fr" }}
+                  style={{ 'grid-template-rows': isExpanded() ? '1fr' : '0fr' }}
                 >
                   <div class="overflow-hidden">
                     <ExpandedUserContent user={user} />
@@ -731,11 +1067,13 @@ const generateUsersWithTasks = (count: number): UserWithTasks[] =>
 
 function ExpandableSubItemsDemo() {
   const usersWithTasks = generateUsersWithTasks(500);
-  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(new Set([1]));
+  const [expandedKeys, setExpandedKeys] = createSignal<Set<number>>(
+    new Set([1]),
+  );
 
   const toggleExpand = (id: number, e?: MouseEvent) => {
     e?.stopPropagation();
-    setExpandedKeys(prev => {
+    setExpandedKeys((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -790,7 +1128,11 @@ function ExpandableSubItemsDemo() {
           <Button
             size="sm"
             variant="secondary"
-            onClick={() => setExpandedKeys(new Set(usersWithTasks.slice(0, 5).map(u => u.id)))}
+            onClick={() =>
+              setExpandedKeys(
+                new Set(usersWithTasks.slice(0, 5).map((u) => u.id)),
+              )
+            }
           >
             Expand First 5
           </Button>
@@ -801,7 +1143,10 @@ function ExpandableSubItemsDemo() {
           >
             Collapse All
           </Button>
-          <StateDisplay label="Expanded" value={`${expandedKeys().size} row(s)`} />
+          <StateDisplay
+            label="Expanded"
+            value={`${expandedKeys().size} row(s)`}
+          />
         </div>
 
         <VirtualTable
@@ -811,16 +1156,27 @@ function ExpandableSubItemsDemo() {
           fixedHeaderContent={() => (
             <tr class="text-left">
               <th class="w-10 p-3 text-surface-600 dark:text-surface-400 font-semibold" />
-              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">Name / Task</th>
-              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">Role / Status</th>
-              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">Tasks / Priority</th>
-              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">Due Date</th>
+              <th class="p-3 text-surface-600 dark:text-surface-400 font-semibold">
+                Name / Task
+              </th>
+              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">
+                Role / Status
+              </th>
+              <th class="p-3 w-32 text-surface-600 dark:text-surface-400 font-semibold">
+                Tasks / Priority
+              </th>
+              <th class="p-3 w-28 text-surface-600 dark:text-surface-400 font-semibold">
+                Due Date
+              </th>
             </tr>
           )}
           itemContent={(_, user, ctx) => {
             const isExpanded = () => ctx.expandedKeys().has(user.id);
             return (
-              <td class="p-0 border-b border-surface-100/50 dark:border-surface-800/50" colspan={5}>
+              <td
+                class="p-0 border-b border-surface-100/50 dark:border-surface-800/50"
+                colspan={5}
+              >
                 {/* Parent row */}
                 <div
                   class={`flex items-center cursor-pointer hover:bg-surface-50/50 dark:hover:bg-surface-800/30 transition-colors ${isExpanded() ? 'bg-primary-50/30 dark:bg-primary-900/10 font-medium' : ''}`}
@@ -828,7 +1184,10 @@ function ExpandableSubItemsDemo() {
                 >
                   <div class="w-10 p-3 text-center">
                     <button class="p-1 rounded hover:bg-surface-200/50 dark:hover:bg-surface-700/50 transition-colors">
-                      <ChevronIcon expanded={isExpanded()} class="text-surface-500" />
+                      <ChevronIcon
+                        expanded={isExpanded()}
+                        class="text-surface-500"
+                      />
                     </button>
                   </div>
                   <div class="flex-1 p-3 text-surface-900 dark:text-white">
@@ -840,15 +1199,13 @@ function ExpandableSubItemsDemo() {
                   <div class="w-32 p-3 text-surface-600 dark:text-surface-400">
                     {user.tasksCount} tasks
                   </div>
-                  <div class="w-28 p-3 text-surface-400">
-                    —
-                  </div>
+                  <div class="w-28 p-3 text-surface-400">—</div>
                 </div>
 
                 {/* Sub-items (tasks) with same column alignment */}
                 <div
                   class="grid transition-[grid-template-rows] duration-150 ease-out"
-                  style={{ "grid-template-rows": isExpanded() ? "1fr" : "0fr" }}
+                  style={{ 'grid-template-rows': isExpanded() ? '1fr' : '0fr' }}
                 >
                   <div class="overflow-hidden">
                     <For each={user.tasks}>
@@ -860,16 +1217,24 @@ function ExpandableSubItemsDemo() {
                             {/* Empty spacer for alignment */}
                           </div>
                           <div class="flex-1 p-3 pl-6 text-sm text-surface-700 dark:text-surface-300">
-                            <span class="text-surface-400 dark:text-surface-500 mr-2">↳</span>
+                            <span class="text-surface-400 dark:text-surface-500 mr-2">
+                              ↳
+                            </span>
                             {task.name}
                           </div>
                           <div class="w-32 p-3">
-                            <Badge size="sm" variant={taskStatusColors[task.status]}>
+                            <Badge
+                              size="sm"
+                              variant={taskStatusColors[task.status]}
+                            >
                               {task.status.replace('_', ' ')}
                             </Badge>
                           </div>
                           <div class="w-32 p-3">
-                            <Badge size="sm" variant={taskPriorityColors[task.priority]}>
+                            <Badge
+                              size="sm"
+                              variant={taskPriorityColors[task.priority]}
+                            >
                               {task.priority}
                             </Badge>
                           </div>
