@@ -1,4 +1,8 @@
 import type { Component } from 'solid-js';
+import { ChevronDownIcon } from '../shared/icons';
+
+// Re-export shared icons used by Chat
+export { ChevronDownIcon };
 
 interface IconProps {
   class?: string;
@@ -50,29 +54,6 @@ export const StopIcon: Component<IconProps> = (props) => {
   );
 };
 
-/**
- * Chevron icon for collapsible sections
- */
-export const ChevronDownIcon: Component<IconProps> = (props) => {
-  const size = () => props.size ?? 16;
-
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size()}
-      height={size()}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class={props.class}
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-};
 
 /**
  * Brain/thinking icon for thinking sections

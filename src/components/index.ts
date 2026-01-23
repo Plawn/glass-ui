@@ -278,3 +278,7 @@ export type {
   MessageRole,
   MessageStatus,
 } from './Chat';
+
+// Window
+export { Window, WindowHandle } from './Window';
+export type { WindowProps, WindowHandleProps, WindowConstraints } from './Window';

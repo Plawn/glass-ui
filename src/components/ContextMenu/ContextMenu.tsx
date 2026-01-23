@@ -1,4 +1,4 @@
-import { type Component, createSignal, createEffect } from 'solid-js';
+import { createSignal, createEffect, type JSX } from 'solid-js';
 import type { Accessor } from 'solid-js';
 import { ContextMenuContext } from './ContextMenuContext';
 import type { ContextMenuProps, ContextMenuContextValue } from './types';
@@ -43,7 +43,7 @@ import type { ContextMenuProps, ContextMenuContextValue } from './types';
  * </ContextMenu>
  * ```
  */
-export const ContextMenu: Component<ContextMenuProps<unknown>> = (props) => {
+export function ContextMenu<T = unknown>(props: ContextMenuProps<T>): JSX.Element {
   // Use internal state if provided (from createContextMenu), otherwise create our own
   const internal = props.__internal;
 
@@ -57,18 +57,18 @@ export const ContextMenu: Component<ContextMenuProps<unknown>> = (props) => {
 
   const [ownData, setOwnData] = internal
     ? [internal.data, internal.setData]
-    : (createSignal<unknown>(null) as [Accessor<unknown>, (v: unknown) => void]);
+    : (createSignal<T | null>(null) as [Accessor<T | null>, (v: T | null) => void]);
 
   const close = () => {
     setOwnOpen(false);
-    props.onOpenChange?.(false, ownData() as never);
+    props.onOpenChange?.(false, ownData());
   };
 
-  const openMenu = (pos: { x: number; y: number }, data: unknown) => {
+  const openMenu = (pos: { x: number; y: number }, data: T | null) => {
     setOwnPosition(pos);
     setOwnData(data);
     setOwnOpen(true);
-    props.onOpenChange?.(true, data as never);
+    props.onOpenChange?.(true, data);
   };
 
   // Notify parent of state changes when using internal state
@@ -76,16 +76,17 @@ export const ContextMenu: Component<ContextMenuProps<unknown>> = (props) => {
     if (internal) {
       const isOpen = ownOpen();
       // Only trigger callback, don't update internal state
-      props.onOpenChange?.(isOpen, ownData() as never);
+      props.onOpenChange?.(isOpen, ownData());
     }
   });
 
-  const contextValue: ContextMenuContextValue<unknown> = {
+  // Context value uses unknown since context is not generic at runtime
+  const contextValue: ContextMenuContextValue = {
     open: ownOpen,
     position: ownPosition,
-    data: ownData,
+    data: ownData as Accessor<unknown>,
     close,
-    openMenu,
+    openMenu: openMenu as (pos: { x: number; y: number }, data: unknown) => void,
   };
 
   return (

@@ -26,6 +26,7 @@ export const navigation: NavGroup[] = [
       { id: 'collapsible', label: 'Collapsible', path: '/layout/collapsible' },
       { id: 'sidebar', label: 'Sidebar', path: '/layout/sidebar' },
       { id: 'navbar', label: 'Navbar', path: '/layout/navbar' },
+      { id: 'window', label: 'Window', path: '/layout/window' },
     ],
   },
   {

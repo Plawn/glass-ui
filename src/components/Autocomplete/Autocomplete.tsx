@@ -8,7 +8,8 @@ import {
   on,
   onCleanup,
 } from 'solid-js';
-import { PortalWithDarkMode } from '../shared';
+import { PortalWithDarkMode, ChevronDownIcon } from '../shared';
+import { Spinner } from '../Spinner';
 import { useClickOutside } from '../../hooks';
 import { INPUT_SIZE_CLASSES, DROPDOWN_ITEM_SIZE_CLASSES } from '../../constants';
 import type { AutocompleteOption, AutocompleteProps } from './types';
@@ -66,42 +67,6 @@ const HighlightedText: Component<{ text: string; highlight: string }> = (props) 
   );
 };
 
-/**
- * Loading spinner component
- */
-const LoadingSpinner: Component = () => (
-  <svg
-    class="animate-spin h-4 w-4 text-surface-400"
-    fill="none"
-    viewBox="0 0 24 24"
-    aria-hidden="true"
-  >
-    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-    <path
-      class="opacity-75"
-      fill="currentColor"
-      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-    />
-  </svg>
-);
-
-/**
- * Chevron icon for dropdown indicator
- */
-const ChevronDownIcon: Component<{ class?: string }> = (props) => (
-  <svg
-    class={props.class}
-    width="16"
-    height="16"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    stroke-width="2"
-    aria-hidden="true"
-  >
-    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-  </svg>
-);
 
 /**
  * A glassmorphic Autocomplete/Combobox component with dropdown suggestions.
@@ -250,28 +215,31 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     const options = focusableOptions();
+    const len = options.length;
+    const open = isOpen();
+    const idx = focusedIndex();
 
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        if (!isOpen()) {
+        if (!open) {
           handleOpen();
-        } else if (options.length > 0) {
-          setFocusedIndex((prev) => Math.min(prev + 1, options.length - 1));
+        } else if (len > 0) {
+          setFocusedIndex((prev) => Math.min(prev + 1, len - 1));
         }
         break;
 
       case 'ArrowUp':
         e.preventDefault();
-        if (isOpen() && options.length > 0) {
+        if (open && len > 0) {
           setFocusedIndex((prev) => Math.max(prev - 1, 0));
         }
         break;
 
       case 'Enter':
         e.preventDefault();
-        if (isOpen() && focusedIndex() >= 0 && focusedIndex() < options.length) {
-          handleSelect(options[focusedIndex()]);
+        if (open && idx >= 0 && idx < len) {
+          handleSelect(options[idx]);
         } else if (props.allowCustomValue && inputValue().trim()) {
           props.onChange(inputValue());
           handleClose();
@@ -279,33 +247,29 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         break;
 
       case 'Escape':
-        e.preventDefault();
-        if (isOpen()) {
+        if (open) {
+          e.preventDefault();
           handleClose();
-          // Reset input to selected value
-          const selectedOption = props.options.find((opt) => opt.value === props.value);
-          setInputValue(selectedOption?.label ?? (props.allowCustomValue ? props.value : ''));
+          const selected = props.options.find((opt) => opt.value === props.value);
+          setInputValue(selected?.label ?? (props.allowCustomValue ? props.value : ''));
         }
         break;
 
       case 'Tab':
-        // Allow tab to close and move focus
-        if (isOpen()) {
-          handleClose();
-        }
+        if (open) handleClose();
         break;
 
       case 'Home':
-        if (isOpen() && options.length > 0) {
+        if (open && len > 0) {
           e.preventDefault();
           setFocusedIndex(0);
         }
         break;
 
       case 'End':
-        if (isOpen() && options.length > 0) {
+        if (open && len > 0) {
           e.preventDefault();
-          setFocusedIndex(options.length - 1);
+          setFocusedIndex(len - 1);
         }
         break;
     }
@@ -401,7 +365,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
               class={`text-surface-400 transition-transform duration-150 ${isOpen() ? 'rotate-180' : ''}`}
             />
           }>
-            <LoadingSpinner />
+            <Spinner size="sm" />
           </Show>
         </div>
       </div>
@@ -441,10 +405,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
                         type="button"
                         data-option
                         class={`w-full text-left transition-colors ${itemSizeClasses()}
-                          ${
-                            option.disabled
-                              ? 'text-surface-400 dark:text-surface-600 cursor-not-allowed'
-                              : 'text-surface-700 dark:text-surface-200 cursor-pointer'
+                          ${option.disabled
+                            ? 'text-surface-400 dark:text-surface-600 cursor-not-allowed'
+                            : 'text-surface-700 dark:text-surface-200 cursor-pointer'
                           }
                           ${isFocused() ? 'bg-black/5 dark:bg-white/5' : ''}
                           ${isSelected() ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' : ''}

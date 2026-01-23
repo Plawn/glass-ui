@@ -29,6 +29,7 @@ const DividerPage = lazy(() => import('./pages/layout/Divider'));
 const CollapsiblePage = lazy(() => import('./pages/layout/Collapsible'));
 const SidebarPage = lazy(() => import('./pages/layout/Sidebar'));
 const NavbarPage = lazy(() => import('./pages/layout/Navbar'));
+const WindowPage = lazy(() => import('./pages/layout/Window'));
 
 // Forms pages
 const ButtonPage = lazy(() => import('./pages/forms/Button'));
@@ -214,6 +215,7 @@ export default function App() {
       <Route path="/layout/collapsible" component={CollapsiblePage} />
       <Route path="/layout/sidebar" component={SidebarPage} />
       <Route path="/layout/navbar" component={NavbarPage} />
+      <Route path="/layout/window" component={WindowPage} />
 
       {/* Forms */}
       <Route path="/forms/button" component={ButtonPage} />

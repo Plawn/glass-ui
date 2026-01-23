@@ -39,3 +39,9 @@ export type { OverlayScrollBehavior, UseScrollBehaviorOptions } from './useScrol
 
 export { useFloatingContent } from './useFloatingContent';
 export type { UseFloatingContentOptions, UseFloatingContentReturn, FloatingContentProps } from './useFloatingContent';
+
+export { useDraggable } from './useDraggable';
+export type { UseDraggableOptions, UseDraggableReturn, Position } from './useDraggable';
+
+export { useResizable } from './useResizable';
+export type { UseResizableOptions, UseResizableReturn, ResizeDirection, Size, ResizeHandleProps } from './useResizable';
