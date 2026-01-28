@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Glass Optimization</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #111; /* Couleur de fond de secours */
+            font-family: sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* 1. Le Canvas WebGL : Il est fixe en fond et couvre tout */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Derrière le HTML */
+            pointer-events: none; /* Laisse passer les clics */
+        }
+
+        /* 2. Layout HTML : C'est lui qui décide où sont les boutons */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+            padding: 100px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 3. Les Boutons "Fantômes" */
+        /* Ils sont invisibles mais servent de zone de clic et de repère pour la 3D */
+        .glass-placeholder {
+            position: relative;
+            height: 120px;
+            background: transparent; /* Invisible */
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            /* Typo */
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        /* Juste pour montrer qu'on peut en avoir beaucoup */
+        .spacer { height: 100vh; }
+    </style>
+    
+    <!-- Import Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Le moteur unique -->
+    <canvas id="webgl-canvas"></canvas>
+
+    <!-- Le contenu HTML scrollable -->
+    <div class="content-grid">
+        <button class="glass-placeholder" data-label="Start">Start</button>
+        <button class="glass-placeholder" data-label="About">About</button>
+        <button class="glass-placeholder" data-label="Work">Work</button>
+        <button class="glass-placeholder" data-label="Contact">Contact</button>
+        <button class="glass-placeholder" data-label="Shop">Shop</button>
+        <button class="glass-placeholder" data-label="Login">Login</button>
+    </div>
+    
+    <!-- Un peu d'espace pour tester le scroll -->
+    <div style="height: 50vh; display:flex; justify-content:center; align-items:center; color:white;">
+        Scroll pour voir la synchro...
+    </div>
+
+    <div class="content-grid">
+        <button class="glass-placeholder" data-label="Footer 1">More</button>
+        <button class="glass-placeholder" data-label="Footer 2">Stuff</button>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+        // --- CONFIGURATION ---
+        const container = document.querySelector('#webgl-canvas');
+        const items = document.querySelectorAll('.glass-placeholder');
+        
+        // 1. SCÈNE & CAMÉRA
+        const scene = new THREE.Scene();
+        
+        // Caméra orthographique pour faciliter l'alignement Pixel-Perfect avec le HTML
+        // Mais Perspective est mieux pour la réfraction. On utilise Perspective ici.
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 50; // On recule la caméra
+
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: container, 
+            alpha: true, 
+            antialias: true 
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // 2. CRÉATION DU FOND (Pattern à déformer)
+        // On crée une texture procédurale pour avoir quelque chose à déformer
+        const canvasBg = document.createElement('canvas');
+        canvasBg.width = 1024; canvasBg.height = 1024;
+        const ctx = canvasBg.getContext('2d');
+        
+        // Un fond dégradé + formes géométriques
+        const grad = ctx.createLinearGradient(0,0, 1024, 1024);
+        grad.addColorStop(0, '#ff9a9e');
+        grad.addColorStop(1, '#fad0c4');
+        ctx.fillStyle = grad; ctx.fillRect(0,0,1024,1024);
+        
+        // Grille et Cercles
+        ctx.strokeStyle = 'white'; ctx.lineWidth = 5;
+        for(let i=0; i<1024; i+=100) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,1024); ctx.stroke(); }
+        ctx.fillStyle = '#4a5cfc';
+        ctx.beginPath(); ctx.arc(512, 512, 200, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#cdff52';
+        ctx.beginPath(); ctx.arc(200, 800, 150, 0, Math.PI*2); ctx.fill();
+
+        const bgTexture = new THREE.CanvasTexture(canvasBg);
+        
+        // On met ce plan en fond de la scène 3D
+        const bgPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(150, 150),
+            new THREE.MeshBasicMaterial({ map: bgTexture })
+        );
+        bgPlane.position.z = -10; // Derrière les boutons
+        scene.add(bgPlane);
+
+
+        // 3. MATÉRIAU DE VERRE (Partagé par tous les boutons = Performance)
+        const glassMaterial = new THREE.MeshPhysicalMaterial({
+            transmission: 1,      // Transparence verre
+            thickness: 3,         // Épaisseur (réfraction forte)
+            roughness: 0,         // Lisse
+            ior: 1.5,             // Indice réfraction
+            color: 0xffffff,
+            clearcoat: 1,
+            metalness: 0.1,
+            side: THREE.DoubleSide
+        });
+
+        // Géométrie (Partagée)
+        // On part sur une taille "base", on la scalera selon le bouton HTML
+        const geometry = new RoundedBoxGeometry(1, 1, 0.5, 4, 0.1);
+
+        // 4. CRÉATION DES OBJETS 3D
+        // Tableau pour stocker le lien entre DOM et 3D
+        const glassMeshes = [];
+
+        items.forEach((item, index) => {
+            const mesh = new THREE.Mesh(geometry, glassMaterial);
+            scene.add(mesh);
+            
+            // Stockage de la référence
+            glassMeshes.push({
+                domElement: item,
+                mesh: mesh
+            });
+        });
+
+        // 5. LUMIÈRES
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 3);
+        dirLight.position.set(10, 10, 10);
+        scene.add(dirLight);
+
+
+        // 6. SYNCHRONISATION (La magie est ici)
+        // Convertit les pixels HTML en coordonnées Monde 3D
+        function syncPosition() {
+            // Distance caméra -> plan Z=0 (là où sont nos boutons)
+            // Tan(fov/2) nous donne la hauteur visible à une distance donnée
+            const vFOV = THREE.MathUtils.degToRad(camera.fov); 
+            const visibleHeight = 2 * Math.tan(vFOV / 2) * camera.position.z;
+            const visibleWidth = visibleHeight * camera.aspect;
+
+            glassMeshes.forEach(({ domElement, mesh }) => {
+                const rect = domElement.getBoundingClientRect();
+                
+                // Calcul de la position
+                // Le centre de l'écran en 3D est (0,0). En HTML c'est (innerWidth/2, innerHeight/2)
+                // Y est inversé en 3D (haut positif) vs HTML (bas positif)
+                
+                const x = (rect.left + rect.width / 2 - window.innerWidth / 2) / window.innerWidth * visibleWidth;
+                const y = -(rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight * visibleHeight;
+
+                mesh.position.set(x, y, 0);
+
+                // Calcul de l'échelle (Scale)
+                // On adapte la taille du cube 3D à la taille du bouton HTML
+                const scaleX = (rect.width / window.innerWidth) * visibleWidth;
+                const scaleY = (rect.height / window.innerHeight) * visibleHeight;
+                
+                mesh.scale.set(scaleX, scaleY, 1);
+
+                // Petit effet de rotation au survol (Optionnel)
+                if(domElement.matches(':hover')) {
+                     mesh.rotation.x = THREE.MathUtils.lerp(mesh.rotation.x, 0.2, 0.1);
+                     mesh.rotation.y = THREE.MathUtils.lerp(mesh.rotation.y, 0.2, 0.1);
+                } else {
+                     mesh.rotation.x = THREE.MathUtils.lerp(mesh.rotation.x, 0, 0.1);
+                     mesh.rotation.y = THREE.MathUtils.lerp(mesh.rotation.y, 0, 0.1);
+                }
+            });
+        }
+
+        // 7. BOUCLE D'ANIMATION
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Sync positions
+            syncPosition();
+
+            // Bouger le fond légèrement pour effet dynamique
+            const time = Date.now() * 0.0005;
+            bgPlane.rotation.z = Math.sin(time * 0.2) * 0.05;
+
+            renderer.render(scene, camera);
+        }
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+
+    </script>
+</body>
+</html>

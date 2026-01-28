@@ -12,6 +12,22 @@ export interface NavGroup {
 
 export const navigation: NavGroup[] = [
   {
+    id: 'styles',
+    label: 'Styles',
+    items: [
+      {
+        id: 'glass-effects',
+        label: 'Glass Effects',
+        path: '/styles/glass-chromatic',
+      },
+      {
+        id: 'glass-3d-buttons',
+        label: '3D Glass Buttons',
+        path: '/styles/glass-3d-buttons',
+      },
+    ],
+  },
+  {
     id: 'layout',
     label: 'Layout',
     items: [

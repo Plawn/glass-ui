@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: #8da4f7;
+  }
+
+  /* 1. Le Motif de fond (Défini ici pour être utilisé 2 fois) */
+  .bg-pattern {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,0) 0%, rgba(0,0,0,0.1) 100%),
+      linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+    /* Une grille pour bien voir la déformation */
+    background-size: 100% 100%;
+  }
+  
+  /* On ajoute une grille par dessus pour bien voir l'effet */
+  .grid-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: linear-gradient(#4a5cfc 2px, transparent 2px), linear-gradient(90deg, #4a5cfc 2px, transparent 2px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* 2. Le Bouton Conteneur */
+  .refraction-button {
+    position: relative;
+    width: 300px;
+    height: 150px;
+    border-radius: 100px;
+    /* Masquer ce qui dépasse (le fond déformé) */
+    overflow: hidden; 
+    
+    /* Bordure et Ombre Glassmorphism */
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 
+      0 15px 35px rgba(0,0,0,0.2),
+      inset 0 0 20px rgba(255,255,255,0.4);
+    
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  /* 3. L'Arrière-plan "Faux" à l'intérieur du bouton */
+  .refraction-layer {
+    position: absolute;
+    top: -50px; left: -50px; right: -50px; bottom: -50px; /* Plus grand que le bouton */
+    
+    /* On reprend exactement le même fond que body */
+    background: inherit; 
+    
+    /* L'ASTUCE : Le filtre SVG de distortion */
+    filter: url(#displacementFilter);
+    
+    /* On aligne le fond pour qu'il "match" (fixé) */
+    /* Note: dans un vrai projet, il faut caler ça précisément */
+    background-attachment: fixed;
+    
+    z-index: -1;
+    opacity: 0.9; /* Légère transparence */
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- Définition du filtre SVG (Invisible) -->
+  <svg style="position: absolute; width: 0; height: 0;">
+    <filter id="displacementFilter">
+      <!-- Crée du bruit (turbulence) -->
+      <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="3" result="turbulence" />
+      <!-- Utilise le bruit pour déplacer les pixels de l'image source -->
+      <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="30" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
+  <div class="bg-pattern">
+    <div class="grid-overlay"></div>
+  </div>
+
+  <div class="refraction-button">
+    <!-- On place une copie du fond ici -->
+    <div class="bg-pattern refraction-layer">
+        <div class="grid-overlay"></div>
+    </div>
+    Bouton SVG
+  </div>
+
+</body>
+</html>

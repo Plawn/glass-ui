@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bouton Hyper-Glass</title>
+<style>
+  /* -----------------------------------------------------------
+     1. MISE EN PLACE DU FOND (Pour la démo uniquement)
+     ----------------------------------------------------------- */
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1a1a2e;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+  }
+
+  /* Formes d'arrière-plan pour voir l'effet de flou */
+  .background-shapes {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0;
+    overflow: hidden;
+  }
+  
+  .shape {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.8;
+    animation: float 10s infinite ease-in-out alternate;
+  }
+  
+  .shape-1 {
+    width: 400px; height: 400px;
+    background: #4a5cfc; /* Bleu roi */
+    top: -100px; left: -100px;
+  }
+  
+  .shape-2 {
+    width: 300px; height: 300px;
+    background: #cdff52; /* Vert lime acide */
+    bottom: 10%; right: 10%;
+    animation-delay: -5s;
+  }
+  
+  .shape-3 {
+    width: 200px; height: 200px;
+    background: #ff6b6b; /* Rouge doux */
+    top: 40%; left: 40%;
+    filter: blur(20px);
+  }
+
+  @keyframes float {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(30px, 50px); }
+  }
+
+  /* -----------------------------------------------------------
+     2. LE CSS DU BOUTON (Reusable Component)
+     ----------------------------------------------------------- */
+  :root {
+    /* Configuration facile ici */
+    --glass-blur: 20px;
+    --glass-opacity: 0.08;
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-highlight: rgba(255, 255, 255, 0.6);
+  }
+
+  .hyper-glass-btn {
+    position: relative;
+    z-index: 10;
+    
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 48px;
+    
+    /* Forme */
+    border-radius: 999px; /* Pilule */
+    border: none;
+    cursor: pointer;
+    
+    /* L'Effet de Verre de base */
+    background: rgba(255, 255, 255, var(--glass-opacity));
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    
+    /* Ombres pour la profondeur et les bords "épais" */
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.2), /* Ombre portée */
+      inset 0 0 0 1px var(--glass-border), /* Bordure fine de base */
+      inset 2px 2px 0px rgba(255, 255, 255, 0.3), /* Reflet interne haut-gauche */
+      inset -1px -1px 0px rgba(255, 255, 255, 0.1); /* Reflet interne bas-droite */
+
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+    overflow: hidden; /* Important pour contenir la lumière qui bouge */
+  }
+
+  /* Interaction Hover : Le bouton "flotte" */
+  .hyper-glass-btn:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 
+      0 30px 60px rgba(0, 0, 0, 0.3),
+      inset 0 0 0 1px var(--glass-border),
+      inset 2px 2px 0px rgba(255, 255, 255, 0.5); /* Le reflet devient plus brillant */
+  }
+  
+  .hyper-glass-btn:active {
+    transform: translateY(-2px) scale(0.98);
+  }
+
+  /* TEXTE ET ICONE */
+  .btn-content {
+    position: relative;
+    z-index: 2; /* Au dessus des effets */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    pointer-events: none;
+  }
+
+  /* EFFET 1 : LE BRUIT (GRAIN) 
+     Donne de la matière pour ne pas faire "plastique" */
+  .btn-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15; /* Ajuster l'intensité du grain */
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* EFFET 2 : LA LUMIÈRE QUI SUIT LA SOURIS (GLOW) */
+  .btn-glow {
+    position: absolute;
+    top: 0; left: 0;
+    width: 300px; height: 300px; /* Assez grand */
+    background: radial-gradient(circle closest-side, rgba(255, 255, 255, 0.5), transparent 100%);
+    transform: translate(-50%, -50%); /* Centré sur le curseur */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    mix-blend-mode: overlay; /* Fusionne la lumière avec le fond */
+    pointer-events: none;
+    z-index: 1;
+  }
+
+</style>
+</head>
+<body>
+
+  <!-- Le Fond décoratif -->
+  <div class="background-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+  </div>
+
+  <!-- LE COMPOSANT BOUTON -->
+  <button class="hyper-glass-btn">
+    
+    <!-- Couche 1 : La lumière dynamique -->
+    <div class="btn-glow"></div>
+    
+    <!-- Couche 2 : Le grain -->
+    <div class="btn-noise"></div>
+    
+    <!-- Couche 3 : Le contenu -->
+    <span class="btn-content">
+      <!-- Petite icône SVG -->
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      Explorer
+    </span>
+
+  </button>
+
+  <script>
+    /* -----------------------------------------------------------
+       3. LE JAVASCRIPT (Gestion de la lumière)
+       ----------------------------------------------------------- */
+    const buttons = document.querySelectorAll('.hyper-glass-btn');
+
+    buttons.forEach(btn => {
+      const glow = btn.querySelector('.btn-glow');
+
+      // Quand la souris bouge sur le bouton
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        
+        // Calcul de la position X/Y à l'intérieur du bouton
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // Déplace le rond de lumière
+        glow.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        glow.style.opacity = '1'; // Allume la lumière
+      });
+
+      // Quand la souris sort
+      btn.addEventListener('mouseleave', () => {
+        glow.style.opacity = '0'; // Éteint la lumière
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -27,7 +27,14 @@
 .glass-input,
 .glass-button,
 .glass-icon-btn,
-.glass-active {
+.glass-active,
+.glass-morphic,
+.glass-morphic-thick,
+.glass-morphic-subtle,
+.glass-chromatic,
+.glass-chromatic-subtle,
+.glass-chromatic-intense,
+.glass-chromatic-animated {
   transition: background var(--theme-transition), background-color
     var(--theme-transition), color var(--theme-transition), border-color
     var(--theme-transition), box-shadow var(--theme-transition);
@@ -358,6 +365,474 @@ select.glass-input {
   border: 1.5px solid var(--color-accent-400);
   border-radius: 0.375rem;
   box-shadow: 0 0.125rem 0.25rem oklch(0.55 0.2 250 / 0.4);
+}
+
+/* ============================================
+   GLASS TOOLTIP
+   ============================================ */
+
+/* ============================================
+   GLASS MORPHIC - Clean Glass Effect
+   ============================================ */
+
+/* Ultra-transparent glass with lens-like edge highlight (iOS 26 style) */
+.glass-morphic {
+  position: relative;
+  /* Near-invisible background - just enough to catch light */
+  background: transparent;
+  backdrop-filter: blur(40px) saturate(100%);
+  -webkit-backdrop-filter: blur(40px) saturate(100%);
+  border: none;
+  /* Very subtle shadow for depth */
+  box-shadow: 0 4px 24px 0 oklch(0 0 0 / 0.06);
+  isolation: isolate;
+}
+
+/* Lens-edge highlight - the key visual element */
+.glass-morphic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  /* Thin border gradient simulating glass edge refraction */
+  border: 1.5px solid transparent;
+  background: linear-gradient(
+    160deg,
+    oklch(1 0 0 / 0.6) 0%,
+    oklch(1 0 0 / 0.3) 15%,
+    oklch(1 0 0 / 0.1) 40%,
+    oklch(1 0 0 / 0.05) 60%,
+    oklch(1 0 0 / 0.15) 85%,
+    oklch(1 0 0 / 0.3) 100%
+  ) border-box;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.dark .glass-morphic {
+  background: transparent;
+  box-shadow: 0 4px 24px 0 oklch(0 0 0 / 0.2);
+}
+
+.dark .glass-morphic::before {
+  background: linear-gradient(
+    160deg,
+    oklch(1 0 0 / 0.3) 0%,
+    oklch(1 0 0 / 0.15) 15%,
+    oklch(1 0 0 / 0.05) 40%,
+    oklch(1 0 0 / 0.02) 60%,
+    oklch(1 0 0 / 0.08) 85%,
+    oklch(1 0 0 / 0.15) 100%
+  ) border-box;
+}
+
+/* Thicker border variant - more prominent lens edge */
+.glass-morphic-thick {
+  position: relative;
+  background: oklch(1 0 0 / 0.05);
+  backdrop-filter: blur(var(--glass-blur-thick)) saturate(115%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(115%);
+  border: 2px solid oklch(1 0 0 / 0.3);
+  box-shadow:
+    0 12px 40px 0 oklch(0 0 0 / 0.1),
+    inset 0 2px 2px 0 oklch(1 0 0 / 0.5),
+    inset 0 -1px 2px 0 oklch(1 0 0 / 0.15);
+  isolation: isolate;
+}
+
+.glass-morphic-thick::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.6) 0%,
+    oklch(1 0 0 / 0.25) 20%,
+    oklch(1 0 0 / 0.08) 50%,
+    oklch(1 0 0 / 0.03) 80%,
+    oklch(1 0 0 / 0.15) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  filter: blur(0.75px);
+}
+
+.dark .glass-morphic-thick {
+  background: oklch(1 0 0 / 0.03);
+  border-color: oklch(1 0 0 / 0.15);
+  box-shadow:
+    0 12px 40px 0 oklch(0 0 0 / 0.35),
+    inset 0 2px 2px 0 oklch(1 0 0 / 0.2),
+    inset 0 -1px 2px 0 oklch(1 0 0 / 0.05);
+}
+
+.dark .glass-morphic-thick::before {
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.25) 0%,
+    oklch(1 0 0 / 0.1) 20%,
+    oklch(1 0 0 / 0.03) 50%,
+    oklch(1 0 0 / 0.01) 80%,
+    oklch(1 0 0 / 0.06) 100%
+  );
+}
+
+/* Subtle variant - minimal lens edge */
+.glass-morphic-subtle {
+  position: relative;
+  background: oklch(1 0 0 / 0.02);
+  backdrop-filter: blur(var(--glass-blur-standard)) saturate(105%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(105%);
+  border: 1px solid oklch(1 0 0 / 0.15);
+  box-shadow:
+    0 4px 16px oklch(0 0 0 / 0.05),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.25);
+  isolation: isolate;
+}
+
+.glass-morphic-subtle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.35) 0%,
+    oklch(1 0 0 / 0.1) 30%,
+    oklch(1 0 0 / 0.02) 70%,
+    oklch(1 0 0 / 0.08) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.dark .glass-morphic-subtle {
+  background: oklch(1 0 0 / 0.015);
+  border-color: oklch(1 0 0 / 0.08);
+  box-shadow:
+    0 4px 16px oklch(0 0 0 / 0.2),
+    inset 0 1px 0 0 oklch(1 0 0 / 0.1);
+}
+
+.dark .glass-morphic-subtle::before {
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.15) 0%,
+    oklch(1 0 0 / 0.04) 30%,
+    oklch(1 0 0 / 0.01) 70%,
+    oklch(1 0 0 / 0.03) 100%
+  );
+}
+
+/* ============================================
+   GLASS CHROMATIC - Aberration Effect
+   ============================================ */
+
+/* iOS 26 Glass - Chromatic Aberration variant */
+.glass-chromatic {
+  --chromatic-spread: 4px;
+  --chromatic-intensity: 0.6;
+
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.1),
+    oklch(1 0 0 / 0.01)
+  );
+  backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-high));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-high));
+  border: 1px solid transparent;
+  border-radius: inherit;
+  isolation: isolate;
+  box-shadow: 
+    0 8px 32px 0 oklch(0 0 0 / 0.1),
+    inset 0 0 0 1px oklch(1 0 0 / 0.1);
+}
+
+/* Chromatic aberration border effect using multiple box-shadows */
+.glass-chromatic::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    oklch(0.65 0.25 15 / var(--chromatic-intensity)) 0%,
+    oklch(0.65 0.25 140 / var(--chromatic-intensity)) 30%,
+    oklch(0.65 0.25 220 / var(--chromatic-intensity)) 70%,
+    oklch(0.65 0.25 320 / var(--chromatic-intensity)) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  filter: blur(1.5px); /* Increased blur for stronger edge bleeding/deformation */
+}
+
+/* Outer glow with chromatic spread */
+.glass-chromatic::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--chromatic-spread) * -1);
+  border-radius: inherit;
+  background: transparent;
+  box-shadow:
+    inset 0 0 calc(var(--chromatic-spread) * 2) oklch(0.65 0.2 15 / 0.15),
+    inset 0 0 calc(var(--chromatic-spread) * 3) oklch(0.65 0.2 220 / 0.12),
+    0 4px 12px oklch(0 0 0 / 0.1);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 1;
+}
+
+.dark .glass-chromatic {
+  --chromatic-intensity: 0.5;
+  background: linear-gradient(
+    135deg,
+    oklch(0.12 0.02 260 / 0.25),
+    oklch(0.12 0.02 260 / 0.05)
+  );
+  box-shadow: 
+    0 8px 32px 0 oklch(0 0 0 / 0.3),
+    inset 0 0 0 1px oklch(1 0 0 / 0.1);
+}
+
+.dark .glass-chromatic::after {
+  box-shadow:
+    inset 0 0 calc(var(--chromatic-spread) * 2) oklch(0.6 0.15 15 / 0.2),
+    inset 0 0 calc(var(--chromatic-spread) * 3) oklch(0.6 0.15 220 / 0.15),
+    0 4px 12px oklch(0 0 0 / 0.3);
+}
+
+/* Subtle variant - less intense chromatic effect */
+.glass-chromatic-subtle {
+  --chromatic-spread: 2px;
+  --chromatic-intensity: 0.35;
+
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.15),
+    oklch(1 0 0 / 0.05)
+  );
+  backdrop-filter: blur(var(--glass-blur-thin)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(160%);
+  border: 1px solid transparent;
+  isolation: isolate;
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.05);
+}
+
+.glass-chromatic-subtle::before {
+  content: "";
+  position: absolute;
+  inset: -0.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(
+    135deg,
+    oklch(0.75 0.18 350 / var(--chromatic-intensity)) 0%,
+    oklch(0.75 0.18 220 / var(--chromatic-intensity)) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  filter: blur(0.5px);
+}
+
+.dark .glass-chromatic-subtle {
+  --chromatic-intensity: 0.3;
+  background: linear-gradient(
+    135deg,
+    oklch(0.15 0.02 260 / 0.25),
+    oklch(0.15 0.02 260 / 0.1)
+  );
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.2);
+}
+
+/* Intense variant - stronger chromatic aberration */
+.glass-chromatic-intense {
+  --chromatic-spread: 6px;
+  --chromatic-intensity: 0.8;
+
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.05),
+    oklch(1 0 0 / 0)
+  );
+  backdrop-filter: blur(var(--glass-blur-thick))
+    saturate(var(--glass-saturate-high));
+  -webkit-backdrop-filter: blur(var(--glass-blur-thick))
+    saturate(var(--glass-saturate-high));
+  border: 1px solid transparent;
+  isolation: isolate;
+  box-shadow: 
+    0 12px 48px oklch(0 0 0 / 0.15),
+    inset 0 0 20px oklch(1 0 0 / 0.1);
+}
+
+.glass-chromatic-intense::before {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 3px;
+  background: conic-gradient(
+    from 0deg,
+    oklch(0.7 0.28 0 / var(--chromatic-intensity)),
+    oklch(0.7 0.28 90 / var(--chromatic-intensity)),
+    oklch(0.7 0.28 180 / var(--chromatic-intensity)),
+    oklch(0.7 0.28 270 / var(--chromatic-intensity)),
+    oklch(0.7 0.28 360 / var(--chromatic-intensity))
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  filter: blur(2px); /* Significant blur for strong deformation illusion */
+}
+
+.glass-chromatic-intense::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--chromatic-spread) * -1);
+  border-radius: inherit;
+  background: transparent;
+  box-shadow:
+    inset 0 0 calc(var(--chromatic-spread) * 1.5) oklch(0.65 0.25 0 / 0.15),
+    inset 0 0 calc(var(--chromatic-spread) * 2.5) oklch(0.65 0.25 120 / 0.12),
+    inset 0 0 calc(var(--chromatic-spread) * 3.5) oklch(0.65 0.25 240 / 0.1);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 1;
+}
+
+.dark .glass-chromatic-intense {
+  --chromatic-intensity: 0.6;
+  background: linear-gradient(
+    135deg,
+    oklch(0.1 0.02 260 / 0.15),
+    oklch(0.1 0.02 260 / 0.05)
+  );
+  box-shadow: 0 12px 48px oklch(0 0 0 / 0.4);
+}
+
+.dark .glass-chromatic-intense::after {
+  box-shadow:
+    inset 0 0 calc(var(--chromatic-spread) * 1.5) oklch(0.6 0.2 0 / 0.2),
+    inset 0 0 calc(var(--chromatic-spread) * 2.5) oklch(0.6 0.2 120 / 0.18),
+    inset 0 0 calc(var(--chromatic-spread) * 3.5) oklch(0.6 0.2 240 / 0.15);
+}
+
+/* Animated chromatic variant */
+.glass-chromatic-animated {
+  --chromatic-spread: 2.5px;
+  --chromatic-intensity: 0.6;
+
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    oklch(1 0 0 / 0.1),
+    oklch(1 0 0 / 0.02)
+  );
+  backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-high));
+  -webkit-backdrop-filter: blur(var(--glass-blur-standard))
+    saturate(var(--glass-saturate-high));
+  border: 1px solid transparent;
+  isolation: isolate;
+  box-shadow: 0 8px 32px oklch(0 0 0 / 0.1);
+}
+
+.glass-chromatic-animated::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--chromatic-angle, 0deg),
+    oklch(0.7 0.25 0 / var(--chromatic-intensity)),
+    oklch(0.7 0.25 60 / var(--chromatic-intensity)),
+    oklch(0.7 0.25 120 / var(--chromatic-intensity)),
+    oklch(0.7 0.25 180 / var(--chromatic-intensity)),
+    oklch(0.7 0.25 240 / var(--chromatic-intensity)),
+    oklch(0.7 0.25 300 / var(--chromatic-intensity)),
+    oklch(0.7 0.25 360 / var(--chromatic-intensity))
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: chromatic-rotate 8s linear infinite;
+}
+
+@keyframes chromatic-rotate {
+  from {
+    --chromatic-angle: 0deg;
+  }
+  to {
+    --chromatic-angle: 360deg;
+  }
+}
+
+@property --chromatic-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.dark .glass-chromatic-animated {
+  --chromatic-intensity: 0.4;
+  background: oklch(0.12 0.02 260 / 0.2);
 }
 
 /* ============================================

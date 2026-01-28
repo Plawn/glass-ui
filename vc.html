@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; overflow: hidden; background: #8da4f7; }
+        canvas { display: block; }
+        /* Juste pour placer un texte HTML par dessus si besoin */
+        #ui {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            color: white;
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+    </style>
+    <!-- Importation de Three.js via CDN -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="ui">Bouton WebGL (Three.js)</div>
+    
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+        // 1. Scène et Caméra
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 10);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Haute qualité
+        document.body.appendChild(renderer.domElement);
+
+        // 2. Création d'un fond coloré complexe (pour voir la réfraction)
+        // On crée une texture procédurale simple
+        const canvas = document.createElement('canvas');
+        canvas.width = 512; canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        
+        // Dessin du fond (Grille + Formes)
+        ctx.fillStyle = '#8da4f7'; ctx.fillRect(0,0,512,512);
+        
+        // Grille verte
+        ctx.strokeStyle = '#cdff52'; ctx.lineWidth = 10;
+        ctx.beginPath();
+        for(let i=0; i<=512; i+=64) {
+            ctx.moveTo(i,0); ctx.lineTo(i,512);
+            ctx.moveTo(0,i); ctx.lineTo(512,i);
+        }
+        ctx.stroke();
+
+        // Forme organique violette
+        ctx.fillStyle = '#6b8cff';
+        ctx.beginPath();
+        ctx.arc(350, 350, 100, 0, Math.PI*2);
+        ctx.fill();
+
+        const texture = new THREE.CanvasTexture(canvas);
+        scene.background = texture;
+
+        // 3. Le Matériau de Verre (Le secret est ici)
+        const glassMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            metalness: 0,
+            roughness: 0.1,       // 0 = lisse miroir, 1 = mat
+            transmission: 1,      // 1 = transparent comme du verre
+            thickness: 1.5,       // Épaisseur du verre (pour la réfraction)
+            ior: 1.5,             // Index of Refraction (1.5 = verre standard)
+            clearcoat: 1,         // Vernis brillant
+            clearcoatRoughness: 0.1
+        });
+
+        // 4. La Forme du bouton (Boite arrondie)
+        const geometry = new RoundedBoxGeometry(4, 2, 0.5, 16, 1);
+        const glassButton = new THREE.Mesh(geometry, glassMaterial);
+        scene.add(glassButton);
+
+        // 5. Lumières
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.5);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 3);
+        dirLight.position.set(5, 5, 5);
+        scene.add(dirLight);
+
+        // Reflet blanc spécifique (comme sur votre screen)
+        const pointLight = new THREE.PointLight(0xffffff, 5);
+        pointLight.position.set(-3, 3, 2);
+        scene.add(pointLight);
+
+        // 6. Animation
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // On fait bouger doucement le bouton pour voir l'effet dynamique
+            const time = Date.now() * 0.001;
+            glassButton.rotation.x = Math.sin(time * 0.5) * 0.1;
+            glassButton.rotation.y = Math.cos(time * 0.3) * 0.1;
+            
+            renderer.render(scene, camera);
+        }
+
+        // Gestion redimensionnement
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

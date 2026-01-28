@@ -17,6 +17,10 @@ import { navigation } from './config/navigation';
 // Pages
 const Home = lazy(() => import('./pages/Home'));
 
+// Styles pages
+const GlassChromaticPage = lazy(() => import('./pages/styles/GlassChromatic'));
+const Glass3DButtonsPage = lazy(() => import('./pages/styles/Glass3DButtons'));
+
 // Layout pages
 const CardPage = lazy(() => import('./pages/layout/Card'));
 const SectionPage = lazy(() => import('./pages/layout/Section'));
@@ -235,6 +239,10 @@ export default function App() {
   return (
     <Router root={Layout} base={basePath}>
       <Route path="/" component={Home} />
+
+      {/* Styles */}
+      <Route path="/styles/glass-chromatic" component={GlassChromaticPage} />
+      <Route path="/styles/glass-3d-buttons" component={Glass3DButtonsPage} />
 
       {/* Layout */}
       <Route path="/layout/card" component={CardPage} />
