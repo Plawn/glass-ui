@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>WebGL Glassmorphism - Final Refraction</title>
+    <style>
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #8DA9FC;
+        }
+        canvas { display: block; width: 100%; height: 100%; }
+        .ui {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            color: rgba(255,255,255,0.8); font-family: sans-serif;
+            pointer-events: none; font-size: 14px; letter-spacing: 1px;
+            background: rgba(0,0,0,0.2); padding: 8px 16px; border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="glCanvas"></canvas>
+<div class="ui">Zoom + Strong Refraction + Dynamic Blur</div>
+
+<!-- SHADER VERTEX -->
+<script type="x-shader/x-vertex" id="vertShader">
+    #version 300 es
+    in vec4 a_position;
+    void main() {
+        gl_Position = a_position;
+    }
+</script>
+
+<!-- SHADER FRAGMENT -->
+<script type="x-shader/x-fragment" id="fragShader">
+    #version 300 es
+    precision highp float;
+
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform vec2 u_mouse;
+
+    out vec4 outColor;
+
+    // --- UTILS ---
+    float random(vec2 st) {
+        return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+    }
+
+    // SDF Capsule
+    float sdCapsule(vec2 p, vec2 a, vec2 b, float r) {
+        vec2 pa = p - a, ba = b - a;
+        float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+        return length( pa - ba*h ) - r;
+    }
+
+    // --- BACKGROUND GENERATOR ---
+    vec3 getBackground(vec2 uv) {
+        vec3 bgBlue = vec3(0.55, 0.66, 0.99); 
+        vec3 winBlue = vec3(0.28, 0.35, 0.92);
+        vec3 lime   = vec3(0.85, 0.96, 0.35); 
+        vec3 purple = vec3(0.75, 0.7, 1.0); 
+        
+        vec3 col = bgBlue;
+
+        // Grille Lime
+        if(uv.x > 0.1 && uv.y > -0.2) {
+            col = lime;
+            vec2 gridPos = uv * 3.0; 
+            float lineThick = 0.035;
+            float gx = step(1.0 - lineThick, fract(gridPos.x));
+            float gy = step(1.0 - lineThick, fract(gridPos.y));
+            col = mix(col, vec3(0.2, 0.6, 0.2), max(gx, gy) * 0.4);
+        }
+
+        // Fenêtre Bleue
+        float winShape = sdCapsule(uv - vec2(-0.2, -0.5), vec2(-0.4, 0.0), vec2(0.4, 0.0), 0.5);
+        float box = max(abs(uv.x + 0.25) - 0.45, abs(uv.y + 0.4) - 0.5);
+        float windowMask = smoothstep(0.005, 0.0, box);
+        
+        if (windowMask > 0.0) {
+            col = winBlue;
+            if(uv.y > 0.0 && uv.y < 0.1 && uv.x > -0.6) {
+                float dots = 0.0;
+                for(float i=0.0; i<3.0; i++){
+                    dots += smoothstep(0.03, 0.02, length(uv - vec2(-0.6 + i*0.08, 0.05)));
+                }
+                col = mix(col, vec3(0.9), dots);
+            }
+            // Squiggle qui bouge un peu plus vite pour voir la réfraction
+            vec2 squigUV = uv;
+            squigUV.y += sin(uv.x * 5.0 + u_time * 1.5) * 0.2;
+            float line = smoothstep(0.06, 0.04, abs(length(squigUV - vec2(0.0, -0.5)) - 0.35));
+            col = mix(col, lime, line * windowMask); 
+        }
+
+        // Nuage Violet
+        float cloudShape = length(uv - vec2(0.8, -0.6)) - 0.4;
+        cloudShape = min(cloudShape, length(uv - vec2(0.5, -0.7)) - 0.3);
+        col = mix(col, purple, smoothstep(0.01, 0.0, cloudShape));
+
+        return col;
+    }
+
+    void main() {
+        vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / u_resolution.y;
+        
+        vec2 targetMouse = (u_mouse.xy * 2.0 - u_resolution.xy) / u_resolution.y;
+        if(u_mouse.x == 0.0 && u_mouse.y == 0.0) {
+            targetMouse = vec2(sin(u_time * 0.5) * 0.15, cos(u_time * 0.4) * 0.1);
+        }
+        
+        // Centre du verre
+        vec2 glassPos = targetMouse * 0.15;
+        float glassDist = sdCapsule(uv - glassPos, vec2(-0.4, 0.0), vec2(0.4, 0.0), 0.48);
+
+        vec3 finalColor = vec3(0.0);
+
+        if (glassDist > 0.0) {
+            // EXTERIEUR
+            finalColor = getBackground(uv);
+        } else {
+            // --- INTERIEUR ---
+            
+            // 1. Normale pour la courbure
+            vec2 e = vec2(0.005, 0.0);
+            float d = glassDist;
+            vec3 normal = normalize(vec3(
+                sdCapsule(uv + e.xy - glassPos, vec2(-0.4, 0.0), vec2(0.4, 0.0), 0.48) - d,
+                sdCapsule(uv + e.yx - glassPos, vec2(-0.4, 0.0), vec2(0.4, 0.0), 0.48) - d,
+                -0.35 // Courbure
+            ));
+
+            // 2. Préparation de la déformation "LOUPE"
+            // On veut que le verre grossisse ce qu'il y a derrière.
+            // Pour grossir, on "réduit" l'espace UV autour du centre du verre.
+            vec2 uvAtGlass = uv - glassPos; // UV locales centrées sur le verre
+            vec2 zoomUV = glassPos + uvAtGlass * 0.85; // 0.85 = Zoom in (x1.17)
+
+            // 3. Ajout de la distortion liquide (Normales)
+            // On ajoute un fort décalage basé sur la normale
+            vec2 distortedCenter = zoomUV + (normal.xy * 0.25);
+
+            // Facteur de flou (Faible au centre, fort aux bords)
+            float distortionEdge = smoothstep(0.0, 0.7, length(normal.xy));
+            float blurRadius = mix(0.00, 0.06, distortionEdge); // 0.00 au centre = parfaitement net
+            float chroma = mix(0.002, 0.025, distortionEdge);   // Aberration chromatique
+
+            vec3 accColor = vec3(0.0);
+            float totalWeight = 0.0;
+            float samples = 24.0; 
+            float noiseOffset = random(uv) * 6.28; 
+
+            // 4. Boucle de rendu
+            for(float i = 0.0; i < samples; i++) {
+                float fi = i + noiseOffset;
+                // Distribution spirale
+                float r = sqrt(i / samples) * blurRadius;
+                float angle = fi * 2.39996;
+                vec2 offset = vec2(cos(angle), sin(angle)) * r;
+                
+                // UV finale pour ce sample
+                vec2 sampleUV = distortedCenter + offset;
+                
+                // Chromatic Aberration
+                float rC = getBackground(sampleUV + vec2(chroma, 0.0)).r;
+                float gC = getBackground(sampleUV).g;
+                float bC = getBackground(sampleUV - vec2(chroma, 0.0)).b;
+                
+                // On pondère pour garder le piqué au centre
+                float w = 1.0; 
+                accColor += vec3(rC, gC, bC) * w;
+                totalWeight += w;
+            }
+            
+            vec3 glassColor = accColor / totalWeight;
+
+            // 5. Lumière et Reflets
+            
+            // Specular (Reflet net source lumineuse)
+            float light = dot(normal, normalize(vec3(-0.5, 1.0, 1.5)));
+            float specular = pow(max(light, 0.0), 12.0) * 0.4; // Plus petit et brillant
+
+            // Reflet d'ambiance (Haut)
+            float ambientRefl = smoothstep(0.5, 1.0, normal.y) * 0.15;
+            
+            // Rim Light (Bordure blanche fine)
+            float rimWidth = 0.015;
+            float rimMask = smoothstep(-rimWidth - 0.002, -rimWidth + 0.002, glassDist);
+            
+            // Inner Shadow (pour donner du volume)
+            float innerShadow = smoothstep(-0.05, 0.0, glassDist) * 0.1;
+
+            finalColor = glassColor;
+            finalColor -= innerShadow; // Assombrir un peu les bords internes
+            finalColor += specular;
+            finalColor += ambientRefl;
+            finalColor = mix(finalColor, vec3(1.0), rimMask * 0.9);
+        }
+
+        // Noise
+        float grain = (random(uv + u_time) - 0.5) * 0.04;
+        finalColor += grain;
+
+        outColor = vec4(finalColor, 1.0);
+    }
+</script>
+
+<script>
+    const canvas = document.getElementById("glCanvas");
+    const gl = canvas.getContext("webgl2");
+
+    if (!gl) alert("WebGL 2 requis");
+
+    function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            console.error(gl.getShaderInfoLog(shader)); return null;
+        }
+        return shader;
+    }
+
+    const program = gl.createProgram();
+    gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, document.getElementById("vertShader").text.trim()));
+    gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, document.getElementById("fragShader").text.trim()));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
+    const buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+    
+    const posLoc = gl.getAttribLocation(program, "a_position");
+    gl.enableVertexAttribArray(posLoc);
+    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const uRes = gl.getUniformLocation(program, "u_resolution");
+    const uTime = gl.getUniformLocation(program, "u_time");
+    const uMouse = gl.getUniformLocation(program, "u_mouse");
+
+    let mx = 0, my = 0;
+    let cmx = 0, cmy = 0;
+
+    window.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = canvas.height - e.clientY;
+    });
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function loop(t) {
+        cmx += (mx - cmx) * 0.1;
+        cmy += (my - cmy) * 0.1;
+
+        gl.uniform2f(uRes, canvas.width, canvas.height);
+        gl.uniform1f(uTime, t * 0.001);
+        gl.uniform2f(uMouse, cmx, cmy);
+        
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>

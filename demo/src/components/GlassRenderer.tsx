@@ -25,49 +25,47 @@ interface GlassRendererContextValue {
   isReady: Accessor<boolean>;
 }
 
-// Context
 const GlassRendererContext = createContext<GlassRendererContextValue>();
 
-// Singleton state
-let rendererInstance: {
-  THREE: typeof THREE;
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
-  glassMaterial: THREE.MeshPhysicalMaterial;
-  geometry: THREE.BufferGeometry;
-  bgPlane: THREE.Mesh;
-  bgTexture: THREE.CanvasTexture;
-  elements: Map<string, GlassElement>;
-  animationId: number;
-  isRunning: boolean;
-  canvas: HTMLCanvasElement;
-  pendingRegistrations: Array<{ id: string; element: HTMLElement }>;
-} | null = null;
-
-let refCount = 0;
+const HOVER_THROTTLE = 50;
 
 export function GlassRendererProvider(props: { children: JSX.Element }) {
   const [isReady, setIsReady] = createSignal(false);
   let canvasRef: HTMLCanvasElement | undefined;
+  let containerRef: HTMLDivElement | undefined;
+
+  // Local instance for this provider (not singleton anymore for proper container sizing)
+  let instance: {
+    THREE: typeof THREE;
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    glassMaterial: THREE.MeshPhysicalMaterial;
+    geometry: THREE.BufferGeometry;
+    bgPlane: THREE.Mesh;
+    bgTexture: THREE.CanvasTexture;
+    elements: Map<string, GlassElement>;
+    animationId: number;
+    isRunning: boolean;
+    lastHoverCheck: number;
+    resizeObserver: ResizeObserver | null;
+  } | null = null;
 
   const doRegister = (id: string, element: HTMLElement) => {
-    if (!rendererInstance) {
+    if (!instance) {
+      return;
+    }
+    if (instance.elements.has(id)) {
       return;
     }
 
-    // Don't register twice
-    if (rendererInstance.elements.has(id)) {
-      return;
-    }
-
-    const mesh = new rendererInstance.THREE.Mesh(
-      rendererInstance.geometry,
-      rendererInstance.glassMaterial,
+    const mesh = new instance.THREE.Mesh(
+      instance.geometry,
+      instance.glassMaterial,
     );
-    rendererInstance.scene.add(mesh);
+    instance.scene.add(mesh);
 
-    rendererInstance.elements.set(id, {
+    instance.elements.set(id, {
       id,
       element,
       mesh,
@@ -77,14 +75,7 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
   };
 
   const initRenderer = async () => {
-    if (rendererInstance) {
-      refCount++;
-      // Process any pending registrations
-      for (const { id, element } of rendererInstance.pendingRegistrations) {
-        doRegister(id, element);
-      }
-      rendererInstance.pendingRegistrations = [];
-      setIsReady(true);
+    if (!canvasRef || !containerRef) {
       return;
     }
 
@@ -93,13 +84,15 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
       'three/addons/geometries/RoundedBoxGeometry.js'
     );
 
-    const canvas = canvasRef!;
+    const canvas = canvasRef;
+    const container = containerRef;
+    const rect = container.getBoundingClientRect();
 
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(
       45,
-      window.innerWidth / window.innerHeight,
+      rect.width / rect.height,
       0.1,
       1000,
     );
@@ -111,7 +104,7 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
       antialias: true,
       powerPreference: 'high-performance',
     });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(rect.width, rect.height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     // Background
@@ -182,7 +175,7 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
     fillLight.position.set(-5, 0, 5);
     scene.add(fillLight);
 
-    rendererInstance = {
+    instance = {
       THREE,
       scene,
       camera,
@@ -194,27 +187,32 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
       elements: new Map(),
       animationId: 0,
       isRunning: true,
-      canvas,
-      pendingRegistrations: [],
+      lastHoverCheck: 0,
+      resizeObserver: null,
     };
 
-    refCount = 1;
-
-    const handleResize = () => {
-      if (!rendererInstance) {
+    // Resize observer for container
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (!instance) {
         return;
       }
-      rendererInstance.camera.aspect = window.innerWidth / window.innerHeight;
-      rendererInstance.camera.updateProjectionMatrix();
-      rendererInstance.renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener('resize', handleResize);
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          instance.camera.aspect = width / height;
+          instance.camera.updateProjectionMatrix();
+          instance.renderer.setSize(width, height);
+        }
+      }
+    });
+    resizeObserver.observe(container);
+    instance.resizeObserver = resizeObserver;
 
     const animate = () => {
-      if (!rendererInstance || !rendererInstance.isRunning) {
+      if (!instance || !instance.isRunning || !containerRef) {
         return;
       }
-      rendererInstance.animationId = requestAnimationFrame(animate);
+      instance.animationId = requestAnimationFrame(animate);
 
       const {
         THREE: T,
@@ -223,7 +221,18 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
         bgPlane: bg,
         renderer: rend,
         scene: sc,
-      } = rendererInstance;
+      } = instance;
+
+      const now = performance.now();
+      const shouldCheckHover = now - instance.lastHoverCheck > HOVER_THROTTLE;
+      if (shouldCheckHover) {
+        instance.lastHoverCheck = now;
+      }
+
+      // Use container dimensions
+      const containerRect = containerRef.getBoundingClientRect();
+      const containerWidth = containerRect.width;
+      const containerHeight = containerRect.height;
 
       const vFOV = T.MathUtils.degToRad(cam.fov);
       const visibleHeight = 2 * Math.tan(vFOV / 2) * cam.position.z;
@@ -232,31 +241,37 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
       for (const item of elements.values()) {
         const rect = item.element.getBoundingClientRect();
 
-        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+        // Position relative to container
+        const relLeft = rect.left - containerRect.left;
+        const relTop = rect.top - containerRect.top;
+
+        // Viewport culling relative to container
+        if (relTop + rect.height < 0 || relTop > containerHeight) {
           item.mesh.visible = false;
           continue;
         }
         item.mesh.visible = true;
 
         const x =
-          ((rect.left + rect.width / 2 - window.innerWidth / 2) /
-            window.innerWidth) *
+          ((relLeft + rect.width / 2 - containerWidth / 2) / containerWidth) *
           visibleWidth;
         const y =
-          (-(rect.top + rect.height / 2 - window.innerHeight / 2) /
-            window.innerHeight) *
+          (-(relTop + rect.height / 2 - containerHeight / 2) /
+            containerHeight) *
           visibleHeight;
 
         item.mesh.position.set(x, y, 0);
         item.mesh.scale.set(
-          (rect.width / window.innerWidth) * visibleWidth,
-          (rect.height / window.innerHeight) * visibleHeight,
+          (rect.width / containerWidth) * visibleWidth,
+          (rect.height / containerHeight) * visibleHeight,
           1,
         );
 
-        const isHovered = item.element.matches(':hover');
-        item.targetRotX = isHovered ? 0.1 : 0;
-        item.targetRotY = isHovered ? 0.1 : 0;
+        if (shouldCheckHover) {
+          const isHovered = item.element.matches(':hover');
+          item.targetRotX = isHovered ? 0.1 : 0;
+          item.targetRotY = isHovered ? 0.1 : 0;
+        }
         item.mesh.rotation.x = T.MathUtils.lerp(
           item.mesh.rotation.x,
           item.targetRotX,
@@ -269,7 +284,7 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
         );
       }
 
-      const t = Date.now() * 0.0001;
+      const t = now * 0.0001;
       bg.position.x = Math.sin(t) * 1.5;
       bg.position.y = Math.cos(t * 0.8) * 1.5;
 
@@ -281,53 +296,48 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
   };
 
   const destroyRenderer = () => {
-    if (!rendererInstance) {
+    if (!instance) {
       return;
     }
 
-    refCount--;
-    if (refCount > 0) {
-      return;
+    instance.isRunning = false;
+    cancelAnimationFrame(instance.animationId);
+
+    if (instance.resizeObserver) {
+      instance.resizeObserver.disconnect();
     }
 
-    rendererInstance.isRunning = false;
-    cancelAnimationFrame(rendererInstance.animationId);
-
-    for (const item of rendererInstance.elements.values()) {
-      rendererInstance.scene.remove(item.mesh);
+    for (const item of instance.elements.values()) {
+      instance.scene.remove(item.mesh);
     }
-    rendererInstance.elements.clear();
+    instance.elements.clear();
 
-    rendererInstance.geometry.dispose();
-    rendererInstance.glassMaterial.dispose();
-    rendererInstance.bgTexture.dispose();
-    rendererInstance.scene.clear();
-    rendererInstance.renderer.dispose();
-    rendererInstance.renderer.forceContextLoss();
+    instance.geometry.dispose();
+    instance.glassMaterial.dispose();
+    instance.bgTexture.dispose();
+    instance.scene.clear();
+    instance.renderer.dispose();
+    instance.renderer.forceContextLoss();
 
-    rendererInstance = null;
+    instance = null;
   };
 
   const register = (id: string, element: HTMLElement) => {
-    if (!rendererInstance || !isReady()) {
-      // Queue for later
-      if (rendererInstance) {
-        rendererInstance.pendingRegistrations.push({ id, element });
-      }
+    if (!instance || !isReady()) {
       return;
     }
     doRegister(id, element);
   };
 
   const unregister = (id: string) => {
-    if (!rendererInstance) {
+    if (!instance) {
       return;
     }
 
-    const item = rendererInstance.elements.get(id);
+    const item = instance.elements.get(id);
     if (item) {
-      rendererInstance.scene.remove(item.mesh);
-      rendererInstance.elements.delete(id);
+      instance.scene.remove(item.mesh);
+      instance.elements.delete(id);
     }
   };
 
@@ -347,19 +357,20 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
 
   return (
     <GlassRendererContext.Provider value={contextValue}>
-      <canvas
-        ref={canvasRef}
-        class="fixed inset-0 w-full h-full pointer-events-none"
-        style={{ 'z-index': 0 }}
-      />
-      <div class="relative" style={{ 'z-index': 10 }}>
-        {props.children}
+      <div ref={containerRef} class="relative w-full min-h-[inherit]">
+        <canvas
+          ref={canvasRef}
+          class="absolute inset-0 w-full h-full pointer-events-none rounded-[inherit]"
+          style={{ 'z-index': 0 }}
+        />
+        <div class="relative" style={{ 'z-index': 10 }}>
+          {props.children}
+        </div>
       </div>
     </GlassRendererContext.Provider>
   );
 }
 
-// Hook
 export function useGlassRenderer() {
   const ctx = useContext(GlassRendererContext);
   if (!ctx) {
@@ -370,7 +381,6 @@ export function useGlassRenderer() {
   return ctx;
 }
 
-// Component
 let idCounter = 0;
 
 export function GlassSurface(props: {
