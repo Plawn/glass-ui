@@ -97,6 +97,7 @@ export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
         userAvatarUrl={props.userAvatarUrl}
         assistantName={props.assistantName}
         assistantAvatarUrl={props.assistantAvatarUrl}
+        codeBlockActions={props.codeBlockActions}
       />
     </div>
   );

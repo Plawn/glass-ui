@@ -25,6 +25,11 @@ export const navigation: NavGroup[] = [
         label: '3D Glass Buttons',
         path: '/styles/glass-3d-buttons',
       },
+      {
+        id: 'liquid-glass',
+        label: 'LiquidGlass',
+        path: '/styles/liquid-glass',
+      },
     ],
   },
   {

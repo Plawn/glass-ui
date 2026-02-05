@@ -57,6 +57,7 @@ export const Chat: Component<ChatProps> = (props) => {
         showTypingIndicator={props.showTypingIndicator}
         isStreaming={props.isStreaming}
         emptyState={props.emptyState}
+        codeBlockActions={props.codeBlockActions}
       />
 
       {/* Input area */}

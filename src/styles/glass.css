@@ -397,20 +397,17 @@ select.glass-input {
   /* Thin border gradient simulating glass edge refraction */
   border: 1.5px solid transparent;
   background: linear-gradient(
-    160deg,
-    oklch(1 0 0 / 0.6) 0%,
-    oklch(1 0 0 / 0.3) 15%,
-    oklch(1 0 0 / 0.1) 40%,
-    oklch(1 0 0 / 0.05) 60%,
-    oklch(1 0 0 / 0.15) 85%,
-    oklch(1 0 0 / 0.3) 100%
-  ) border-box;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) padding-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) padding-box,
-    linear-gradient(#fff 0 0);
+      160deg,
+      oklch(1 0 0 / 0.6) 0%,
+      oklch(1 0 0 / 0.3) 15%,
+      oklch(1 0 0 / 0.1) 40%,
+      oklch(1 0 0 / 0.05) 60%,
+      oklch(1 0 0 / 0.15) 85%,
+      oklch(1 0 0 / 0.3) 100%
+    )
+    border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -423,14 +420,15 @@ select.glass-input {
 
 .dark .glass-morphic::before {
   background: linear-gradient(
-    160deg,
-    oklch(1 0 0 / 0.3) 0%,
-    oklch(1 0 0 / 0.15) 15%,
-    oklch(1 0 0 / 0.05) 40%,
-    oklch(1 0 0 / 0.02) 60%,
-    oklch(1 0 0 / 0.08) 85%,
-    oklch(1 0 0 / 0.15) 100%
-  ) border-box;
+      160deg,
+      oklch(1 0 0 / 0.3) 0%,
+      oklch(1 0 0 / 0.15) 15%,
+      oklch(1 0 0 / 0.05) 40%,
+      oklch(1 0 0 / 0.02) 60%,
+      oklch(1 0 0 / 0.08) 85%,
+      oklch(1 0 0 / 0.15) 100%
+    )
+    border-box;
 }
 
 /* Thicker border variant - more prominent lens edge */
@@ -440,10 +438,8 @@ select.glass-input {
   backdrop-filter: blur(var(--glass-blur-thick)) saturate(115%);
   -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(115%);
   border: 2px solid oklch(1 0 0 / 0.3);
-  box-shadow:
-    0 12px 40px 0 oklch(0 0 0 / 0.1),
-    inset 0 2px 2px 0 oklch(1 0 0 / 0.5),
-    inset 0 -1px 2px 0 oklch(1 0 0 / 0.15);
+  box-shadow: 0 12px 40px 0 oklch(0 0 0 / 0.1), inset 0 2px 2px 0
+    oklch(1 0 0 / 0.5), inset 0 -1px 2px 0 oklch(1 0 0 / 0.15);
   isolation: isolate;
 }
 
@@ -461,12 +457,8 @@ select.glass-input {
     oklch(1 0 0 / 0.03) 80%,
     oklch(1 0 0 / 0.15) 100%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -476,10 +468,8 @@ select.glass-input {
 .dark .glass-morphic-thick {
   background: oklch(1 0 0 / 0.03);
   border-color: oklch(1 0 0 / 0.15);
-  box-shadow:
-    0 12px 40px 0 oklch(0 0 0 / 0.35),
-    inset 0 2px 2px 0 oklch(1 0 0 / 0.2),
-    inset 0 -1px 2px 0 oklch(1 0 0 / 0.05);
+  box-shadow: 0 12px 40px 0 oklch(0 0 0 / 0.35), inset 0 2px 2px 0
+    oklch(1 0 0 / 0.2), inset 0 -1px 2px 0 oklch(1 0 0 / 0.05);
 }
 
 .dark .glass-morphic-thick::before {
@@ -500,9 +490,8 @@ select.glass-input {
   backdrop-filter: blur(var(--glass-blur-standard)) saturate(105%);
   -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(105%);
   border: 1px solid oklch(1 0 0 / 0.15);
-  box-shadow:
-    0 4px 16px oklch(0 0 0 / 0.05),
-    inset 0 1px 0 0 oklch(1 0 0 / 0.25);
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.05), inset 0 1px 0 0
+    oklch(1 0 0 / 0.25);
   isolation: isolate;
 }
 
@@ -519,12 +508,8 @@ select.glass-input {
     oklch(1 0 0 / 0.02) 70%,
     oklch(1 0 0 / 0.08) 100%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -533,9 +518,7 @@ select.glass-input {
 .dark .glass-morphic-subtle {
   background: oklch(1 0 0 / 0.015);
   border-color: oklch(1 0 0 / 0.08);
-  box-shadow:
-    0 4px 16px oklch(0 0 0 / 0.2),
-    inset 0 1px 0 0 oklch(1 0 0 / 0.1);
+  box-shadow: 0 4px 16px oklch(0 0 0 / 0.2), inset 0 1px 0 0 oklch(1 0 0 / 0.1);
 }
 
 .dark .glass-morphic-subtle::before {
@@ -558,11 +541,7 @@ select.glass-input {
   --chromatic-intensity: 0.6;
 
   position: relative;
-  background: linear-gradient(
-    135deg,
-    oklch(1 0 0 / 0.1),
-    oklch(1 0 0 / 0.01)
-  );
+  background: linear-gradient(135deg, oklch(1 0 0 / 0.1), oklch(1 0 0 / 0.01));
   backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-high));
   -webkit-backdrop-filter: blur(var(--glass-blur-standard))
@@ -570,9 +549,8 @@ select.glass-input {
   border: 1px solid transparent;
   border-radius: inherit;
   isolation: isolate;
-  box-shadow: 
-    0 8px 32px 0 oklch(0 0 0 / 0.1),
-    inset 0 0 0 1px oklch(1 0 0 / 0.1);
+  box-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.1), inset 0 0 0 1px
+    oklch(1 0 0 / 0.1);
 }
 
 /* Chromatic aberration border effect using multiple box-shadows */
@@ -589,12 +567,8 @@ select.glass-input {
     oklch(0.65 0.25 220 / var(--chromatic-intensity)) 70%,
     oklch(0.65 0.25 320 / var(--chromatic-intensity)) 100%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -608,10 +582,9 @@ select.glass-input {
   inset: calc(var(--chromatic-spread) * -1);
   border-radius: inherit;
   background: transparent;
-  box-shadow:
-    inset 0 0 calc(var(--chromatic-spread) * 2) oklch(0.65 0.2 15 / 0.15),
-    inset 0 0 calc(var(--chromatic-spread) * 3) oklch(0.65 0.2 220 / 0.12),
-    0 4px 12px oklch(0 0 0 / 0.1);
+  box-shadow: inset 0 0 calc(var(--chromatic-spread) * 2)
+    oklch(0.65 0.2 15 / 0.15), inset 0 0 calc(var(--chromatic-spread) * 3)
+    oklch(0.65 0.2 220 / 0.12), 0 4px 12px oklch(0 0 0 / 0.1);
   pointer-events: none;
   z-index: -1;
   opacity: 1;
@@ -624,16 +597,14 @@ select.glass-input {
     oklch(0.12 0.02 260 / 0.25),
     oklch(0.12 0.02 260 / 0.05)
   );
-  box-shadow: 
-    0 8px 32px 0 oklch(0 0 0 / 0.3),
-    inset 0 0 0 1px oklch(1 0 0 / 0.1);
+  box-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.3), inset 0 0 0 1px
+    oklch(1 0 0 / 0.1);
 }
 
 .dark .glass-chromatic::after {
-  box-shadow:
-    inset 0 0 calc(var(--chromatic-spread) * 2) oklch(0.6 0.15 15 / 0.2),
-    inset 0 0 calc(var(--chromatic-spread) * 3) oklch(0.6 0.15 220 / 0.15),
-    0 4px 12px oklch(0 0 0 / 0.3);
+  box-shadow: inset 0 0 calc(var(--chromatic-spread) * 2)
+    oklch(0.6 0.15 15 / 0.2), inset 0 0 calc(var(--chromatic-spread) * 3)
+    oklch(0.6 0.15 220 / 0.15), 0 4px 12px oklch(0 0 0 / 0.3);
 }
 
 /* Subtle variant - less intense chromatic effect */
@@ -642,11 +613,7 @@ select.glass-input {
   --chromatic-intensity: 0.35;
 
   position: relative;
-  background: linear-gradient(
-    135deg,
-    oklch(1 0 0 / 0.15),
-    oklch(1 0 0 / 0.05)
-  );
+  background: linear-gradient(135deg, oklch(1 0 0 / 0.15), oklch(1 0 0 / 0.05));
   backdrop-filter: blur(var(--glass-blur-thin)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(160%);
   border: 1px solid transparent;
@@ -665,12 +632,8 @@ select.glass-input {
     oklch(0.75 0.18 350 / var(--chromatic-intensity)) 0%,
     oklch(0.75 0.18 220 / var(--chromatic-intensity)) 100%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -693,20 +656,14 @@ select.glass-input {
   --chromatic-intensity: 0.8;
 
   position: relative;
-  background: linear-gradient(
-    135deg,
-    oklch(1 0 0 / 0.05),
-    oklch(1 0 0 / 0)
-  );
+  background: linear-gradient(135deg, oklch(1 0 0 / 0.05), oklch(1 0 0 / 0));
   backdrop-filter: blur(var(--glass-blur-thick))
     saturate(var(--glass-saturate-high));
   -webkit-backdrop-filter: blur(var(--glass-blur-thick))
     saturate(var(--glass-saturate-high));
   border: 1px solid transparent;
   isolation: isolate;
-  box-shadow: 
-    0 12px 48px oklch(0 0 0 / 0.15),
-    inset 0 0 20px oklch(1 0 0 / 0.1);
+  box-shadow: 0 12px 48px oklch(0 0 0 / 0.15), inset 0 0 20px oklch(1 0 0 / 0.1);
 }
 
 .glass-chromatic-intense::before {
@@ -723,12 +680,8 @@ select.glass-input {
     oklch(0.7 0.28 270 / var(--chromatic-intensity)),
     oklch(0.7 0.28 360 / var(--chromatic-intensity))
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -741,10 +694,10 @@ select.glass-input {
   inset: calc(var(--chromatic-spread) * -1);
   border-radius: inherit;
   background: transparent;
-  box-shadow:
-    inset 0 0 calc(var(--chromatic-spread) * 1.5) oklch(0.65 0.25 0 / 0.15),
-    inset 0 0 calc(var(--chromatic-spread) * 2.5) oklch(0.65 0.25 120 / 0.12),
-    inset 0 0 calc(var(--chromatic-spread) * 3.5) oklch(0.65 0.25 240 / 0.1);
+  box-shadow: inset 0 0 calc(var(--chromatic-spread) * 1.5)
+    oklch(0.65 0.25 0 / 0.15), inset 0 0 calc(var(--chromatic-spread) * 2.5)
+    oklch(0.65 0.25 120 / 0.12), inset 0 0 calc(var(--chromatic-spread) * 3.5)
+    oklch(0.65 0.25 240 / 0.1);
   pointer-events: none;
   z-index: -1;
   opacity: 1;
@@ -761,10 +714,10 @@ select.glass-input {
 }
 
 .dark .glass-chromatic-intense::after {
-  box-shadow:
-    inset 0 0 calc(var(--chromatic-spread) * 1.5) oklch(0.6 0.2 0 / 0.2),
-    inset 0 0 calc(var(--chromatic-spread) * 2.5) oklch(0.6 0.2 120 / 0.18),
-    inset 0 0 calc(var(--chromatic-spread) * 3.5) oklch(0.6 0.2 240 / 0.15);
+  box-shadow: inset 0 0 calc(var(--chromatic-spread) * 1.5)
+    oklch(0.6 0.2 0 / 0.2), inset 0 0 calc(var(--chromatic-spread) * 2.5)
+    oklch(0.6 0.2 120 / 0.18), inset 0 0 calc(var(--chromatic-spread) * 3.5)
+    oklch(0.6 0.2 240 / 0.15);
 }
 
 /* Animated chromatic variant */
@@ -773,11 +726,7 @@ select.glass-input {
   --chromatic-intensity: 0.6;
 
   position: relative;
-  background: linear-gradient(
-    135deg,
-    oklch(1 0 0 / 0.1),
-    oklch(1 0 0 / 0.02)
-  );
+  background: linear-gradient(135deg, oklch(1 0 0 / 0.1), oklch(1 0 0 / 0.02));
   backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-high));
   -webkit-backdrop-filter: blur(var(--glass-blur-standard))
@@ -788,7 +737,7 @@ select.glass-input {
 }
 
 .glass-chromatic-animated::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -803,12 +752,8 @@ select.glass-input {
     oklch(0.7 0.25 300 / var(--chromatic-intensity)),
     oklch(0.7 0.25 360 / var(--chromatic-intensity))
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -825,7 +770,7 @@ select.glass-input {
 }
 
 @property --chromatic-angle {
-  syntax: '<angle>';
+  syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }

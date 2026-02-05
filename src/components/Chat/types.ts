@@ -1,4 +1,11 @@
 import type { JSX } from 'solid-js';
+import type { CodeBlockAction } from '../Markdown/types';
+
+// Re-export code block action types for convenience
+export type {
+  CodeBlockAction,
+  CodeBlockActionContext,
+} from '../Markdown/types';
 
 // =============================================================================
 // MESSAGE TYPES
@@ -72,6 +79,8 @@ export interface ChatProps {
   emptyState?: JSX.Element;
   /** Additional CSS class */
   class?: string;
+  /** Custom actions to display on code blocks */
+  codeBlockActions?: CodeBlockAction[];
 }
 
 /**
@@ -86,6 +95,7 @@ export interface ChatMessageListProps {
   showTypingIndicator?: boolean;
   isStreaming?: boolean;
   emptyState?: JSX.Element;
+  codeBlockActions?: CodeBlockAction[];
 }
 
 /**
@@ -97,6 +107,7 @@ export interface ChatMessageProps {
   userAvatarUrl?: string;
   assistantName?: string;
   assistantAvatarUrl?: string;
+  codeBlockActions?: CodeBlockAction[];
 }
 
 /**

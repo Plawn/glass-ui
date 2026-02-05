@@ -1,6 +1,45 @@
-import { Chat, type ChatMessageType } from 'glass-ui-solid';
+import {
+  Chat,
+  type ChatMessageType,
+  type CodeBlockAction,
+} from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
+
+// Copy icon for code block actions
+const CopyIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+  </svg>
+);
+
+// Play icon for code block actions
+const PlayIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <polygon points="5 3 19 12 5 21 5 3" />
+  </svg>
+);
 
 // Helper to generate unique IDs
 const generateId = () => crypto.randomUUID();
@@ -41,7 +80,7 @@ const initialMessages: ChatMessageType[] = [
     id: generateId(),
     role: 'assistant',
     content:
-      'Of course! The Chat component provides a complete chat interface with:\n\n- **Virtualized message list** for performance with many messages\n- **Auto-scroll** to newest messages\n- **Markdown support** for rich text formatting\n- **Thinking sections** to show AI reasoning\n- **Streaming indicators** for real-time responses\n\nWould you like to see an example of the thinking feature?',
+      "Of course! The Chat component provides a complete chat interface with:\n\n- **Virtualized message list** for performance with many messages\n- **Auto-scroll** to newest messages\n- **Markdown support** for rich text formatting\n- **Thinking sections** to show AI reasoning\n- **Streaming indicators** for real-time responses\n\nHere's a quick example:\n\n```typescript\nconst handleSendMessage = (content: string) => {\n  setMessages(prev => [...prev, {\n    id: crypto.randomUUID(),\n    role: 'user',\n    content,\n    timestamp: new Date()\n  }]);\n};\n```\n\nWould you like to see an example of the thinking feature?",
     timestamp: new Date(),
     status: 'complete',
     thinking: sampleThinking,
@@ -83,6 +122,26 @@ export default function ChatPage() {
     setIsStreaming(false);
   };
 
+  // Custom code block actions
+  const codeBlockActions: CodeBlockAction[] = [
+    {
+      id: 'copy',
+      label: 'Copy code',
+      icon: <CopyIcon />,
+      onClick: ({ code }) => {
+        navigator.clipboard.writeText(code);
+      },
+    },
+    {
+      id: 'run',
+      label: 'Run code',
+      icon: <PlayIcon />,
+      onClick: ({ code, language }) => {
+        alert(`Running ${language ?? 'code'}:\n\n${code.slice(0, 100)}...`);
+      },
+    },
+  ];
+
   return (
     <div class="space-y-8">
       <PageHeader
@@ -110,6 +169,7 @@ export default function ChatPage() {
             userName="You"
             assistantName="Claude"
             placeholder="Type a message..."
+            codeBlockActions={codeBlockActions}
           />
         </div>
       </DemoSection>
@@ -192,6 +252,37 @@ interface ThinkingStep {
       <p class="text-surface-500">Start a conversation by sending a message.</p>
     </div>
   }
+/>`}
+      />
+
+      <DemoSection
+        title="Code Block Actions"
+        description="Add custom action buttons to code blocks in messages. Actions appear on hover."
+        code={`import { Chat, type CodeBlockAction } from 'glass-ui-solid';
+
+const codeBlockActions: CodeBlockAction[] = [
+  {
+    id: 'copy',
+    label: 'Copy code',
+    icon: <CopyIcon />,
+    onClick: ({ code }) => {
+      navigator.clipboard.writeText(code);
+    },
+  },
+  {
+    id: 'run',
+    label: 'Run code',
+    icon: <PlayIcon />,
+    onClick: ({ code, language }) => {
+      console.log(\`Running \${language} code:\`, code);
+    },
+  },
+];
+
+<Chat
+  messages={messages()}
+  onSendMessage={handleSendMessage}
+  codeBlockActions={codeBlockActions}
 />`}
       />
 
@@ -282,6 +373,12 @@ interface ThinkingStep {
                 description: 'Custom empty state element',
               },
               {
+                name: 'codeBlockActions',
+                type: 'CodeBlockAction[]',
+                description:
+                  'Custom actions to display on code blocks in messages',
+              },
+              {
                 name: 'class',
                 type: 'string',
                 description: 'Additional CSS classes',
@@ -356,6 +453,56 @@ interface ThinkingStep {
                 name: 'title',
                 type: 'string',
                 description: 'Optional step title',
+              },
+            ]}
+          />
+        </DemoSection>
+
+        <DemoSection title="CodeBlockAction" subsection>
+          <PropsTable
+            props={[
+              {
+                name: 'id',
+                type: 'string',
+                required: true,
+                description: 'Unique action identifier',
+              },
+              {
+                name: 'label',
+                type: 'string',
+                required: true,
+                description: 'Button label for accessibility',
+              },
+              {
+                name: 'icon',
+                type: 'JSX.Element',
+                required: true,
+                description: 'Icon to display in the button',
+              },
+              {
+                name: 'onClick',
+                type: '(context: CodeBlockActionContext) => void | Promise<void>',
+                required: true,
+                description: 'Callback when the action is triggered',
+              },
+            ]}
+          />
+        </DemoSection>
+
+        <DemoSection title="CodeBlockActionContext" subsection>
+          <PropsTable
+            props={[
+              {
+                name: 'code',
+                type: 'string',
+                required: true,
+                description: 'The code content of the block',
+              },
+              {
+                name: 'language',
+                type: 'string | undefined',
+                description:
+                  'The language identifier (e.g., "typescript", "python")',
               },
             ]}
           />

@@ -76,7 +76,10 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
             when={isUser()}
             fallback={
               <div class="text-surface-800 dark:text-surface-200">
-                <Markdown content={props.message.content} />
+                <Markdown
+                  content={props.message.content}
+                  codeBlockActions={props.codeBlockActions}
+                />
               </div>
             }
           >

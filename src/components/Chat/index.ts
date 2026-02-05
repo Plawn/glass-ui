@@ -15,4 +15,6 @@ export type {
   ThinkingStep,
   MessageRole,
   MessageStatus,
+  CodeBlockAction,
+  CodeBlockActionContext,
 } from './types';

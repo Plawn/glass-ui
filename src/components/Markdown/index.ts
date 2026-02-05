@@ -1,2 +1,6 @@
 export { Markdown } from './Markdown';
-export type { MarkdownProps } from './types';
+export type {
+  MarkdownProps,
+  CodeBlockAction,
+  CodeBlockActionContext,
+} from './types';
