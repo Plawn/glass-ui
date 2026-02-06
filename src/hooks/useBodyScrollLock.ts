@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import { type Accessor, createEffect, on, onCleanup } from 'solid-js';
 
 export interface UseBodyScrollLockOptions {
   /** Signal indicating whether body scroll should be locked */
@@ -21,14 +21,25 @@ export interface UseBodyScrollLockOptions {
 export function useBodyScrollLock(options: UseBodyScrollLockOptions): void {
   const { enabled } = options;
 
-  createEffect(() => {
-    if (enabled()) {
-      const originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
+  // Capture the original overflow once, before any locking happens
+  let originalOverflow: string | undefined;
 
-      onCleanup(() => {
+  createEffect(
+    on(enabled, (isEnabled) => {
+      if (isEnabled) {
+        originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+      } else if (originalOverflow !== undefined) {
         document.body.style.overflow = originalOverflow;
-      });
+        originalOverflow = undefined;
+      }
+    }),
+  );
+
+  // Always restore on component disposal, regardless of current enabled state
+  onCleanup(() => {
+    if (originalOverflow !== undefined) {
+      document.body.style.overflow = originalOverflow;
     }
   });
 }

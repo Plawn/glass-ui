@@ -31,15 +31,34 @@ export interface ThinkingStep {
 }
 
 /**
+ * Status of a tool call
+ */
+export type ToolCallStatus = 'pending' | 'running' | 'complete' | 'error';
+
+/**
+ * A tool call made by the assistant
+ */
+export interface ToolCall {
+  id: string;
+  name: string;
+  arguments?: Record<string, unknown>;
+  result?: unknown;
+  status: ToolCallStatus;
+  error?: string;
+  duration?: number;
+}
+
+/**
  * A message in the chat
  */
 export interface ChatMessage {
   id: string;
   role: MessageRole;
   content: string;
-  timestamp: Date;
+  timestamp?: Date;
   status?: MessageStatus;
   thinking?: ThinkingStep[];
+  toolCalls?: ToolCall[];
   error?: string;
 }
 
@@ -115,6 +134,14 @@ export interface ChatMessageProps {
  */
 export interface ChatThinkingProps {
   steps: ThinkingStep[];
+  defaultOpen?: boolean;
+}
+
+/**
+ * Props for the ChatToolCall component
+ */
+export interface ChatToolCallProps {
+  toolCalls: ToolCall[];
   defaultOpen?: boolean;
 }
 

@@ -2,6 +2,7 @@ import type { Component, JSX } from 'solid-js';
 import { Show, createEffect, createSignal, on } from 'solid-js';
 import { VirtualList } from '../virtual';
 import type { VirtualHandle } from '../virtual';
+import type { ScrollBehavior as VirtualScrollBehavior } from '../virtual';
 import { ChatMessage } from './ChatMessage';
 import { ChatTypingIndicator } from './ChatTypingIndicator';
 import type {
@@ -28,6 +29,30 @@ const ChatScroller: Component<{
 );
 
 /**
+ * Scroll to the last message after the virtualizer has had time to measure.
+ * Uses double-rAF to wait for both layout and the virtualizer's ResizeObserver
+ * callback (which itself schedules a rAF) to settle.
+ */
+function scrollToEnd(
+  handle: VirtualHandle,
+  messageCount: number,
+  behavior: VirtualScrollBehavior = 'smooth',
+) {
+  if (messageCount <= 0) {
+    return;
+  }
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      handle.scrollToIndex({
+        index: messageCount - 1,
+        align: 'end',
+        behavior,
+      });
+    });
+  });
+}
+
+/**
  * Virtualized message list with auto-scroll to bottom
  */
 export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
@@ -42,14 +67,7 @@ export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
       () => {
         const handle = listHandle();
         if (handle && (isAtBottom() || !userScrolled())) {
-          // Small delay to ensure DOM is updated
-          requestAnimationFrame(() => {
-            handle.scrollToIndex({
-              index: props.messages.length - 1,
-              align: 'end',
-              behavior: 'smooth',
-            });
-          });
+          scrollToEnd(handle, props.messages.length);
         }
       },
     ),
@@ -63,13 +81,7 @@ export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
         if (streaming) {
           const handle = listHandle();
           if (handle && isAtBottom()) {
-            requestAnimationFrame(() => {
-              handle.scrollToIndex({
-                index: props.messages.length - 1,
-                align: 'end',
-                behavior: 'smooth',
-              });
-            });
+            scrollToEnd(handle, props.messages.length);
           }
         }
       },

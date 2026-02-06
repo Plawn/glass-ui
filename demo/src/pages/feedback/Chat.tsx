@@ -2,6 +2,7 @@ import {
   Chat,
   type ChatMessageType,
   type CodeBlockAction,
+  type ToolCall,
 } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
@@ -60,6 +61,39 @@ const sampleThinking = [
   },
 ];
 
+// Sample tool calls for demo
+const sampleToolCalls: ToolCall[] = [
+  {
+    id: 'tc-1',
+    name: 'search_web',
+    arguments: { query: 'SolidJS glassmorphism components', limit: 5 },
+    result: {
+      results: [
+        { title: 'Glass UI - SolidJS Components', url: 'https://example.com' },
+        { title: 'Glassmorphism CSS Guide', url: 'https://example.com/guide' },
+      ],
+    },
+    status: 'complete',
+    duration: 1230,
+  },
+  {
+    id: 'tc-2',
+    name: 'read_file',
+    arguments: { path: 'src/components/Chat/ChatMessage.tsx' },
+    result:
+      'import type { Component } from "solid-js";\nimport { Show, createMemo } from "solid-js";\n// ... file contents',
+    status: 'complete',
+    duration: 45,
+  },
+  {
+    id: 'tc-3',
+    name: 'execute_code',
+    arguments: { language: 'typescript', code: 'console.log("hello")' },
+    status: 'error',
+    error: 'SyntaxError: Unexpected token at line 1:15',
+  },
+];
+
 // Initial messages for demo
 const initialMessages: ChatMessageType[] = [
   {
@@ -84,6 +118,23 @@ const initialMessages: ChatMessageType[] = [
     timestamp: new Date(),
     status: 'complete',
     thinking: sampleThinking,
+  },
+  {
+    id: generateId(),
+    role: 'user',
+    content:
+      'Can you search for some glassmorphism resources and check the code?',
+    timestamp: new Date(Date.now() + 10000),
+    status: 'complete',
+  },
+  {
+    id: generateId(),
+    role: 'assistant',
+    content:
+      "I searched for glassmorphism resources and checked the source code. Here's what I found:\n\n- **Glass UI** provides a comprehensive set of SolidJS components with glassmorphism styling\n- The components use `backdrop-filter: blur()` and semi-transparent backgrounds\n\nNote: one of the tool calls failed, but I was still able to get the information you needed.",
+    timestamp: new Date(Date.now() + 20000),
+    status: 'complete',
+    toolCalls: sampleToolCalls,
   },
 ];
 
@@ -209,9 +260,10 @@ const handleSendMessage = (content: string) => {
   id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;  // Supports markdown
-  timestamp: Date;
+  timestamp?: Date;
   status?: 'pending' | 'streaming' | 'complete' | 'error';
   thinking?: ThinkingStep[];  // For assistant messages
+  toolCalls?: ToolCall[];     // Tool invocations by assistant
   error?: string;
 }
 
@@ -284,6 +336,57 @@ const codeBlockActions: CodeBlockAction[] = [
   onSendMessage={handleSendMessage}
   codeBlockActions={codeBlockActions}
 />`}
+      />
+
+      <DemoSection
+        title="Tool Calls"
+        description="Assistant messages can include tool calls that show which tools were invoked, their arguments, results, and status. Tool calls are displayed as a collapsible section between the message bubble and thinking steps."
+        code={`const messages: ChatMessageType[] = [
+  {
+    id: '1',
+    role: 'assistant',
+    content: 'I found the information you need.',
+    timestamp: new Date(),
+    status: 'complete',
+    toolCalls: [
+      {
+        id: 'tc-1',
+        name: 'search_web',
+        arguments: { query: 'SolidJS components' },
+        result: { results: [{ title: 'Result 1' }] },
+        status: 'complete',
+        duration: 1230,
+      },
+      {
+        id: 'tc-2',
+        name: 'read_file',
+        arguments: { path: 'src/index.ts' },
+        status: 'running',
+      },
+      {
+        id: 'tc-3',
+        name: 'execute_code',
+        arguments: { code: 'console.log("hello")' },
+        status: 'error',
+        error: 'SyntaxError: Unexpected token',
+      },
+    ],
+  },
+];`}
+      />
+
+      <DemoSection
+        title="ToolCall Interface"
+        description="The ToolCall interface describes a single tool invocation."
+        code={`interface ToolCall {
+  id: string;
+  name: string;              // Tool name, e.g. "search_web"
+  arguments?: Record<string, unknown>;  // Parsed arguments
+  result?: unknown;          // String or structured data
+  status: 'pending' | 'running' | 'complete' | 'error';
+  error?: string;            // Error message if status is 'error'
+  duration?: number;         // Duration in ms
+}`}
       />
 
       <DemoSection
@@ -411,8 +514,7 @@ const codeBlockActions: CodeBlockAction[] = [
               {
                 name: 'timestamp',
                 type: 'Date',
-                required: true,
-                description: 'Message timestamp',
+                description: 'Message timestamp (optional)',
               },
               {
                 name: 'status',
@@ -424,6 +526,11 @@ const codeBlockActions: CodeBlockAction[] = [
                 name: 'thinking',
                 type: 'ThinkingStep[]',
                 description: 'Thinking steps (assistant only)',
+              },
+              {
+                name: 'toolCalls',
+                type: 'ToolCall[]',
+                description: 'Tool calls made by the assistant',
               },
               {
                 name: 'error',

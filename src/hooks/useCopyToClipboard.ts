@@ -1,4 +1,4 @@
-import { createSignal } from 'solid-js';
+import { createSignal, onCleanup } from 'solid-js';
 
 export interface UseCopyToClipboardReturn {
   copied: () => boolean;
@@ -37,6 +37,12 @@ export function useCopyToClipboard(
       return false;
     }
   };
+
+  onCleanup(() => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  });
 
   return { copied, copy };
 }

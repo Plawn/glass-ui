@@ -6,7 +6,11 @@ import {
   createSignal,
   onCleanup,
 } from 'solid-js';
-import { ANIMATION_DURATION_SLOW } from '../../constants';
+import {
+  ANIMATION_DURATION_SLOW,
+  SHEET_ENTER,
+  SHEET_EXIT,
+} from '../../constants';
 import { PortalOverlay } from '../shared';
 import type { SheetProps } from './types';
 
@@ -162,12 +166,12 @@ export const Sheet: Component<SheetProps> = (props) => {
         // Sheet animation classes
         const sheetClasses = () => {
           if (isClosing()) {
-            return 'animate-out slide-out-to-bottom duration-300';
+            return SHEET_EXIT;
           }
           if (isDragging()) {
             return ''; // No animation during drag
           }
-          return 'animate-in slide-in-from-bottom duration-300';
+          return SHEET_ENTER;
         };
 
         return (

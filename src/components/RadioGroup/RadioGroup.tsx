@@ -140,7 +140,7 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
         </For>
       </div>
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
           {props.error}
         </p>
       </Show>

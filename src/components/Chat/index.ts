@@ -3,6 +3,7 @@ export { ChatMessage } from './ChatMessage';
 export { ChatMessageList } from './ChatMessageList';
 export { ChatInput } from './ChatInput';
 export { ChatThinking } from './ChatThinking';
+export { ChatToolCall } from './ChatToolCall';
 export { ChatTypingIndicator } from './ChatTypingIndicator';
 export type {
   ChatProps,
@@ -11,8 +12,11 @@ export type {
   ChatMessageListProps,
   ChatInputProps,
   ChatThinkingProps,
+  ChatToolCallProps,
   ChatTypingIndicatorProps,
   ThinkingStep,
+  ToolCall,
+  ToolCallStatus,
   MessageRole,
   MessageStatus,
   CodeBlockAction,

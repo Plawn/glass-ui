@@ -164,7 +164,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
               !isDragOver() && !displayError() && !isDisabled(),
             'border-primary-500 dark:border-primary-400 bg-primary-50/50 dark:bg-primary-900/20':
               isDragOver() && !isDisabled(),
-            'border-red-500 dark:border-red-400':
+            'border-error-500 dark:border-error-400':
               displayError() && !isDisabled(),
             'border-surface-200 dark:border-surface-700 opacity-50 cursor-not-allowed':
               isDisabled(),
@@ -240,7 +240,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
 
       {/* Error message */}
       <Show when={displayError()}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
           {displayError()}
         </p>
       </Show>
@@ -289,8 +289,8 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
                   type="button"
                   class={clsx(
                     'flex-shrink-0 p-1.5 rounded-md transition-colors',
-                    'text-surface-400 hover:text-red-500 dark:text-surface-500 dark:hover:text-red-400',
-                    'hover:bg-red-50 dark:hover:bg-red-900/20',
+                    'text-surface-400 hover:text-error-500 dark:text-surface-500 dark:hover:text-error-400',
+                    'hover:bg-error-50 dark:hover:bg-error-900/20',
                     { 'opacity-50 cursor-not-allowed': isDisabled() },
                   )}
                   onClick={(e) => {

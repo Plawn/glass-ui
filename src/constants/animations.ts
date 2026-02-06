@@ -165,6 +165,16 @@ export const SNACKBAR_EXIT = {
 } as const satisfies Record<SnackbarPosition, string>;
 
 // ============================================================================
+// SHEET ANIMATIONS
+// ============================================================================
+
+/** Sheet slide in from bottom */
+export const SHEET_ENTER = 'animate-in slide-in-from-bottom duration-300';
+
+/** Sheet slide out to bottom */
+export const SHEET_EXIT = 'animate-out slide-out-to-bottom duration-300';
+
+// ============================================================================
 // DRAWER ANIMATIONS (position-based)
 // ============================================================================
 

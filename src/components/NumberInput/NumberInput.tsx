@@ -139,7 +139,7 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
           inputMode="decimal"
           id={props.id}
           name={props.name}
-          class={`flex-1 min-w-0 glass-input text-center text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''}`}
+          class={`flex-1 min-w-0 glass-input text-center text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-error-500 dark:border-error-400' : ''}`}
           placeholder={props.placeholder}
           value={props.value}
           disabled={props.disabled}
@@ -158,7 +158,7 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
         </button>
       </div>
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
           {props.error}
         </p>
       </Show>

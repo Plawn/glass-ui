@@ -1,5 +1,5 @@
-import DOMPurify from 'dompurify';
-import { Renderer, marked } from 'marked';
+import createDOMPurify from 'dompurify';
+import { Marked, Renderer } from 'marked';
 import {
   type Component,
   For,
@@ -11,10 +11,13 @@ import {
 import { render } from 'solid-js/web';
 import type { CodeBlockAction, MarkdownProps } from './types';
 
-// Configure marked for safe rendering
-marked.setOptions({
-  breaks: true,
-  gfm: true,
+// Create isolated instances to avoid polluting global state
+const markedInstance = new Marked({ breaks: true, gfm: true });
+const purifier = createDOMPurify(globalThis);
+purifier.addHook('uponSanitizeAttribute', (_node, data) => {
+  if (data.attrName === 'data-language') {
+    data.forceKeepAttr = true;
+  }
 });
 
 // Custom renderer that wraps code blocks with a container for action injection
@@ -40,13 +43,6 @@ const createCustomRenderer = (hasActions: boolean) => {
 
   return renderer;
 };
-
-// Configure DOMPurify to allow our custom wrapper elements and attributes
-DOMPurify.addHook('uponSanitizeAttribute', (_node, data) => {
-  if (data.attrName === 'data-language') {
-    data.forceKeepAttr = true;
-  }
-});
 
 // Component for rendering action buttons
 const CodeBlockActionButton: Component<{
@@ -88,15 +84,15 @@ export const Markdown: Component<MarkdownProps> = (props) => {
     }
     try {
       const renderer = createCustomRenderer(hasActions() ?? false);
-      const rawHtml = marked.parse(props.content, {
+      const rawHtml = markedInstance.parse(props.content, {
         async: false,
         renderer,
       }) as string;
-      return DOMPurify.sanitize(rawHtml, {
+      return purifier.sanitize(rawHtml, {
         ADD_ATTR: ['data-language'],
       });
     } catch {
-      return DOMPurify.sanitize(props.content);
+      return purifier.sanitize(props.content);
     }
   });
 

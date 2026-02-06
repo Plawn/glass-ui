@@ -6,7 +6,7 @@ import {
   createSignal,
   onCleanup,
 } from 'solid-js';
-import { SNACKBAR_ENTER } from '../../constants';
+import { SNACKBAR_ENTER, SNACKBAR_EXIT } from '../../constants';
 import { PortalWithDarkMode } from '../shared';
 import { CloseIcon } from '../shared/icons';
 import { type SnackbarItem, dismissSnackbar, getSnackbarStore } from './store';
@@ -51,16 +51,7 @@ const SnackbarItemComponent: Component<{
 
   const enterAnimation = () => SNACKBAR_ENTER[props.position];
 
-  const exitAnimation = () => {
-    switch (props.position) {
-      case 'bottom-left':
-        return 'opacity-0 -translate-x-4';
-      case 'bottom-right':
-        return 'opacity-0 translate-x-4';
-      default:
-        return 'opacity-0 translate-y-4';
-    }
-  };
+  const exitAnimation = () => SNACKBAR_EXIT[props.position];
 
   return (
     <div

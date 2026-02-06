@@ -103,6 +103,7 @@ export function createNotificationStore<T extends BaseNotification>(
   const [store, setStore] = createStore<NotificationStore<T>>({ items: [] });
 
   let idCounter = 0;
+  const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
   function add(notification: Omit<T, 'id'>): string {
     const id = `${idPrefix}-${++idCounter}`;
@@ -116,15 +117,22 @@ export function createNotificationStore<T extends BaseNotification>(
 
     const duration = notification.duration ?? defaultDuration;
     if (duration > 0) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
+        timers.delete(id);
         dismiss(id);
       }, duration);
+      timers.set(id, timer);
     }
 
     return id;
   }
 
   function dismiss(id: string): void {
+    const timer = timers.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      timers.delete(id);
+    }
     setStore(
       produce((state) => {
         state.items = state.items.filter((item) => item.id !== id);
@@ -133,6 +141,10 @@ export function createNotificationStore<T extends BaseNotification>(
   }
 
   function clear(): void {
+    for (const timer of timers.values()) {
+      clearTimeout(timer);
+    }
+    timers.clear();
     setStore('items', []);
   }
 

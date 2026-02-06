@@ -29,7 +29,7 @@ export const Textarea: Component<TextareaProps> = (props) => {
         >
           {props.label}
           <Show when={props.required}>
-            <span class="text-red-500 ml-0.5">*</span>
+            <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
       </Show>
@@ -37,7 +37,7 @@ export const Textarea: Component<TextareaProps> = (props) => {
         ref={props.ref}
         id={props.id}
         name={props.name}
-        class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''} ${props.class ?? ''}`}
+        class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-error-500 dark:border-error-400' : ''} ${props.class ?? ''}`}
         placeholder={props.placeholder}
         value={props.value}
         rows={props.rows}
@@ -47,7 +47,7 @@ export const Textarea: Component<TextareaProps> = (props) => {
         onInput={(e) => props.onInput(e.currentTarget.value)}
       />
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
           {props.error}
         </p>
       </Show>

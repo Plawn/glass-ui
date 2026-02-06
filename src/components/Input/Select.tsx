@@ -69,7 +69,7 @@ export function Select<T = string>(props: SelectProps<T>) {
         >
           {props.label}
           <Show when={props.required}>
-            <span class="text-red-500 ml-0.5">*</span>
+            <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
       </Show>
@@ -78,7 +78,7 @@ export function Select<T = string>(props: SelectProps<T>) {
           ref={props.ref}
           id={props.id}
           name={props.name}
-          class={`w-full px-3 py-2 sm:py-2.5 glass-input text-sm text-surface-800 dark:text-surface-200 font-medium focus:outline-none cursor-pointer appearance-none pr-9 disabled:opacity-50 disabled:cursor-not-allowed truncate ${props.error ? 'border-red-500 dark:border-red-400' : ''} ${props.class ?? ''}`}
+          class={`w-full px-3 py-2 sm:py-2.5 glass-input text-sm text-surface-800 dark:text-surface-200 font-medium focus:outline-none cursor-pointer appearance-none pr-9 disabled:opacity-50 disabled:cursor-not-allowed truncate ${props.error ? 'border-error-500 dark:border-error-400' : ''} ${props.class ?? ''}`}
           value={props.options ? getSelectedIndex() : (props.value as string)}
           disabled={props.disabled}
           required={props.required}
@@ -109,7 +109,7 @@ export function Select<T = string>(props: SelectProps<T>) {
         </div>
       </div>
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
           {props.error}
         </p>
       </Show>

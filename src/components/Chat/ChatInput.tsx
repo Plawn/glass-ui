@@ -12,7 +12,8 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
 
   const placeholder = () => props.placeholder ?? 'Type a message...';
   const isDisabled = () => props.disabled ?? false;
-  const canSend = () => value().trim().length > 0 && !isDisabled();
+  const canSend = () =>
+    value().trim().length > 0 && !isDisabled() && !props.isStreaming;
 
   // Auto-resize textarea based on content
   const adjustHeight = () => {
@@ -21,7 +22,10 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
       const scrollHeight = textareaRef.scrollHeight;
       // Max height of ~6 lines
       const maxHeight = 150;
-      textareaRef.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+      const newHeight = Math.min(scrollHeight, maxHeight);
+      textareaRef.style.height = `${newHeight}px`;
+      textareaRef.style.overflowY =
+        scrollHeight > maxHeight ? 'auto' : 'hidden';
     }
   };
 
@@ -37,7 +41,7 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
 
   const handleSend = () => {
     const content = value().trim();
-    if (content && !isDisabled()) {
+    if (content && !isDisabled() && !props.isStreaming) {
       props.onSendMessage(content);
       setValue('');
       // Reset textarea height
@@ -82,8 +86,7 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
           placeholder={placeholder()}
           disabled={isDisabled()}
           rows={1}
-          class="w-full glass-input text-surface-800 dark:text-surface-200 resize-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed py-2.5 px-4 min-h-[42px]"
-          style={{ 'max-height': '150px' }}
+          class="flex w-full glass-input text-surface-800 dark:text-surface-200 resize-none overflow-hidden focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed py-2.5 px-4 min-h-[42px]"
         />
       </div>
 
@@ -95,7 +98,7 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
             type="button"
             onClick={handleSend}
             disabled={!canSend()}
-            class="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-accent-500 text-white hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500 transition-colors"
+            class="shrink-0 w-[42px] h-[42px] flex items-center justify-center rounded-xl bg-accent-500 text-white hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500 transition-colors"
             aria-label="Send message"
           >
             <SendIcon size={18} />
@@ -106,7 +109,7 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
           type="button"
           onClick={handleCancel}
           disabled={!props.onCancelStream}
-          class="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-red-500 text-white hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="shrink-0 w-[42px] h-[42px] flex items-center justify-center rounded-xl bg-error-500 text-white hover:bg-error-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           aria-label="Stop generation"
         >
           <StopIcon size={18} />

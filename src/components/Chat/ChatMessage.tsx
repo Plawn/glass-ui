@@ -3,6 +3,7 @@ import { Show, createMemo } from 'solid-js';
 import { Avatar } from '../Avatar';
 import { Markdown } from '../Markdown';
 import { ChatThinking } from './ChatThinking';
+import { ChatToolCall } from './ChatToolCall';
 import type { ChatMessageProps } from './types';
 
 /**
@@ -40,6 +41,13 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
       props.message.thinking.length > 0,
   );
 
+  const hasToolCalls = createMemo(
+    () =>
+      isAssistant() &&
+      props.message.toolCalls &&
+      props.message.toolCalls.length > 0,
+  );
+
   const isError = createMemo(() => props.message.status === 'error');
   const isStreaming = createMemo(() => props.message.status === 'streaming');
 
@@ -65,12 +73,10 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
       </Show>
 
       {/* Message bubble */}
-      <div class={`max-w-[80%] ${isSystem() ? 'max-w-[90%]' : ''}`}>
+      <div class={isSystem() ? 'max-w-[90%]' : 'max-w-[80%]'}>
         {/* Message content */}
         <div
-          class={`rounded-2xl px-4 py-2.5 ${bubbleStyleClass()} ${isError() ? 'border border-red-500/50' : ''} ${
-            isStreaming() ? 'animate-pulse' : ''
-          }`}
+          class={`rounded-2xl px-4 py-2.5 ${bubbleStyleClass()} ${isError() ? 'border border-error-500/50' : ''}`}
         >
           <Show
             when={isUser()}
@@ -80,6 +86,9 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
                   content={props.message.content}
                   codeBlockActions={props.codeBlockActions}
                 />
+                <Show when={isStreaming()}>
+                  <span class="inline-block w-1.5 h-4 ml-0.5 -mb-0.5 bg-current rounded-sm animate-pulse" />
+                </Show>
               </div>
             }
           >
@@ -88,11 +97,16 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
 
           {/* Error message */}
           <Show when={isError() && props.message.error}>
-            <p class="mt-2 text-sm text-red-500 dark:text-red-400">
+            <p class="mt-2 text-sm text-error-500 dark:text-error-400">
               {props.message.error}
             </p>
           </Show>
         </div>
+
+        {/* Tool calls (for assistant messages) */}
+        <Show when={hasToolCalls()}>
+          <ChatToolCall toolCalls={props.message.toolCalls!} />
+        </Show>
 
         {/* Thinking section (for assistant messages) */}
         <Show when={hasThinking()}>
@@ -100,16 +114,18 @@ export const ChatMessage: Component<ChatMessageProps> = (props) => {
         </Show>
 
         {/* Timestamp */}
-        <p
-          class={`mt-1 text-xs text-surface-400 dark:text-surface-500 ${
-            isUser() ? 'text-right' : ''
-          }`}
-        >
-          {props.message.timestamp.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </p>
+        <Show when={props.message.timestamp}>
+          <p
+            class={`mt-1 text-xs text-surface-400 dark:text-surface-500 ${
+              isUser() ? 'text-right' : ''
+            }`}
+          >
+            {props.message.timestamp!.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </p>
+        </Show>
       </div>
     </div>
   );

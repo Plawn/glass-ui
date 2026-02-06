@@ -138,7 +138,7 @@ export interface VirtualizerResult {
   offsetTop: () => number;
   offsetBottom: () => number;
   isScrolling: () => boolean;
-  measureItem: (el: HTMLElement | null, index: number) => void;
+  measureItem: (index: number, size: number) => void;
   range: () => { startIndex: number; endIndex: number };
   getScrollTop: () => number;
   scrollToIndex: (
@@ -305,7 +305,47 @@ export function useVirtualizer(options: VirtualizerOptions) {
     return fixed ? options.totalCount() * fixed : sizeCache().tree.totalSum();
   });
 
-  // 5. OBSERVERS
+  // 5a. AT-BOTTOM / AT-TOP DETECTION
+  let prevAtBottom: boolean | undefined;
+  let prevAtTop: boolean | undefined;
+
+  createEffect(() => {
+    const scroll = scrollTop();
+    const viewport = viewportSize();
+    const total = totalSize();
+
+    if (viewport === 0) {
+      return;
+    }
+
+    const bottomThreshold = options.atBottomThreshold?.() ?? 4;
+    const topThreshold = options.atTopThreshold?.() ?? 0;
+
+    const distanceFromBottom = total - scroll - viewport;
+    const atBottom = distanceFromBottom <= bottomThreshold;
+    const atTop = scroll <= topThreshold;
+
+    const bottomChanged = prevAtBottom !== atBottom;
+    const topChanged = prevAtTop !== atTop;
+
+    if (bottomChanged) {
+      prevAtBottom = atBottom;
+      options.onAtBottomChange?.(atBottom);
+    }
+
+    if (topChanged) {
+      prevAtTop = atTop;
+      options.onAtTopChange?.(atTop);
+
+      // Start reached (only on transition to at-top)
+      if (atTop && options.onStartReached) {
+        const { start } = untrack(visibleRange);
+        options.onStartReached(start);
+      }
+    }
+  });
+
+  // 5b. OBSERVERS
   createEffect(() => {
     const container = options.getScrollContainer();
     if (!container) {

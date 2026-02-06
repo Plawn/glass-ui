@@ -10,7 +10,7 @@ import {
   onMount,
 } from 'solid-js';
 import { BACKDROP_ENTER, COMMAND_PALETTE_PANEL_ENTER } from '../../constants';
-import { useBodyScrollLock, useControlled } from '../../hooks';
+import { useControlled, useDialogState } from '../../hooks';
 import { PortalWithDarkMode } from '../shared';
 import { CommandPaletteItem } from './CommandPaletteItem';
 import type {
@@ -317,9 +317,10 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
     }
   });
 
-  // Prevent body scroll
-  useBodyScrollLock({
-    enabled: isOpen,
+  // Dialog behavior: escape key, scroll lock, backdrop click
+  const { handleBackdropClick } = useDialogState({
+    open: isOpen,
+    onClose: () => setOpen(false),
   });
 
   const handleSelect = (item: ItemType) => {
@@ -355,12 +356,6 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
         e.preventDefault();
         setOpen(false);
         break;
-    }
-  };
-
-  const handleBackdropClick = (e: MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      setOpen(false);
     }
   };
 

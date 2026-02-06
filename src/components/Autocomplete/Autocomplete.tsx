@@ -411,7 +411,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
           type="text"
           id={props.id}
           name={props.name}
-          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${hasValue() && !props.disabled ? 'pr-16' : 'pr-10'} ${sizeClasses()} ${props.error ? 'border-red-500 dark:border-red-400' : ''}`}
+          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${hasValue() && !props.disabled ? 'pr-16' : 'pr-10'} ${sizeClasses()} ${props.error ? 'border-error-500 dark:border-error-400' : ''}`}
           placeholder={props.placeholder}
           value={inputValue()}
           disabled={props.disabled}
@@ -465,7 +465,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
       </div>
 
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
           {props.error}
         </p>
       </Show>

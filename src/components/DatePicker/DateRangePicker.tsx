@@ -232,7 +232,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
             text-surface-900 dark:text-surface-100
             focus:outline-none
             ${disabled() ? 'opacity-50 cursor-not-allowed' : ''}
-            ${props.error ? 'border-red-500 dark:border-red-400' : ''}
+            ${props.error ? 'border-error-500 dark:border-error-400' : ''}
             ${getSizeClasses(size())}
           `,
           'aria-haspopup': 'dialog',
@@ -288,7 +288,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
 
       {/* Error message */}
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-red-500 dark:text-red-400">
+        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
           {props.error}
         </p>
       </Show>

@@ -19,8 +19,8 @@ const disabledClasses = `
 `;
 
 const destructiveClasses = `
-  text-red-600 dark:text-red-400
-  hover:bg-red-500/10 dark:hover:bg-red-500/20
+  text-error-600 dark:text-error-400
+  hover:bg-error-500/10 dark:hover:bg-error-500/20
 `;
 
 /**

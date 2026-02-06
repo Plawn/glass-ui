@@ -39,6 +39,17 @@
   --color-accent-700: oklch(0.35 0.2 250);
   --color-accent-800: oklch(0.25 0.18 250);
   --color-accent-900: oklch(0.15 0.15 250);
+
+  --color-error-50: oklch(0.97 0.02 25);
+  --color-error-100: oklch(0.92 0.04 25);
+  --color-error-200: oklch(0.85 0.08 25);
+  --color-error-300: oklch(0.75 0.12 25);
+  --color-error-400: oklch(0.65 0.18 25);
+  --color-error-500: oklch(0.55 0.22 25);
+  --color-error-600: oklch(0.48 0.22 25);
+  --color-error-700: oklch(0.38 0.2 25);
+  --color-error-800: oklch(0.28 0.16 25);
+  --color-error-900: oklch(0.18 0.1 25);
 }
 
 /* Use class-based dark mode */

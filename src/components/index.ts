@@ -25,7 +25,7 @@ export type { ModalProps, ModalSize } from './Modal';
 
 // Dialog
 export { Dialog } from './Dialog';
-export type { DialogProps, DialogVariant } from './Dialog';
+export type { DialogProps, DialogSize, DialogVariant } from './Dialog';
 
 // CommandPalette
 export { CommandPalette, CommandPaletteItem } from './CommandPalette';
@@ -128,7 +128,11 @@ export type { JsonViewerProps, JsonValue, JsonNodeProps } from './JsonViewer';
 
 // Markdown
 export { Markdown } from './Markdown';
-export type { MarkdownProps } from './Markdown';
+export type {
+  MarkdownProps,
+  CodeBlockAction,
+  CodeBlockActionContext,
+} from './Markdown';
 
 // Section
 export { Section } from './Section';
@@ -248,6 +252,7 @@ export { GlassBackground } from './GlassBackground';
 export type {
   GlassBackgroundProps,
   GlassBackgroundBlob,
+  GlassBackgroundGradient,
 } from './GlassBackground';
 
 // Divider
@@ -319,6 +324,7 @@ export {
   ChatMessageList,
   ChatInput,
   ChatThinking,
+  ChatToolCall,
   ChatTypingIndicator,
 } from './Chat';
 export type {
@@ -328,8 +334,11 @@ export type {
   ChatMessageListProps,
   ChatInputProps,
   ChatThinkingProps,
+  ChatToolCallProps,
   ChatTypingIndicatorProps,
   ThinkingStep,
+  ToolCall,
+  ToolCallStatus,
   MessageRole,
   MessageStatus,
 } from './Chat';
@@ -345,4 +354,5 @@ export type {
   WindowProps,
   WindowHandleProps,
   WindowConstraints,
+  ResizeDirection,
 } from './Window';
