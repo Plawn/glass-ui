@@ -69,6 +69,9 @@ export type {
   Position,
 } from './useDraggable';
 
+export { useFocusTrap } from './useFocusTrap';
+export type { UseFocusTrapOptions } from './useFocusTrap';
+
 export { useResizable } from './useResizable';
 export type {
   UseResizableOptions,

@@ -89,6 +89,7 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
           checked={visualChecked()}
           disabled={props.disabled}
           required={props.required}
+          aria-checked={visualIndeterminate() ? 'mixed' : undefined}
           onChange={handleChange}
           class="sr-only"
         />

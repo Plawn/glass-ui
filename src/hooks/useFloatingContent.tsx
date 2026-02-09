@@ -31,6 +31,8 @@ export interface UseFloatingContentOptions {
   role?: 'dialog' | 'tooltip' | 'listbox' | 'menu';
   /** Set aria-modal attribute (only relevant for role="dialog") */
   ariaModal?: boolean;
+  /** Accessible label for the floating content */
+  ariaLabel?: string;
   /** Additional event handlers for the content container */
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -126,6 +128,7 @@ export function useFloatingContent(
             style={positionStyles()}
             role={role}
             aria-modal={role === 'dialog' ? ariaModal : undefined}
+            aria-label={options.ariaLabel}
             onMouseEnter={options.onMouseEnter}
             onMouseLeave={options.onMouseLeave}
           >

@@ -81,7 +81,9 @@ export const ContextMenuItem: Component<ContextMenuItemProps> = (props) => {
       onKeyDown={handleKeyDown}
     >
       <Show when={props.icon}>
-        <span class="flex-shrink-0 w-4 h-4">{props.icon}</span>
+        <span class="flex-shrink-0 w-4 h-4" aria-hidden="true">
+          {props.icon}
+        </span>
       </Show>
 
       <span class="flex-1">{props.children}</span>

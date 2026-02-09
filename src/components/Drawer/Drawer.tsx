@@ -9,7 +9,7 @@ import {
   DURATION_DEFAULT,
   DURATION_SLOW,
 } from '../../constants';
-import { useAnimationState, useDialogState } from '../../hooks';
+import { useAnimationState, useDialogState, useFocusTrap } from '../../hooks';
 import { getAnimationClass, getDirectionalAnimationClass } from '../../utils';
 import { OverlayContent, PortalWithDarkMode } from '../shared';
 import type { DrawerPosition, DrawerProps } from './types';
@@ -20,6 +20,8 @@ const positionPanelStyles: Record<DrawerPosition, string> = {
 };
 
 export const Drawer: Component<DrawerProps> = (props) => {
+  let backdropRef: HTMLDivElement | undefined;
+
   const position = () => props.position ?? 'right';
   const size = () => props.size ?? 'md';
   const showClose = () => props.showClose ?? true;
@@ -36,6 +38,12 @@ export const Drawer: Component<DrawerProps> = (props) => {
     onClose: props.onClose,
     closeOnEscape: () => props.closeOnEscape ?? true,
     closeOnBackdrop: () => props.closeOnBackdrop ?? true,
+  });
+
+  // Focus trap
+  useFocusTrap({
+    enabled: visible,
+    containerRef: () => backdropRef,
   });
 
   const panelStyle = () => positionPanelStyles[position()];
@@ -58,13 +66,16 @@ export const Drawer: Component<DrawerProps> = (props) => {
     <Show when={visible()}>
       <PortalWithDarkMode>
         <div
+          ref={backdropRef}
           class={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm ${backdropClasses()}`}
           onClick={(e) => handleBackdropClick(e)}
+          role="dialog"
           aria-modal="true"
           aria-labelledby={props.title ? 'drawer-title' : undefined}
         >
           <div
             class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()}`}
+            onClick={(e) => e.stopPropagation()}
           >
             <div class="flex flex-col h-full overflow-hidden">
               <OverlayContent

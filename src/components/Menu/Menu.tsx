@@ -1,10 +1,18 @@
-import { type Component, For, Show, createSignal } from 'solid-js';
+import {
+  type Component,
+  For,
+  Show,
+  createEffect,
+  createSignal,
+  on,
+} from 'solid-js';
 import { Popover } from '../Popover';
 import type { MenuItem, MenuProps } from './types';
 
 export const Menu: Component<MenuProps> = (props) => {
   const [isOpen, setIsOpen] = createSignal(false);
   const [focusedIndex, setFocusedIndex] = createSignal(-1);
+  let menuRef: HTMLDivElement | undefined;
 
   const placement = () => props.placement ?? 'bottom-start';
 
@@ -49,6 +57,23 @@ export const Menu: Component<MenuProps> = (props) => {
     return items[focusableIdx].index;
   };
 
+  // Focus first menu item when menu opens
+  createEffect(
+    on(isOpen, (open) => {
+      if (open && menuRef) {
+        requestAnimationFrame(() => {
+          const firstItem = menuRef?.querySelector<HTMLElement>(
+            '[role="menuitem"]:not([disabled])',
+          );
+          if (firstItem) {
+            firstItem.focus();
+            setFocusedIndex(0);
+          }
+        });
+      }
+    }),
+  );
+
   // Handle keyboard navigation on the trigger
   const handleTriggerKeyDown = (e: KeyboardEvent) => {
     if (!isOpen()) {
@@ -56,6 +81,17 @@ export const Menu: Component<MenuProps> = (props) => {
         e.preventDefault();
         handleOpen();
       }
+    }
+  };
+
+  // Focus menu item by index
+  const focusItem = (index: number) => {
+    setFocusedIndex(index);
+    if (menuRef) {
+      const items = menuRef.querySelectorAll<HTMLElement>(
+        '[role="menuitem"]:not([disabled])',
+      );
+      items[index]?.focus();
     }
   };
 
@@ -73,7 +109,7 @@ export const Menu: Component<MenuProps> = (props) => {
           focusedIndex() === -1
             ? 0
             : Math.min(focusedIndex() + 1, items.length - 1);
-        setFocusedIndex(nextIndex);
+        focusItem(nextIndex);
         break;
       }
       case 'ArrowUp': {
@@ -85,7 +121,7 @@ export const Menu: Component<MenuProps> = (props) => {
           focusedIndex() === -1
             ? items.length - 1
             : Math.max(focusedIndex() - 1, 0);
-        setFocusedIndex(prevIndex);
+        focusItem(prevIndex);
         break;
       }
       case 'Enter':
@@ -98,13 +134,13 @@ export const Menu: Component<MenuProps> = (props) => {
       case 'Home':
         e.preventDefault();
         if (items.length > 0) {
-          setFocusedIndex(0);
+          focusItem(0);
         }
         break;
       case 'End':
         e.preventDefault();
         if (items.length > 0) {
-          setFocusedIndex(items.length - 1);
+          focusItem(items.length - 1);
         }
         break;
     }
@@ -125,6 +161,7 @@ export const Menu: Component<MenuProps> = (props) => {
       }}
     >
       <div
+        ref={menuRef}
         role="menu"
         aria-orientation="vertical"
         onKeyDown={handleMenuKeyDown}
@@ -152,7 +189,10 @@ export const Menu: Component<MenuProps> = (props) => {
                 tabIndex={-1}
               >
                 <Show when={item.icon}>
-                  <span class="w-4 h-4 flex items-center justify-center opacity-70">
+                  <span
+                    class="w-4 h-4 flex items-center justify-center opacity-70"
+                    aria-hidden="true"
+                  >
                     {item.icon}
                   </span>
                 </Show>

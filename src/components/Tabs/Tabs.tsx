@@ -126,6 +126,42 @@ export const Tabs: Component<TabsProps> = (props) => {
     }
   };
 
+  const handleTabKeyDown = (e: KeyboardEvent) => {
+    const vert = isVertical();
+    const nextKeys = vert ? ['ArrowDown'] : ['ArrowRight'];
+    const prevKeys = vert ? ['ArrowUp'] : ['ArrowLeft'];
+    const enabledItems = props.items.filter((item) => !item.disabled);
+
+    if (enabledItems.length === 0) {
+      return;
+    }
+
+    const currentIndex = enabledItems.findIndex(
+      (item) => item.id === activeTab(),
+    );
+    let newIndex: number | null = null;
+
+    if (nextKeys.includes(e.key)) {
+      e.preventDefault();
+      newIndex = currentIndex < enabledItems.length - 1 ? currentIndex + 1 : 0;
+    } else if (prevKeys.includes(e.key)) {
+      e.preventDefault();
+      newIndex = currentIndex > 0 ? currentIndex - 1 : enabledItems.length - 1;
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      newIndex = 0;
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      newIndex = enabledItems.length - 1;
+    }
+
+    if (newIndex !== null) {
+      const newTab = enabledItems[newIndex];
+      handleTabChange(newTab.id);
+      buttonRefs.get(newTab.id)?.focus();
+    }
+  };
+
   // --- Computed styles ---
   const sizeStyle = () => sizeStyles[size()];
 
@@ -196,9 +232,12 @@ export const Tabs: Component<TabsProps> = (props) => {
                 ref={(el) => buttonRefs.set(item.id, el)}
                 type="button"
                 onClick={() => handleTabChange(item.id)}
+                onKeyDown={handleTabKeyDown}
+                id={`tab-${item.id}`}
                 class={`${getTabClass(isActive(), isDisabled())} ${fullWidth() && !isVertical() ? 'flex-1 justify-center' : ''}`}
                 aria-selected={isActive()}
                 aria-disabled={isDisabled()}
+                aria-controls={`tabpanel-${item.id}`}
                 disabled={isDisabled()}
                 role="tab"
                 tabIndex={isActive() ? 0 : -1}
@@ -232,7 +271,9 @@ export const Tabs: Component<TabsProps> = (props) => {
           {(item) => (
             <Show when={shouldRenderContent(item.id)}>
               <div
+                id={`tabpanel-${item.id}`}
                 role="tabpanel"
+                aria-labelledby={`tab-${item.id}`}
                 class={`${activeTab() === item.id ? 'animate-in fade-in slide-in-from-bottom-2 duration-200' : 'hidden'}`}
                 aria-hidden={activeTab() !== item.id}
               >

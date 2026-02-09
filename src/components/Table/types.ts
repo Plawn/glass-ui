@@ -87,6 +87,8 @@ export interface SelectionState {
 // =============================================================================
 
 export interface TableProps<T> extends BaseComponentProps, LoadableProps {
+  /** Accessible label for the table */
+  'aria-label'?: string;
   /** Column definitions */
   columns: TableColumn<T>[];
   /** Data rows */

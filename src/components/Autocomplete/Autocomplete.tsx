@@ -5,6 +5,7 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  createUniqueId,
   on,
   onCleanup,
 } from 'solid-js';
@@ -102,6 +103,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   const [inputValue, setInputValue] = createSignal('');
   const [focusedIndex, setFocusedIndex] = createSignal(-1);
 
+  const listboxId = createUniqueId();
   let internalInputRef: HTMLInputElement | undefined;
   let containerRef: HTMLDivElement | undefined;
   let dropdownRef: HTMLDivElement | undefined;
@@ -420,6 +422,16 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
           aria-expanded={isOpen()}
           aria-haspopup="listbox"
           aria-autocomplete="list"
+          aria-controls={isOpen() ? listboxId : undefined}
+          aria-activedescendant={
+            isOpen() && focusedIndex() >= 0
+              ? `${listboxId}-option-${focusedIndex()}`
+              : undefined
+          }
+          aria-invalid={!!props.error}
+          aria-describedby={
+            props.error && props.id ? `${props.id}-error` : undefined
+          }
           onInput={(e) => handleInputChange(e.currentTarget.value)}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
@@ -465,7 +477,11 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
       </div>
 
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
+        <p
+          id={props.id ? `${props.id}-error` : undefined}
+          class="mt-1.5 text-sm text-error-500 dark:text-error-400"
+          role="alert"
+        >
           {props.error}
         </p>
       </Show>
@@ -475,6 +491,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         <PortalWithDarkMode>
           <div
             ref={dropdownRef}
+            id={listboxId}
             class="fixed z-50 glass-card rounded-xl shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150"
             style={dropdownPosition()}
             role="listbox"
@@ -498,10 +515,18 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
                     };
                     const isSelected = () => option.value === props.value;
 
+                    const focusableIdx = () =>
+                      focusableOptions().indexOf(option);
+
                     return (
                       <button
                         type="button"
                         data-option
+                        id={
+                          !option.disabled
+                            ? `${listboxId}-option-${focusableIdx()}`
+                            : undefined
+                        }
                         class={`w-full text-left transition-colors ${itemSizeClasses()}
                           ${
                             option.disabled
@@ -515,9 +540,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
                         onClick={() => handleSelect(option)}
                         onMouseEnter={() => {
                           if (!option.disabled) {
-                            const focusableIdx =
-                              focusableOptions().indexOf(option);
-                            setFocusedIndex(focusableIdx);
+                            setFocusedIndex(focusableIdx());
                           }
                         }}
                         disabled={option.disabled}

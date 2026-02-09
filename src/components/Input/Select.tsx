@@ -82,6 +82,10 @@ export function Select<T = string>(props: SelectProps<T>) {
           value={props.options ? getSelectedIndex() : (props.value as string)}
           disabled={props.disabled}
           required={props.required}
+          aria-invalid={!!props.error}
+          aria-describedby={
+            props.error && props.id ? `${props.id}-error` : undefined
+          }
           onChange={(e) => {
             if (props.options) {
               handleOptionsChange(e.currentTarget.value);
@@ -105,11 +109,18 @@ export function Select<T = string>(props: SelectProps<T>) {
           </Show>
         </select>
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-          <ChevronDownIcon class="w-4 h-4 text-surface-400 dark:text-surface-500" />
+          <ChevronDownIcon
+            class="w-4 h-4 text-surface-400 dark:text-surface-500"
+            aria-hidden="true"
+          />
         </div>
       </div>
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
+        <p
+          id={props.id ? `${props.id}-error` : undefined}
+          class="mt-1.5 text-sm text-error-500 dark:text-error-400"
+          role="alert"
+        >
           {props.error}
         </p>
       </Show>

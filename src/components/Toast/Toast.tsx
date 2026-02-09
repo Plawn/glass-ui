@@ -36,9 +36,11 @@ const ToastItem: Component<{ toast: Toast }> = (props) => {
     <div
       class={`flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm transition-all duration-200 ${styles().bg} ${exiting() ? 'opacity-0 translate-x-4' : TOAST_ENTER}`}
       role="alert"
+      aria-atomic="true"
     >
       <div
         class={`flex-shrink-0 w-8 h-8 rounded-lg ${styles().iconBg} ${styles().icon} flex items-center justify-center`}
+        aria-hidden="true"
       >
         <ToastIcon type={props.toast.type} />
       </div>

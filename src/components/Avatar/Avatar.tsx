@@ -62,6 +62,8 @@ export const Avatar: Component<AvatarProps> = (props) => {
         fallback={
           <div
             class={`w-full h-full flex items-center justify-center font-semibold text-white ${fallbackBg()}`}
+            role="img"
+            aria-label={props.name}
           >
             <span class={styles().text}>{initials()}</span>
           </div>

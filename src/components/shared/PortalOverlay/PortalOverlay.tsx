@@ -4,13 +4,18 @@ import {
   type JSX,
   Show,
   createMemo,
+  createSignal,
 } from 'solid-js';
 import {
   ANIMATION_DURATION,
   BACKDROP_ENTER,
   BACKDROP_EXIT,
 } from '../../../constants';
-import { useAnimationState, useDialogState } from '../../../hooks';
+import {
+  useAnimationState,
+  useDialogState,
+  useFocusTrap,
+} from '../../../hooks';
 import { PortalWithDarkMode } from '../PortalWithDarkMode';
 import type { PortalOverlayProps, PortalOverlayRenderProps } from './types';
 
@@ -93,6 +98,13 @@ export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
     closeOnBackdrop: () => props.closeOnBackdrop ?? true,
   });
 
+  // Focus trap for modal dialogs
+  const [backdropRef, setBackdropRef] = createSignal<HTMLElement | undefined>();
+  useFocusTrap({
+    enabled: isVisible,
+    containerRef: backdropRef,
+  });
+
   // Compute backdrop classes
   const backdropClasses = createMemo(() => {
     const baseClasses = 'fixed inset-0 z-50 bg-black/50 backdrop-blur-sm';
@@ -123,6 +135,7 @@ export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
     <Show when={isVisible()}>
       <PortalWithDarkMode>
         <div
+          ref={setBackdropRef}
           class={backdropClasses()}
           onClick={(e) => handleBackdropClick(e)}
           role={role()}

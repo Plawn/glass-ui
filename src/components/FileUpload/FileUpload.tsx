@@ -183,6 +183,11 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
           }
         }}
         aria-disabled={isDisabled()}
+        aria-label={
+          props.label
+            ? `${props.label}. Click to upload or drag and drop`
+            : 'File upload. Click to upload or drag and drop'
+        }
       >
         <input
           ref={inputRef}
@@ -214,6 +219,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
               viewBox="0 0 24 24"
               stroke="currentColor"
               stroke-width="2"
+              aria-hidden="true"
             >
               <path
                 stroke-linecap="round"
@@ -259,7 +265,10 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
               >
                 <div class="flex items-center gap-3 min-w-0">
                   {/* File icon */}
-                  <div class="flex-shrink-0 w-8 h-8 rounded-md bg-surface-200/80 dark:bg-surface-700/50 flex items-center justify-center">
+                  <div
+                    class="flex-shrink-0 w-8 h-8 rounded-md bg-surface-200/80 dark:bg-surface-700/50 flex items-center justify-center"
+                    aria-hidden="true"
+                  >
                     <svg
                       class="w-4 h-4 text-surface-500 dark:text-surface-400"
                       fill="none"

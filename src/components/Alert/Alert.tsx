@@ -34,6 +34,7 @@ export const Alert: Component<AlertProps> = (props) => {
         {/* Icon */}
         <div
           class={`flex-shrink-0 w-8 h-8 rounded-lg ${styles().iconBg} ${styles().icon} flex items-center justify-center`}
+          aria-hidden="true"
         >
           <Show when={props.icon} fallback={<DefaultIcon type={props.type} />}>
             {props.icon}

@@ -57,6 +57,7 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
       <Show when={isOpen()}>
         <div
           id={id}
+          role="region"
           class="animate-in fade-in slide-in-from-top-2 duration-200"
         >
           {props.children}

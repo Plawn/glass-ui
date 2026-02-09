@@ -1,4 +1,9 @@
-import { Route, Router, useNavigate } from '@solidjs/router';
+import {
+  Route,
+  type RouteSectionProps,
+  Router,
+  useNavigate,
+} from '@solidjs/router';
 import {
   Button,
   CommandPalette,
@@ -101,7 +106,7 @@ function PageLoader() {
   );
 }
 
-function Layout(props: { children: any }) {
+function Layout(props: RouteSectionProps) {
   const isDark = useIsDark();
   const navigate = useNavigate();
 

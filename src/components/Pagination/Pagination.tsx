@@ -87,7 +87,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
     'text-surface-300 dark:text-surface-600 cursor-not-allowed';
 
   return (
-    <div class={`flex items-center gap-4 ${props.class ?? ''}`}>
+    <nav
+      aria-label="Pagination"
+      class={`flex items-center gap-4 ${props.class ?? ''}`}
+    >
       {/* Page size selector */}
       <Show when={props.showPageSize}>
         <div class="flex items-center gap-2">
@@ -98,6 +101,7 @@ export const Pagination: Component<PaginationProps> = (props) => {
             value={props.pageSize}
             onChange={handlePageSizeChange}
             class="glass-input px-2 py-1 text-sm rounded-lg"
+            aria-label="Items per page"
           >
             <For each={pageSizeOptions()}>
               {(size) => <option value={size}>{size}</option>}
@@ -128,7 +132,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
             <Show
               when={page !== 'ellipsis'}
               fallback={
-                <span class="w-8 h-8 flex items-center justify-center text-surface-400 dark:text-surface-600">
+                <span
+                  class="w-8 h-8 flex items-center justify-center text-surface-400 dark:text-surface-600"
+                  aria-hidden="true"
+                >
                   ...
                 </span>
               }
@@ -167,6 +174,6 @@ export const Pagination: Component<PaginationProps> = (props) => {
           {Math.min(props.page * props.pageSize, props.total)} of {props.total}
         </span>
       </Show>
-    </div>
+    </nav>
   );
 };

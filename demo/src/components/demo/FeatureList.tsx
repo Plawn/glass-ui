@@ -1,7 +1,8 @@
+import type { JSX } from 'solid-js';
 import { For } from 'solid-js';
 
 export interface FeatureListProps {
-  items: string[];
+  items: (string | JSX.Element)[];
   checkmarks?: boolean;
 }
 

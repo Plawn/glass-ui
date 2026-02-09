@@ -411,6 +411,7 @@ export function Table<T extends Record<string, unknown>>(
       {/* Selection checkbox column */}
       <Show when={selectionMode() === 'multiple'}>
         <th
+          scope="col"
           class={`${sizeStyle().header} ${headerBaseClass()} text-center ${variantStyle().headerCell}`}
           style={checkboxColumnStyle()}
         >
@@ -424,6 +425,7 @@ export function Table<T extends Record<string, unknown>>(
       </Show>
       <Show when={selectionMode() === 'single'}>
         <th
+          scope="col"
           class={`${sizeStyle().header} ${headerBaseClass()} ${variantStyle().headerCell}`}
           style={checkboxColumnStyle()}
         />
@@ -441,8 +443,24 @@ export function Table<T extends Record<string, unknown>>(
             ? 'bg-white/90 dark:bg-surface-900/90 backdrop-blur-sm'
             : '';
 
+          const ariaSortValue = () => {
+            if (!isSortable) {
+              return undefined;
+            }
+            if (!isActive()) {
+              return 'none' as const;
+            }
+            return sortDirection() === 'asc'
+              ? ('ascending' as const)
+              : sortDirection() === 'desc'
+                ? ('descending' as const)
+                : ('none' as const);
+          };
+
           return (
             <th
+              scope="col"
+              aria-sort={ariaSortValue()}
               class={`${sizeStyle().header} ${headerBaseClass()} ${ALIGN_CLASSES[column.align ?? 'left']} ${variantStyle().headerCell} ${stickyClass} ${column.headerClass ?? ''} ${isSortable ? 'cursor-pointer select-none group hover:text-surface-900 dark:hover:text-surface-200 transition-colors' : ''}`}
               style={{
                 width: column.width,
@@ -483,7 +501,7 @@ export function Table<T extends Record<string, unknown>>(
       style={props.style}
     >
       <div class="overflow-x-auto overflow-y-auto" style={containerStyle()}>
-        <table class="w-full">
+        <table class="w-full" aria-label={props['aria-label'] ?? undefined}>
           <thead
             class={
               shouldStickyHeader()

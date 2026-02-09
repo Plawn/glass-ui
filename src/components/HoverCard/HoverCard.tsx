@@ -2,6 +2,7 @@ import {
   type Component,
   createEffect,
   createSignal,
+  createUniqueId,
   onCleanup,
 } from 'solid-js';
 import { useFloatingContent } from '../../hooks/useFloatingContent';
@@ -11,6 +12,7 @@ import type { HoverCardProps } from './types';
 const DEFAULT_OFFSET = 8;
 
 export const HoverCard: Component<HoverCardProps> = (props) => {
+  const hovercardId = createUniqueId();
   let triggerRef: HTMLDivElement | undefined;
   let contentRef: HTMLDivElement | undefined;
 
@@ -83,12 +85,13 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
       ref={triggerRef}
       class={`relative inline-block ${props.class ?? ''}`}
       style={props.style}
+      aria-describedby={isOpen() ? hovercardId : undefined}
       onMouseEnter={handleTriggerMouseEnter}
       onMouseLeave={handleTriggerMouseLeave}
     >
       {props.trigger}
       <FloatingContent ref={(el) => (contentRef = el)}>
-        {props.children}
+        <div id={hovercardId}>{props.children}</div>
       </FloatingContent>
     </div>
   );

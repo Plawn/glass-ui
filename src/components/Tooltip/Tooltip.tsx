@@ -3,6 +3,7 @@ import {
   Show,
   createEffect,
   createSignal,
+  createUniqueId,
   onCleanup,
 } from 'solid-js';
 import { POPOVER_ENTER } from '../../constants';
@@ -25,6 +26,7 @@ const arrowStyles: Record<TooltipPosition, string> = {
 };
 
 export const Tooltip: Component<TooltipProps> = (props) => {
+  const tooltipId = createUniqueId();
   const [visible, setVisible] = createSignal(false);
   const [hovering, setHovering] = createSignal(false);
 
@@ -47,6 +49,7 @@ export const Tooltip: Component<TooltipProps> = (props) => {
   return (
     <div
       class={`relative inline-flex ${props.class ?? ''}`}
+      aria-describedby={visible() ? tooltipId : undefined}
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
       onFocusIn={showTooltip}
@@ -55,6 +58,7 @@ export const Tooltip: Component<TooltipProps> = (props) => {
       {props.children}
       <Show when={visible()}>
         <div
+          id={tooltipId}
           class={`absolute z-50 ${positionStyles[position()]} ${POPOVER_ENTER}`}
           role="tooltip"
         >

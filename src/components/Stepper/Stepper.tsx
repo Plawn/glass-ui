@@ -294,39 +294,55 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   // --- Main render ---
   return (
-    <Show
-      when={isVertical()}
-      fallback={
-        // Horizontal layout
-        <div class={clsx('flex items-start', props.class)} style={props.style}>
+    <nav aria-label="Progress">
+      <Show
+        when={isVertical()}
+        fallback={
+          // Horizontal layout
+          <ol
+            class={clsx('flex items-start list-none p-0 m-0', props.class)}
+            style={props.style}
+          >
+            <For each={props.steps}>
+              {(step, index) => (
+                <li
+                  class="flex items-start"
+                  aria-current={isCurrent(index()) ? 'step' : undefined}
+                >
+                  {renderHorizontalStep(step, index())}
+                  {/* Connector between steps */}
+                  <Show when={index() < props.steps.length - 1}>
+                    <div
+                      aria-hidden="true"
+                      class={clsx(
+                        'flex-1 mx-2 relative',
+                        styles().connector,
+                        styles().connectorThickness,
+                        getConnectorClasses(index()),
+                      )}
+                      style={{ 'min-width': '2rem' }}
+                    />
+                  </Show>
+                </li>
+              )}
+            </For>
+          </ol>
+        }
+      >
+        {/* Vertical layout */}
+        <ol
+          class={clsx('flex flex-col list-none p-0 m-0', props.class)}
+          style={props.style}
+        >
           <For each={props.steps}>
             {(step, index) => (
-              <>
-                {renderHorizontalStep(step, index())}
-                {/* Connector between steps */}
-                <Show when={index() < props.steps.length - 1}>
-                  <div
-                    class={clsx(
-                      'flex-1 mx-2 relative',
-                      styles().connector,
-                      styles().connectorThickness,
-                      getConnectorClasses(index()),
-                    )}
-                    style={{ 'min-width': '2rem' }}
-                  />
-                </Show>
-              </>
+              <li aria-current={isCurrent(index()) ? 'step' : undefined}>
+                {renderVerticalStep(step, index())}
+              </li>
             )}
           </For>
-        </div>
-      }
-    >
-      {/* Vertical layout */}
-      <div class={clsx('flex flex-col', props.class)} style={props.style}>
-        <For each={props.steps}>
-          {(step, index) => renderVerticalStep(step, index())}
-        </For>
-      </div>
-    </Show>
+        </ol>
+      </Show>
+    </nav>
   );
 };

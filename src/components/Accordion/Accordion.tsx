@@ -35,6 +35,7 @@ export const Accordion: Component<AccordionProps> = (props) => {
           <div class="glass-card rounded-lg overflow-hidden">
             <button
               type="button"
+              id={`accordion-trigger-${item.id}`}
               onClick={() => toggle(item.id)}
               class="w-full flex items-center justify-between px-3 py-2.5 hover:bg-black/2 dark:hover:bg-white/2 transition-colors"
               aria-expanded={isOpen(item.id)}
@@ -56,6 +57,8 @@ export const Accordion: Component<AccordionProps> = (props) => {
             <Show when={isOpen(item.id)}>
               <div
                 id={`accordion-content-${item.id}`}
+                role="region"
+                aria-labelledby={`accordion-trigger-${item.id}`}
                 class={`px-3 pb-3 border-t border-surface-200 dark:border-white/5 ${ACCORDION_CONTENT_ENTER}`}
               >
                 <div class="pt-3">{item.content}</div>

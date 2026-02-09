@@ -86,7 +86,7 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
           placeholder={placeholder()}
           disabled={isDisabled()}
           rows={1}
-          class="flex w-full glass-input text-surface-800 dark:text-surface-200 resize-none overflow-hidden focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed py-2.5 px-4 min-h-[42px]"
+          class="flex w-full glass-input text-surface-800 dark:text-surface-200 resize-none overflow-hidden focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed py-2.5 px-4 min-h-10.5"
         />
       </div>
 
@@ -98,7 +98,7 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
             type="button"
             onClick={handleSend}
             disabled={!canSend()}
-            class="shrink-0 w-[42px] h-[42px] flex items-center justify-center rounded-xl bg-accent-500 text-white hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500 transition-colors"
+            class="shrink-0 w-10.5 h-10.5 flex items-center justify-center rounded-xl bg-accent-500 text-white hover:bg-accent-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-accent-500 transition-colors"
             aria-label="Send message"
           >
             <SendIcon size={18} />

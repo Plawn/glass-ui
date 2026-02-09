@@ -10,7 +10,7 @@ import {
   onMount,
 } from 'solid-js';
 import { BACKDROP_ENTER, COMMAND_PALETTE_PANEL_ENTER } from '../../constants';
-import { useControlled, useDialogState } from '../../hooks';
+import { useControlled, useDialogState, useFocusTrap } from '../../hooks';
 import { PortalWithDarkMode } from '../shared';
 import { CommandPaletteItem } from './CommandPaletteItem';
 import type {
@@ -106,6 +106,7 @@ const SearchIcon: Component = () => (
     viewBox="0 0 24 24"
     stroke="currentColor"
     stroke-width="2"
+    aria-hidden="true"
   >
     <path
       stroke-linecap="round"
@@ -157,12 +158,14 @@ const Kbd: Component<{ children: string }> = (props) => (
  */
 export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   // State
+  const listboxId = `cmd-palette-${Math.random().toString(36).slice(2, 8)}`;
   const [query, setQuery] = createSignal('');
   const [selectedIndex, setSelectedIndex] = createSignal(0);
   const [mouseEnabled, setMouseEnabled] = createSignal(false);
 
   let inputRef: HTMLInputElement | undefined;
   let listRef: HTMLDivElement | undefined;
+  let dialogRef: HTMLDivElement | undefined;
 
   // Controlled/uncontrolled state management
   const [isOpen, setOpen] = useControlled({
@@ -323,6 +326,13 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
     onClose: () => setOpen(false),
   });
 
+  // Focus trap
+  useFocusTrap({
+    enabled: isOpen,
+    containerRef: () => dialogRef,
+    autoFocus: false, // We handle focus manually via inputRef
+  });
+
   const handleSelect = (item: ItemType) => {
     if (item.disabled) {
       return;
@@ -367,6 +377,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
     <Show when={isOpen()}>
       <PortalWithDarkMode>
         <div
+          ref={dialogRef}
           class={`fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/20 dark:bg-black/40 backdrop-blur-md ${BACKDROP_ENTER}`}
           onClick={handleBackdropClick}
           role="dialog"
@@ -386,6 +397,15 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                 class="flex-1 bg-transparent text-surface-900 dark:text-white placeholder-surface-400 outline-none text-sm"
                 placeholder={placeholder()}
                 value={query()}
+                role="combobox"
+                aria-expanded={flatResults().length > 0}
+                aria-controls={listboxId}
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  flatResults().length > 0
+                    ? `${listboxId}-item-${selectedIndex()}`
+                    : undefined
+                }
                 onInput={(e) => setQuery(e.currentTarget.value)}
                 onKeyDown={handleInputKeyDown}
               />
@@ -395,6 +415,8 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
             {/* Results */}
             <div
               ref={listRef}
+              id={listboxId}
+              role="listbox"
               class="max-h-80 overflow-y-auto scrollbar-thin"
               onMouseMove={handleMouseMove}
             >
@@ -409,7 +431,12 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                 {/* Ungrouped items */}
                 <For each={groupedResults().noGroup}>
                   {(result, index) => (
-                    <div data-command-item>
+                    <div
+                      data-command-item
+                      role="option"
+                      id={`${listboxId}-item-${index()}`}
+                      aria-selected={selectedIndex() === index()}
+                    >
                       <CommandPaletteItem
                         item={result.item}
                         selected={selectedIndex() === index()}
@@ -453,7 +480,12 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                             return offset + idx();
                           };
                           return (
-                            <div data-command-item>
+                            <div
+                              data-command-item
+                              role="option"
+                              id={`${listboxId}-item-${globalIndex()}`}
+                              aria-selected={selectedIndex() === globalIndex()}
+                            >
                               <CommandPaletteItem
                                 item={result.item}
                                 selected={selectedIndex() === globalIndex()}

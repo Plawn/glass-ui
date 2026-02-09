@@ -166,22 +166,14 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
 
             {/* Clear button */}
             <Show when={clearable() && props.value && !disabled()}>
-              <span
+              <button
+                type="button"
                 onClick={handleClear}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    props.onChange(null);
-                  }
-                }}
                 class="p-1 rounded-full hover:bg-surface-200 dark:hover:bg-surface-600 text-surface-400 dark:text-surface-500 transition-colors"
-                role="button"
-                tabIndex={0}
                 aria-label="Clear date"
               >
                 <CloseIcon size={14} />
-              </span>
+              </button>
             </Show>
           </div>
         }
@@ -198,7 +190,11 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
 
       {/* Error message */}
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
+        <p
+          id={props.id ? `${props.id}-error` : undefined}
+          class="mt-1.5 text-sm text-error-500 dark:text-error-400"
+          role="alert"
+        >
           {props.error}
         </p>
       </Show>

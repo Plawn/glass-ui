@@ -44,11 +44,19 @@ export const Input: Component<InputProps> = (props) => {
         readonly={props.readonly}
         required={props.required}
         autocomplete={props.autocomplete}
+        aria-invalid={!!props.error}
+        aria-describedby={
+          props.error && props.id ? `${props.id}-error` : undefined
+        }
         onInput={(e) => props.onInput(e.currentTarget.value)}
         onKeyDown={props.onKeyDown}
       />
       <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
+        <p
+          id={props.id ? `${props.id}-error` : undefined}
+          class="mt-1.5 text-sm text-error-500 dark:text-error-400"
+          role="alert"
+        >
           {props.error}
         </p>
       </Show>

@@ -29,6 +29,7 @@ export const Button: Component<ButtonProps> = (props) => {
       class={`${variantClasses[variant()]} ${sizeClasses[size()]} inline-flex items-center justify-center focus:outline-none focus-ring ${props.fullWidth ? 'w-full' : ''} ${props.class ?? ''}`}
       onClick={props.onClick}
       disabled={props.disabled || props.loading}
+      aria-busy={props.loading || undefined}
     >
       <Show when={props.loading}>
         <Spinner size={size()} />
