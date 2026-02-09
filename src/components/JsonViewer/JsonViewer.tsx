@@ -1,6 +1,33 @@
 import { type Component, For, Show, createMemo, createSignal } from 'solid-js';
 import { useCopyToClipboard } from '../../hooks';
-import type { JsonNodeProps, JsonValue, JsonViewerProps } from './types';
+import type {
+  JsonNodeProps,
+  JsonValue,
+  JsonValueRenderer,
+  JsonViewerProps,
+} from './types';
+
+const URL_RE = /^https?:\/\/\S+$/;
+
+export const urlRenderer: JsonValueRenderer = (value, { type }) => {
+  if (type !== 'string') {
+    return null;
+  }
+  const str = String(value);
+  if (!URL_RE.test(str)) {
+    return null;
+  }
+  return (
+    <a
+      href={str}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="underline decoration-current/50 hover:decoration-current"
+    >
+      {str}
+    </a>
+  );
+};
 
 /**
  * Format a value as pretty-printed JSON string.
@@ -63,6 +90,25 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
   const renderPrimitive = () => {
     const t = type();
     const colorClass = getValueColor(t);
+
+    if (props.valueRenderers?.length) {
+      const ctx = {
+        type: t,
+        keyName: props.keyName,
+        depth: props.depth,
+        path: props.path,
+      };
+      for (const renderer of props.valueRenderers) {
+        const result = renderer(props.value, ctx);
+        if (result != null && result !== false) {
+          return (
+            <span class={colorClass}>
+              {t === 'string' ? <>"{result}"</> : result}
+            </span>
+          );
+        }
+      }
+    }
 
     if (t === 'string') {
       return <span class={colorClass}>"{String(props.value)}"</span>;
@@ -166,6 +212,8 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
                 depth={props.depth + 1}
                 initialExpandDepth={props.initialExpandDepth}
                 isLast={index() === itemCount() - 1}
+                valueRenderers={props.valueRenderers}
+                path={[...props.path, type() === 'array' ? Number(key) : key]}
               />
             )}
           </For>
@@ -329,6 +377,8 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
                 depth={0}
                 initialExpandDepth={currentExpandDepth()}
                 isLast
+                valueRenderers={props.valueRenderers}
+                path={[]}
               />
             </div>
           )}

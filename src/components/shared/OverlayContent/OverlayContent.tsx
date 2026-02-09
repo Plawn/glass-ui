@@ -32,7 +32,7 @@ export const OverlayContent: Component<OverlayContentProps> = (props) => {
     <>
       {/* Header */}
       <Show when={showHeader()}>
-        <div class="flex items-center justify-between px-6 py-4 border-b border-surface-200 dark:border-white/5">
+        <div class="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-surface-200 dark:border-white/5">
           <Show when={props.title}>
             <h2
               id={props.titleId}
@@ -49,14 +49,14 @@ export const OverlayContent: Component<OverlayContentProps> = (props) => {
 
       {/* Content */}
       <div
-        class={`overflow-y-auto scrollbar-thin ${props.flexContent ? 'flex-1 min-h-0 overflow-x-hidden flex flex-col' : ''} ${props.noPadding ? '' : 'p-6'} ${props.contentClass ?? ''}`}
+        class={`overflow-y-auto scrollbar-thin ${props.flexContent ? 'flex-1 min-h-0 overflow-x-hidden flex flex-col' : ''} ${props.noPadding ? '' : 'p-4 sm:p-6'} ${props.contentClass ?? ''}`}
       >
         {props.children}
       </div>
 
       {/* Footer */}
       <Show when={props.footer}>
-        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-surface-200 dark:border-white/5">
+        <div class="flex items-center justify-end gap-3 px-4 py-3 sm:px-6 sm:py-4 border-t border-surface-200 dark:border-white/5">
           {props.footer}
         </div>
       </Show>

@@ -378,14 +378,14 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
       <PortalWithDarkMode>
         <div
           ref={dialogRef}
-          class={`fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-black/20 dark:bg-black/40 backdrop-blur-md ${BACKDROP_ENTER}`}
+          class={`fixed inset-0 z-50 flex items-start justify-center pt-[8vh] sm:pt-[15vh] bg-black/20 dark:bg-black/40 backdrop-blur-md ${BACKDROP_ENTER}`}
           onClick={handleBackdropClick}
           role="dialog"
           aria-modal="true"
           aria-label="Command palette"
         >
           <div
-            class={`w-full max-w-xl mx-4 glass-card rounded-2xl shadow-2xl overflow-hidden ${COMMAND_PALETTE_PANEL_ENTER} ${props.class ?? ''}`}
+            class={`w-full max-w-xl mx-2 sm:mx-4 glass-card rounded-2xl shadow-2xl overflow-hidden ${COMMAND_PALETTE_PANEL_ENTER} ${props.class ?? ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Search input */}
@@ -417,7 +417,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
               ref={listRef}
               id={listboxId}
               role="listbox"
-              class="max-h-80 overflow-y-auto scrollbar-thin"
+              class="max-h-60 sm:max-h-80 overflow-y-auto scrollbar-thin"
               onMouseMove={handleMouseMove}
             >
               <Show

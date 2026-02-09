@@ -31,7 +31,7 @@ export const Dialog: Component<DialogProps> = (props) => {
       onClose={handleCancel}
       closeOnEscape
       closeOnBackdrop
-      backdropClass="flex items-center justify-center p-4"
+      backdropClass="flex items-center justify-center p-2 sm:p-4"
       role="alertdialog"
       ariaLabelledby="dialog-title"
       ariaDescribedby={props.description ? 'dialog-description' : undefined}
@@ -41,7 +41,7 @@ export const Dialog: Component<DialogProps> = (props) => {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Content */}
-        <div class="p-6">
+        <div class="p-4 sm:p-6">
           <h2
             id="dialog-title"
             class="text-lg font-semibold text-surface-900 dark:text-surface-100"
@@ -59,7 +59,7 @@ export const Dialog: Component<DialogProps> = (props) => {
         </div>
 
         {/* Actions */}
-        <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-surface-200 dark:border-white/5">
+        <div class="flex items-center justify-end gap-3 px-4 py-3 sm:px-6 sm:py-4 border-t border-surface-200 dark:border-white/5">
           <button
             type="button"
             onClick={handleCancel}

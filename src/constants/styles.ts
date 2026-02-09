@@ -69,20 +69,20 @@ export const ICON_SIZES_SMALL: Record<ComponentSize, string> = {
  * Provides consistent sizing across all dialog-type components.
  */
 export const OVERLAY_MAX_WIDTHS: Record<OverlaySizeKey, string> = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-  full: 'max-w-4xl',
+  sm: 'max-w-[calc(100vw-1rem)] sm:max-w-sm',
+  md: 'max-w-[calc(100vw-1rem)] sm:max-w-md',
+  lg: 'max-w-[calc(100vw-1rem)] sm:max-w-lg',
+  xl: 'max-w-[calc(100vw-1rem)] sm:max-w-xl',
+  full: 'max-w-[calc(100vw-1rem)] sm:max-w-4xl',
 };
 
 /**
  * Subset for components that don't support 'full' size (Dialog).
  */
 export const DIALOG_MAX_WIDTHS: Record<ComponentSize, string> = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
+  sm: 'max-w-[calc(100vw-1rem)] sm:max-w-sm',
+  md: 'max-w-[calc(100vw-1rem)] sm:max-w-md',
+  lg: 'max-w-[calc(100vw-1rem)] sm:max-w-lg',
 };
 
 /**
@@ -92,10 +92,10 @@ export const DRAWER_MAX_WIDTHS: Record<
   Exclude<OverlaySizeKey, 'full'>,
   string
 > = {
-  sm: 'max-w-xs',
-  md: 'max-w-sm',
-  lg: 'max-w-md',
-  xl: 'max-w-lg',
+  sm: 'max-w-[85vw] sm:max-w-xs',
+  md: 'max-w-[85vw] sm:max-w-sm',
+  lg: 'max-w-[90vw] sm:max-w-md',
+  xl: 'max-w-[90vw] sm:max-w-lg',
 };
 
 // =============================================================================

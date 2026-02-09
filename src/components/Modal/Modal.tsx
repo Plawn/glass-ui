@@ -13,7 +13,7 @@ export const Modal: Component<ModalProps> = (props) => {
       onClose={props.onClose}
       closeOnEscape={props.closeOnEscape ?? true}
       closeOnBackdrop={props.closeOnBackdrop ?? true}
-      backdropClass="flex items-center justify-center p-4"
+      backdropClass="flex items-center justify-center p-2 sm:p-4"
       ariaLabelledby={props.title ? 'modal-title' : undefined}
     >
       <div
@@ -26,7 +26,7 @@ export const Modal: Component<ModalProps> = (props) => {
           showClose={showClose()}
           onClose={props.onClose}
           footer={props.footer}
-          contentClass="max-h-[70vh]"
+          contentClass="max-h-[80vh] sm:max-h-[70vh]"
         >
           {props.children}
         </OverlayContent>

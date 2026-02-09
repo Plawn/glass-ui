@@ -9,6 +9,7 @@ import { ObjectField } from './fields/ObjectField';
 import { OneOfField } from './fields/OneOfField';
 import { StringField } from './fields/StringField';
 import type { JsonSchemaFormProps } from './types';
+import { resolveSchemaType } from './utils';
 
 // Type guards for safe type narrowing
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -51,7 +52,7 @@ export const JsonSchemaForm: Component<JsonSchemaFormProps> = (props) => {
     if (schema.anyOf && schema.anyOf.length > 0) {
       return 'anyOf';
     }
-    return schema.type || 'string';
+    return resolveSchemaType(schema) || 'string';
   });
 
   return (

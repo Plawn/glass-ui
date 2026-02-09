@@ -1,4 +1,25 @@
+import type { JSX } from 'solid-js';
 import type { BaseComponentProps } from '../../types';
+
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+export interface JsonValueContext {
+  type: string;
+  keyName?: string;
+  depth: number;
+  path: (string | number)[];
+}
+
+export type JsonValueRenderer = (
+  value: JsonValue,
+  context: JsonValueContext,
+) => JSX.Element | null | undefined | false;
 
 export interface JsonViewerProps extends BaseComponentProps {
   /** The JSON data to display */
@@ -15,15 +36,9 @@ export interface JsonViewerProps extends BaseComponentProps {
   expandAllLabel?: string;
   /** Tooltip for collapse all button (default: 'Collapse all') */
   collapseAllLabel?: string;
+  /** Custom value renderers tried in order; first non-null result wins */
+  valueRenderers?: JsonValueRenderer[];
 }
-
-export type JsonValue =
-  | string
-  | number
-  | boolean
-  | null
-  | JsonValue[]
-  | { [key: string]: JsonValue };
 
 export interface JsonNodeProps {
   keyName?: string;
@@ -31,4 +46,6 @@ export interface JsonNodeProps {
   depth: number;
   initialExpandDepth: number;
   isLast: boolean;
+  valueRenderers?: JsonValueRenderer[];
+  path: (string | number)[];
 }

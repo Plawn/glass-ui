@@ -123,8 +123,14 @@ export { CodeBlock } from './CodeBlock';
 export type { CodeBlockProps } from './CodeBlock';
 
 // JsonViewer
-export { JsonViewer } from './JsonViewer';
-export type { JsonViewerProps, JsonValue, JsonNodeProps } from './JsonViewer';
+export { JsonViewer, urlRenderer } from './JsonViewer';
+export type {
+  JsonViewerProps,
+  JsonValue,
+  JsonNodeProps,
+  JsonValueRenderer,
+  JsonValueContext,
+} from './JsonViewer';
 
 // Markdown
 export { Markdown } from './Markdown';

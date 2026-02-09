@@ -1,4 +1,33 @@
-import type { Schema } from './types';
+import type { Schema, SchemaType } from './types';
+
+/**
+ * Resolve the primary (non-null) type from a schema.
+ * Handles both `type: "string"` and `type: ["string", "null"]`.
+ */
+export function resolveSchemaType(schema: Schema): SchemaType | undefined {
+  const type = schema.type;
+  if (!type) {
+    return undefined;
+  }
+  if (Array.isArray(type)) {
+    return type.find((t) => t !== 'null') as SchemaType | undefined;
+  }
+  return type;
+}
+
+/**
+ * Check if a schema allows null values.
+ * True when `type` includes `"null"` or `nullable` is true.
+ */
+export function isNullable(schema: Schema): boolean {
+  if (schema.nullable) {
+    return true;
+  }
+  if (Array.isArray(schema.type)) {
+    return schema.type.includes('null');
+  }
+  return false;
+}
 
 /**
  * Convert a value to a display string, handling null/undefined.
@@ -33,7 +62,7 @@ export function getDefaultValue(schema: Schema): unknown {
     return schema.default;
   }
 
-  const type = schema.type || 'string';
+  const type = resolveSchemaType(schema) || 'string';
   switch (type) {
     case 'string':
       return '';

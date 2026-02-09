@@ -14,7 +14,7 @@ export type SchemaType =
  * JSON Schema definition for form generation
  */
 export interface Schema {
-  type?: SchemaType;
+  type?: SchemaType | SchemaType[];
   format?: string;
   title?: string;
   description?: string;

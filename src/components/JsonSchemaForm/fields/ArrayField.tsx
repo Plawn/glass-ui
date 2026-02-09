@@ -7,7 +7,7 @@ import {
   TrashIcon,
 } from '../../shared/icons';
 import type { ArrayFieldProps, BaseFieldProps } from '../types';
-import { getDefaultValue } from '../utils';
+import { getDefaultValue, resolveSchemaType } from '../utils';
 import { BooleanField } from './BooleanField';
 import { EnumField } from './EnumField';
 import { NumberField } from './NumberField';
@@ -20,7 +20,7 @@ import { JsonSchemaForm } from '../JsonSchemaForm';
  * Primitive array item renderer (inline editing for simple types)
  */
 const PrimitiveArrayItem: Component<BaseFieldProps> = (props) => {
-  const schemaType = () => props.schema.type || 'string';
+  const schemaType = () => resolveSchemaType(props.schema) || 'string';
 
   return (
     <Switch
@@ -91,7 +91,7 @@ export const ArrayField: Component<ArrayFieldProps> = (props) => {
   };
 
   const isPrimitive = () => {
-    const type = itemSchema().type;
+    const type = resolveSchemaType(itemSchema());
     return (
       type === 'string' ||
       type === 'number' ||
@@ -112,9 +112,9 @@ export const ArrayField: Component<ArrayFieldProps> = (props) => {
                 <span class="text-xs font-medium text-surface-500 dark:text-surface-400">
                   Item {index() + 1}
                 </span>
-                <Show when={itemSchema().type}>
+                <Show when={resolveSchemaType(itemSchema())}>
                   <span class="text-xs text-surface-400 dark:text-surface-500">
-                    ({itemSchema().type})
+                    ({resolveSchemaType(itemSchema())})
                   </span>
                 </Show>
               </div>

@@ -2,13 +2,15 @@ import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
 import { JsonSchemaForm } from '../JsonSchemaForm';
 import type { SchemaFieldProps } from '../types';
+import { isNullable, resolveSchemaType } from '../utils';
 
 /**
  * SchemaField - Wraps JsonSchemaForm with field label and metadata
  * Used by ObjectField to render each property with its label
  */
 export const SchemaField: Component<SchemaFieldProps> = (props) => {
-  const schemaType = () => props.schema.type || 'string';
+  const schemaType = () => resolveSchemaType(props.schema) || 'string';
+  const nullable = () => isNullable(props.schema);
   const isComplexType = () =>
     schemaType() === 'object' || schemaType() === 'array';
 
@@ -24,6 +26,7 @@ export const SchemaField: Component<SchemaFieldProps> = (props) => {
         </Show>
         <span class="text-xs text-surface-400 dark:text-surface-500">
           {schemaType()}
+          {nullable() ? ' | null' : ''}
         </span>
         <Show when={props.schema.format}>
           <span class="text-xs text-surface-400 dark:text-surface-500">
