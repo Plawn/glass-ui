@@ -150,7 +150,7 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
           </button>
         </Show>
         <Show when={!isExpandable()}>
-          <span class="w-4 flex-shrink-0" />
+          <span class="w-4 flex-shrink-0 -ml-4" />
         </Show>
 
         {/* Key name */}
@@ -219,7 +219,7 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
           </For>
         </div>
         <div class="flex items-center">
-          <span class="w-4 flex-shrink-0" />
+          <span class="w-4 flex-shrink-0 -ml-4" />
           <span class="text-surface-500 dark:text-surface-400">
             {brackets()[1]}
           </span>
