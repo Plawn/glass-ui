@@ -1,0 +1,1225 @@
+# glass-ui-solid
+
+> iOS 26-inspired glassmorphism UI components for SolidJS with Tailwind CSS v4.
+
+Package: `glass-ui-solid` v0.4.2
+License: Apache-2.0
+Peer dependency: `solid-js` ^1.8.0
+Repository: https://github.com/Plawn/glass-ui
+
+## Installation
+
+```bash
+npm install glass-ui-solid solid-js
+```
+
+## Setup
+
+Import global styles in your app entry point:
+
+```tsx
+import 'glass-ui-solid/styles.css';
+```
+
+For Tailwind CSS v4 integration, import the theme source:
+
+```css
+@import 'glass-ui-solid/theme.css';
+```
+
+Dark mode uses class-based toggling (add `.dark` class to a parent element).
+
+## Import Pattern
+
+All components and hooks are exported from the package root:
+
+```tsx
+import { Button, Modal, toast, useDisclosure } from 'glass-ui-solid';
+```
+
+## Components
+
+### Button
+
+Interactive button with variants and loading state.
+
+```tsx
+<Button variant="primary" size="md" loading={false} onClick={() => {}}>
+  Click me
+</Button>
+```
+
+Props:
+- `variant?: 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'danger'` (default: `'primary'`)
+- `size?: 'sm' | 'md' | 'lg'` (default: `'md'`)
+- `type?: 'button' | 'submit' | 'reset'` (default: `'button'`)
+- `fullWidth?: boolean`
+- `disabled?: boolean`
+- `loading?: boolean` — shows spinner
+- `leftIcon?: JSX.Element`
+- `rightIcon?: JSX.Element`
+- `class?: string`
+
+### Input
+
+Text input with label, icons, and error.
+
+```tsx
+const [value, setValue] = createSignal('');
+<Input value={value()} onInput={setValue} label="Email" type="email" placeholder="you@example.com" error="Required" />
+```
+
+Props:
+- `value: string` (required)
+- `onInput: (value: string) => void` (required)
+- `type?: 'text' | 'password' | 'email' | 'number' | 'url' | 'tel' | 'search'` (default: `'text'`)
+- `label?: string`
+- `placeholder?: string`
+- `size?: 'sm' | 'md' | 'lg'` (default: `'md'`)
+- `error?: string`
+- `disabled?: boolean`
+- `readonly?: boolean`
+- `required?: boolean`
+- `id?: string`, `name?: string`, `autocomplete?: string`
+- `leftIcon?: JSX.Element`, `rightIcon?: JSX.Element`
+- `class?: string`
+
+### Textarea
+
+Multi-line text input.
+
+```tsx
+<Textarea value={text()} onInput={setText} label="Description" rows={4} />
+```
+
+Props: Same as Input (minus `type`), plus `rows?: number`.
+
+### NumberInput
+
+Numeric input with increment/decrement buttons.
+
+```tsx
+<NumberInput value={count()} onChange={setCount} min={0} max={100} step={1} label="Quantity" />
+```
+
+Props:
+- `value: number` (required)
+- `onChange: (value: number) => void` (required)
+- `min?: number`, `max?: number`, `step?: number` (default: `1`)
+- `label?: string`, `placeholder?: string`
+- `size?: 'sm' | 'md' | 'lg'`, `error?: string`, `disabled?: boolean`
+
+### Select
+
+Dropdown select. Supports two modes: children-based (native options) or options array (typed).
+
+```tsx
+// Children mode
+<Select value={val()} onChange={setVal} label="Country">
+  <option value="us">United States</option>
+  <option value="fr">France</option>
+</Select>
+
+// Options array mode (typed)
+<Select
+  value={selected()}
+  onChange={setSelected}
+  options={[{ value: 'us', label: 'United States' }, { value: 'fr', label: 'France' }]}
+  emptyOption="Select a country"
+  label="Country"
+/>
+```
+
+Props:
+- `value: string | T | null` (required)
+- `onChange: (value: string | T | null) => void` (required)
+- `children?: JSX.Element` — native option elements
+- `options?: { value: T; label: string; disabled?: boolean }[]`
+- `emptyOption?: string` — placeholder when no selection
+- `label?: string`, `size?: 'sm' | 'md' | 'lg'`, `error?: string`, `disabled?: boolean`
+
+### Checkbox
+
+```tsx
+<Checkbox checked={agreed()} onChange={setAgreed} label="I agree" />
+```
+
+Props:
+- `checked: boolean` (required)
+- `onChange?: (checked: boolean) => void`
+- `indeterminate?: boolean`
+- `label?: string`, `size?: 'sm' | 'md' | 'lg'`, `error?: string`, `disabled?: boolean`
+
+### Switch
+
+Toggle switch.
+
+```tsx
+<Switch checked={enabled()} onChange={setEnabled} label="Dark mode" />
+```
+
+Props:
+- `checked: boolean` (required)
+- `onChange: (checked: boolean) => void` (required)
+- `label?: string`
+- `labelPosition?: 'left' | 'right'` (default: `'right'`)
+- `size?: 'sm' | 'md' | 'lg'`, `disabled?: boolean`
+
+### RadioGroup
+
+Radio buttons with keyboard navigation.
+
+```tsx
+<RadioGroup
+  options={[{ value: 'a', label: 'Option A' }, { value: 'b', label: 'Option B' }]}
+  value={choice()}
+  onChange={setChoice}
+  label="Pick one"
+  orientation="vertical"
+/>
+```
+
+Props:
+- `options: { value: string; label: string; disabled?: boolean }[]` (required)
+- `value: string` (required)
+- `onChange: (value: string) => void` (required)
+- `label?: string`
+- `orientation?: 'horizontal' | 'vertical'` (default: `'vertical'`)
+- `size?: 'sm' | 'md' | 'lg'`, `error?: string`, `disabled?: boolean`
+
+### Autocomplete
+
+Text input with filterable dropdown suggestions.
+
+```tsx
+<Autocomplete
+  options={[{ value: 'react', label: 'React' }, { value: 'solid', label: 'SolidJS' }]}
+  value={val()}
+  onChange={setVal}
+  placeholder="Search frameworks..."
+/>
+```
+
+Props:
+- `options: { value: string; label: string; disabled?: boolean }[]` (required)
+- `value: string` (required)
+- `onChange: (value: string) => void` (required)
+- `onInputChange?: (input: string) => void`
+- `label?: string`, `placeholder?: string`, `size?: 'sm' | 'md' | 'lg'`
+- `loading?: boolean`, `emptyText?: string`
+- `allowCustomValue?: boolean`
+- `filterFn?: (option, inputValue) => boolean`
+- `error?: string`, `disabled?: boolean`
+
+### DatePicker
+
+Single date selection with calendar popup.
+
+```tsx
+<DatePicker value={date()} onChange={setDate} label="Start date" format="yyyy-MM-dd" />
+```
+
+Props:
+- `value: Date | null` (required)
+- `onChange: (date: Date | null) => void` (required)
+- `label?: string`, `placeholder?: string`
+- `format?: 'yyyy-MM-dd' | 'MM/dd/yyyy' | 'dd/MM/yyyy' | 'dd.MM.yyyy' | 'MMM dd, yyyy'` (default: `'yyyy-MM-dd'`)
+- `min?: Date`, `max?: Date`
+- `size?: 'sm' | 'md' | 'lg'`, `error?: string`, `clearable?: boolean`
+- `weekStartsOn?: 0 | 1` (default: `0` = Sunday)
+- `disabled?: boolean`
+
+### DateRangePicker
+
+Date range selection with calendar.
+
+```tsx
+<DateRangePicker
+  value={{ start: startDate(), end: endDate() }}
+  onChange={(range) => { setStartDate(range.start); setEndDate(range.end); }}
+  label="Date range"
+/>
+```
+
+Props: Same as DatePicker, plus:
+- `value: { start: Date | null; end: Date | null }` (required)
+- `onChange: (range: { start: Date | null; end: Date | null }) => void` (required)
+- `startPlaceholder?: string`, `endPlaceholder?: string`, `separator?: string` (default: `'-'`)
+
+### Slider
+
+Range slider input.
+
+```tsx
+<Slider value={vol()} onChange={setVol} min={0} max={100} label="Volume" showValue />
+```
+
+Props:
+- `value: number` (required)
+- `onChange: (value: number) => void` (required)
+- `min?: number` (default: `0`), `max?: number` (default: `100`), `step?: number` (default: `1`)
+- `label?: string`, `showValue?: boolean`
+- `size?: 'sm' | 'md' | 'lg'`
+- `marks?: { value: number; label?: string }[]`
+- `disabled?: boolean`
+
+### FileUpload
+
+Drag-and-drop file upload zone.
+
+```tsx
+<FileUpload
+  onFilesChange={setFiles}
+  accept="image/*,.pdf"
+  multiple
+  maxSize={10 * 1024 * 1024}
+  label="Upload files"
+  description="PNG, JPG up to 10MB"
+/>
+```
+
+Props:
+- `onFilesChange: (files: File[]) => void` (required)
+- `accept?: string`, `multiple?: boolean`, `maxSize?: number`, `maxFiles?: number`
+- `label?: string`, `description?: string`, `error?: string`, `disabled?: boolean`
+
+---
+
+### Modal
+
+Centered overlay dialog.
+
+```tsx
+<Modal open={isOpen()} onClose={() => setIsOpen(false)} title="Confirm" size="md" footer={<Button onClick={save}>Save</Button>}>
+  <p>Are you sure?</p>
+</Modal>
+```
+
+Props:
+- `open: boolean` (required)
+- `onClose: () => void` (required)
+- `title?: string`
+- `size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'` (default: `'md'`)
+- `footer?: JSX.Element`
+- `showClose?: boolean` (default: `true`)
+- `closeOnBackdrop?: boolean` (default: `true`)
+- `closeOnEscape?: boolean` (default: `true`)
+- `class?: string`
+
+### Dialog
+
+Confirmation dialog with confirm/cancel actions.
+
+```tsx
+<Dialog
+  open={dialogOpen()}
+  onOpenChange={setDialogOpen}
+  title="Delete item?"
+  description="This action cannot be undone."
+  variant="danger"
+  onConfirm={handleDelete}
+  confirmLabel="Delete"
+/>
+```
+
+Props:
+- `open: boolean` (required)
+- `onOpenChange: (open: boolean) => void` (required)
+- `title: string` (required)
+- `onConfirm: () => void` (required)
+- `description?: string`
+- `confirmLabel?: string` (default: `'Confirm'`), `cancelLabel?: string` (default: `'Cancel'`)
+- `onCancel?: () => void`
+- `variant?: 'default' | 'danger'` (default: `'default'`)
+- `size?: 'sm' | 'md' | 'lg'`
+
+### Drawer
+
+Side panel overlay.
+
+```tsx
+<Drawer open={drawerOpen()} onClose={() => setDrawerOpen(false)} title="Settings" position="right" size="md">
+  <p>Drawer content</p>
+</Drawer>
+```
+
+Props:
+- `open: boolean` (required)
+- `onClose: () => void` (required)
+- `position?: 'left' | 'right'` (default: `'right'`)
+- `size?: 'sm' | 'md' | 'lg' | 'xl'` (default: `'md'`)
+- `title?: string`, `footer?: JSX.Element`
+- `noPadding?: boolean`, `showClose?: boolean`, `closeOnBackdrop?: boolean`, `closeOnEscape?: boolean`
+
+### Sheet
+
+Mobile-style bottom sheet with drag-to-snap.
+
+```tsx
+<Sheet open={sheetOpen()} onOpenChange={setSheetOpen} snapPoints={[0.25, 0.5, 0.9]}>
+  <p>Sheet content</p>
+</Sheet>
+```
+
+Props:
+- `open: boolean` (required)
+- `onOpenChange: (open: boolean) => void` (required)
+- `snapPoints?: number[]` — percentages 0-1 (e.g., `[0.25, 0.5, 0.9]`)
+- `defaultSnapPoint?: number` — index
+- `dismissible?: boolean` (default: `true`)
+- `showHandle?: boolean` (default: `true`)
+
+### Window
+
+Draggable, resizable floating window.
+
+```tsx
+<Window open={winOpen()} onClose={() => setWinOpen(false)} title="Inspector" defaultSize={{ width: 400, height: 300 }}>
+  <p>Window content</p>
+</Window>
+```
+
+Props:
+- `open: boolean` (required)
+- `onClose: () => void` (required)
+- `title?: string`, `footer?: JSX.Element`
+- `defaultPosition?: { x: number; y: number } | 'center'` (default: `'center'`)
+- `defaultSize?: { width: number; height: number }`
+- `position?: { x; y }`, `onPositionChange?: (pos) => void`
+- `size?: { width; height }`, `onSizeChange?: (size) => void`
+- `constraints?: { minWidth?; maxWidth?; minHeight?; maxHeight? }`
+- `draggable?: boolean` (default: `true`), `resizable?: boolean` (default: `true`)
+- `bounded?: boolean` (default: `true`)
+- `showBackdrop?: boolean`, `closeOnBackdrop?: boolean`, `closeOnEscape?: boolean`
+- `zIndex?: number` (default: `50`)
+
+Helpers: `useWindowManager()`, `useWindowZIndex()` for multi-window management.
+
+### CommandPalette
+
+Keyboard-driven command/search interface (Cmd/Ctrl+K).
+
+```tsx
+<CommandPalette
+  items={[
+    { id: 'search', label: 'Search', group: 'Actions', keywords: ['find'] },
+    { id: 'settings', label: 'Settings', group: 'Navigation' },
+  ]}
+  onSelect={(item) => navigate(item.id)}
+  placeholder="Type a command..."
+/>
+```
+
+Props:
+- `items: { id: string; label: string; description?: string; group?: string; icon?: JSX.Element; keywords?: string[]; disabled?: boolean; data?: T }[]` (required)
+- `onSelect: (item) => void` (required)
+- `shortcutKey?: string` (default: `'k'` for Cmd/Ctrl+K)
+- `disableShortcut?: boolean`
+- `placeholder?: string`, `emptyText?: string`
+- `recentIds?: string[]`
+- `open?: boolean`, `onOpenChange?: (open: boolean) => void`
+- `footer?: JSX.Element`
+- `ref?: (handle: { open; close; toggle; isOpen }) => void`
+
+---
+
+### Toast (Global Notification)
+
+Temporary notification messages. Requires `<ToastContainer />` in app root.
+
+```tsx
+// In app root
+<ToastContainer />
+
+// Anywhere in code
+import { toast, dismissToast, clearToasts } from 'glass-ui-solid';
+toast.success('Item saved!');
+toast.error('Something went wrong');
+toast.warning('Low disk space');
+toast.info('Update available');
+// Optional duration: toast.success('Saved', 5000);
+```
+
+### Snackbar (Global Notification)
+
+Bottom notification with optional action. Requires `<SnackbarContainer />` in app root.
+
+```tsx
+// In app root
+<SnackbarContainer />
+
+// Anywhere in code
+import { showSnackbar, dismissSnackbar, clearSnackbars } from 'glass-ui-solid';
+showSnackbar({ message: 'Item deleted', action: 'Undo', onAction: handleUndo, duration: 4000 });
+```
+
+Options:
+- `message: string` (required)
+- `action?: string`, `onAction?: () => void`
+- `duration?: number` (default: `4000`, `0` to persist)
+- `position?: 'bottom-left' | 'bottom-center' | 'bottom-right'` (default: `'bottom-center'`)
+
+---
+
+### Tooltip
+
+```tsx
+<Tooltip content="Save changes" position="top">
+  <Button>Save</Button>
+</Tooltip>
+```
+
+Props:
+- `content: string | JSX.Element` (required)
+- `position?: 'top' | 'bottom' | 'left' | 'right'` (default: `'top'`)
+- `delay?: number` (default: `200`)
+
+### Popover
+
+Click-triggered floating content.
+
+```tsx
+<Popover trigger={<Button>Options</Button>} placement="bottom-start">
+  <p>Popover content</p>
+</Popover>
+```
+
+Props:
+- `trigger: JSX.Element` (required)
+- `placement?: 'top' | 'top-start' | 'top-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'right' | ...` (default: `'bottom-start'`)
+- `open?: boolean`, `onOpenChange?: (open: boolean) => void`
+- `showArrow?: boolean` (default: `true`), `offset?: number` (default: `8`)
+- `contentClass?: string`
+- `scrollBehavior?: 'close' | 'lock' | 'none'` (default: `'close'`)
+
+### HoverCard
+
+Hover-triggered rich content card.
+
+```tsx
+<HoverCard trigger={<a href="#">@user</a>} placement="bottom">
+  <div>User profile card</div>
+</HoverCard>
+```
+
+Props:
+- `trigger: JSX.Element` (required)
+- `placement?: 'top' | 'bottom' | 'left' | 'right'` (default: `'bottom'`)
+- `openDelay?: number` (default: `200`), `closeDelay?: number` (default: `100`)
+- `showArrow?: boolean` (default: `true`)
+- `disabled?: boolean`
+
+### Menu
+
+Dropdown menu with items.
+
+```tsx
+<Menu
+  trigger={<Button>Actions</Button>}
+  items={[
+    { label: 'Edit', onClick: handleEdit, icon: <EditIcon /> },
+    { divider: true },
+    { label: 'Delete', onClick: handleDelete },
+  ]}
+  placement="bottom-start"
+/>
+```
+
+Props:
+- `trigger: JSX.Element` (required)
+- `items: ({ label: string; onClick?: () => void; icon?: JSX.Element; disabled?: boolean } | { divider: true })[]` (required)
+- `placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end'` (default: `'bottom-start'`)
+
+### Dropdown
+
+Generic dropdown container with custom content.
+
+```tsx
+<Dropdown trigger={<Button>Open</Button>} placement="bottom-start">
+  <div>Any content here</div>
+</Dropdown>
+```
+
+Props:
+- `trigger: JSX.Element` (required)
+- `open?: boolean`, `onOpenChange?: (open: boolean) => void`
+- `placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'bottom' | 'top'` (default: `'bottom-start'`)
+- `contentClass?: string`
+- `scrollBehavior?: 'close' | 'lock' | 'none'` (default: `'close'`)
+
+### ContextMenu
+
+Right-click context menu.
+
+```tsx
+const ctx = createContextMenu<string>();
+
+<ContextMenu {...ctx.props}>
+  <ContextMenuTrigger data="item-1">
+    <div>Right-click me</div>
+  </ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem onSelect={() => console.log('Copy', ctx.data())} icon={<CopyIcon />}>Copy</ContextMenuItem>
+    <ContextMenuSeparator />
+    <ContextMenuItem onSelect={handleDelete} destructive shortcut="Del">Delete</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+API:
+- `createContextMenu<T>()` — returns `{ props, data, position, isOpen, close }`
+- Components: `ContextMenu`, `ContextMenuTrigger`, `ContextMenuContent`, `ContextMenuItem`, `ContextMenuSeparator`
+- `ContextMenuItem` props: `onSelect?: () => void`, `disabled?: boolean`, `icon?: JSX.Element`, `shortcut?: string`, `destructive?: boolean`
+
+---
+
+### Tabs
+
+```tsx
+<Tabs
+  items={[
+    { id: 'overview', label: 'Overview', content: <Overview /> },
+    { id: 'settings', label: 'Settings', content: <Settings />, badge: 3 },
+  ]}
+  defaultTab="overview"
+  onTabChange={(id) => console.log(id)}
+/>
+```
+
+Props:
+- `items: { id: string; label: string; content: JSX.Element; badge?: number | string; disabled?: boolean; icon?: JSX.Element }[]` (required)
+- `defaultTab?: string` (uncontrolled) or `activeTab?: string` (controlled)
+- `onTabChange?: (tabId: string) => void`
+- `size?: 'sm' | 'md' | 'lg'`, `fullWidth?: boolean`
+- `orientation?: 'horizontal' | 'vertical'` (default: `'horizontal'`)
+- `lazy?: boolean`, `keepMounted?: boolean`
+
+### Accordion
+
+```tsx
+<Accordion
+  items={[
+    { id: '1', title: 'Section 1', content: <p>Content 1</p>, defaultOpen: true },
+    { id: '2', title: 'Section 2', content: <p>Content 2</p> },
+  ]}
+  multiple={false}
+/>
+```
+
+Props:
+- `items: { id: string; title: string | JSX.Element; content: JSX.Element; defaultOpen?: boolean }[]` (required)
+- `multiple?: boolean` (default: `false`)
+
+Alternative: `<AccordionPanel title="..." defaultOpen>content</AccordionPanel>`.
+
+### Collapsible
+
+```tsx
+<Collapsible trigger={<Button>Toggle</Button>} defaultOpen>
+  <p>Collapsible content</p>
+</Collapsible>
+```
+
+Props:
+- `trigger: JSX.Element` (required)
+- `open?: boolean`, `onOpenChange?: (open: boolean) => void`
+- `defaultOpen?: boolean`, `disabled?: boolean`
+
+### SegmentedControl
+
+```tsx
+<SegmentedControl
+  options={[{ value: 'list', label: 'List' }, { value: 'grid', label: 'Grid' }]}
+  value={view()}
+  onChange={setView}
+/>
+```
+
+Props:
+- `options: { value: T; label: string | JSX.Element; disabled?: boolean }[]` (required)
+- `value: T` (required)
+- `onChange: (value: T) => void` (required)
+- `size?: 'sm' | 'md'`, `orientation?: 'horizontal' | 'vertical'`
+
+---
+
+### Table
+
+Data table with sorting, selection, click handlers.
+
+```tsx
+<Table
+  columns={[
+    { key: 'name', header: 'Name', sortable: true },
+    { key: 'email', header: 'Email' },
+    { key: 'actions', header: '', render: (_, row) => <Button size="sm" onClick={() => edit(row)}>Edit</Button> },
+  ]}
+  data={users()}
+  sortable
+  sort={sort()}
+  onSort={setSort}
+  selectable="multiple"
+  selectedKeys={selected()}
+  onSelectionChange={setSelected}
+  hoverable
+  size="md"
+/>
+```
+
+Props:
+- `columns: { key: string; header: string; sortable?: boolean; render?: (value, row, index) => JSX.Element; width?: string; align?: 'left' | 'center' | 'right'; sticky?: 'left' | 'right' }[]` (required)
+- `data: T[]` (required)
+- `sortable?: boolean`, `sort?: { key: string; direction: 'asc' | 'desc' }`, `onSort?: (sort) => void`
+- `selectable?: boolean | 'single' | 'multiple'`, `selectedKeys?: Set<RowKey>`, `onSelectionChange?: (keys, rows) => void`
+- `onRowClick?: (row, index, event) => void`, `onRowDoubleClick?: (row, index, event) => void`
+- `size?: 'sm' | 'md' | 'lg'`
+- `variant?: 'default' | 'bordered' | 'striped'`
+- `hoverable?: boolean`, `clickableRows?: boolean`
+- `stickyHeader?: boolean`, `maxHeight?: string`
+- `loading?: boolean`, `loadingRows?: number`
+- `emptyMessage?: string`, `emptyRender?: () => JSX.Element`
+- `getRowKey?: (row, index) => RowKey`
+
+### VirtualList
+
+Virtualized list for large datasets (thousands of items).
+
+```tsx
+<VirtualList
+  data={items()}
+  itemContent={(index, item) => <div>{item.name}</div>}
+  fixedItemHeight={40}
+  overscan={10}
+  style={{ height: '400px' }}
+/>
+```
+
+Props:
+- `data?: readonly D[]` or `totalCount?: number`
+- `itemContent: (index: number, data: D, context: C) => JSX.Element` (required)
+- `fixedItemHeight?: number` — optimization when all items have the same height
+- `defaultItemHeight?: number`
+- `overscan?: number`
+- `Header?: () => JSX.Element`, `Footer?: () => JSX.Element`, `EmptyPlaceholder?: () => JSX.Element`
+- `endReached?: (index: number) => void` — infinite scroll trigger
+- `ref?: (handle: { scrollToIndex; scrollTo; scrollBy; getScrollTop }) => void`
+
+### VirtualTable
+
+Virtualized table for large datasets.
+
+```tsx
+<VirtualTable
+  data={rows()}
+  columns={[
+    { key: 'name', header: 'Name' },
+    { key: 'value', header: 'Value', render: (v) => <Badge>{v}</Badge> },
+  ]}
+  fixedItemHeight={48}
+/>
+```
+
+Props: Combines Table column definitions with VirtualList virtualization. Supports `fixedHeaderContent`, `fixedFooterContent`.
+
+### Pagination
+
+```tsx
+<Pagination total={100} page={page()} pageSize={10} onChange={setPage} showPageSize pageSizeOptions={[10, 25, 50]} onPageSizeChange={setPageSize} />
+```
+
+Props:
+- `total: number` (required)
+- `page: number` (required, 1-indexed)
+- `pageSize: number` (required)
+- `onChange: (page: number) => void` (required)
+- `showPageSize?: boolean`, `pageSizeOptions?: number[]`, `onPageSizeChange?: (pageSize: number) => void`
+
+---
+
+### Card
+
+```tsx
+<Card variant="elevated" header={<h3>Title</h3>} footer={<Button>Action</Button>}>
+  <p>Card content</p>
+</Card>
+```
+
+Props:
+- `header?: JSX.Element`, `footer?: JSX.Element`
+- `variant?: 'default' | 'elevated' | 'outlined'` (default: `'default'`)
+
+### Badge
+
+```tsx
+<Badge variant="success" size="md">Active</Badge>
+```
+
+Props:
+- `variant?: 'default' | 'success' | 'warning' | 'error' | 'info'` (default: `'default'`)
+- `size?: 'sm' | 'md' | 'lg'` (default: `'md'`)
+
+### Chip
+
+Removable tag/pill.
+
+```tsx
+<Chip color="primary" onRemove={() => removeTag(tag)}>SolidJS</Chip>
+```
+
+Props:
+- `onRemove?: () => void` — shows X button when provided
+- `variant?: 'filled' | 'outlined'` (default: `'filled'`)
+- `color?: 'default' | 'primary' | 'success' | 'warning' | 'error'` (default: `'default'`)
+- `size?: 'sm' | 'md' | 'lg'`, `disabled?: boolean`
+
+### Avatar
+
+User avatar with initials fallback.
+
+```tsx
+<Avatar name="John Doe" src="/avatar.jpg" size="md" />
+```
+
+Props:
+- `name: string` (required) — used for initials fallback
+- `src?: string`, `alt?: string`
+- `size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'` (default: `'md'`)
+- `fallbackColor?: string`
+
+### Alert
+
+```tsx
+<Alert type="error" title="Error" onClose={dismiss}>
+  Something went wrong. Please try again.
+</Alert>
+```
+
+Props:
+- `type: 'success' | 'warning' | 'error' | 'info'` (required)
+- `title?: string`
+- `icon?: JSX.Element`
+- `onClose?: () => void` — shows close button when provided
+
+### Progress
+
+```tsx
+<Progress value={75} variant="linear" color="primary" showValue size="md" />
+<Progress value={75} variant="circular" />
+```
+
+Props:
+- `value: number` (required, 0-100)
+- `variant?: 'linear' | 'circular'` (default: `'linear'`)
+- `size?: 'sm' | 'md' | 'lg'`, `color?: 'primary' | 'success' | 'warning' | 'error'`
+- `showValue?: boolean`
+
+### Spinner
+
+```tsx
+<Spinner size="md" label="Loading..." centered />
+```
+
+Props:
+- `size?: 'sm' | 'md' | 'lg' | 'xl'`, `color?: 'default' | 'white'`
+- `label?: string`, `centered?: boolean`
+
+### Skeleton
+
+```tsx
+<Skeleton variant="text" width="200px" height="1em" />
+<Skeleton variant="circular" width="48px" height="48px" />
+<Skeleton variant="rectangular" width="100%" height="200px" />
+```
+
+Props:
+- `variant?: 'text' | 'circular' | 'rectangular'` (default: `'text'`)
+- `width?: string`, `height?: string`, `rounded?: boolean`
+
+### Divider
+
+```tsx
+<Divider orientation="horizontal" variant="solid" label="OR" labelPosition="center" />
+```
+
+Props:
+- `orientation?: 'horizontal' | 'vertical'` (default: `'horizontal'`)
+- `variant?: 'solid' | 'dashed' | 'dotted'` (default: `'solid'`)
+- `label?: string | JSX.Element`, `labelPosition?: 'start' | 'center' | 'end'`
+
+### EmptyState
+
+```tsx
+<EmptyState title="No results" description="Try a different search." icon={<SearchIcon />} action={<Button>Clear filters</Button>} />
+```
+
+Props:
+- `title: string` (required)
+- `icon?: JSX.Element`, `description?: string`, `action?: JSX.Element`
+- `size?: 'sm' | 'md' | 'lg'`
+
+### ErrorDisplay
+
+```tsx
+<ErrorDisplay message="Failed to load data" title="Request Failed" />
+```
+
+Props:
+- `message: string` (required)
+- `title?: string` (default: `'Request Failed'`)
+
+### Section
+
+```tsx
+<Section title="General Settings">
+  <p>Content</p>
+</Section>
+```
+
+Props: `title: string` (required).
+
+---
+
+### Breadcrumb
+
+```tsx
+<Breadcrumb items={[
+  { label: 'Home', href: '/' },
+  { label: 'Products', href: '/products' },
+  { label: 'Widget', href: '/products/widget' },
+]} />
+```
+
+Props:
+- `items: { label: string; href?: string; onClick?: () => void; icon?: JSX.Element }[]` (required)
+- `separator?: JSX.Element`
+
+### Navbar
+
+```tsx
+<Navbar
+  brand={<h1>MyApp</h1>}
+  items={[{ label: 'Home', href: '/', active: true }, { label: 'About', href: '/about' }]}
+  actions={<Button size="sm">Login</Button>}
+  sticky
+/>
+```
+
+Props:
+- `brand?: JSX.Element`
+- `items?: { label: string; href?: string; onClick?: () => void; active?: boolean }[]`
+- `actions?: JSX.Element`
+- `sticky?: boolean`, `transparent?: boolean`
+
+### Sidebar
+
+Collapsible navigation sidebar.
+
+```tsx
+<Sidebar
+  items={[
+    { id: 'home', label: 'Home', icon: <HomeIcon /> },
+    { id: 'settings', label: 'Settings', icon: <GearIcon />, children: [
+      { id: 'general', label: 'General' },
+      { id: 'security', label: 'Security' },
+    ]},
+  ]}
+  activeId="home"
+  collapsed={collapsed()}
+  onCollapsedChange={setCollapsed}
+  header={<Logo />}
+/>
+```
+
+Props:
+- `items: { id: string; label: string; icon?: JSX.Element; href?: string; onClick?: () => void; children?: SidebarItem[]; badge?: string | number; disabled?: boolean }[]` (required)
+- `activeId?: string`, `onActiveChange?: (id: string) => void`
+- `collapsed?: boolean`, `onCollapsedChange?: (collapsed: boolean) => void`
+- `header?: JSX.Element`, `footer?: JSX.Element`
+- `width?: string` (default: `'16rem'`), `collapsedWidth?: string` (default: `'4rem'`)
+
+### Stepper
+
+```tsx
+<Stepper
+  steps={[
+    { label: 'Account', description: 'Create your account' },
+    { label: 'Profile', description: 'Set up your profile' },
+    { label: 'Done' },
+  ]}
+  currentStep={1}
+  onStepClick={setStep}
+  allowClickPrevious
+/>
+```
+
+Props:
+- `steps: { label: string; description?: string; icon?: JSX.Element }[]` (required)
+- `currentStep: number` (required, 0-indexed)
+- `onStepClick?: (step: number) => void`
+- `orientation?: 'horizontal' | 'vertical'`
+- `size?: 'sm' | 'md' | 'lg'`, `allowClickPrevious?: boolean`
+
+---
+
+### CodeBlock
+
+Syntax-highlighted code with copy button.
+
+```tsx
+<CodeBlock code="const x = 42;" language="typescript" maxHeight="400px" />
+```
+
+Props:
+- `code: string` (required)
+- `language?: string` (default: `'json'`)
+- `maxHeight?: string` (default: `'31.25rem'`)
+- `wrap?: boolean`, `hideCopyButton?: boolean`
+- `copyLabel?: string`, `copiedLabel?: string`
+
+### JsonViewer
+
+Interactive JSON tree with expand/collapse.
+
+```tsx
+import { JsonViewer, urlRenderer } from 'glass-ui-solid';
+
+<JsonViewer data={jsonData} initialExpandDepth={2} valueRenderers={[urlRenderer]} />
+```
+
+Props:
+- `data: unknown` (required)
+- `maxHeight?: string` (default: `'31.25rem'`)
+- `initialExpandDepth?: number` (default: `2`)
+- `valueRenderers?: ((value, context) => JSX.Element | null)[]`
+
+Built-in renderers: `urlRenderer` (makes URLs clickable).
+
+### Markdown
+
+Renders markdown to HTML with syntax highlighting.
+
+```tsx
+<Markdown content="# Hello\n\nThis is **markdown**." />
+```
+
+Props:
+- `content: string | undefined` (required)
+- `codeBlockActions?: { id: string; label: string; icon: JSX.Element; onClick: (ctx: { code: string; language?: string }) => void | Promise<void> }[]`
+
+### JsonSchemaForm
+
+Auto-generated form from JSON Schema.
+
+```tsx
+<JsonSchemaForm schema={jsonSchema} value={formData()} onChange={setFormData} />
+```
+
+Props:
+- `schema: Schema` (required) — JSON Schema object
+- `value: unknown` (required)
+- `onChange: (value: unknown) => void` (required)
+
+Exports: `JsonSchemaForm`, `StringField`, `NumberField`, `BooleanField`, `EnumField`, `OneOfField`, `ObjectField`, `ArrayField`, `SchemaField`, `getDefaultValue`, `toDisplayString`, `toDisplayStringJson`.
+
+---
+
+### Chat
+
+Complete chat interface (messages, input, streaming, thinking, tool calls).
+
+```tsx
+<Chat
+  messages={messages()}
+  onSendMessage={handleSend}
+  isStreaming={streaming()}
+  onCancelStream={handleCancel}
+  userName="You"
+  assistantName="AI"
+  showTypingIndicator={streaming()}
+  emptyState={<EmptyState title="Start a conversation" />}
+/>
+```
+
+Props:
+- `messages: { id: string; role: 'user' | 'assistant' | 'system'; content: string; timestamp?: Date; status?: 'pending' | 'streaming' | 'complete' | 'error'; thinking?: ThinkingStep[]; toolCalls?: ToolCall[]; error?: string }[]` (required)
+- `onSendMessage: (content: string) => void` (required)
+- `onCancelStream?: () => void`, `isStreaming?: boolean`
+- `disabled?: boolean`, `placeholder?: string`
+- `userName?: string`, `userAvatarUrl?: string`
+- `assistantName?: string`, `assistantAvatarUrl?: string`
+- `showTypingIndicator?: boolean`
+- `header?: JSX.Element`, `emptyState?: JSX.Element`
+- `codeBlockActions?: CodeBlockAction[]`
+
+Subcomponents: `ChatMessage`, `ChatMessageList`, `ChatInput`, `ChatThinking`, `ChatToolCall`, `ChatTypingIndicator`.
+
+### GlassBackground
+
+Animated glassmorphism background with gradient blobs.
+
+```tsx
+<GlassBackground animated>
+  <div>Content on glass background</div>
+</GlassBackground>
+```
+
+Props:
+- `animated?: boolean` (default: `true`)
+- `blobs?: { top?; left?; right?; bottom?; size?; colors: [string, string]; opacity?; darkOpacity?; duration?; delay? }[]`
+- `gradient?: { from: string; via?: string; to: string }`
+- `darkGradient?: { from: string; via?: string; to: string }`
+
+---
+
+## Hooks
+
+### useDisclosure
+
+Toggle open/close state.
+
+```tsx
+const { isOpen, open, close, toggle } = useDisclosure();
+```
+
+### useAnimationState
+
+Manage CSS enter/exit animations.
+
+```tsx
+const { isRendered, animationState, enter, exit } = useAnimationState({ enterDuration: 200, exitDuration: 150 });
+```
+
+### useDialogState
+
+Shared dialog behavior (escape key, backdrop click, scroll lock).
+
+```tsx
+const { handleBackdropClick } = useDialogState({ open: isOpen(), onClose, closeOnEscape: true, closeOnBackdrop: true, elementRef: ref });
+```
+
+### useIsDark
+
+Detect dark mode.
+
+```tsx
+const isDark = useIsDark();
+// isDark() => boolean
+```
+
+### useCopyToClipboard
+
+```tsx
+const { copy, isCopied } = useCopyToClipboard();
+await copy('text');
+// isCopied() => true for ~2 seconds
+```
+
+### useClickOutside
+
+```tsx
+useClickOutside(elementRef, () => close(), { enabled: () => isOpen() });
+```
+
+### useControlled
+
+Manage controlled/uncontrolled component state.
+
+```tsx
+const { value, setValue } = useControlled({ value: props.value, defaultValue: 'default', onChange: props.onChange });
+```
+
+### useEscapeKey
+
+```tsx
+useEscapeKey(() => close(), { enabled: () => isOpen() });
+```
+
+### useBodyScrollLock
+
+```tsx
+useBodyScrollLock(() => isOpen(), { reserveScrollBarGap: true });
+```
+
+### useFocusTrap
+
+Trap Tab/Shift+Tab focus within an element.
+
+```tsx
+useFocusTrap({ elementRef: ref, enabled: () => isOpen(), autoFocus: true, restoreFocus: true });
+```
+
+### usePositioning
+
+Position floating elements relative to a trigger.
+
+```tsx
+const { styles, updatePosition } = usePositioning({ triggerRef, contentRef, placement: 'bottom-start', offset: 8 });
+```
+
+### useFloatingContent
+
+Combines positioning + scroll behavior for floating content.
+
+```tsx
+const { styles, arrowStyles } = useFloatingContent({ triggerRef, contentRef, placement: 'bottom', scrollBehavior: 'close', onClose });
+```
+
+### useDraggable
+
+Make an element draggable.
+
+```tsx
+const { position, isDragging, dragHandleProps } = useDraggable({ bounded: true });
+```
+
+### useResizable
+
+Make an element resizable.
+
+```tsx
+const { size, isResizing, getResizeHandleProps } = useResizable({ constraints: { minWidth: 200, minHeight: 100 } });
+```
+
+### useScrollBehavior
+
+Handle scroll behavior for overlays.
+
+```tsx
+useScrollBehavior({ enabled: () => isOpen(), behavior: 'close', onClose });
+```
+
+### useWindowManager / useWindowZIndex
+
+Multi-window z-index and lifecycle management.
+
+```tsx
+const manager = useWindowManager();
+const { zIndex, bringToFront } = useWindowZIndex();
+```
+
+---
+
+## Theming
+
+The library uses Tailwind CSS v4 with OKLCH color space. Colors are defined as CSS custom properties on `:root` and `.dark`.
+
+Color scales available: `surface` (50-950), `accent` (50-900), `error` (50-900).
+
+Glass effects use `backdrop-filter: blur()` with semi-transparent backgrounds for the frosted glass look.
+
+To customize the theme, override CSS custom properties:
+
+```css
+:root {
+  --color-accent-500: oklch(0.6 0.2 250);
+}
+```
+
+## Accessibility
+
+All components follow WAI-ARIA patterns:
+- Focus trapping in overlays (Modal, Drawer, Dialog, CommandPalette)
+- `aria-invalid` and `aria-describedby` on form inputs
+- Keyboard navigation (arrow keys in RadioGroup, Tabs, CommandPalette)
+- `aria-activedescendant` in Autocomplete and CommandPalette
+- Screen reader support with proper roles and labels
