@@ -117,6 +117,73 @@ const oneOfSchema: Schema = {
   },
 };
 
+// Schema with array of oneOf const items (multi-select checkbox group)
+const surveySchema: Schema = {
+  type: 'object',
+  properties: {
+    selected_components: {
+      description:
+        'Select which survey questions to include in results. Leave empty to include all.',
+      items: {
+        oneOf: [
+          {
+            const: 13865111,
+            title:
+              'Partagez votre exp\u00e9rience sur la reprise automobile (CoverPage)',
+          },
+          {
+            const: 13865154,
+            title: 'Vous \u00eates :  (MultipleChoice)',
+          },
+          {
+            const: 13865156,
+            title: 'Quel est votre \u00e2ge ?  (MultipleChoice)',
+          },
+          {
+            const: 13865161,
+            title:
+              "Avez-vous l'intention de changer de voiture prochainement ?  (MultipleChoice)",
+          },
+          {
+            const: 13866553,
+            title:
+              'Si oui, feriez-vous confiance \u00e0 Aramisauto pour vous accompagner dans cette d\u00e9marche ?  (MultipleChoice)',
+          },
+          {
+            const: 13865162,
+            title:
+              'Imaginez que vous souhaitiez vous s\u00e9parer de votre voiture. Quelles expressions taperiez-vous spontan\u00e9ment sur internet ? (ShortAnswer)',
+          },
+          {
+            const: 13865165,
+            title:
+              'Parmi les expressions suivantes, pouvez-vous nous dire spontan\u00e9ment laquelle vous semble la plus appropri\u00e9e ?  (MultipleChoice)',
+          },
+          {
+            const: 13865172,
+            title:
+              'Le mot "Reprise" vous para\u00eet-il clair pour comprendre qu\'il s\'agit de la 1\u00e8re \u00e9tape de vente de votre voiture ? (MultipleChoice)',
+          },
+          {
+            const: 13865174,
+            title:
+              'Dans ce contexte de vente, quelles seraient vos priorit\u00e9s principales ? (Rank)',
+          },
+          {
+            const: 13865223,
+            title:
+              "Merci pour votre participation. Vos r\u00e9ponses sont essentielles afin d'am\u00e9liorer la qualit\u00e9 de nos services. (ThankYouPage)",
+          },
+        ],
+        type: 'integer',
+      },
+      title: 'Questions to include',
+      type: 'array',
+      uniqueItems: true,
+    },
+  },
+};
+
 // Complex schema with arrays of objects
 const complexSchema: Schema = {
   type: 'object',
@@ -188,6 +255,10 @@ export default function JsonSchemaFormPage() {
       expiry: '',
       cvv: '',
     },
+  });
+
+  const [surveyValue, setSurveyValue] = createSignal<Record<string, unknown>>({
+    selected_components: [13865154, 13865156],
   });
 
   const [complexValue, setComplexValue] = createSignal<Record<string, unknown>>(
@@ -415,6 +486,49 @@ const [value, setValue] = createSignal({});
         <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
           <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
             Value: {JSON.stringify(oneOfValue(), null, 2)}
+          </p>
+        </div>
+      </DemoSection>
+
+      <DemoSection
+        title="Array with oneOf const (Multi-Select)"
+        description={
+          <>
+            When array items use <CodePill>oneOf</CodePill> with{' '}
+            <CodePill>const</CodePill> + <CodePill>title</CodePill>, the form
+            renders a checkbox group. The <CodePill>title</CodePill> property is
+            shown as the field label.
+          </>
+        }
+        code={`const schema: Schema = {
+  type: 'object',
+  properties: {
+    selected_components: {
+      title: 'Questions to include',
+      description: 'Select which survey questions to include.',
+      type: 'array',
+      uniqueItems: true,
+      items: {
+        type: 'integer',
+        oneOf: [
+          { const: 13865111, title: 'Cover Page' },
+          { const: 13865154, title: 'Gender (MultipleChoice)' },
+          { const: 13865156, title: 'Age (MultipleChoice)' },
+          // ...more options
+        ],
+      },
+    },
+  },
+};`}
+      >
+        <JsonSchemaForm
+          schema={surveySchema}
+          value={surveyValue()}
+          onChange={(v) => setSurveyValue(v as Record<string, unknown>)}
+        />
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(surveyValue(), null, 2)}
           </p>
         </div>
       </DemoSection>

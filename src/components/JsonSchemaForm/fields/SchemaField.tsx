@@ -17,10 +17,22 @@ export const SchemaField: Component<SchemaFieldProps> = (props) => {
   return (
     <div class="space-y-2">
       {/* Field label and metadata */}
-      <div class="flex items-center gap-2">
-        <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-          {props.name}
-        </span>
+      <div class="flex items-center gap-2 flex-wrap">
+        <Show
+          when={props.schema.title}
+          fallback={
+            <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+              {props.name}
+            </span>
+          }
+        >
+          <span class="text-sm font-medium text-surface-900 dark:text-surface-100">
+            {props.schema.title}
+          </span>
+          <span class="font-mono text-xs text-surface-400 dark:text-surface-500">
+            {props.name}
+          </span>
+        </Show>
         <Show when={props.required}>
           <span class="text-rose-500 text-xs font-semibold">required</span>
         </Show>
