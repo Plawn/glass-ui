@@ -1,6 +1,21 @@
 // Main component
 export { JsonSchemaForm } from './JsonSchemaForm';
 
+// Registry
+export {
+  FieldRegistryContext,
+  FieldRegistryProvider,
+  useFieldRegistry,
+  mergeConfigs,
+  resolveFieldFromRegistry,
+} from './registry';
+export type {
+  FieldComponent,
+  FieldResolver,
+  FieldRegistryConfig,
+  FieldRegistryProviderProps,
+} from './registry';
+
 // Types
 export type {
   Schema,

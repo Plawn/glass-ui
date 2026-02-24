@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, Match, Show, Switch } from 'solid-js';
+import { For, Show } from 'solid-js';
 import { Checkbox } from '../../Input';
 import {
   ChevronDownIcon,
@@ -9,10 +9,6 @@ import {
 } from '../../shared/icons';
 import type { ArrayFieldProps, BaseFieldProps, Schema } from '../types';
 import { getDefaultValue, resolveSchemaType } from '../utils';
-import { BooleanField } from './BooleanField';
-import { EnumField } from './EnumField';
-import { NumberField } from './NumberField';
-import { StringField } from './StringField';
 
 // Forward declaration - will import the main component
 import { JsonSchemaForm } from '../JsonSchemaForm';
@@ -29,45 +25,18 @@ function isConstEnumItems(items: Schema): boolean {
 }
 
 /**
- * Primitive array item renderer (inline editing for simple types)
+ * Primitive array item renderer - delegates to JsonSchemaForm for registry support
  */
-const PrimitiveArrayItem: Component<BaseFieldProps> = (props) => {
-  const schemaType = () => resolveSchemaType(props.schema) || 'string';
-
-  return (
-    <Switch
-      fallback={
-        <StringField
-          schema={props.schema}
-          value={props.value}
-          onChange={props.onChange}
-        />
-      }
-    >
-      <Match when={props.schema.enum && props.schema.enum.length > 0}>
-        <EnumField
-          schema={props.schema}
-          value={props.value}
-          onChange={props.onChange}
-        />
-      </Match>
-      <Match when={schemaType() === 'boolean'}>
-        <BooleanField
-          schema={props.schema}
-          value={props.value}
-          onChange={props.onChange}
-        />
-      </Match>
-      <Match when={schemaType() === 'number' || schemaType() === 'integer'}>
-        <NumberField
-          schema={props.schema}
-          value={props.value}
-          onChange={props.onChange}
-        />
-      </Match>
-    </Switch>
-  );
-};
+const PrimitiveArrayItem: Component<BaseFieldProps & { path?: string[] }> = (
+  props,
+) => (
+  <JsonSchemaForm
+    schema={props.schema}
+    value={props.value}
+    onChange={props.onChange}
+    path={props.path}
+  />
+);
 
 /**
  * Array field renderer with add/remove/reorder functionality
@@ -223,6 +192,7 @@ export const ArrayField: Component<ArrayFieldProps> = (props) => {
                   schema={itemSchema()}
                   value={item}
                   onChange={(v) => updateItem(index(), v)}
+                  path={[...props.path, String(index())]}
                 />
               </Show>
             </div>

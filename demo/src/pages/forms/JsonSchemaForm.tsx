@@ -1,5 +1,12 @@
-import { Card, CodeBlock, JsonSchemaForm, type Schema } from 'glass-ui-solid';
-import { createSignal } from 'solid-js';
+import {
+  type BaseFieldProps,
+  Card,
+  CodeBlock,
+  JsonSchemaForm,
+  type Schema,
+} from 'glass-ui-solid';
+import type { Component } from 'solid-js';
+import { For, createSignal } from 'solid-js';
 import {
   CodePill,
   DemoSection,
@@ -79,6 +86,101 @@ const addressSchema: Schema = {
       required: ['street', 'city'],
     },
   },
+};
+
+// Schema with oneOf const (single select dropdown)
+const oneOfConstSchema: Schema = {
+  type: 'object',
+  properties: {
+    region: {
+      title: 'Region',
+      description: 'Select the deployment region',
+      oneOf: [
+        { const: 'eu-west-1', title: 'Europe (Ireland)' },
+        { const: 'us-east-1', title: 'US East (N. Virginia)' },
+        { const: 'us-west-2', title: 'US West (Oregon)' },
+        { const: 'ap-southeast-1', title: 'Asia Pacific (Singapore)' },
+      ],
+    },
+    tier: {
+      title: 'Pricing Tier',
+      oneOf: [
+        { const: 'free', title: 'Free - 0$/mo' },
+        { const: 'pro', title: 'Pro - 29$/mo' },
+        { const: 'enterprise', title: 'Enterprise - Contact us' },
+      ],
+    },
+  },
+};
+
+// Schema with format and constraints
+const constraintsSchema: Schema = {
+  type: 'object',
+  properties: {
+    email: {
+      type: 'string',
+      title: 'Email',
+      format: 'email',
+    },
+    website: {
+      type: 'string',
+      title: 'Website',
+      format: 'uri',
+    },
+    password: {
+      type: 'string',
+      title: 'Password',
+      format: 'password',
+    },
+    phone: {
+      type: 'string',
+      title: 'Phone',
+      format: 'tel',
+    },
+    bio: {
+      type: 'string',
+      title: 'Bio',
+      format: 'textarea',
+    },
+    score: {
+      type: 'integer',
+      title: 'Score',
+      minimum: 0,
+      maximum: 100,
+    },
+    price: {
+      type: 'number',
+      title: 'Price',
+      minimum: 0,
+      multipleOf: 0.01,
+    },
+  },
+};
+
+// Schema with nullable fields
+const nullableSchema: Schema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string', title: 'Name' },
+    nickname: {
+      type: ['string', 'null'],
+      title: 'Nickname',
+      description: 'Optional, can be set to null',
+    },
+    age: {
+      type: ['integer', 'null'],
+      title: 'Age',
+      description: 'Nullable integer field',
+      minimum: 0,
+    },
+    role: {
+      type: ['string', 'null'],
+      title: 'Role',
+      description: 'Nullable enum field',
+      enum: ['admin', 'editor', 'viewer'],
+    },
+  },
+  required: ['name'],
 };
 
 // Schema with oneOf (union types)
@@ -184,6 +286,85 @@ const surveySchema: Schema = {
   },
 };
 
+// Schema with color format (for custom field demo)
+const colorSchema: Schema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string', title: 'Theme Name' },
+    primaryColor: {
+      type: 'string',
+      title: 'Primary Color',
+      format: 'color',
+    },
+    backgroundColor: {
+      type: 'string',
+      title: 'Background Color',
+      format: 'color',
+    },
+    textColor: {
+      type: 'string',
+      title: 'Text Color',
+      format: 'color',
+    },
+  },
+};
+
+// Schema with rating field (for custom resolver demo)
+const reviewSchema: Schema = {
+  type: 'object',
+  properties: {
+    title: { type: 'string', title: 'Review Title' },
+    rating: { type: 'integer', title: 'Rating', minimum: 1, maximum: 5 },
+    comment: { type: 'string', title: 'Comment', format: 'textarea' },
+  },
+};
+
+/**
+ * Custom color picker field component
+ */
+const ColorPickerField: Component<BaseFieldProps> = (props) => {
+  return (
+    <input
+      type="color"
+      value={typeof props.value === 'string' ? props.value : '#000000'}
+      onInput={(e) => props.onChange(e.currentTarget.value)}
+      class="w-full h-10 rounded-lg cursor-pointer border border-surface-200 dark:border-surface-700 bg-transparent"
+    />
+  );
+};
+
+/**
+ * Custom star rating field component
+ */
+const StarRatingField: Component<BaseFieldProps> = (props) => {
+  const currentValue = () =>
+    typeof props.value === 'number' ? props.value : 0;
+  const max = () => props.schema.maximum ?? 5;
+
+  return (
+    <div class="flex items-center gap-1">
+      <For each={Array.from({ length: max() }, (_, i) => i + 1)}>
+        {(star) => (
+          <button
+            type="button"
+            onClick={() => props.onChange(star)}
+            class="text-2xl transition-colors focus:outline-none"
+            classList={{
+              'text-amber-400': star <= currentValue(),
+              'text-surface-300 dark:text-surface-600': star > currentValue(),
+            }}
+          >
+            {star <= currentValue() ? '\u2605' : '\u2606'}
+          </button>
+        )}
+      </For>
+      <span class="ml-2 text-sm text-surface-500 dark:text-surface-400">
+        {currentValue()}/{max()}
+      </span>
+    </div>
+  );
+};
+
 // Complex schema with arrays of objects
 const complexSchema: Schema = {
   type: 'object',
@@ -249,6 +430,34 @@ export default function JsonSchemaFormPage() {
     },
   );
 
+  const [oneOfConstValue, setOneOfConstValue] = createSignal<
+    Record<string, unknown>
+  >({
+    region: 'eu-west-1',
+    tier: 'pro',
+  });
+
+  const [constraintsValue, setConstraintsValue] = createSignal<
+    Record<string, unknown>
+  >({
+    email: '',
+    website: '',
+    password: '',
+    phone: '',
+    bio: '',
+    score: 50,
+    price: 9.99,
+  });
+
+  const [nullableValue, setNullableValue] = createSignal<
+    Record<string, unknown>
+  >({
+    name: 'Alice',
+    nickname: null,
+    age: 30,
+    role: 'admin',
+  });
+
   const [oneOfValue, setOneOfValue] = createSignal<Record<string, unknown>>({
     paymentMethod: {
       cardNumber: '',
@@ -259,6 +468,19 @@ export default function JsonSchemaFormPage() {
 
   const [surveyValue, setSurveyValue] = createSignal<Record<string, unknown>>({
     selected_components: [13865154, 13865156],
+  });
+
+  const [colorValue, setColorValue] = createSignal<Record<string, unknown>>({
+    name: 'Ocean',
+    primaryColor: '#3b82f6',
+    backgroundColor: '#f8fafc',
+    textColor: '#0f172a',
+  });
+
+  const [reviewValue, setReviewValue] = createSignal<Record<string, unknown>>({
+    title: 'Great product!',
+    rating: 4,
+    comment: '',
   });
 
   const [complexValue, setComplexValue] = createSignal<Record<string, unknown>>(
@@ -374,6 +596,112 @@ const [value, setValue] = createSignal({});
         <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
           <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
             Value: {JSON.stringify(settingsValue())}
+          </p>
+        </div>
+      </DemoSection>
+
+      <DemoSection
+        title="oneOf const (Select Dropdown)"
+        description={
+          <>
+            When <CodePill>oneOf</CodePill> entries all use{' '}
+            <CodePill>const</CodePill> + <CodePill>title</CodePill>, the form
+            renders a select dropdown instead of a JSON textarea.
+          </>
+        }
+        code={`const schema: Schema = {
+  type: 'object',
+  properties: {
+    region: {
+      title: 'Region',
+      oneOf: [
+        { const: 'eu-west-1', title: 'Europe (Ireland)' },
+        { const: 'us-east-1', title: 'US East (N. Virginia)' },
+      ],
+    },
+  },
+};`}
+      >
+        <JsonSchemaForm
+          schema={oneOfConstSchema}
+          value={oneOfConstValue()}
+          onChange={(v) => setOneOfConstValue(v as Record<string, unknown>)}
+        />
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400">
+            Value: {JSON.stringify(oneOfConstValue())}
+          </p>
+        </div>
+      </DemoSection>
+
+      <DemoSection
+        title="Formats & Constraints"
+        description={
+          <>
+            String <CodePill>format</CodePill> maps to HTML input types (email,
+            url, password, tel). Number fields apply{' '}
+            <CodePill>minimum</CodePill>, <CodePill>maximum</CodePill>, and{' '}
+            <CodePill>multipleOf</CodePill> as native constraints.
+          </>
+        }
+        code={`const schema: Schema = {
+  type: 'object',
+  properties: {
+    email: { type: 'string', title: 'Email', format: 'email' },
+    website: { type: 'string', title: 'Website', format: 'uri' },
+    password: { type: 'string', title: 'Password', format: 'password' },
+    score: { type: 'integer', title: 'Score', minimum: 0, maximum: 100 },
+    price: { type: 'number', title: 'Price', minimum: 0, multipleOf: 0.01 },
+  },
+};`}
+      >
+        <JsonSchemaForm
+          schema={constraintsSchema}
+          value={constraintsValue()}
+          onChange={(v) => setConstraintsValue(v as Record<string, unknown>)}
+        />
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(constraintsValue(), null, 2)}
+          </p>
+        </div>
+      </DemoSection>
+
+      <DemoSection
+        title="Nullable Fields"
+        description={
+          <>
+            Fields with <CodePill>type: ["string", "null"]</CodePill> show a
+            "set null" toggle. When null, the input is hidden and the value is
+            explicitly <CodePill>null</CodePill>.
+          </>
+        }
+        code={`const schema: Schema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string', title: 'Name' },
+    nickname: {
+      type: ['string', 'null'],
+      title: 'Nickname',
+      description: 'Optional, can be set to null',
+    },
+    age: {
+      type: ['integer', 'null'],
+      title: 'Age',
+      minimum: 0,
+    },
+  },
+  required: ['name'],
+};`}
+      >
+        <JsonSchemaForm
+          schema={nullableSchema}
+          value={nullableValue()}
+          onChange={(v) => setNullableValue(v as Record<string, unknown>)}
+        />
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(nullableValue(), null, 2)}
           </p>
         </div>
       </DemoSection>
@@ -534,6 +862,100 @@ const [value, setValue] = createSignal({});
       </DemoSection>
 
       <DemoSection
+        title="Custom Format Field (Registry)"
+        description="Use the fields prop to override how specific formats are rendered. Here, format: 'color' renders a native color picker instead of a text input."
+        code={`const ColorPickerField: Component<BaseFieldProps> = (props) => (
+  <input
+    type="color"
+    value={typeof props.value === 'string' ? props.value : '#000000'}
+    onInput={(e) => props.onChange(e.currentTarget.value)}
+    class="w-full h-10 rounded-lg cursor-pointer"
+  />
+);
+
+<JsonSchemaForm
+  schema={{
+    type: 'object',
+    properties: {
+      primaryColor: { type: 'string', title: 'Primary Color', format: 'color' },
+      backgroundColor: { type: 'string', title: 'Background', format: 'color' },
+    },
+  }}
+  value={value()}
+  onChange={setValue}
+  fields={{
+    formats: { color: ColorPickerField },
+  }}
+/>`}
+      >
+        <JsonSchemaForm
+          schema={colorSchema}
+          value={colorValue()}
+          onChange={(v) => setColorValue(v as Record<string, unknown>)}
+          fields={{
+            formats: { color: ColorPickerField },
+          }}
+        />
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(colorValue(), null, 2)}
+          </p>
+        </div>
+      </DemoSection>
+
+      <DemoSection
+        title="Custom Resolver (Registry)"
+        description="Resolvers allow advanced matching logic. Here, any field whose path ends with 'rating' renders as a star rating widget."
+        code={`const StarRatingField: Component<BaseFieldProps> = (props) => {
+  const value = () => typeof props.value === 'number' ? props.value : 0;
+  const max = () => props.schema.maximum ?? 5;
+  return (
+    <div class="flex items-center gap-1">
+      <For each={Array.from({ length: max() }, (_, i) => i + 1)}>
+        {(star) => (
+          <button
+            type="button"
+            onClick={() => props.onChange(star)}
+            class={star <= value() ? 'text-amber-400' : 'text-surface-300'}
+          >
+            {star <= value() ? '\u2605' : '\u2606'}
+          </button>
+        )}
+      </For>
+    </div>
+  );
+};
+
+<JsonSchemaForm
+  schema={schema}
+  value={value()}
+  onChange={setValue}
+  fields={{
+    resolvers: [
+      (schema, path) => path.at(-1) === 'rating' ? StarRatingField : undefined,
+    ],
+  }}
+/>`}
+      >
+        <JsonSchemaForm
+          schema={reviewSchema}
+          value={reviewValue()}
+          onChange={(v) => setReviewValue(v as Record<string, unknown>)}
+          fields={{
+            resolvers: [
+              (_schema, path) =>
+                path.at(-1) === 'rating' ? StarRatingField : undefined,
+            ],
+          }}
+        />
+        <div class="mt-4 p-3 bg-surface-100 dark:bg-surface-800 rounded-lg">
+          <p class="text-xs font-mono text-surface-600 dark:text-surface-400 whitespace-pre">
+            Value: {JSON.stringify(reviewValue(), null, 2)}
+          </p>
+        </div>
+      </DemoSection>
+
+      <DemoSection
         title="Complex Example"
         description="Combining arrays of objects with nested properties."
         code={`const schema: Schema = {
@@ -607,6 +1029,13 @@ const [value, setValue] = createSignal({});
               type: 'string[]',
               default: '[]',
               description: 'Path to this field (for nested forms)',
+            },
+            {
+              name: 'fields',
+              type: 'FieldRegistryConfig',
+              default: 'undefined',
+              description:
+                'Custom field registry for overriding field rendering by type, format, or custom resolver',
             },
           ]}
         />

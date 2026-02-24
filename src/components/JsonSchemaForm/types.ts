@@ -70,6 +70,8 @@ export interface JsonSchemaFormProps {
   required?: boolean;
   /** Path to this field (for nested forms) */
   path?: string[];
+  /** Custom field registry for overriding or extending field rendering */
+  fields?: import('./registry').FieldRegistryConfig;
 }
 
 /**

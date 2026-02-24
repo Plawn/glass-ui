@@ -13,6 +13,7 @@ export const SchemaField: Component<SchemaFieldProps> = (props) => {
   const nullable = () => isNullable(props.schema);
   const isComplexType = () =>
     schemaType() === 'object' || schemaType() === 'array';
+  const isNull = () => props.value === null;
 
   return (
     <div class="space-y-2">
@@ -45,6 +46,26 @@ export const SchemaField: Component<SchemaFieldProps> = (props) => {
             ({props.schema.format})
           </span>
         </Show>
+        {/* Nullable toggle */}
+        <Show when={nullable()}>
+          <button
+            type="button"
+            class={`text-xs px-1.5 py-0.5 rounded transition-colors ${
+              isNull()
+                ? 'bg-surface-200 dark:bg-surface-700 text-surface-700 dark:text-surface-200 font-medium'
+                : 'text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300'
+            }`}
+            onClick={() => {
+              if (isNull()) {
+                props.onChange(undefined);
+              } else {
+                props.onChange(null);
+              }
+            }}
+          >
+            {isNull() ? 'null ✕' : 'set null'}
+          </button>
+        </Show>
       </div>
 
       {/* Description */}
@@ -54,26 +75,28 @@ export const SchemaField: Component<SchemaFieldProps> = (props) => {
         </p>
       </Show>
 
-      {/* Field input */}
-      <Show
-        when={isComplexType()}
-        fallback={
-          <div class="sm:max-w-xs">
-            <JsonSchemaForm
-              schema={props.schema}
-              value={props.value}
-              onChange={props.onChange}
-              path={props.path}
-            />
-          </div>
-        }
-      >
-        <JsonSchemaForm
-          schema={props.schema}
-          value={props.value}
-          onChange={props.onChange}
-          path={props.path}
-        />
+      {/* Field input - hidden when value is null */}
+      <Show when={!isNull()}>
+        <Show
+          when={isComplexType()}
+          fallback={
+            <div class="sm:max-w-xs">
+              <JsonSchemaForm
+                schema={props.schema}
+                value={props.value}
+                onChange={props.onChange}
+                path={props.path}
+              />
+            </div>
+          }
+        >
+          <JsonSchemaForm
+            schema={props.schema}
+            value={props.value}
+            onChange={props.onChange}
+            path={props.path}
+          />
+        </Show>
       </Show>
     </div>
   );

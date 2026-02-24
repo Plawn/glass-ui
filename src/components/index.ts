@@ -151,6 +151,11 @@ export type { ErrorDisplayProps } from './ErrorDisplay';
 // JsonSchemaForm
 export {
   JsonSchemaForm,
+  FieldRegistryContext,
+  FieldRegistryProvider,
+  useFieldRegistry,
+  mergeConfigs,
+  resolveFieldFromRegistry,
   StringField,
   NumberField,
   BooleanField,
@@ -164,6 +169,10 @@ export {
   toDisplayStringJson,
 } from './JsonSchemaForm';
 export type {
+  FieldComponent,
+  FieldResolver,
+  FieldRegistryConfig,
+  FieldRegistryProviderProps,
   Schema,
   SchemaType,
   JsonSchemaFormProps,
