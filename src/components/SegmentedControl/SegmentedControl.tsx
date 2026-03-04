@@ -34,10 +34,12 @@ export function SegmentedControl<T extends string | number>(
   };
 
   onMount(() => {
-    // Initial position without animation
-    updateIndicator();
-    // Enable animations after first render
-    requestAnimationFrame(() => setIsInitialized(true));
+    // Defer initial measurement to after browser layout/paint
+    requestAnimationFrame(() => {
+      updateIndicator();
+      // Enable animations after initial position is set
+      requestAnimationFrame(() => setIsInitialized(true));
+    });
   });
 
   createEffect(

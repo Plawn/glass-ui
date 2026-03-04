@@ -166,7 +166,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
       {/* Header slot */}
       <Show when={props.header}>
         <div
-          class={`flex-shrink-0 border-b border-white/10 dark:border-white/5 ${
+          class={`shrink-0 border-b border-white/10 dark:border-white/5 ${
             collapsed() ? 'p-3' : 'px-4 py-4'
           }`}
         >
@@ -200,7 +200,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
 
       {/* Footer slot with collapse toggle */}
       <div
-        class={`flex-shrink-0 border-t border-white/10 dark:border-white/5 ${
+        class={`shrink-0 border-t border-white/10 dark:border-white/5 ${
           collapsed() ? 'p-2' : 'px-3 py-3'
         }`}
       >
@@ -227,42 +227,6 @@ export const Sidebar: Component<SidebarProps> = (props) => {
         </Show>
       </div>
     </div>
-  );
-
-  // Mobile hamburger trigger (rendered externally, could be used via CSS variable)
-  const MobileTrigger = () => (
-    <button
-      type="button"
-      onClick={() => setMobileOpen(true)}
-      class="
-        p-2.5 rounded-xl md:hidden
-        transition-all duration-300 ease-out
-        backdrop-blur-xl
-        bg-white/20 dark:bg-white/10
-        border border-white/30 dark:border-white/15
-        text-surface-700 dark:text-surface-300
-        hover:bg-white/30 dark:hover:bg-white/15
-        hover:border-white/40 dark:hover:border-white/20
-        shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_8px_rgba(0,0,0,0.08)]
-        hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_4px_12px_rgba(0,0,0,0.1)]
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50
-      "
-      aria-label="Open navigation menu"
-    >
-      <svg
-        class="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M4 6h16M4 12h16M4 18h16"
-        />
-      </svg>
-    </button>
   );
 
   // Desktop sidebar
@@ -320,7 +284,6 @@ export const Sidebar: Component<SidebarProps> = (props) => {
 
       {/* Mobile: Drawer */}
       <Show when={isMobile()}>
-        <MobileTrigger />
         <MobileDrawer />
       </Show>
     </>
