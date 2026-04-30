@@ -1,4 +1,11 @@
-import { For, createEffect, createSignal, on, onMount } from 'solid-js';
+import {
+  For,
+  createEffect,
+  createSignal,
+  on,
+  onCleanup,
+  onMount,
+} from 'solid-js';
 import type { SegmentedControlProps } from './types';
 
 export function SegmentedControl<T extends string | number>(
@@ -33,14 +40,19 @@ export function SegmentedControl<T extends string | number>(
     }
   };
 
+  const observer = new ResizeObserver(() => updateIndicator());
+
   onMount(() => {
-    // Defer initial measurement to after browser layout/paint
+    for (const btn of buttonRefs.values()) {
+      observer.observe(btn);
+    }
     requestAnimationFrame(() => {
       updateIndicator();
-      // Enable animations after initial position is set
       requestAnimationFrame(() => setIsInitialized(true));
     });
   });
+
+  onCleanup(() => observer.disconnect());
 
   createEffect(
     on(
