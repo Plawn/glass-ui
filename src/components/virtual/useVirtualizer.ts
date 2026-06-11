@@ -210,38 +210,44 @@ export function useVirtualizer(options: VirtualizerOptions) {
   });
 
   // 2. VISIBLE INDICES
-  const visibleRange = createMemo(() => {
-    const cache = sizeCache();
-    const scroll = scrollTop();
-    const viewport = viewportSize();
-    const fixed = options.getFixedSize?.();
+  // Custom equality: scroll moves every pixel but the range only changes every
+  // ~itemSize pixels — without it, everything downstream recomputes per scroll event.
+  const visibleRange = createMemo(
+    () => {
+      const cache = sizeCache();
+      const scroll = scrollTop();
+      const viewport = viewportSize();
+      const fixed = options.getFixedSize?.();
 
-    cache.version; // dependency
+      cache.version; // dependency
 
-    if (cache.totalCount === 0 || viewport === 0) {
-      return { start: 0, end: -1 };
-    }
+      if (cache.totalCount === 0 || viewport === 0) {
+        return { start: 0, end: -1 };
+      }
 
-    const startEdge = Math.max(0, scroll);
-    const endEdge = scroll + viewport;
-    const os = options.overscan?.() ?? 5;
+      const startEdge = Math.max(0, scroll);
+      const endEdge = scroll + viewport;
+      const os = options.overscan?.() ?? 5;
 
-    let startIndex: number;
-    let endIndex: number;
+      let startIndex: number;
+      let endIndex: number;
 
-    if (fixed) {
-      startIndex = Math.floor(startEdge / fixed);
-      endIndex = Math.ceil(endEdge / fixed);
-    } else {
-      startIndex = cache.tree.findIndex(startEdge);
-      endIndex = cache.tree.findIndex(endEdge);
-    }
+      if (fixed) {
+        startIndex = Math.floor(startEdge / fixed);
+        endIndex = Math.ceil(endEdge / fixed);
+      } else {
+        startIndex = cache.tree.findIndex(startEdge);
+        endIndex = cache.tree.findIndex(endEdge);
+      }
 
-    return {
-      start: Math.max(0, startIndex - os),
-      end: Math.min(cache.totalCount - 1, endIndex + os),
-    };
-  });
+      return {
+        start: Math.max(0, startIndex - os),
+        end: Math.min(cache.totalCount - 1, endIndex + os),
+      };
+    },
+    undefined,
+    { equals: (a, b) => a.start === b.start && a.end === b.end },
+  );
 
   // 3. ITEMS GENERATION (Stable Identity)
   const visibleItems = createMemo(() => {
@@ -408,9 +414,15 @@ export function useVirtualizer(options: VirtualizerOptions) {
   });
 
   // 6. DYNAMIC MEASUREMENT
-  const measureItem = (index: number, size: number) => {
-    const fixed = options.getFixedSize?.();
-    if (fixed) {
+  // Measurements are accumulated and flushed once per microtask: a render wave
+  // measures many items at once and each flush triggers a full range/items
+  // recompute, so applying them one by one is O(visible²).
+  let pendingMeasurements: Map<number, number> | null = null;
+
+  const flushMeasurements = () => {
+    const pending = pendingMeasurements;
+    pendingMeasurements = null;
+    if (!pending || pending.size === 0) {
       return;
     }
 
@@ -420,22 +432,39 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
     batch(() => {
       setSizeCache((prev) => {
-        const currentSize = prev.sizes.get(index) ?? prev.defaultSize;
-        if (Math.abs(currentSize - size) < 0.5) {
+        let changed = false;
+        let scrollDelta = 0;
+
+        for (const [index, size] of pending) {
+          if (index >= prev.totalCount) {
+            continue;
+          }
+          const currentSize = prev.sizes.get(index) ?? prev.defaultSize;
+          if (Math.abs(currentSize - size) < 0.5) {
+            continue;
+          }
+
+          const delta = size - currentSize;
+          prev.tree.update(index, delta);
+          prev.sizes.set(index, size);
+          changed = true;
+
+          // Items above the viewport shift everything below them
+          if (index < start) {
+            scrollDelta += delta;
+          }
+        }
+
+        if (!changed) {
           return prev;
         }
 
-        const delta = size - currentSize;
-
-        prev.tree.update(index, delta);
-        prev.sizes.set(index, size);
-
         // Scroll Anchoring
-        if (container && index < start) {
+        if (container && scrollDelta !== 0) {
           const currentScroll = options.horizontal
             ? container.scrollLeft
             : container.scrollTop;
-          const newScroll = currentScroll + delta;
+          const newScroll = currentScroll + scrollDelta;
 
           ignoreNextScrollEvent = true;
           if (options.horizontal) {
@@ -449,6 +478,19 @@ export function useVirtualizer(options: VirtualizerOptions) {
         return { ...prev, version: prev.version + 1 };
       });
     });
+  };
+
+  const measureItem = (index: number, size: number) => {
+    const fixed = options.getFixedSize?.();
+    if (fixed) {
+      return;
+    }
+
+    if (!pendingMeasurements) {
+      pendingMeasurements = new Map();
+      queueMicrotask(flushMeasurements);
+    }
+    pendingMeasurements.set(index, size);
   };
 
   createEffect(

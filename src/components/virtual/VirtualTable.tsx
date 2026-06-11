@@ -1,7 +1,6 @@
 import {
   type Component,
   For,
-  Index,
   type JSX,
   Show,
   createEffect,
@@ -215,63 +214,60 @@ const DefaultFillerRow: Component<{
 // =============================================================================
 
 interface RowWrapperProps<D, C> {
-  item: ListItem<D>;
+  /** Stable row index — the row component is keyed on it */
+  index: number;
+  getSize: () => number;
   data?: readonly D[];
   context?: C;
   itemContent: TableRowContent<D, C>;
   measureItem: (index: number, size: number) => void;
-  TableRowComponent: typeof DefaultTableRow;
+  /** Shared observer owned by the table — one instance for all rows */
+  observer?: ResizeObserver;
   firstItemIndex: number;
   fixedItemHeight?: number;
 }
 
 function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
   let rowRef: HTMLTableRowElement | undefined;
-  let resizeObserver: ResizeObserver | undefined;
 
   const itemData = createMemo(() => {
-    const index = props.item.index;
-    return props.data?.[index] as D;
+    return props.data?.[props.index] as D;
   });
 
-  // Measure row size on mount and when content changes
+  // Measure row size on mount and when content changes.
+  // The shared ResizeObserver fires once on observe(), which covers the
+  // initial measurement; the rAF path is only a fallback for environments
+  // without ResizeObserver.
   onMount(() => {
-    if (props.fixedItemHeight !== undefined) {
+    if (props.fixedItemHeight !== undefined || !rowRef) {
       return;
     }
 
-    const measureSize = () => {
-      if (rowRef) {
-        const height = rowRef.offsetHeight;
-        if (height > 0) {
-          props.measureItem(props.item.index, height);
+    if (props.observer) {
+      const el = rowRef;
+      props.observer.observe(el);
+      onCleanup(() => props.observer?.unobserve(el));
+    } else {
+      requestAnimationFrame(() => {
+        if (rowRef) {
+          const height = rowRef.offsetHeight;
+          if (height > 0) {
+            props.measureItem(props.index, height);
+          }
         }
-      }
-    };
-
-    // Initial measurement after render
-    requestAnimationFrame(measureSize);
-
-    // Set up resize observer for dynamic content
-    if (typeof ResizeObserver !== 'undefined' && rowRef) {
-      resizeObserver = new ResizeObserver(measureSize);
-      resizeObserver.observe(rowRef);
+      });
     }
-  });
-
-  onCleanup(() => {
-    resizeObserver?.disconnect();
   });
 
   return (
     <tr
       ref={rowRef}
-      data-index={props.item.index}
-      data-known-size={props.item.size}
+      data-index={props.index}
+      data-known-size={props.getSize()}
       style={{ 'overflow-anchor': 'none' }}
     >
       {props.itemContent(
-        props.item.index + props.firstItemIndex,
+        props.index + props.firstItemIndex,
         itemData(),
         props.context as C,
       )}
@@ -379,6 +375,43 @@ export function VirtualTable<D = unknown, C = unknown>(
     onAtTopChange: props.atTopStateChange,
     onEndReached: props.endReached,
     onStartReached: props.startReached,
+  });
+
+  // --- Shared ResizeObserver for all rows ---
+  // Reading entry.borderBoxSize avoids the forced layout that offsetHeight triggers.
+  const rowObserver =
+    typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const el = entry.target as HTMLElement;
+            const index = Number(el.dataset.index);
+            if (!Number.isInteger(index)) {
+              continue;
+            }
+            const size = entry.borderBoxSize?.[0]?.blockSize ?? el.offsetHeight;
+            if (size > 0) {
+              virtualizer.measureItem(index, size);
+            }
+          }
+        })
+      : undefined;
+
+  onCleanup(() => rowObserver?.disconnect());
+
+  // --- Visible rows keyed by index ---
+  // For compares numbers by value: scrolling only mounts/unmounts edge rows
+  // instead of re-rendering every visible cell (which Index over items did,
+  // since each position received a new item on every range shift).
+  const visibleIndices = createMemo(() =>
+    virtualizer.items().map((item) => item.index),
+  );
+
+  const itemByIndex = createMemo(() => {
+    const map = new Map<number, ListItem>();
+    for (const item of virtualizer.items()) {
+      map.set(item.index, item);
+    }
+    return map;
   });
 
   // --- Measure header/footer ---
@@ -564,20 +597,23 @@ export function VirtualTable<D = unknown, C = unknown>(
           </Show>
 
           {/* Virtualized rows */}
-          <Index each={virtualizer.items()}>
-            {(item) => (
+          <For each={visibleIndices()}>
+            {(index) => (
               <RowWrapper
-                item={item() as ListItem<D>}
+                index={index}
+                getSize={() =>
+                  itemByIndex().get(index)?.size ?? defaultItemHeight()
+                }
                 data={props.data}
                 context={props.context}
                 itemContent={effectiveItemContent()}
                 measureItem={virtualizer.measureItem}
-                TableRowComponent={DefaultTableRow}
+                observer={rowObserver}
                 firstItemIndex={firstItemIndex()}
                 fixedItemHeight={fixedItemHeight()}
               />
             )}
-          </Index>
+          </For>
 
           {/* Bottom filler row for scroll positioning */}
           <Show when={virtualizer.offsetBottom() > 0}>

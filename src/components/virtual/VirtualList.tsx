@@ -44,45 +44,42 @@ interface ItemWrapperProps<D, C> {
   context?: C;
   itemContent: VirtualListProps<D, C>['itemContent'];
   measureItem: (index: number, size: number) => void;
+  /** Shared observer owned by the list — one instance for all items */
+  observer?: ResizeObserver;
   firstItemIndex: number;
   fixedItemHeight?: number;
 }
 
 function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
   let itemRef: HTMLDivElement | undefined;
-  let resizeObserver: ResizeObserver | undefined;
 
   const itemData = createMemo(() => {
     return props.data?.[props.index] as D;
   });
 
-  // Measure item size on mount and when content changes
+  // Measure item size on mount and when content changes.
+  // The shared ResizeObserver fires once on observe(), which covers the
+  // initial measurement; the rAF path is only a fallback for environments
+  // without ResizeObserver.
   onMount(() => {
-    if (props.fixedItemHeight !== undefined) {
+    if (props.fixedItemHeight !== undefined || !itemRef) {
       return;
     }
 
-    const measureSize = () => {
-      if (itemRef) {
-        const height = itemRef.offsetHeight;
-        if (height > 0) {
-          props.measureItem(props.index, height);
+    if (props.observer) {
+      const el = itemRef;
+      props.observer.observe(el);
+      onCleanup(() => props.observer?.unobserve(el));
+    } else {
+      requestAnimationFrame(() => {
+        if (itemRef) {
+          const height = itemRef.offsetHeight;
+          if (height > 0) {
+            props.measureItem(props.index, height);
+          }
         }
-      }
-    };
-
-    // Initial measurement after render
-    requestAnimationFrame(measureSize);
-
-    // Set up resize observer for dynamic content
-    if (typeof ResizeObserver !== 'undefined' && itemRef) {
-      resizeObserver = new ResizeObserver(measureSize);
-      resizeObserver.observe(itemRef);
+      });
     }
-  });
-
-  onCleanup(() => {
-    resizeObserver?.disconnect();
   });
 
   // Style computed reactively
@@ -244,11 +241,37 @@ export function VirtualList<D = unknown, C = unknown>(
     });
   });
 
-  // --- Helper to get item info by index ---
-  const getItemInfo = (index: number) => {
-    const items = virtualizer.items();
-    return items.find((i) => i.index === index);
-  };
+  // --- Shared ResizeObserver for all items ---
+  // Reading entry.borderBoxSize avoids the forced layout that offsetHeight triggers.
+  const itemObserver =
+    typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver((entries) => {
+          for (const entry of entries) {
+            const el = entry.target as HTMLElement;
+            const index = Number(el.dataset.index);
+            if (!Number.isInteger(index)) {
+              continue;
+            }
+            const size = entry.borderBoxSize?.[0]?.blockSize ?? el.offsetHeight;
+            if (size > 0) {
+              virtualizer.measureItem(index, size);
+            }
+          }
+        })
+      : undefined;
+
+  onCleanup(() => itemObserver?.disconnect());
+
+  // --- Item lookup by index (O(1) instead of items().find per getter) ---
+  const itemByIndex = createMemo(() => {
+    const map = new Map<number, ListItem>();
+    for (const item of virtualizer.items()) {
+      map.set(item.index, item);
+    }
+    return map;
+  });
+
+  const getItemInfo = (index: number) => itemByIndex().get(index);
 
   // --- Check if an index is currently visible ---
   const isIndexVisible = (index: number): boolean => {
@@ -375,6 +398,7 @@ export function VirtualList<D = unknown, C = unknown>(
                   context={props.context}
                   itemContent={props.itemContent}
                   measureItem={virtualizer.measureItem}
+                  observer={itemObserver}
                   firstItemIndex={firstItemIndex()}
                   fixedItemHeight={fixedItemHeight()}
                 />
