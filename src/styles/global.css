@@ -77,16 +77,58 @@
   --transition-normal: 0.2s;
   --transition-slow: 0.3s;
 
-  /* Color variables for CSS (mirrors @theme for non-Tailwind usage) */
-  --color-surface-50: oklch(0.99 0.002 240);
-  --color-surface-100: oklch(0.97 0.004 240);
-  --color-surface-200: oklch(0.92 0.01 240);
-  --color-surface-300: oklch(0.8 0.02 240);
-  --color-surface-400: oklch(0.6 0.025 240);
-  --color-surface-500: oklch(0.4 0.03 240);
-  --color-surface-600: oklch(0.3 0.03 250);
-  --color-surface-700: oklch(0.2 0.03 260);
-  --color-surface-800: oklch(0.15 0.03 260);
-  --color-surface-900: oklch(0.1 0.03 260);
-  --color-surface-950: oklch(0.05 0.03 260);
+  /* Surface tokens are NOT mirrored here: Tailwind v4 `@theme` already emits
+     `--color-surface-*` to :root (single source of truth), so raw
+     `var(--color-surface-*)` usages resolve from there. */
+
+  /* ---- Glass overlay palette (single source of truth for runtime theming) ---- */
+  /* White tints (light overlay on dark/glass surfaces) */
+  --glass-light-0: oklch(1 0 0 / 0);
+  --glass-light-01: oklch(1 0 0 / 0.01);
+  --glass-light-015: oklch(1 0 0 / 0.015);
+  --glass-light-02: oklch(1 0 0 / 0.02);
+  --glass-light-03: oklch(1 0 0 / 0.03);
+  --glass-light-04: oklch(1 0 0 / 0.04);
+  --glass-light-05: oklch(1 0 0 / 0.05);
+  --glass-light-06: oklch(1 0 0 / 0.06);
+  --glass-light-08: oklch(1 0 0 / 0.08);
+  --glass-light-10: oklch(1 0 0 / 0.1);
+  --glass-light-12: oklch(1 0 0 / 0.12);
+  --glass-light-15: oklch(1 0 0 / 0.15);
+  --glass-light-18: oklch(1 0 0 / 0.18);
+  --glass-light-20: oklch(1 0 0 / 0.2);
+  --glass-light-25: oklch(1 0 0 / 0.25);
+  --glass-light-30: oklch(1 0 0 / 0.3);
+  --glass-light-35: oklch(1 0 0 / 0.35);
+  --glass-light-40: oklch(1 0 0 / 0.4);
+  --glass-light-45: oklch(1 0 0 / 0.45);
+  --glass-light-50: oklch(1 0 0 / 0.5);
+  --glass-light-55: oklch(1 0 0 / 0.55);
+  --glass-light-60: oklch(1 0 0 / 0.6);
+  --glass-light-65: oklch(1 0 0 / 0.65);
+  --glass-light-80: oklch(1 0 0 / 0.8);
+  --glass-light-85: oklch(1 0 0 / 0.85);
+  /* Black tints (shadow/dark overlay on light surfaces) */
+  --glass-dark-02: oklch(0 0 0 / 0.02);
+  --glass-dark-03: oklch(0 0 0 / 0.03);
+  --glass-dark-04: oklch(0 0 0 / 0.04);
+  --glass-dark-05: oklch(0 0 0 / 0.05);
+  --glass-dark-06: oklch(0 0 0 / 0.06);
+  --glass-dark-08: oklch(0 0 0 / 0.08);
+  --glass-dark-10: oklch(0 0 0 / 0.1);
+  --glass-dark-15: oklch(0 0 0 / 0.15);
+  --glass-dark-20: oklch(0 0 0 / 0.2);
+  --glass-dark-25: oklch(0 0 0 / 0.25);
+  --glass-dark-30: oklch(0 0 0 / 0.3);
+  --glass-dark-35: oklch(0 0 0 / 0.35);
+  --glass-dark-40: oklch(0 0 0 / 0.4);
+  /* Accent-500 tints (oklch(0.55 0.2 250) at alpha) */
+  --glass-accent-08: oklch(0.55 0.2 250 / 0.08);
+  --glass-accent-10: oklch(0.55 0.2 250 / 0.1);
+  --glass-accent-12: oklch(0.55 0.2 250 / 0.12);
+  --glass-accent-15: oklch(0.55 0.2 250 / 0.15);
+  --glass-accent-20: oklch(0.55 0.2 250 / 0.2);
+  --glass-accent-25: oklch(0.55 0.2 250 / 0.25);
+  --glass-accent-30: oklch(0.55 0.2 250 / 0.3);
+  --glass-accent-40: oklch(0.55 0.2 250 / 0.4);
 }

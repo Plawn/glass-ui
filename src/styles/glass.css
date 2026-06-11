@@ -46,48 +46,48 @@
 
 /* iOS 26 Glass Effect - Primary */
 .glass {
-  background: oklch(1 0 0 / 0.45);
+  background: var(--glass-light-45);
   backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-standard));
   -webkit-backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-standard));
-  border: 0.0625rem solid oklch(1 0 0 / 0.3);
-  box-shadow: 0 4px 6px -1px oklch(0 0 0 / 0.02), 0 2px 4px -2px
-    oklch(0 0 0 / 0.02);
+  border: 0.0625rem solid var(--glass-light-30);
+  box-shadow: 0 4px 6px -1px var(--glass-dark-02), 0 2px 4px -2px
+    var(--glass-dark-02);
 }
 
 .dark .glass {
   background: oklch(0.15 0.02 260 / 0.6);
-  border-color: oklch(1 0 0 / 0.08);
+  border-color: var(--glass-light-08);
   box-shadow: none;
 }
 
 /* iOS 26 Glass - Thick (more opaque) */
 .glass-thick {
-  background: oklch(1 0 0 / 0.65);
+  background: var(--glass-light-65);
   backdrop-filter: blur(var(--glass-blur-thick))
     saturate(var(--glass-saturate-high));
   -webkit-backdrop-filter: blur(var(--glass-blur-thick))
     saturate(var(--glass-saturate-high));
-  border: 0.0625rem solid oklch(1 0 0 / 0.4);
+  border: 0.0625rem solid var(--glass-light-40);
 }
 
 .dark .glass-thick {
   background: oklch(0.12 0.02 260 / 0.75);
-  border-color: oklch(1 0 0 / 0.1);
+  border-color: var(--glass-light-10);
 }
 
 /* iOS 26 Glass - Thin (more transparent) */
 .glass-thin {
-  background: oklch(1 0 0 / 0.3);
+  background: var(--glass-light-30);
   backdrop-filter: blur(var(--glass-blur-thin)) saturate(140%);
   -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(140%);
-  border: 0.0625rem solid oklch(1 0 0 / 0.2);
+  border: 0.0625rem solid var(--glass-light-20);
 }
 
 .dark .glass-thin {
   background: oklch(0.18 0.02 260 / 0.45);
-  border-color: oklch(1 0 0 / 0.06);
+  border-color: var(--glass-light-06);
 }
 
 /* ============================================
@@ -96,37 +96,37 @@
 
 /* iOS 26 Glass - Sidebar specific */
 .glass-sidebar {
-  background: oklch(1 0 0 / 0.5);
+  background: var(--glass-light-50);
   backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-standard));
   -webkit-backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-standard));
-  border-right: 0.0625rem solid oklch(0 0 0 / 0.06);
+  border-right: 0.0625rem solid var(--glass-dark-06);
 }
 
 .dark .glass-sidebar {
   background: oklch(0.13 0.015 260 / 0.85);
   backdrop-filter: blur(var(--glass-blur-standard)) saturate(150%);
   -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(150%);
-  border-right-color: oklch(1 0 0 / 0.05);
+  border-right-color: var(--glass-light-05);
 }
 
 /* iOS 26 Glass - Navbar specific */
 .glass-navbar {
-  background: oklch(1 0 0 / 0.65);
+  background: var(--glass-light-65);
   backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-standard));
   -webkit-backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-standard));
-  border-bottom: 0.0625rem solid oklch(0 0 0 / 0.05);
-  box-shadow: 0 4px 20px -5px oklch(0 0 0 / 0.03);
+  border-bottom: 0.0625rem solid var(--glass-dark-05);
+  box-shadow: 0 4px 20px -5px var(--glass-dark-03);
   transition: all var(--theme-transition);
 }
 
 .dark .glass-navbar {
   background: oklch(0.12 0.02 260 / 0.75);
-  border-bottom-color: oklch(1 0 0 / 0.05);
-  box-shadow: 0 4px 20px -5px oklch(0 0 0 / 0.1);
+  border-bottom-color: var(--glass-light-05);
+  box-shadow: 0 4px 20px -5px var(--glass-dark-10);
 }
 
 /* Navbar Items */
@@ -146,48 +146,48 @@
 
 .glass-nav-item:hover {
   color: var(--color-surface-900);
-  background: oklch(0 0 0 / 0.05);
+  background: var(--glass-dark-05);
 }
 
 .dark .glass-nav-item:hover {
   color: var(--color-surface-100);
-  background: oklch(1 0 0 / 0.1);
+  background: var(--glass-light-10);
 }
 
 .glass-nav-item.active {
   color: var(--color-accent-600);
-  background: oklch(0.55 0.2 250 / 0.1);
+  background: var(--glass-accent-10);
 }
 
 .dark .glass-nav-item.active {
   color: var(--color-accent-400);
-  background: oklch(0.55 0.2 250 / 0.2);
+  background: var(--glass-accent-20);
 }
 
 /* iOS 26 Glass - Card/Surface */
 .glass-card {
-  background: oklch(1 0 0 / 0.55);
+  background: var(--glass-light-55);
   backdrop-filter: blur(2rem) saturate(160%);
   -webkit-backdrop-filter: blur(2rem) saturate(160%);
-  border: 0.0625rem solid oklch(1 0 0 / 0.4);
-  box-shadow: 0 4px 20px -2px oklch(0 0 0 / 0.06), 0 0 0 1px oklch(1 0 0 / 0.4)
+  border: 0.0625rem solid var(--glass-light-40);
+  box-shadow: 0 4px 20px -2px var(--glass-dark-06), 0 0 0 1px var(--glass-light-40)
     inset;
 }
 
 .dark .glass-card {
   background: oklch(0.15 0.02 260 / 0.55);
-  border-color: oklch(1 0 0 / 0.08);
-  box-shadow: 0 0.125rem 0.5rem -0.125rem oklch(0 0 0 / 0.3), 0 0.5rem 1.5rem
-    -0.25rem oklch(0 0 0 / 0.25), inset 0 0.0625rem 0.0625rem
-    oklch(1 0 0 / 0.05);
+  border-color: var(--glass-light-08);
+  box-shadow: 0 0.125rem 0.5rem -0.125rem var(--glass-dark-30), 0 0.5rem 1.5rem
+    -0.25rem var(--glass-dark-25), inset 0 0.0625rem 0.0625rem
+    var(--glass-light-05);
 }
 
 /* iOS 26 Glass - Selected/Active state */
 .glass-active {
-  background: oklch(0.55 0.2 250 / 0.12);
+  background: var(--glass-accent-12);
   backdrop-filter: blur(1rem);
   -webkit-backdrop-filter: blur(1rem);
-  border: 1px solid oklch(0.55 0.2 250 / 0.2);
+  border: 1px solid var(--glass-accent-20);
   color: var(--color-accent-600);
 }
 
@@ -195,7 +195,7 @@
   background: oklch(0.5 0.15 250 / 0.2);
   border-color: oklch(0.6 0.18 250 / 0.3);
   box-shadow: 0 0.125rem 0.5rem -0.125rem oklch(0.5 0.18 250 / 0.25), inset 0
-    0.0625rem 0.0625rem oklch(1 0 0 / 0.08);
+    0.0625rem 0.0625rem var(--glass-light-08);
 }
 
 /* ============================================
@@ -204,8 +204,8 @@
 
 /* iOS 26 Input fields */
 .glass-input {
-  background: oklch(0 0 0 / 0.03);
-  border: 1px solid oklch(0 0 0 / 0.08);
+  background: var(--glass-dark-03);
+  border: 1px solid var(--glass-dark-08);
   border-radius: 0.75rem;
   padding: 0.625rem 1rem;
   transition: all var(--transition-normal) var(--ease-out-smooth);
@@ -224,39 +224,39 @@ select.glass-input {
 }
 
 .dark .glass-input {
-  background: oklch(1 0 0 / 0.08);
-  border-color: oklch(1 0 0 / 0.12);
+  background: var(--glass-light-08);
+  border-color: var(--glass-light-12);
   color: var(--color-surface-100);
 }
 
 .glass-input:hover {
-  background: oklch(0 0 0 / 0.05);
-  border-color: oklch(0 0 0 / 0.15);
+  background: var(--glass-dark-05);
+  border-color: var(--glass-dark-15);
 }
 
 .dark .glass-input:hover {
-  background: oklch(1 0 0 / 0.12);
-  border-color: oklch(1 0 0 / 0.18);
+  background: var(--glass-light-12);
+  border-color: var(--glass-light-18);
 }
 
 .glass-input:focus {
-  background: oklch(1 0 0 / 0.8);
+  background: var(--glass-light-80);
   border-color: var(--color-accent-500);
-  box-shadow: 0 0 0 3px oklch(0.55 0.2 250 / 0.15);
+  box-shadow: 0 0 0 3px var(--glass-accent-15);
 }
 
 .dark .glass-input:focus {
   background: oklch(0.2 0.02 250 / 0.8);
   border-color: var(--color-accent-400);
-  box-shadow: 0 0 0 0.1875rem oklch(0.55 0.2 250 / 0.25);
+  box-shadow: 0 0 0 0.1875rem var(--glass-accent-25);
 }
 
 .glass-input::placeholder {
-  color: oklch(0 0 0 / 0.4);
+  color: var(--glass-dark-40);
 }
 
 .dark .glass-input::placeholder {
-  color: oklch(1 0 0 / 0.4);
+  color: var(--glass-light-40);
 }
 
 /* Error state for inputs */
@@ -280,27 +280,27 @@ select.glass-input {
 
 /* iOS 26 Glass - Small UI elements (badges, kbd, tags) */
 .glass-button {
-  background: oklch(1 0 0 / 0.5);
-  border: 1px solid oklch(0 0 0 / 0.06);
-  box-shadow: 0 1px 2px oklch(0 0 0 / 0.05);
+  background: var(--glass-light-50);
+  border: 1px solid var(--glass-dark-06);
+  box-shadow: 0 1px 2px var(--glass-dark-05);
   color: var(--color-surface-800);
 }
 
 .dark .glass-button {
-  background: oklch(1 0 0 / 0.12);
-  border-color: oklch(1 0 0 / 0.1);
+  background: var(--glass-light-12);
+  border-color: var(--glass-light-10);
   color: var(--color-surface-200);
 }
 
 .glass-button:hover {
-  background: oklch(1 0 0 / 0.8);
-  border-color: oklch(0 0 0 / 0.1);
+  background: var(--glass-light-80);
+  border-color: var(--glass-dark-10);
   transform: translateY(-0.5px);
 }
 
 .dark .glass-button:hover {
-  background: oklch(1 0 0 / 0.18);
-  border-color: oklch(1 0 0 / 0.2);
+  background: var(--glass-light-18);
+  border-color: var(--glass-light-20);
   transform: none;
 }
 
@@ -314,7 +314,7 @@ select.glass-input {
 
 .glass-icon-btn:hover {
   color: var(--color-surface-900);
-  background: oklch(0 0 0 / 0.06);
+  background: var(--glass-dark-06);
 }
 
 .dark .glass-icon-btn {
@@ -323,7 +323,7 @@ select.glass-input {
 
 .dark .glass-icon-btn:hover {
   color: var(--color-surface-100);
-  background: oklch(1 0 0 / 0.1);
+  background: var(--glass-light-10);
 }
 
 .glass-icon-btn:disabled {
@@ -342,29 +342,29 @@ select.glass-input {
 
 /* iOS 26 Checkbox - Design system checkbox styling */
 .glass-checkbox {
-  background: oklch(0 0 0 / 0.04);
-  border: 1.5px solid oklch(0 0 0 / 0.2);
+  background: var(--glass-dark-04);
+  border: 1.5px solid var(--glass-dark-20);
   border-radius: 0.375rem;
   transition: all var(--transition-normal) var(--ease-out-smooth);
 }
 
 .dark .glass-checkbox {
-  background: oklch(1 0 0 / 0.08);
-  border-color: oklch(1 0 0 / 0.2);
+  background: var(--glass-light-08);
+  border-color: var(--glass-light-20);
 }
 
 .glass-checkbox-checked {
   background: var(--color-accent-500);
   border: 1.5px solid var(--color-accent-500);
   border-radius: 0.375rem;
-  box-shadow: 0 2px 4px oklch(0.55 0.2 250 / 0.3);
+  box-shadow: 0 2px 4px var(--glass-accent-30);
 }
 
 .dark .glass-checkbox-checked {
   background: var(--color-accent-400);
   border: 1.5px solid var(--color-accent-400);
   border-radius: 0.375rem;
-  box-shadow: 0 0.125rem 0.25rem oklch(0.55 0.2 250 / 0.4);
+  box-shadow: 0 0.125rem 0.25rem var(--glass-accent-40);
 }
 
 /* ============================================
@@ -384,7 +384,7 @@ select.glass-input {
   -webkit-backdrop-filter: blur(40px) saturate(100%);
   border: none;
   /* Very subtle shadow for depth */
-  box-shadow: 0 4px 24px 0 oklch(0 0 0 / 0.06);
+  box-shadow: 0 4px 24px 0 var(--glass-dark-06);
   isolation: isolate;
 }
 
@@ -398,12 +398,12 @@ select.glass-input {
   border: 1.5px solid transparent;
   background: linear-gradient(
       160deg,
-      oklch(1 0 0 / 0.6) 0%,
-      oklch(1 0 0 / 0.3) 15%,
-      oklch(1 0 0 / 0.1) 40%,
-      oklch(1 0 0 / 0.05) 60%,
-      oklch(1 0 0 / 0.15) 85%,
-      oklch(1 0 0 / 0.3) 100%
+      var(--glass-light-60) 0%,
+      var(--glass-light-30) 15%,
+      var(--glass-light-10) 40%,
+      var(--glass-light-05) 60%,
+      var(--glass-light-15) 85%,
+      var(--glass-light-30) 100%
     )
     border-box;
   -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
@@ -415,18 +415,18 @@ select.glass-input {
 
 .dark .glass-morphic {
   background: transparent;
-  box-shadow: 0 4px 24px 0 oklch(0 0 0 / 0.2);
+  box-shadow: 0 4px 24px 0 var(--glass-dark-20);
 }
 
 .dark .glass-morphic::before {
   background: linear-gradient(
       160deg,
-      oklch(1 0 0 / 0.3) 0%,
-      oklch(1 0 0 / 0.15) 15%,
-      oklch(1 0 0 / 0.05) 40%,
-      oklch(1 0 0 / 0.02) 60%,
-      oklch(1 0 0 / 0.08) 85%,
-      oklch(1 0 0 / 0.15) 100%
+      var(--glass-light-30) 0%,
+      var(--glass-light-15) 15%,
+      var(--glass-light-05) 40%,
+      var(--glass-light-02) 60%,
+      var(--glass-light-08) 85%,
+      var(--glass-light-15) 100%
     )
     border-box;
 }
@@ -434,12 +434,12 @@ select.glass-input {
 /* Thicker border variant - more prominent lens edge */
 .glass-morphic-thick {
   position: relative;
-  background: oklch(1 0 0 / 0.05);
+  background: var(--glass-light-05);
   backdrop-filter: blur(var(--glass-blur-thick)) saturate(115%);
   -webkit-backdrop-filter: blur(var(--glass-blur-thick)) saturate(115%);
-  border: 2px solid oklch(1 0 0 / 0.3);
-  box-shadow: 0 12px 40px 0 oklch(0 0 0 / 0.1), inset 0 2px 2px 0
-    oklch(1 0 0 / 0.5), inset 0 -1px 2px 0 oklch(1 0 0 / 0.15);
+  border: 2px solid var(--glass-light-30);
+  box-shadow: 0 12px 40px 0 var(--glass-dark-10), inset 0 2px 2px 0
+    var(--glass-light-50), inset 0 -1px 2px 0 var(--glass-light-15);
   isolation: isolate;
 }
 
@@ -451,11 +451,11 @@ select.glass-input {
   padding: 2px;
   background: linear-gradient(
     135deg,
-    oklch(1 0 0 / 0.6) 0%,
-    oklch(1 0 0 / 0.25) 20%,
-    oklch(1 0 0 / 0.08) 50%,
-    oklch(1 0 0 / 0.03) 80%,
-    oklch(1 0 0 / 0.15) 100%
+    var(--glass-light-60) 0%,
+    var(--glass-light-25) 20%,
+    var(--glass-light-08) 50%,
+    var(--glass-light-03) 80%,
+    var(--glass-light-15) 100%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -466,32 +466,32 @@ select.glass-input {
 }
 
 .dark .glass-morphic-thick {
-  background: oklch(1 0 0 / 0.03);
-  border-color: oklch(1 0 0 / 0.15);
-  box-shadow: 0 12px 40px 0 oklch(0 0 0 / 0.35), inset 0 2px 2px 0
-    oklch(1 0 0 / 0.2), inset 0 -1px 2px 0 oklch(1 0 0 / 0.05);
+  background: var(--glass-light-03);
+  border-color: var(--glass-light-15);
+  box-shadow: 0 12px 40px 0 var(--glass-dark-35), inset 0 2px 2px 0
+    var(--glass-light-20), inset 0 -1px 2px 0 var(--glass-light-05);
 }
 
 .dark .glass-morphic-thick::before {
   background: linear-gradient(
     135deg,
-    oklch(1 0 0 / 0.25) 0%,
-    oklch(1 0 0 / 0.1) 20%,
-    oklch(1 0 0 / 0.03) 50%,
-    oklch(1 0 0 / 0.01) 80%,
-    oklch(1 0 0 / 0.06) 100%
+    var(--glass-light-25) 0%,
+    var(--glass-light-10) 20%,
+    var(--glass-light-03) 50%,
+    var(--glass-light-01) 80%,
+    var(--glass-light-06) 100%
   );
 }
 
 /* Subtle variant - minimal lens edge */
 .glass-morphic-subtle {
   position: relative;
-  background: oklch(1 0 0 / 0.02);
+  background: var(--glass-light-02);
   backdrop-filter: blur(var(--glass-blur-standard)) saturate(105%);
   -webkit-backdrop-filter: blur(var(--glass-blur-standard)) saturate(105%);
-  border: 1px solid oklch(1 0 0 / 0.15);
-  box-shadow: 0 4px 16px oklch(0 0 0 / 0.05), inset 0 1px 0 0
-    oklch(1 0 0 / 0.25);
+  border: 1px solid var(--glass-light-15);
+  box-shadow: 0 4px 16px var(--glass-dark-05), inset 0 1px 0 0
+    var(--glass-light-25);
   isolation: isolate;
 }
 
@@ -503,10 +503,10 @@ select.glass-input {
   padding: 1px;
   background: linear-gradient(
     135deg,
-    oklch(1 0 0 / 0.35) 0%,
-    oklch(1 0 0 / 0.1) 30%,
-    oklch(1 0 0 / 0.02) 70%,
-    oklch(1 0 0 / 0.08) 100%
+    var(--glass-light-35) 0%,
+    var(--glass-light-10) 30%,
+    var(--glass-light-02) 70%,
+    var(--glass-light-08) 100%
   );
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -516,18 +516,18 @@ select.glass-input {
 }
 
 .dark .glass-morphic-subtle {
-  background: oklch(1 0 0 / 0.015);
-  border-color: oklch(1 0 0 / 0.08);
-  box-shadow: 0 4px 16px oklch(0 0 0 / 0.2), inset 0 1px 0 0 oklch(1 0 0 / 0.1);
+  background: var(--glass-light-015);
+  border-color: var(--glass-light-08);
+  box-shadow: 0 4px 16px var(--glass-dark-20), inset 0 1px 0 0 var(--glass-light-10);
 }
 
 .dark .glass-morphic-subtle::before {
   background: linear-gradient(
     135deg,
-    oklch(1 0 0 / 0.15) 0%,
-    oklch(1 0 0 / 0.04) 30%,
-    oklch(1 0 0 / 0.01) 70%,
-    oklch(1 0 0 / 0.03) 100%
+    var(--glass-light-15) 0%,
+    var(--glass-light-04) 30%,
+    var(--glass-light-01) 70%,
+    var(--glass-light-03) 100%
   );
 }
 
@@ -541,7 +541,7 @@ select.glass-input {
   --chromatic-intensity: 0.6;
 
   position: relative;
-  background: linear-gradient(135deg, oklch(1 0 0 / 0.1), oklch(1 0 0 / 0.01));
+  background: linear-gradient(135deg, var(--glass-light-10), var(--glass-light-01));
   backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-high));
   -webkit-backdrop-filter: blur(var(--glass-blur-standard))
@@ -549,8 +549,8 @@ select.glass-input {
   border: 1px solid transparent;
   border-radius: inherit;
   isolation: isolate;
-  box-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.1), inset 0 0 0 1px
-    oklch(1 0 0 / 0.1);
+  box-shadow: 0 8px 32px 0 var(--glass-dark-10), inset 0 0 0 1px
+    var(--glass-light-10);
 }
 
 /* Chromatic aberration border effect using multiple box-shadows */
@@ -584,7 +584,7 @@ select.glass-input {
   background: transparent;
   box-shadow: inset 0 0 calc(var(--chromatic-spread) * 2)
     oklch(0.65 0.2 15 / 0.15), inset 0 0 calc(var(--chromatic-spread) * 3)
-    oklch(0.65 0.2 220 / 0.12), 0 4px 12px oklch(0 0 0 / 0.1);
+    oklch(0.65 0.2 220 / 0.12), 0 4px 12px var(--glass-dark-10);
   pointer-events: none;
   z-index: -1;
   opacity: 1;
@@ -597,14 +597,14 @@ select.glass-input {
     oklch(0.12 0.02 260 / 0.25),
     oklch(0.12 0.02 260 / 0.05)
   );
-  box-shadow: 0 8px 32px 0 oklch(0 0 0 / 0.3), inset 0 0 0 1px
-    oklch(1 0 0 / 0.1);
+  box-shadow: 0 8px 32px 0 var(--glass-dark-30), inset 0 0 0 1px
+    var(--glass-light-10);
 }
 
 .dark .glass-chromatic::after {
   box-shadow: inset 0 0 calc(var(--chromatic-spread) * 2)
     oklch(0.6 0.15 15 / 0.2), inset 0 0 calc(var(--chromatic-spread) * 3)
-    oklch(0.6 0.15 220 / 0.15), 0 4px 12px oklch(0 0 0 / 0.3);
+    oklch(0.6 0.15 220 / 0.15), 0 4px 12px var(--glass-dark-30);
 }
 
 /* Subtle variant - less intense chromatic effect */
@@ -613,12 +613,12 @@ select.glass-input {
   --chromatic-intensity: 0.35;
 
   position: relative;
-  background: linear-gradient(135deg, oklch(1 0 0 / 0.15), oklch(1 0 0 / 0.05));
+  background: linear-gradient(135deg, var(--glass-light-15), var(--glass-light-05));
   backdrop-filter: blur(var(--glass-blur-thin)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--glass-blur-thin)) saturate(160%);
   border: 1px solid transparent;
   isolation: isolate;
-  box-shadow: 0 4px 16px oklch(0 0 0 / 0.05);
+  box-shadow: 0 4px 16px var(--glass-dark-05);
 }
 
 .glass-chromatic-subtle::before {
@@ -647,7 +647,7 @@ select.glass-input {
     oklch(0.15 0.02 260 / 0.25),
     oklch(0.15 0.02 260 / 0.1)
   );
-  box-shadow: 0 4px 16px oklch(0 0 0 / 0.2);
+  box-shadow: 0 4px 16px var(--glass-dark-20);
 }
 
 /* Intense variant - stronger chromatic aberration */
@@ -656,14 +656,14 @@ select.glass-input {
   --chromatic-intensity: 0.8;
 
   position: relative;
-  background: linear-gradient(135deg, oklch(1 0 0 / 0.05), oklch(1 0 0 / 0));
+  background: linear-gradient(135deg, var(--glass-light-05), var(--glass-light-0));
   backdrop-filter: blur(var(--glass-blur-thick))
     saturate(var(--glass-saturate-high));
   -webkit-backdrop-filter: blur(var(--glass-blur-thick))
     saturate(var(--glass-saturate-high));
   border: 1px solid transparent;
   isolation: isolate;
-  box-shadow: 0 12px 48px oklch(0 0 0 / 0.15), inset 0 0 20px oklch(1 0 0 / 0.1);
+  box-shadow: 0 12px 48px var(--glass-dark-15), inset 0 0 20px var(--glass-light-10);
 }
 
 .glass-chromatic-intense::before {
@@ -710,7 +710,7 @@ select.glass-input {
     oklch(0.1 0.02 260 / 0.15),
     oklch(0.1 0.02 260 / 0.05)
   );
-  box-shadow: 0 12px 48px oklch(0 0 0 / 0.4);
+  box-shadow: 0 12px 48px var(--glass-dark-40);
 }
 
 .dark .glass-chromatic-intense::after {
@@ -726,14 +726,14 @@ select.glass-input {
   --chromatic-intensity: 0.6;
 
   position: relative;
-  background: linear-gradient(135deg, oklch(1 0 0 / 0.1), oklch(1 0 0 / 0.02));
+  background: linear-gradient(135deg, var(--glass-light-10), var(--glass-light-02));
   backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-high));
   -webkit-backdrop-filter: blur(var(--glass-blur-standard))
     saturate(var(--glass-saturate-high));
   border: 1px solid transparent;
   isolation: isolate;
-  box-shadow: 0 8px 32px oklch(0 0 0 / 0.1);
+  box-shadow: 0 8px 32px var(--glass-dark-10);
 }
 
 .glass-chromatic-animated::before {
@@ -786,19 +786,19 @@ select.glass-input {
 
 /* iOS 26 Tooltip - Glassmorphic tooltip */
 .glass-tooltip {
-  background: oklch(1 0 0 / 0.85);
+  background: var(--glass-light-85);
   backdrop-filter: blur(1.5rem) saturate(180%);
   -webkit-backdrop-filter: blur(1.5rem) saturate(180%);
-  border: 1px solid oklch(0 0 0 / 0.08);
-  box-shadow: 0 10px 25px -5px oklch(0 0 0 / 0.1), 0 8px 10px -6px
-    oklch(0 0 0 / 0.1);
+  border: 1px solid var(--glass-dark-08);
+  box-shadow: 0 10px 25px -5px var(--glass-dark-10), 0 8px 10px -6px
+    var(--glass-dark-10);
   color: var(--color-surface-900);
 }
 
 .dark .glass-tooltip {
   background: oklch(0.2 0.02 260 / 0.9);
-  border-color: oklch(1 0 0 / 0.15);
-  box-shadow: 0 0.25rem 0.75rem -0.125rem oklch(0 0 0 / 0.4), 0 0.5rem 1.5rem
-    -0.25rem oklch(0 0 0 / 0.3);
+  border-color: var(--glass-light-15);
+  box-shadow: 0 0.25rem 0.75rem -0.125rem var(--glass-dark-40), 0 0.5rem 1.5rem
+    -0.25rem var(--glass-dark-30);
   color: var(--color-surface-50);
 }

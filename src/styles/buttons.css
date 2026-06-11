@@ -16,21 +16,21 @@
   padding: 0.625rem 1.25rem;
   font-size: 0.9375rem;
   letter-spacing: -0.01em;
-  box-shadow: 0 2px 10px oklch(0.55 0.2 250 / 0.3), inset 0 1px 0
-    oklch(1 0 0 / 0.2);
+  box-shadow: 0 2px 10px var(--glass-accent-30), inset 0 1px 0
+    var(--glass-light-20);
   transition: all var(--transition-normal) var(--ease-out-smooth);
 }
 
 .btn-primary:hover {
   background: var(--color-accent-600);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px oklch(0.55 0.2 250 / 0.4), inset 0 1px 0
-    oklch(1 0 0 / 0.2);
+  box-shadow: 0 4px 12px var(--glass-accent-40), inset 0 1px 0
+    var(--glass-light-20);
 }
 
 .btn-primary:active {
   transform: translateY(0);
-  box-shadow: 0 1px 2px oklch(0.55 0.2 250 / 0.3);
+  box-shadow: 0 1px 2px var(--glass-accent-30);
 }
 
 .btn-primary:disabled {
@@ -43,13 +43,13 @@
 .dark .btn-primary {
   background: oklch(0.6 0.2 250);
   box-shadow: 0 2px 10px oklch(0.6 0.2 250 / 0.25), inset 0 1px 0
-    oklch(1 0 0 / 0.1);
+    var(--glass-light-10);
 }
 
 .dark .btn-primary:hover {
   background: oklch(0.65 0.2 250);
   box-shadow: 0 4px 12px oklch(0.6 0.2 250 / 0.35), inset 0 1px 0
-    oklch(1 0 0 / 0.1);
+    var(--glass-light-10);
 }
 
 .dark .btn-primary:disabled {
@@ -62,10 +62,10 @@
    ============================================ */
 
 .btn-secondary {
-  background: oklch(1 0 0 / 0.6);
+  background: var(--glass-light-60);
   color: var(--color-accent-600);
   font-weight: 600;
-  border: 1px solid oklch(0.55 0.2 250 / 0.2);
+  border: 1px solid var(--glass-accent-20);
   border-radius: 0.75rem;
   padding: 0.625rem 1.25rem;
   font-size: 0.9375rem;
@@ -75,24 +75,24 @@
 }
 
 .dark .btn-secondary {
-  background: oklch(1 0 0 / 0.08);
+  background: var(--glass-light-08);
   color: oklch(0.85 0.02 250);
-  border-color: oklch(1 0 0 / 0.12);
+  border-color: var(--glass-light-12);
 }
 
 .btn-secondary:hover {
-  background: oklch(0.55 0.2 250 / 0.1);
-  border-color: oklch(0.55 0.2 250 / 0.3);
+  background: var(--glass-accent-10);
+  border-color: var(--glass-accent-30);
 }
 
 .dark .btn-secondary:hover {
-  background: oklch(1 0 0 / 0.12);
-  border-color: oklch(1 0 0 / 0.2);
+  background: var(--glass-light-12);
+  border-color: var(--glass-light-20);
   color: white;
 }
 
 .btn-secondary:active {
-  background: oklch(0.55 0.2 250 / 0.15);
+  background: var(--glass-accent-15);
 }
 
 /* ============================================
@@ -116,12 +116,12 @@
 }
 
 .btn-tertiary:hover {
-  background: oklch(0.55 0.2 250 / 0.08);
+  background: var(--glass-accent-08);
   color: var(--color-accent-700);
 }
 
 .dark .btn-tertiary:hover {
-  background: oklch(0.55 0.2 250 / 0.15);
+  background: var(--glass-accent-15);
 }
 
 /* ============================================
@@ -145,12 +145,12 @@
 }
 
 .btn-ghost:hover {
-  background: oklch(0 0 0 / 0.05);
+  background: var(--glass-dark-05);
   color: var(--color-surface-900);
 }
 
 .dark .btn-ghost:hover {
-  background: oklch(1 0 0 / 0.08);
+  background: var(--glass-light-08);
   color: var(--color-surface-100);
 }
 
@@ -173,7 +173,7 @@
   font-size: 0.9375rem;
   letter-spacing: -0.01em;
   box-shadow: 0 2px 10px oklch(0.55 0.22 25 / 0.3), inset 0 1px 0
-    oklch(1 0 0 / 0.2);
+    var(--glass-light-20);
   transition: all var(--transition-normal) var(--ease-out-smooth);
 }
 
@@ -181,7 +181,7 @@
   background: oklch(0.5 0.24 25);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px oklch(0.55 0.22 25 / 0.4), inset 0 1px 0
-    oklch(1 0 0 / 0.2);
+    var(--glass-light-20);
 }
 
 .btn-danger:active {
@@ -199,13 +199,13 @@
 .dark .btn-danger {
   background: oklch(0.6 0.22 25);
   box-shadow: 0 2px 10px oklch(0.6 0.22 25 / 0.25), inset 0 1px 0
-    oklch(1 0 0 / 0.1);
+    var(--glass-light-10);
 }
 
 .dark .btn-danger:hover {
   background: oklch(0.65 0.22 25);
   box-shadow: 0 4px 12px oklch(0.6 0.22 25 / 0.35), inset 0 1px 0
-    oklch(1 0 0 / 0.1);
+    var(--glass-light-10);
 }
 
 .dark .btn-danger:disabled {

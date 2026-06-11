@@ -43,7 +43,7 @@ body {
 
 .focus-ring:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px oklch(0.55 0.2 250 / 0.3);
+  box-shadow: 0 0 0 3px var(--glass-accent-30);
 }
 
 /* ============================================
@@ -61,24 +61,24 @@ body {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: oklch(0 0 0 / 0.15);
+  background: var(--glass-dark-15);
   border-radius: 62.5rem;
   border: 1px solid transparent;
   background-clip: content-box;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: oklch(0 0 0 / 0.25);
+  background: var(--glass-dark-25);
   border: 1px solid transparent;
   background-clip: content-box;
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: oklch(1 0 0 / 0.2);
+  background: var(--glass-light-20);
 }
 
 .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: oklch(1 0 0 / 0.3);
+  background: var(--glass-light-30);
 }
 
 /* ============================================
@@ -182,7 +182,7 @@ body {
 
 /* Subtle pattern for depth - iOS style */
 .pattern-dots {
-  background-image: radial-gradient(oklch(0 0 0 / 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(var(--glass-dark-05) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -203,7 +203,7 @@ body {
   background: linear-gradient(
     to right,
     transparent,
-    oklch(0 0 0 / 0.08),
+    var(--glass-dark-08),
     transparent
   );
 }
@@ -301,9 +301,9 @@ body {
   height: var(--slider-thumb-size);
   border-radius: 9999px;
   background: white;
-  box-shadow: 0 2px 6px -1px oklch(0 0 0 / 0.15), 0 1px 3px -1px
-    oklch(0 0 0 / 0.1);
-  border: 1px solid oklch(0 0 0 / 0.08);
+  box-shadow: 0 2px 6px -1px var(--glass-dark-15), 0 1px 3px -1px
+    var(--glass-dark-10);
+  border: 1px solid var(--glass-dark-08);
   cursor: pointer;
   transform: translateY(
     calc((var(--slider-track-height) - var(--slider-thumb-size)) / 2)
@@ -316,8 +316,8 @@ body {
       calc((var(--slider-track-height) - var(--slider-thumb-size)) / 2)
     )
     scale(1.08);
-  box-shadow: 0 3px 8px -1px oklch(0 0 0 / 0.2), 0 2px 4px -1px
-    oklch(0 0 0 / 0.1);
+  box-shadow: 0 3px 8px -1px var(--glass-dark-20), 0 2px 4px -1px
+    var(--glass-dark-10);
 }
 
 .slider-input::-webkit-slider-thumb:active {
@@ -328,13 +328,13 @@ body {
 }
 
 .slider-input:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 3px oklch(0.55 0.2 250 / 0.3), 0 2px 6px -1px
-    oklch(0 0 0 / 0.15);
+  box-shadow: 0 0 0 3px var(--glass-accent-30), 0 2px 6px -1px
+    var(--glass-dark-15);
 }
 
 .dark .slider-input::-webkit-slider-thumb {
   background: oklch(0.95 0 0);
-  border-color: oklch(1 0 0 / 0.1);
+  border-color: var(--glass-light-10);
 }
 
 /* Firefox */
@@ -353,17 +353,17 @@ body {
   height: var(--slider-thumb-size);
   border-radius: 9999px;
   background: white;
-  box-shadow: 0 2px 6px -1px oklch(0 0 0 / 0.15), 0 1px 3px -1px
-    oklch(0 0 0 / 0.1);
-  border: 1px solid oklch(0 0 0 / 0.08);
+  box-shadow: 0 2px 6px -1px var(--glass-dark-15), 0 1px 3px -1px
+    var(--glass-dark-10);
+  border: 1px solid var(--glass-dark-08);
   cursor: pointer;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .slider-input::-moz-range-thumb:hover {
   transform: scale(1.08);
-  box-shadow: 0 3px 8px -1px oklch(0 0 0 / 0.2), 0 2px 4px -1px
-    oklch(0 0 0 / 0.1);
+  box-shadow: 0 3px 8px -1px var(--glass-dark-20), 0 2px 4px -1px
+    var(--glass-dark-10);
 }
 
 .slider-input::-moz-range-thumb:active {
@@ -371,11 +371,11 @@ body {
 }
 
 .slider-input:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 3px oklch(0.55 0.2 250 / 0.3), 0 2px 6px -1px
-    oklch(0 0 0 / 0.15);
+  box-shadow: 0 0 0 3px var(--glass-accent-30), 0 2px 6px -1px
+    var(--glass-dark-15);
 }
 
 .dark .slider-input::-moz-range-thumb {
   background: oklch(0.95 0 0);
-  border-color: oklch(1 0 0 / 0.1);
+  border-color: var(--glass-light-10);
 }
