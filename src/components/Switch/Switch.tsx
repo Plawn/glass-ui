@@ -1,4 +1,5 @@
 import { type Component, Show, splitProps } from 'solid-js';
+import { TRANSITION_ALL_SLOW } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { SwitchProps, SwitchSize } from './types';
 
@@ -118,7 +119,7 @@ export const Switch: Component<SwitchProps> = (props) => {
         onKeyDown={handleKeyDown}
         class={`
           relative inline-flex items-center rounded-full
-          transition-all duration-300 ease-out
+          ${TRANSITION_ALL_SLOW}
           focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
           focus-visible:ring-accent-500 dark:focus-visible:ring-accent-400
           backdrop-blur-xl
@@ -137,7 +138,7 @@ export const Switch: Component<SwitchProps> = (props) => {
         <span
           class={`
             inline-block rounded-full
-            transform transition-all duration-300 ease-out
+            transform ${TRANSITION_ALL_SLOW}
             backdrop-blur-md
             bg-white/30 dark:bg-white/20
             border border-white/40

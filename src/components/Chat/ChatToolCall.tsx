@@ -8,6 +8,7 @@ import {
   createMemo,
   createSignal,
 } from 'solid-js';
+import { TRANSITION_TRANSFORM } from '../../constants';
 import { Badge } from '../Badge';
 import { JsonViewer } from '../JsonViewer';
 import { Spinner } from '../Spinner';
@@ -112,7 +113,7 @@ const ToolCallItem: Component<{ tool: ToolCall }> = (props) => {
         </Badge>
         <ChevronDownIcon
           size={12}
-          class={`ml-auto transition-transform duration-200 text-surface-400 ${isOpen() ? 'rotate-180' : ''}`}
+          class={`ml-auto ${TRANSITION_TRANSFORM} text-surface-400 ${isOpen() ? 'rotate-180' : ''}`}
         />
       </button>
 
@@ -246,7 +247,7 @@ export const ChatToolCall: Component<ChatToolCallProps> = (props) => {
         </span>
         <ChevronDownIcon
           size={14}
-          class={`transition-transform duration-200 ${isOpen() ? 'rotate-180' : ''}`}
+          class={`${TRANSITION_TRANSFORM} ${isOpen() ? 'rotate-180' : ''}`}
         />
       </button>
 

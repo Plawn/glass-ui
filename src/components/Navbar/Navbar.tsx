@@ -7,6 +7,7 @@ import {
   onMount,
   splitProps,
 } from 'solid-js';
+import { TRANSITION_ALL, TRANSITION_TRANSFORM } from '../../constants';
 import { useDisclosure } from '../../hooks';
 import type { NavbarItem, NavbarProps } from './types';
 
@@ -16,7 +17,7 @@ import type { NavbarItem, NavbarProps } from './types';
 const HamburgerIcon: Component<{ open: boolean; class?: string }> = (props) => {
   return (
     <svg
-      class={`w-6 h-6 transition-transform duration-200 ${props.class ?? ''}`}
+      class={`w-6 h-6 ${TRANSITION_TRANSFORM} ${props.class ?? ''}`}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -196,7 +197,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
   const showBackground = () => !transparent() || scrolled();
 
   const navbarClasses = () => {
-    const baseClasses = 'w-full h-16 z-40 transition-all duration-200';
+    const baseClasses = `w-full h-16 z-40 ${TRANSITION_ALL}`;
     const positionClasses = sticky() ? 'sticky top-0' : 'relative';
     const backgroundClasses = showBackground()
       ? 'glass-navbar'
@@ -206,8 +207,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
   };
 
   const mobileMenuClasses = () => {
-    const baseClasses =
-      'absolute top-full left-0 right-0 glass-navbar shadow-lg overflow-hidden transition-all duration-200';
+    const baseClasses = `absolute top-full left-0 right-0 glass-navbar shadow-lg overflow-hidden ${TRANSITION_ALL}`;
 
     return mobileMenu.isOpen()
       ? `${baseClasses} opacity-100 translate-y-0`

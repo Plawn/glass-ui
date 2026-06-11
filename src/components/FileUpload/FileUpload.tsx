@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { type Component, For, Show, createSignal, splitProps } from 'solid-js';
+import { TRANSITION_ALL } from '../../constants';
 import { TrashIcon } from '../shared';
 import type { FileUploadProps } from './types';
 
@@ -195,7 +196,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
       {/* Drop zone */}
       <div
         class={clsx(
-          'relative rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer',
+          `relative rounded-xl border-2 border-dashed ${TRANSITION_ALL} cursor-pointer`,
           'bg-surface-50/50 dark:bg-surface-800/30',
           'backdrop-blur-sm',
           {

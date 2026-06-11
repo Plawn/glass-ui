@@ -6,7 +6,7 @@ import {
   createSignal,
   onCleanup,
 } from 'solid-js';
-import { SNACKBAR_ENTER, SNACKBAR_EXIT } from '../../constants';
+import { SNACKBAR_ENTER, SNACKBAR_EXIT, TRANSITION_ALL } from '../../constants';
 import { PortalWithDarkMode } from '../shared';
 import { CloseIcon } from '../shared/icons';
 import { type SnackbarItem, dismissSnackbar, getSnackbarStore } from './store';
@@ -57,7 +57,7 @@ const SnackbarItemComponent: Component<{
 
   return (
     <div
-      class={`glass-card flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg min-w-[200px] max-w-sm transition-all duration-200 ${
+      class={`glass-card flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg min-w-[200px] max-w-sm ${TRANSITION_ALL} ${
         exiting() ? exitAnimation() : enterAnimation()
       }`}
     >

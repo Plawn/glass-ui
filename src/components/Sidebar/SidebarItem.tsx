@@ -1,4 +1,10 @@
 import { type Component, For, Show, createMemo } from 'solid-js';
+import {
+  ACCORDION_CONTENT_ENTER,
+  TRANSITION_ALL_SLOW,
+  TRANSITION_COLORS_SLOW,
+  TRANSITION_TRANSFORM,
+} from '../../constants';
 import { ChevronRightIcon } from '../shared/icons';
 import type { SidebarItem, SidebarItemComponentProps } from './types';
 
@@ -60,7 +66,7 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
   const baseClasses = () => {
     const base = `
       w-full flex items-center gap-3 rounded-xl
-      transition-all duration-300 ease-out
+      ${TRANSITION_ALL_SLOW}
       text-sm font-medium cursor-pointer select-none
       focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50
     `;
@@ -97,7 +103,7 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
       {/* Icon */}
       <Show when={props.item.icon}>
         <span
-          class={`flex-shrink-0 w-5 h-5 flex items-center justify-center transition-colors duration-300 ${
+          class={`flex-shrink-0 w-5 h-5 flex items-center justify-center ${TRANSITION_COLORS_SLOW} ${
             isActive() || hasActiveChild()
               ? 'text-accent-600 dark:text-accent-400'
               : 'text-surface-500 dark:text-surface-400'
@@ -131,7 +137,7 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
       {/* Expand/Collapse chevron for groups */}
       <Show when={hasChildren() && !collapsed()}>
         <ChevronRightIcon
-          class={`w-4 h-4 flex-shrink-0 text-surface-400 dark:text-surface-500 transition-transform duration-200 ${
+          class={`w-4 h-4 flex-shrink-0 text-surface-400 dark:text-surface-500 ${TRANSITION_TRANSFORM} ${
             isExpanded() ? 'rotate-90' : ''
           }`}
         />
@@ -177,7 +183,7 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
 
       {/* Nested children */}
       <Show when={hasChildren() && isExpanded() && !collapsed()}>
-        <div class="mt-1 space-y-1 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div class={`mt-1 space-y-1 ${ACCORDION_CONTENT_ENTER}`}>
           <For each={props.item.children}>
             {(child) => (
               <SidebarItemComponent

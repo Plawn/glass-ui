@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import type { Component } from 'solid-js';
 import { For, Show, createMemo, splitProps } from 'solid-js';
+import { TRANSITION_ALL, TRANSITION_COLORS } from '../../constants';
 import type { ComponentSize } from '../../types';
 import { CheckIcon } from '../shared';
 import type { StepperProps } from './types';
@@ -114,7 +115,7 @@ export const Stepper: Component<StepperProps> = (props) => {
   // --- Circle styles ---
   const getCircleClasses = (index: number) => {
     const base = clsx(
-      'flex items-center justify-center rounded-full shrink-0 transition-all duration-200',
+      `flex items-center justify-center rounded-full shrink-0 ${TRANSITION_ALL}`,
       styles().circle,
     );
 
@@ -166,7 +167,7 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   // --- Connector styles ---
   const getConnectorClasses = (index: number) => {
-    const base = 'transition-colors duration-200';
+    const base = TRANSITION_COLORS;
 
     if (isCompleted(index)) {
       return clsx(base, 'bg-emerald-500 dark:bg-emerald-400');

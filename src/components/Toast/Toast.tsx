@@ -1,6 +1,6 @@
 import { type Component, For, createSignal, onCleanup } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
-import { TOAST_COLORS, TOAST_ENTER } from '../../constants';
+import { TOAST_COLORS, TOAST_ENTER, TRANSITION_ALL } from '../../constants';
 import {
   CheckIcon,
   CloseIcon,
@@ -36,7 +36,7 @@ const ToastItem: Component<{ toast: Toast }> = (props) => {
 
   return (
     <div
-      class={`flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm transition-all duration-200 ${styles().bg} ${exiting() ? 'opacity-0 translate-x-4' : TOAST_ENTER}`}
+      class={`flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm ${TRANSITION_ALL} ${styles().bg} ${exiting() ? 'opacity-0 translate-x-4' : TOAST_ENTER}`}
       role="alert"
       aria-atomic="true"
     >

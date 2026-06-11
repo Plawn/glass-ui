@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js';
 import { Show, createEffect, createSignal, splitProps } from 'solid-js';
+import { ACCORDION_CONTENT_ENTER } from '../../constants';
 import type { CollapsibleProps } from './types';
 
 export const Collapsible: Component<CollapsibleProps> = (props) => {
@@ -65,11 +66,7 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
 
       {/* Content */}
       <Show when={isOpen()}>
-        <div
-          id={id}
-          role="region"
-          class="animate-in fade-in slide-in-from-top-2 duration-200"
-        >
+        <div id={id} role="region" class={ACCORDION_CONTENT_ENTER}>
           {props.children}
         </div>
       </Show>

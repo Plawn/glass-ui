@@ -1,5 +1,5 @@
 import { type Component, For, Show, createSignal, splitProps } from 'solid-js';
-import { ACCORDION_CONTENT_ENTER } from '../../constants';
+import { ACCORDION_CONTENT_ENTER, TRANSITION_TRANSFORM } from '../../constants';
 import { ChevronDownIcon, ChevronRightIcon } from '../shared/icons';
 import type { AccordionProps } from './types';
 
@@ -45,14 +45,14 @@ export const Accordion: Component<AccordionProps> = (props) => {
             >
               <div class="flex items-center gap-2 text-left">
                 <ChevronRightIcon
-                  class={`w-3.5 h-3.5 text-surface-500 dark:text-surface-400 transition-transform duration-200 ${isOpen(item.id) ? 'rotate-90' : ''}`}
+                  class={`w-3.5 h-3.5 text-surface-500 dark:text-surface-400 ${TRANSITION_TRANSFORM} ${isOpen(item.id) ? 'rotate-90' : ''}`}
                 />
                 <span class="text-xs font-medium text-surface-700 dark:text-surface-200">
                   {item.title}
                 </span>
               </div>
               <ChevronDownIcon
-                class={`w-3.5 h-3.5 text-surface-400 dark:text-surface-500 transition-transform duration-200 ${isOpen(item.id) ? 'rotate-180' : ''}`}
+                class={`w-3.5 h-3.5 text-surface-400 dark:text-surface-500 ${TRANSITION_TRANSFORM} ${isOpen(item.id) ? 'rotate-180' : ''}`}
               />
             </button>
 

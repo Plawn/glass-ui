@@ -13,6 +13,8 @@ import {
 import {
   DROPDOWN_ITEM_SIZE_CLASSES,
   INPUT_SIZE_CLASSES,
+  POPOVER_ENTER,
+  TRANSITION_TRANSFORM_FAST,
 } from '../../constants';
 import { useClickOutside, useControlled } from '../../hooks';
 import { Spinner } from '../Spinner';
@@ -503,7 +505,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
               aria-label={isOpen() ? 'Close dropdown' : 'Open dropdown'}
             >
               <ChevronDownIcon
-                class={`transition-transform duration-150 ${isOpen() ? 'rotate-180' : ''}`}
+                class={`${TRANSITION_TRANSFORM_FAST} ${isOpen() ? 'rotate-180' : ''}`}
               />
             </button>
           </Show>
@@ -526,7 +528,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
           <div
             ref={dropdownRef}
             id={listboxId}
-            class="fixed z-50 glass-card rounded-xl shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+            class={`fixed z-50 glass-card rounded-xl shadow-lg overflow-hidden ${POPOVER_ENTER}`}
             style={dropdownPosition()}
             role="listbox"
           >

@@ -5,6 +5,7 @@ import {
   createUniqueId,
   splitProps,
 } from 'solid-js';
+import { TRANSITION_ALL_SLOW } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { RadioGroupProps, RadioGroupSize } from './types';
 
@@ -180,7 +181,7 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
                   class={`
                     ${config().outer}
                     relative flex items-center justify-center rounded-full
-                    transition-all duration-300 ease-out
+                    ${TRANSITION_ALL_SLOW}
                     backdrop-blur-xl
                     border
                     ${
@@ -201,7 +202,7 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
                     class={`
                       ${config().inner}
                       rounded-full
-                      transition-all duration-300 ease-out
+                      ${TRANSITION_ALL_SLOW}
                       ${
                         isSelected()
                           ? 'opacity-100 scale-100 bg-white/80 dark:bg-white/70 shadow-[0_1px_3px_rgba(0,0,0,0.2)]'

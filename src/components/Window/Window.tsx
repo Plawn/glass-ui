@@ -13,6 +13,7 @@ import {
   BACKDROP_ENTER,
   BACKDROP_EXIT,
   MODAL_PANEL_ENTER,
+  WINDOW_EXIT,
 } from '../../constants';
 import {
   type Position,
@@ -206,10 +207,7 @@ export const Window: Component<WindowProps> = (props) => {
 
   // Animation classes
   const backdropClasses = () => (isClosing() ? BACKDROP_EXIT : BACKDROP_ENTER);
-  const windowClasses = () =>
-    isClosing()
-      ? 'animate-out fade-out zoom-out-95 duration-200'
-      : MODAL_PANEL_ENTER;
+  const windowClasses = () => (isClosing() ? WINDOW_EXIT : MODAL_PANEL_ENTER);
 
   // Cursor class for dragging state
   const cursorClass = () => {

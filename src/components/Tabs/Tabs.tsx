@@ -13,7 +13,10 @@ import {
   GAP_SIZES,
   ICON_SIZES,
   TAB_PADDING,
+  TAB_PANEL_ENTER,
   TEXT_SIZES,
+  TRANSITION_COLORS,
+  TRANSITION_INDICATOR,
 } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { ComponentSize } from '../../types';
@@ -182,7 +185,7 @@ export const Tabs: Component<TabsProps> = (props) => {
   const sizeStyle = () => sizeStyles[size()];
 
   const getTabClass = (isActive: boolean, isDisabled: boolean) => {
-    const base = `relative z-10 flex items-center font-medium transition-colors duration-200 whitespace-nowrap select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50 focus-visible:ring-offset-1 rounded-lg ${sizeStyle().tab}`;
+    const base = `relative z-10 flex items-center font-medium ${TRANSITION_COLORS} whitespace-nowrap select-none outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50 focus-visible:ring-offset-1 rounded-lg ${sizeStyle().tab}`;
 
     if (isDisabled) {
       return `${base} opacity-40 cursor-not-allowed`;
@@ -234,7 +237,7 @@ export const Tabs: Component<TabsProps> = (props) => {
         {/* Sliding indicator */}
         <div
           class={`absolute rounded-lg bg-white dark:bg-white/15 shadow-sm dark:shadow-none ${
-            isInitialized() ? 'transition-all duration-300' : ''
+            isInitialized() ? TRANSITION_INDICATOR : ''
           }`}
           style={indicatorCssStyle()}
         />
@@ -291,7 +294,7 @@ export const Tabs: Component<TabsProps> = (props) => {
                 id={`tabpanel-${item.id}`}
                 role="tabpanel"
                 aria-labelledby={`tab-${item.id}`}
-                class={`${activeTab() === item.id ? 'animate-in fade-in slide-in-from-bottom-2 duration-200' : 'hidden'}`}
+                class={`${activeTab() === item.id ? TAB_PANEL_ENTER : 'hidden'}`}
                 aria-hidden={activeTab() !== item.id}
               >
                 {item.content}

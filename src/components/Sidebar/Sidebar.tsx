@@ -14,6 +14,8 @@ import {
   DRAWER_EXIT,
   DURATION_DEFAULT,
   DURATION_SLOW,
+  TRANSITION_ALL_SLOW,
+  TRANSITION_ALL_SLOW_INOUT,
 } from '../../constants';
 import { useAnimationState } from '../../hooks';
 import { PortalWithDarkMode } from '../shared';
@@ -138,11 +140,11 @@ export const Sidebar: Component<SidebarProps> = (props) => {
     <button
       type="button"
       onClick={handleCollapseToggle}
-      class="
+      class={`
         p-2 rounded-xl
         text-surface-500 dark:text-surface-400
         hover:text-surface-700 dark:hover:text-surface-200
-        transition-all duration-300 ease-out
+        ${TRANSITION_ALL_SLOW}
         backdrop-blur-md
         bg-white/5 dark:bg-white/5
         border border-white/10 dark:border-white/5
@@ -151,7 +153,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
         shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]
         hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.05)]
         focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/50
-      "
+      `}
       aria-label={collapsed() ? 'Expand sidebar' : 'Collapse sidebar'}
     >
       <Show when={collapsed()} fallback={<ChevronLeftIcon class="w-4 h-4" />}>
@@ -232,7 +234,7 @@ export const Sidebar: Component<SidebarProps> = (props) => {
   // Desktop sidebar
   const DesktopSidebar = () => (
     <aside
-      class={`h-full glass-sidebar transition-all duration-300 ease-in-out ${props.class ?? ''}`}
+      class={`h-full glass-sidebar ${TRANSITION_ALL_SLOW_INOUT} ${props.class ?? ''}`}
       style={{
         width: collapsed() ? collapsedWidth() : width(),
         'min-width': collapsed() ? collapsedWidth() : width(),

@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js';
 import { Show, createMemo, splitProps } from 'solid-js';
+import { TRANSITION_ALL_SLOW } from '../../constants';
 import type { ProgressColor, ProgressProps, ProgressSize } from './types';
 
 const linearSizes: Record<ProgressSize, string> = {
@@ -93,7 +94,7 @@ const LinearProgress: Component<ProgressProps> = (props) => {
         aria-valuemax={100}
       >
         <div
-          class={`h-full rounded-full transition-all duration-300 ease-out ${styles().fill}`}
+          class={`h-full rounded-full ${TRANSITION_ALL_SLOW} ${styles().fill}`}
           style={fillStyle()}
         />
       </div>
@@ -160,7 +161,7 @@ const CircularProgress: Component<ProgressProps> = (props) => {
         />
         {/* Fill */}
         <circle
-          class={`${styles().fill} transition-all duration-300 ease-out`}
+          class={`${styles().fill} ${TRANSITION_ALL_SLOW}`}
           cx={center()}
           cy={center()}
           r={radius()}

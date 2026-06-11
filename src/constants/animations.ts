@@ -35,6 +35,46 @@ export const DURATION_FAST = 'duration-150';
 export const DURATION_SLOW = 'duration-300';
 
 // ============================================================================
+// INTERACTIVE TRANSITIONS (property transitions for hover/state changes,
+// distinct from the keyframe `animate-in/out` entrances below)
+// ============================================================================
+
+/** All-property transition, standard duration */
+export const TRANSITION_ALL = 'transition-all duration-200';
+
+/** All-property transition, fast */
+export const TRANSITION_ALL_FAST = 'transition-all duration-150';
+
+/** All-property transition, slow with ease-out (toggles, sliders, progress) */
+export const TRANSITION_ALL_SLOW = 'transition-all duration-300 ease-out';
+
+/** All-property transition, slow with ease-in-out (sidebar collapse) */
+export const TRANSITION_ALL_SLOW_INOUT =
+  'transition-all duration-300 ease-in-out';
+
+/** All-property transition, slow without easing (sliding active indicators) */
+export const TRANSITION_INDICATOR = 'transition-all duration-300';
+
+/** Color transition, standard duration */
+export const TRANSITION_COLORS = 'transition-colors duration-200';
+
+/** Color transition, fast */
+export const TRANSITION_COLORS_FAST = 'transition-colors duration-150';
+
+/** Color transition, slow */
+export const TRANSITION_COLORS_SLOW = 'transition-colors duration-300';
+
+/** Transform transition, standard duration (chevron/caret rotation) */
+export const TRANSITION_TRANSFORM = 'transition-transform duration-200';
+
+/** Transform transition, fast */
+export const TRANSITION_TRANSFORM_FAST = 'transition-transform duration-150';
+
+/** Height transition, slow with ease-out (Sheet snap points) */
+export const TRANSITION_HEIGHT_SLOW =
+  'transition-[height] duration-300 ease-out';
+
+// ============================================================================
 // FADE ANIMATIONS
 // ============================================================================
 
@@ -130,6 +170,11 @@ export const COMMAND_PALETTE_PANEL_ENTER =
  */
 export const POPOVER_ENTER = 'animate-in fade-in zoom-in-95 duration-150';
 export const POPOVER_EXIT = 'animate-out fade-out zoom-out-95 duration-150';
+
+/**
+ * Window minimize/close exit animation
+ */
+export const WINDOW_EXIT = 'animate-out fade-out zoom-out-95 duration-200';
 
 /**
  * Toast/Notification animation (slides from right)

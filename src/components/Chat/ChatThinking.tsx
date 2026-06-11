@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js';
 import { For, Show, createMemo, createSignal } from 'solid-js';
+import { TRANSITION_TRANSFORM } from '../../constants';
 import { Markdown } from '../Markdown';
 import { ChevronDownIcon, ThinkingIcon } from './icons';
 import type { ChatThinkingProps } from './types';
@@ -38,7 +39,7 @@ export const ChatThinking: Component<ChatThinkingProps> = (props) => {
         </span>
         <ChevronDownIcon
           size={14}
-          class={`transition-transform duration-200 ${isOpen() ? 'rotate-180' : ''}`}
+          class={`${TRANSITION_TRANSFORM} ${isOpen() ? 'rotate-180' : ''}`}
         />
       </button>
 

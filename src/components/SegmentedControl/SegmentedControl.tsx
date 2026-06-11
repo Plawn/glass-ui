@@ -7,6 +7,7 @@ import {
   onMount,
   splitProps,
 } from 'solid-js';
+import { TRANSITION_COLORS, TRANSITION_INDICATOR } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { SegmentedControlProps } from './types';
 
@@ -91,7 +92,7 @@ export function SegmentedControl<T extends string | number>(
       {/* Sliding indicator - iOS 26 style */}
       <div
         class={`absolute rounded-lg bg-white dark:bg-surface-600 shadow-sm ${
-          isInitialized() ? 'transition-all duration-300' : ''
+          isInitialized() ? TRANSITION_INDICATOR : ''
         }`}
         style={{
           left: `${indicatorStyle().left}px`,
@@ -108,7 +109,7 @@ export function SegmentedControl<T extends string | number>(
             type="button"
             onClick={() => !option.disabled && setValue(option.value)}
             disabled={option.disabled}
-            class={`${sizeClasses()} font-bold rounded-lg transition-colors duration-200 relative z-10 ${
+            class={`${sizeClasses()} font-bold rounded-lg ${TRANSITION_COLORS} relative z-10 ${
               value() === option.value
                 ? 'text-surface-900 dark:text-surface-100'
                 : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100'

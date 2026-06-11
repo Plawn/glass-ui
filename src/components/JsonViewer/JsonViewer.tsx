@@ -6,6 +6,7 @@ import {
   createSignal,
   splitProps,
 } from 'solid-js';
+import { TRANSITION_TRANSFORM_FAST } from '../../constants';
 import { useCopyToClipboard } from '../../hooks';
 import type {
   JsonNodeProps,
@@ -141,7 +142,7 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
             aria-label={expanded() ? 'Collapse' : 'Expand'}
           >
             <svg
-              class={`w-3 h-3 transition-transform duration-150 ${expanded() ? 'rotate-90' : ''}`}
+              class={`w-3 h-3 ${TRANSITION_TRANSFORM_FAST} ${expanded() ? 'rotate-90' : ''}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

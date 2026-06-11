@@ -5,6 +5,7 @@ import {
   createSignal,
   splitProps,
 } from 'solid-js';
+import { TRANSITION_ALL } from '../../constants';
 import { CheckIcon } from '../shared/icons';
 import type { CheckboxProps } from './types';
 
@@ -73,7 +74,7 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
 
   const isActive = () => visualChecked() || visualIndeterminate();
   const iconClass = () =>
-    `${sizeStyle().icon} text-white transition-all duration-200 ${visualChecked() ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`;
+    `${sizeStyle().icon} text-white ${TRANSITION_ALL} ${visualChecked() ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`;
 
   const handleChange = (e: Event) => {
     const newChecked = (e.currentTarget as HTMLInputElement).checked;

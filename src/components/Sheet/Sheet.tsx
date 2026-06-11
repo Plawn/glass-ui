@@ -11,6 +11,7 @@ import {
   ANIMATION_DURATION_SLOW,
   SHEET_ENTER,
   SHEET_EXIT,
+  TRANSITION_HEIGHT_SLOW,
 } from '../../constants';
 import { PortalOverlay } from '../shared';
 import type { SheetProps } from './types';
@@ -195,7 +196,7 @@ export const Sheet: Component<SheetProps> = (props) => {
               'rounded-t-3xl',
               'overflow-hidden',
               'flex flex-col',
-              !isDragging() && 'transition-[height] duration-300 ease-out',
+              !isDragging() && TRANSITION_HEIGHT_SLOW,
               sheetClasses(),
               local.class,
             )}

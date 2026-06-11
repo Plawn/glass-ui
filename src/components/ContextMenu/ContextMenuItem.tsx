@@ -1,12 +1,13 @@
 import type { Component } from 'solid-js';
 import { Show } from 'solid-js';
+import { TRANSITION_COLORS_FAST } from '../../constants';
 import { useContextMenuContext } from './ContextMenuContext';
 import type { ContextMenuItemProps } from './types';
 
 const baseClasses = `
   flex items-center gap-3 px-3 py-2 mx-1.5
   text-sm cursor-pointer select-none
-  rounded-lg transition-colors duration-150
+  rounded-lg ${TRANSITION_COLORS_FAST}
   hover:bg-black/5 dark:hover:bg-white/10
   focus:bg-black/5 dark:focus:bg-white/10
   focus:outline-none
