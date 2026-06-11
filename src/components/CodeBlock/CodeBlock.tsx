@@ -1,12 +1,7 @@
 import DOMPurify from 'dompurify';
-import Prism from 'prismjs';
-import 'prismjs/components/prism-bash';
-import 'prismjs/components/prism-json';
-import 'prismjs/components/prism-typescript';
-import 'prismjs/components/prism-jsx';
-import 'prismjs/components/prism-tsx';
-import { type Component, Show, createMemo } from 'solid-js';
+import { type Component, Show, createMemo, splitProps } from 'solid-js';
 import { useCopyToClipboard } from '../../hooks';
+import { Prism } from './prism';
 import type { CodeBlockProps } from './types';
 
 // Escape HTML to prevent XSS when grammar is not found
@@ -22,17 +17,27 @@ function escapeHtml(text: string): string {
 }
 
 export const CodeBlock: Component<CodeBlockProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'code',
+    'language',
+    'maxHeight',
+    'wrap',
+    'hideCopyButton',
+    'copyLabel',
+    'copiedLabel',
+    'class',
+  ]);
   const { copied, copy } = useCopyToClipboard();
   let codeRef: HTMLElement | undefined;
 
-  const language = () => props.language || 'json';
-  const maxHeight = () => props.maxHeight || '31.25rem';
-  const copyLabel = () => props.copyLabel ?? 'Copy';
-  const copiedLabel = () => props.copiedLabel ?? 'Copied';
+  const language = () => local.language || 'json';
+  const maxHeight = () => local.maxHeight || '31.25rem';
+  const copyLabel = () => local.copyLabel ?? 'Copy';
+  const copiedLabel = () => local.copiedLabel ?? 'Copied';
 
   // Highlight code whenever it changes
   const highlightedCode = createMemo(() => {
-    const code = props.code;
+    const code = local.code;
     const lang = language();
 
     // Get the grammar for the language, fallback to plain text
@@ -50,13 +55,14 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
 
   return (
     <div
-      class={`relative group rounded-xl overflow-hidden ${props.class ?? ''}`}
+      {...rest}
+      class={`relative group rounded-xl overflow-hidden ${local.class ?? ''}`}
     >
       {/* Copy button */}
-      <Show when={!props.hideCopyButton}>
+      <Show when={!local.hideCopyButton}>
         <button
           type="button"
-          onClick={() => copy(props.code)}
+          onClick={() => copy(local.code)}
           class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-xs font-medium text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300 glass-button rounded-lg transition-all"
           aria-label={copied() ? copiedLabel() : copyLabel()}
         >
@@ -113,7 +119,7 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
       {/* Code container with syntax highlighting */}
       {/* innerHTML is the correct SolidJS pattern - content is sanitized via DOMPurify in highlightedCode() */}
       <pre
-        class={`p-6 pt-10 text-sm font-mono overflow-auto scrollbar-thin glass-thin rounded-xl ${props.wrap ? 'whitespace-pre-wrap break-all' : ''}`}
+        class={`p-6 pt-10 text-sm font-mono overflow-auto scrollbar-thin glass-thin rounded-xl ${local.wrap ? 'whitespace-pre-wrap break-all' : ''}`}
         style={{ 'max-height': maxHeight() }}
       >
         <code

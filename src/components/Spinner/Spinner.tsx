@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show } from 'solid-js';
+import { Show, splitProps } from 'solid-js';
 import type { SpinnerColor, SpinnerProps, SpinnerSize } from './types';
 
 const sizeClasses: Record<SpinnerSize, string> = {
@@ -33,22 +33,32 @@ const colorClasses: Record<
 };
 
 export const Spinner: Component<SpinnerProps> = (props) => {
-  const size = () => props.size ?? 'md';
-  const color = () => props.color ?? 'default';
-  const centered = () => props.centered ?? false;
+  const [local, rest] = splitProps(props, [
+    'class',
+    'style',
+    'size',
+    'color',
+    'label',
+    'centered',
+  ]);
+
+  const size = () => local.size ?? 'md';
+  const color = () => local.color ?? 'default';
+  const centered = () => local.centered ?? false;
 
   const wrapperClasses = () => {
     const base = 'inline-flex items-center gap-2';
     const centerClasses = centered() ? 'justify-center w-full h-full' : '';
-    return `${base} ${centerClasses} ${props.class ?? ''}`.trim();
+    return `${base} ${centerClasses} ${local.class ?? ''}`.trim();
   };
 
   return (
     <div
+      {...rest}
       class={wrapperClasses()}
-      style={props.style}
+      style={local.style}
       role="status"
-      aria-label={props.label ?? 'Loading'}
+      aria-label={local.label ?? 'Loading'}
     >
       <svg
         class={`animate-spin ${sizeClasses[size()]}`}
@@ -71,11 +81,11 @@ export const Spinner: Component<SpinnerProps> = (props) => {
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         />
       </svg>
-      <Show when={props.label}>
+      <Show when={local.label}>
         <span
           class={`${labelSizeClasses[size()]} ${colorClasses[color()].label}`}
         >
-          {props.label}
+          {local.label}
         </span>
       </Show>
     </div>

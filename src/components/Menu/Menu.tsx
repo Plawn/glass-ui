@@ -5,20 +5,28 @@ import {
   createEffect,
   createSignal,
   on,
+  splitProps,
 } from 'solid-js';
 import { Popover } from '../Popover';
 import type { MenuItem, MenuProps } from './types';
 
 export const Menu: Component<MenuProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'trigger',
+    'items',
+    'placement',
+    'class',
+    'style',
+  ]);
   const [isOpen, setIsOpen] = createSignal(false);
   const [focusedIndex, setFocusedIndex] = createSignal(-1);
   let menuRef: HTMLDivElement | undefined;
 
-  const placement = () => props.placement ?? 'bottom-start';
+  const placement = () => local.placement ?? 'bottom-start';
 
   // Get focusable items (non-divider, non-disabled)
   const focusableItems = () =>
-    props.items
+    local.items
       .map((item, index) => ({ item, index }))
       .filter(({ item }) => !item.divider && !item.disabled);
 
@@ -148,12 +156,13 @@ export const Menu: Component<MenuProps> = (props) => {
 
   return (
     <Popover
-      trigger={props.trigger}
+      {...rest}
+      trigger={local.trigger}
       placement={placement()}
       open={isOpen()}
       onOpenChange={handleOpenChange}
-      class={props.class}
-      style={props.style}
+      class={local.class}
+      style={local.style}
       contentClass="min-w-[180px] py-1.5"
       triggerProps={{
         onKeyDown: handleTriggerKeyDown,
@@ -166,7 +175,7 @@ export const Menu: Component<MenuProps> = (props) => {
         aria-orientation="vertical"
         onKeyDown={handleMenuKeyDown}
       >
-        <For each={props.items}>
+        <For each={local.items}>
           {(item, index) => (
             <Show
               when={!item.divider}

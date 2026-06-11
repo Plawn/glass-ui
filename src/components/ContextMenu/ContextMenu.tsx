@@ -1,4 +1,4 @@
-import { type JSX, createEffect, createSignal } from 'solid-js';
+import { type JSX, createEffect, createSignal, splitProps } from 'solid-js';
 import type { Accessor } from 'solid-js';
 import { ContextMenuContext } from './ContextMenuContext';
 import type { ContextMenuContextValue, ContextMenuProps } from './types';
@@ -46,8 +46,16 @@ import type { ContextMenuContextValue, ContextMenuProps } from './types';
 export function ContextMenu<T = unknown>(
   props: ContextMenuProps<T>,
 ): JSX.Element {
+  const [local, rest] = splitProps(props, [
+    'class',
+    'style',
+    'children',
+    'onOpenChange',
+    '__internal',
+  ]);
+
   // Use internal state if provided (from createContextMenu), otherwise create our own
-  const internal = props.__internal;
+  const internal = local.__internal;
 
   const [ownOpen, setOwnOpen] = internal
     ? [internal.open, internal.setOpen]
@@ -66,14 +74,14 @@ export function ContextMenu<T = unknown>(
 
   const close = () => {
     setOwnOpen(false);
-    props.onOpenChange?.(false, ownData());
+    local.onOpenChange?.(false, ownData());
   };
 
   const openMenu = (pos: { x: number; y: number }, data: T | null) => {
     setOwnPosition(pos);
     setOwnData(data);
     setOwnOpen(true);
-    props.onOpenChange?.(true, data);
+    local.onOpenChange?.(true, data);
   };
 
   // Notify parent of state changes when using internal state
@@ -81,7 +89,7 @@ export function ContextMenu<T = unknown>(
     if (internal) {
       const isOpen = ownOpen();
       // Only trigger callback, don't update internal state
-      props.onOpenChange?.(isOpen, ownData());
+      local.onOpenChange?.(isOpen, ownData());
     }
   });
 
@@ -99,8 +107,8 @@ export function ContextMenu<T = unknown>(
 
   return (
     <ContextMenuContext.Provider value={contextValue}>
-      <div class={props.class ?? ''} style={props.style}>
-        {props.children}
+      <div {...rest} class={local.class ?? ''} style={local.style}>
+        {local.children}
       </div>
     </ContextMenuContext.Provider>
   );

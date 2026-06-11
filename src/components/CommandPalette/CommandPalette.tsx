@@ -8,6 +8,7 @@ import {
   on,
   onCleanup,
   onMount,
+  splitProps,
 } from 'solid-js';
 import { BACKDROP_ENTER, COMMAND_PALETTE_PANEL_ENTER } from '../../constants';
 import { useControlled, useDialogState, useFocusTrap } from '../../hooks';
@@ -157,6 +158,21 @@ const Kbd: Component<{ children: string }> = (props) => (
  * ```
  */
 export const CommandPalette: Component<CommandPaletteProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'items',
+    'onSelect',
+    'searchFn',
+    'shortcutKey',
+    'disableShortcut',
+    'placeholder',
+    'emptyText',
+    'recentIds',
+    'ref',
+    'open',
+    'onOpenChange',
+    'footer',
+    'class',
+  ]);
   // State
   const listboxId = `cmd-palette-${Math.random().toString(36).slice(2, 8)}`;
   const [query, setQuery] = createSignal('');
@@ -169,23 +185,23 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
   // Controlled/uncontrolled state management
   const [isOpen, setOpen] = useControlled({
-    value: () => props.open,
+    value: () => local.open,
     defaultValue: false,
-    onChange: props.onOpenChange,
+    onChange: local.onOpenChange,
   });
 
   // Config
-  const shortcutKey = () => props.shortcutKey ?? 'k';
-  const placeholder = () => props.placeholder ?? 'Search...';
-  const emptyText = () => props.emptyText ?? 'No results found';
+  const shortcutKey = () => local.shortcutKey ?? 'k';
+  const placeholder = () => local.placeholder ?? 'Search...';
+  const emptyText = () => local.emptyText ?? 'No results found';
 
   // Recent IDs from props
-  const recentIds = () => props.recentIds ?? [];
+  const recentIds = () => local.recentIds ?? [];
 
   // Create item lookup map
   const itemMap = createMemo(() => {
     const map = new Map<string, ItemType>();
-    for (const item of props.items) {
+    for (const item of local.items) {
       map.set(item.id, item);
     }
     return map;
@@ -208,7 +224,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
       // No query: show recents first, then other items
       const recent = recentItems();
       const recentIdSet = new Set(recent.map((r) => r.id));
-      const others = props.items.filter((item) => !recentIdSet.has(item.id));
+      const others = local.items.filter((item) => !recentIdSet.has(item.id));
 
       return [
         ...recent.map((item) => ({ item, isRecent: true })),
@@ -219,11 +235,11 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
     }
 
     // Use custom search or default fuzzy search
-    if (props.searchFn) {
-      return props.searchFn(q, props.items);
+    if (local.searchFn) {
+      return local.searchFn(q, local.items);
     }
 
-    return fuzzySearch(q, props.items);
+    return fuzzySearch(q, local.items);
   });
 
   // Group results by category
@@ -258,7 +274,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
   // Expose handle
   onMount(() => {
-    props.ref?.({
+    local.ref?.({
       open: () => setOpen(true),
       close: () => setOpen(false),
       toggle: () => setOpen(!isOpen()),
@@ -268,7 +284,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
   // Global keyboard shortcut
   createEffect(() => {
-    if (props.disableShortcut || props.items.length === 0) {
+    if (local.disableShortcut || local.items.length === 0) {
       return;
     }
 
@@ -338,7 +354,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
       return;
     }
     setOpen(false);
-    props.onSelect(item);
+    local.onSelect(item);
   };
 
   const handleInputKeyDown = (e: KeyboardEvent) => {
@@ -385,7 +401,8 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
           aria-label="Command palette"
         >
           <div
-            class={`w-full max-w-xl mx-2 sm:mx-4 glass-card rounded-2xl shadow-2xl overflow-hidden ${COMMAND_PALETTE_PANEL_ENTER} ${props.class ?? ''}`}
+            {...rest}
+            class={`w-full max-w-xl mx-2 sm:mx-4 glass-card rounded-2xl shadow-2xl overflow-hidden ${COMMAND_PALETTE_PANEL_ENTER} ${local.class ?? ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Search input */}
@@ -509,7 +526,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
             {/* Footer */}
             <Show
-              when={props.footer}
+              when={local.footer}
               fallback={
                 <div class="flex items-center justify-between px-4 py-2 border-t border-surface-200 dark:border-white/10 text-xs text-surface-500 dark:text-surface-400">
                   <div class="flex items-center gap-3">
@@ -526,7 +543,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                 </div>
               }
             >
-              {props.footer}
+              {local.footer}
             </Show>
           </div>
         </div>

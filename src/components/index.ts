@@ -119,7 +119,7 @@ export type {
 } from './RadioGroup';
 
 // CodeBlock
-export { CodeBlock } from './CodeBlock';
+export { CodeBlock, Prism, registerPrismLanguage } from './CodeBlock';
 export type { CodeBlockProps } from './CodeBlock';
 
 // JsonViewer

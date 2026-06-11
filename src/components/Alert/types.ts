@@ -1,7 +1,9 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps, IconProps, StatusColor } from '../../types';
+import type { IconProps, StatusColor } from '../../types';
 
-export interface AlertProps extends BaseComponentProps, IconProps {
+export interface AlertProps
+  extends JSX.HTMLAttributes<HTMLDivElement>,
+    IconProps {
   /** Type of alert, determines color styling */
   type: StatusColor;
   /** Optional title displayed prominently */

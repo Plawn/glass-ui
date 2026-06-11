@@ -24,23 +24,35 @@
     "typescript"
   ],
   "type": "module",
-  "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "sideEffects": ["./dist/styles.css", "./src/styles/*.css"],
+  "engines": {
+    "node": ">=18"
+  },
+  "sideEffects": ["./dist/styles.css", "./src/styles/theme.css"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./markdown": {
+      "types": "./dist/components/Markdown/index.d.ts",
+      "import": "./dist/components/Markdown/index.js"
+    },
+    "./code": {
+      "types": "./dist/components/CodeBlock/index.d.ts",
+      "import": "./dist/components/CodeBlock/index.js"
+    },
     "./styles.css": "./dist/styles.css",
-    "./theme.css": "./src/styles/theme.css"
+    "./theme.css": "./src/styles/theme.css",
+    "./package.json": "./package.json"
   },
   "files": ["dist", "src/styles/theme.css", "README.md"],
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
+    "test": "bun --conditions=browser test",
     "lint": "biome check .",
     "lint:fix": "biome check --write --unsafe .",
     "prepublishOnly": "bun run build",
@@ -56,6 +68,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tailwindcss/postcss": "^4.1.8",
+    "@types/bun": "^1.3.14",
     "@types/dompurify": "^3.2.0",
     "@types/prismjs": "^1.26.5",
     "autoprefixer": "^10.4.21",

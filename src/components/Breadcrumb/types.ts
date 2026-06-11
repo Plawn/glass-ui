@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps, IconProps } from '../../types';
+import type { IconProps } from '../../types';
 
 export interface BreadcrumbItem extends IconProps {
   /** Display label for the breadcrumb item */
@@ -10,7 +10,7 @@ export interface BreadcrumbItem extends IconProps {
   onClick?: () => void;
 }
 
-export interface BreadcrumbProps extends BaseComponentProps {
+export interface BreadcrumbProps extends JSX.HTMLAttributes<HTMLElement> {
   /** Breadcrumb items to display */
   items: BreadcrumbItem[];
   /** Custom separator element (default: /) */

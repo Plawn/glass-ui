@@ -1,5 +1,4 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps } from '../../types';
 
 /**
  * Context passed to code block action handlers
@@ -25,7 +24,7 @@ export interface CodeBlockAction {
   onClick: (context: CodeBlockActionContext) => void | Promise<void>;
 }
 
-export interface MarkdownProps extends BaseComponentProps {
+export interface MarkdownProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** The markdown content to render */
   content: string | undefined;
   /** Custom actions to display on code blocks */

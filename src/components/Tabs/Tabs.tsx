@@ -7,6 +7,7 @@ import {
   createSignal,
   on,
   onMount,
+  splitProps,
 } from 'solid-js';
 import {
   GAP_SIZES,
@@ -48,6 +49,21 @@ const sizeStyles: Record<
 // =============================================================================
 
 export const Tabs: Component<TabsProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'size',
+    'orientation',
+    'fullWidth',
+    'lazy',
+    'keepMounted',
+    'activeTab',
+    'defaultTab',
+    'items',
+    'onTabChange',
+    'class',
+    'tabListClass',
+    'contentClass',
+  ]);
+
   // --- Refs for indicator animation ---
   let containerRef: HTMLDivElement | undefined;
   const buttonRefs: Map<string, HTMLButtonElement> = new Map();
@@ -62,24 +78,24 @@ export const Tabs: Component<TabsProps> = (props) => {
   const [isInitialized, setIsInitialized] = createSignal(false);
 
   // --- Defaults ---
-  const size = () => props.size ?? 'md';
-  const orientation = () => props.orientation ?? 'horizontal';
-  const fullWidth = () => props.fullWidth ?? false;
-  const lazy = () => props.lazy ?? true;
-  const keepMounted = () => props.keepMounted ?? false;
+  const size = () => local.size ?? 'md';
+  const orientation = () => local.orientation ?? 'horizontal';
+  const fullWidth = () => local.fullWidth ?? false;
+  const lazy = () => local.lazy ?? true;
+  const keepMounted = () => local.keepMounted ?? false;
 
   const isVertical = () => orientation() === 'vertical';
 
   // --- Controlled/uncontrolled state management ---
   const [activeTab, setActiveTab] = useControlled({
-    value: () => props.activeTab,
-    defaultValue: props.defaultTab || props.items[0]?.id,
-    onChange: props.onTabChange,
+    value: () => local.activeTab,
+    defaultValue: local.defaultTab || local.items[0]?.id,
+    onChange: local.onTabChange,
   });
 
   // Track which tabs have been visited (for lazy loading with keepMounted)
   const [visitedTabs, setVisitedTabs] = createSignal<Set<string>>(
-    new Set([props.defaultTab || props.items[0]?.id]),
+    new Set([local.defaultTab || local.items[0]?.id]),
   );
 
   // --- Indicator animation ---
@@ -114,7 +130,7 @@ export const Tabs: Component<TabsProps> = (props) => {
   );
 
   const handleTabChange = (tabId: string) => {
-    const tab = props.items.find((item) => item.id === tabId);
+    const tab = local.items.find((item) => item.id === tabId);
     if (tab?.disabled) {
       return;
     }
@@ -130,7 +146,7 @@ export const Tabs: Component<TabsProps> = (props) => {
     const vert = isVertical();
     const nextKeys = vert ? ['ArrowDown'] : ['ArrowRight'];
     const prevKeys = vert ? ['ArrowUp'] : ['ArrowLeft'];
-    const enabledItems = props.items.filter((item) => !item.disabled);
+    const enabledItems = local.items.filter((item) => !item.disabled);
 
     if (enabledItems.length === 0) {
       return;
@@ -203,14 +219,15 @@ export const Tabs: Component<TabsProps> = (props) => {
 
   return (
     <div
-      class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${props.class ?? ''}`}
+      {...rest}
+      class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${local.class ?? ''}`}
     >
       {/* Tab List - Segmented Control Style */}
       <div
         ref={containerRef}
         class={`relative flex gap-0.5 p-1 bg-black/5 dark:bg-white/10 rounded-xl ${
           isVertical() ? 'flex-col shrink-0 h-fit' : 'flex-row items-center'
-        } ${fullWidth() && !isVertical() ? 'w-full' : 'w-fit'} ${props.tabListClass ?? ''}`}
+        } ${fullWidth() && !isVertical() ? 'w-full' : 'w-fit'} ${local.tabListClass ?? ''}`}
         role="tablist"
         aria-orientation={orientation()}
       >
@@ -222,7 +239,7 @@ export const Tabs: Component<TabsProps> = (props) => {
           style={indicatorCssStyle()}
         />
 
-        <For each={props.items}>
+        <For each={local.items}>
           {(item) => {
             const isActive = () => activeTab() === item.id;
             const isDisabled = () => item.disabled ?? false;
@@ -265,9 +282,9 @@ export const Tabs: Component<TabsProps> = (props) => {
 
       {/* Tab Content */}
       <div
-        class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${props.contentClass ?? ''}`}
+        class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${local.contentClass ?? ''}`}
       >
-        <For each={props.items}>
+        <For each={local.items}>
           {(item) => (
             <Show when={shouldRenderContent(item.id)}>
               <div

@@ -1,4 +1,5 @@
-import { type Component, Show } from 'solid-js';
+import { type Component, Show, splitProps } from 'solid-js';
+import { useControlled } from '../../hooks';
 import type { SwitchProps, SwitchSize } from './types';
 
 /**
@@ -39,13 +40,32 @@ const sizeConfig: Record<
  * ```
  */
 export const Switch: Component<SwitchProps> = (props) => {
-  const size = () => props.size ?? 'md';
-  const labelPosition = () => props.labelPosition ?? 'right';
+  const [local, rest] = splitProps(props, [
+    'checked',
+    'defaultChecked',
+    'onChange',
+    'label',
+    'labelPosition',
+    'size',
+    'disabled',
+    'id',
+    'name',
+    'ref',
+    'class',
+  ]);
+  const size = () => local.size ?? 'md';
+  const labelPosition = () => local.labelPosition ?? 'right';
   const config = () => sizeConfig[size()];
 
+  const [checked, setChecked] = useControlled({
+    value: () => local.checked,
+    defaultValue: local.defaultChecked ?? false,
+    onChange: (v) => local.onChange?.(v),
+  });
+
   const handleClick = () => {
-    if (!props.disabled) {
-      props.onChange(!props.checked);
+    if (!local.disabled) {
+      setChecked(!checked());
     }
   };
 
@@ -57,32 +77,33 @@ export const Switch: Component<SwitchProps> = (props) => {
   };
 
   const Label = () => (
-    <Show when={props.label}>
+    <Show when={local.label}>
       <span class="text-sm text-surface-700 dark:text-surface-300">
-        {props.label}
+        {local.label}
       </span>
     </Show>
   );
 
   return (
     <label
+      {...rest}
       class={`inline-flex items-center gap-3 cursor-pointer select-none ${
-        props.disabled ? 'opacity-50 cursor-not-allowed' : ''
-      } ${props.class ?? ''}`}
+        local.disabled ? 'opacity-50 cursor-not-allowed' : ''
+      } ${local.class ?? ''}`}
     >
-      <Show when={props.label && labelPosition() === 'left'}>
+      <Show when={local.label && labelPosition() === 'left'}>
         <Label />
       </Show>
 
       {/* Hidden input for form submission */}
       <input
-        ref={props.ref}
+        ref={local.ref}
         type="checkbox"
-        id={props.id}
-        name={props.name}
-        checked={props.checked}
-        disabled={props.disabled}
-        onChange={(e) => props.onChange(e.currentTarget.checked)}
+        id={local.id}
+        name={local.name}
+        checked={checked()}
+        disabled={local.disabled}
+        onChange={(e) => setChecked(e.currentTarget.checked)}
         class="sr-only"
       />
 
@@ -90,9 +111,9 @@ export const Switch: Component<SwitchProps> = (props) => {
       <button
         type="button"
         role="switch"
-        aria-checked={props.checked}
-        aria-disabled={props.disabled}
-        tabIndex={props.disabled ? -1 : 0}
+        aria-checked={checked()}
+        aria-disabled={local.disabled}
+        tabIndex={local.disabled ? -1 : 0}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         class={`
@@ -105,11 +126,11 @@ export const Switch: Component<SwitchProps> = (props) => {
           shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.1)]
           ${config().track}
           ${
-            props.checked
+            checked()
               ? 'bg-accent-500/40 dark:bg-accent-400/30 border-accent-300/30'
               : 'bg-white/10 dark:bg-white/5'
           }
-          ${props.disabled ? 'pointer-events-none' : ''}
+          ${local.disabled ? 'pointer-events-none' : ''}
         `}
       >
         {/* Switch thumb */}
@@ -122,12 +143,12 @@ export const Switch: Component<SwitchProps> = (props) => {
             border border-white/40
             shadow-[inset_0_1px_2px_rgba(255,255,255,0.3),0_2px_8px_rgba(0,0,0,0.15)]
             ${config().thumb}
-            ${props.checked ? config().translate : 'translate-x-0.5'}
+            ${checked() ? config().translate : 'translate-x-0.5'}
           `}
         />
       </button>
 
-      <Show when={props.label && labelPosition() === 'right'}>
+      <Show when={local.label && labelPosition() === 'right'}>
         <Label />
       </Show>
     </label>

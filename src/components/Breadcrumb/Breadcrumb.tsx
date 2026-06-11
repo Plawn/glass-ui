@@ -1,4 +1,4 @@
-import { type Component, For, Show } from 'solid-js';
+import { type Component, For, Show, splitProps } from 'solid-js';
 import type { BreadcrumbItem, BreadcrumbProps } from './types';
 
 const DefaultSeparator: Component = () => (
@@ -8,7 +8,8 @@ const DefaultSeparator: Component = () => (
 );
 
 export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
-  const isLast = (index: number) => index === props.items.length - 1;
+  const [local, rest] = splitProps(props, ['items', 'separator', 'class']);
+  const isLast = (index: number) => index === local.items.length - 1;
 
   const renderItem = (item: BreadcrumbItem, index: number) => {
     const isCurrentPage = isLast(index);
@@ -75,16 +76,17 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
 
   return (
     <nav
-      class={`flex items-center ${props.class ?? ''}`}
+      {...rest}
+      class={`flex items-center ${local.class ?? ''}`}
       aria-label="Breadcrumb"
     >
       <ol class="flex items-center">
-        <For each={props.items}>
+        <For each={local.items}>
           {(item, index) => (
             <li class="flex items-center">
               {renderItem(item, index())}
               <Show when={!isLast(index())}>
-                {props.separator ?? <DefaultSeparator />}
+                {local.separator ?? <DefaultSeparator />}
               </Show>
             </li>
           )}

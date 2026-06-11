@@ -52,7 +52,8 @@ export interface CommandPaletteHandle {
 /**
  * Props for the CommandPalette component
  */
-export interface CommandPaletteProps<T = unknown> {
+export interface CommandPaletteProps<T = unknown>
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'ref' | 'onSelect'> {
   /** Array of items to display in the palette */
   items: CommandPaletteItem<T>[];
   /** Callback when an item is selected */

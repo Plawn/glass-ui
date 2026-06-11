@@ -29,7 +29,8 @@ export interface CreateContextMenuReturn<T> {
 /**
  * Props for the ContextMenu wrapper component
  */
-export interface ContextMenuProps<T = unknown> extends BaseComponentProps {
+export interface ContextMenuProps<T = unknown>
+  extends JSX.HTMLAttributes<HTMLDivElement> {
   children: JSX.Element;
   /** Callback when menu opens/closes */
   onOpenChange?: (open: boolean, data: T | null) => void;

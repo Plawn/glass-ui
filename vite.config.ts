@@ -14,11 +14,28 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'GlassUI',
+      // Multiple entries so the dedicated sub-exports (glass-ui-solid/code,
+      // glass-ui-solid/markdown) emit real barrel files instead of being
+      // inlined away by preserveModules. This lets consumers deep-import the
+      // heavy components in isolation (prismjs / marked+dompurify).
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        'components/CodeBlock/index': resolve(
+          __dirname,
+          'src/components/CodeBlock/index.ts',
+        ),
+        'components/Markdown/index': resolve(
+          __dirname,
+          'src/components/Markdown/index.ts',
+        ),
+      },
       formats: ['es'],
     },
-    cssCodeSplit: true,
+    // false → all component CSS is bundled into a single dist/styles.css.
+    // With splitting on, GlassBackground's scoped CSS landed in an unreferenced
+    // styles2.css (consumers lost those styles). One file keeps the public
+    // `glass-ui-solid/styles.css` import complete.
+    cssCodeSplit: false,
     rollupOptions: {
       external: ['solid-js', 'solid-js/web', 'solid-js/store'],
       output: {
@@ -39,7 +56,7 @@ export default defineConfig({
         },
       },
     },
-    sourcemap: true,
+    sourcemap: false,
     minify: 'esbuild',
   },
 });

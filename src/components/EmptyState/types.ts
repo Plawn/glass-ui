@@ -1,9 +1,9 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps, ComponentSize } from '../../types';
+import type { ComponentSize } from '../../types';
 
 export type EmptyStateSize = ComponentSize;
 
-export interface EmptyStateProps extends BaseComponentProps {
+export interface EmptyStateProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Optional icon element displayed at the top */
   icon?: JSX.Element;
   /** Title text (required) */

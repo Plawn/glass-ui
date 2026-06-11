@@ -1,4 +1,10 @@
-import { type Component, Show, createEffect, createSignal } from 'solid-js';
+import {
+  type Component,
+  Show,
+  createEffect,
+  createSignal,
+  splitProps,
+} from 'solid-js';
 import { CheckIcon } from '../shared/icons';
 import type { CheckboxProps } from './types';
 
@@ -21,28 +27,44 @@ const SIZE_STYLES = {
 } as const;
 
 export const Checkbox: Component<CheckboxProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'checked',
+    'defaultChecked',
+    'indeterminate',
+    'size',
+    'onChange',
+    'ref',
+    'label',
+    'error',
+    'id',
+    'name',
+    'class',
+    'disabled',
+    'required',
+  ]);
+
   let inputRef: HTMLInputElement | undefined;
-  const size = () => props.size ?? 'md';
+  const size = () => local.size ?? 'md';
   const sizeStyle = () => SIZE_STYLES[size()];
 
   // Internal visual state - this is what drives the UI
   const [visualChecked, setVisualChecked] = createSignal(
-    props.checked ?? false,
+    local.checked ?? local.defaultChecked ?? false,
   );
   const [visualIndeterminate, setVisualIndeterminate] = createSignal(
-    props.indeterminate ?? false,
+    local.indeterminate ?? false,
   );
 
   // Sync with props.checked - works if props are reactive OR if component remounts
   createEffect(() => {
-    const propValue = props.checked;
+    const propValue = local.checked;
     if (propValue !== undefined) {
       setVisualChecked(propValue);
     }
   });
 
   createEffect(() => {
-    const propValue = props.indeterminate;
+    const propValue = local.indeterminate;
     setVisualIndeterminate(propValue ?? false);
     if (inputRef) {
       inputRef.indeterminate = propValue ?? false;
@@ -58,21 +80,21 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
     // Update visual state immediately for responsiveness
     setVisualChecked(newChecked);
     // Notify parent
-    props.onChange?.(newChecked);
+    local.onChange?.(newChecked);
   };
 
   const setRef = (el: HTMLInputElement) => {
     inputRef = el;
     // Sync initial indeterminate state
-    el.indeterminate = props.indeterminate ?? false;
-    if (typeof props.ref === 'function') {
-      props.ref(el);
+    el.indeterminate = local.indeterminate ?? false;
+    if (typeof local.ref === 'function') {
+      local.ref(el);
     }
   };
 
   return (
     <label
-      class={`inline-flex items-center gap-3 cursor-pointer ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''} ${props.class ?? ''}`}
+      class={`inline-flex items-center gap-3 cursor-pointer ${local.disabled ? 'opacity-50 cursor-not-allowed' : ''} ${local.class ?? ''}`}
     >
       <div
         class={`${sizeStyle().box} flex items-center justify-center`}
@@ -82,13 +104,14 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
         }}
       >
         <input
+          {...rest}
           ref={setRef}
           type="checkbox"
-          id={props.id}
-          name={props.name}
+          id={local.id}
+          name={local.name}
           checked={visualChecked()}
-          disabled={props.disabled}
-          required={props.required}
+          disabled={local.disabled}
+          required={local.required}
           aria-checked={visualIndeterminate() ? 'mixed' : undefined}
           onChange={handleChange}
           class="sr-only"
@@ -100,9 +123,9 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
           <CheckIcon class={iconClass()} />
         </Show>
       </div>
-      <Show when={props.label}>
+      <Show when={local.label}>
         <span class="text-sm text-surface-700 dark:text-surface-300">
-          {props.label}
+          {local.label}
         </span>
       </Show>
     </label>

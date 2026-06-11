@@ -1,8 +1,18 @@
 import type { Component } from 'solid-js';
-import { Show, createEffect, createSignal } from 'solid-js';
+import { Show, createEffect, createSignal, splitProps } from 'solid-js';
 import type { CollapsibleProps } from './types';
 
 export const Collapsible: Component<CollapsibleProps> = (props) => {
+  const [, rest] = splitProps(props, [
+    'open',
+    'onOpenChange',
+    'defaultOpen',
+    'trigger',
+    'children',
+    'disabled',
+    'class',
+  ]);
+
   // Internal state for uncontrolled mode
   const [internalOpen, setInternalOpen] = createSignal(
     props.defaultOpen ?? false,
@@ -38,7 +48,7 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
   const id = `collapsible-${Math.random().toString(36).slice(2, 9)}`;
 
   return (
-    <div class={props.class ?? ''}>
+    <div {...rest} class={props.class ?? ''}>
       {/* Trigger wrapper - using native button for better event handling */}
       <button
         type="button"

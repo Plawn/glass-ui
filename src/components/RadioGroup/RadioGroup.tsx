@@ -1,4 +1,11 @@
-import { type Component, For, Show, createUniqueId } from 'solid-js';
+import {
+  type Component,
+  For,
+  Show,
+  createUniqueId,
+  splitProps,
+} from 'solid-js';
+import { useControlled } from '../../hooks';
 import type { RadioGroupProps, RadioGroupSize } from './types';
 
 /**
@@ -47,20 +54,39 @@ const sizeConfig: Record<
  * ```
  */
 export const RadioGroup: Component<RadioGroupProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'options',
+    'value',
+    'defaultValue',
+    'onChange',
+    'orientation',
+    'size',
+    'name',
+    'disabled',
+    'label',
+    'error',
+    'class',
+  ]);
   const fallbackName = createUniqueId();
-  const groupName = () => props.name ?? fallbackName;
-  const size = () => props.size ?? 'md';
-  const orientation = () => props.orientation ?? 'vertical';
+  const groupName = () => local.name ?? fallbackName;
+  const size = () => local.size ?? 'md';
+
+  const [value, setValue] = useControlled({
+    value: () => local.value,
+    defaultValue: local.defaultValue ?? '',
+    onChange: (v) => local.onChange?.(v),
+  });
+  const orientation = () => local.orientation ?? 'vertical';
   const config = () => sizeConfig[size()];
 
   const isOptionDisabled = (optionDisabled?: boolean) =>
-    props.disabled || optionDisabled;
+    local.disabled || optionDisabled;
 
   // Refs for roving tabindex
   const radioRefs: Map<string, HTMLInputElement> = new Map();
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    const enabledOptions = props.options.filter(
+    const enabledOptions = local.options.filter(
       (opt) => !isOptionDisabled(opt.disabled),
     );
     if (enabledOptions.length === 0) {
@@ -76,7 +102,7 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
       : ['ArrowLeft', 'ArrowUp'];
 
     const currentIndex = enabledOptions.findIndex(
-      (opt) => opt.value === props.value,
+      (opt) => opt.value === value(),
     );
 
     let newIndex: number | null = null;
@@ -92,25 +118,25 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
 
     if (newIndex !== null) {
       const opt = enabledOptions[newIndex];
-      props.onChange(opt.value);
+      setValue(opt.value);
       radioRefs.get(opt.value)?.focus();
     }
   };
 
   return (
-    <div class={`w-full ${props.class ?? ''}`}>
-      <Show when={props.label}>
+    <div {...rest} class={`w-full ${local.class ?? ''}`}>
+      <Show when={local.label}>
         <div class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-          {props.label}
+          {local.label}
         </div>
       </Show>
       <div
         role="radiogroup"
-        aria-label={props.label}
+        aria-label={local.label}
         aria-describedby={
-          props.error
-            ? props.name
-              ? `${props.name}-error`
+          local.error
+            ? local.name
+              ? `${local.name}-error`
               : `${fallbackName}-error`
             : undefined
         }
@@ -119,11 +145,11 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
         }`}
         onKeyDown={handleKeyDown}
       >
-        <For each={props.options}>
+        <For each={local.options}>
           {(option) => {
             const optionId = createUniqueId();
             const disabled = () => isOptionDisabled(option.disabled);
-            const isSelected = () => props.value === option.value;
+            const isSelected = () => value() === option.value;
 
             return (
               <label
@@ -141,11 +167,11 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
                   disabled={disabled()}
                   tabIndex={
                     isSelected() ||
-                    (!props.value && props.options.indexOf(option) === 0)
+                    (!value() && local.options.indexOf(option) === 0)
                       ? 0
                       : -1
                   }
-                  onChange={() => props.onChange(option.value)}
+                  onChange={() => setValue(option.value)}
                   class="sr-only"
                 />
 
@@ -195,13 +221,13 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
           }}
         </For>
       </div>
-      <Show when={props.error}>
+      <Show when={local.error}>
         <p
-          id={props.name ? `${props.name}-error` : `${fallbackName}-error`}
+          id={local.name ? `${local.name}-error` : `${fallbackName}-error`}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {props.error}
+          {local.error}
         </p>
       </Show>
     </div>

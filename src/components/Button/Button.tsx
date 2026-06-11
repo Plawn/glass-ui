@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show } from 'solid-js';
+import { Show, splitProps } from 'solid-js';
 import { Spinner } from './Spinner';
 import type { ButtonProps, ButtonSize, ButtonVariant } from './types';
 
@@ -19,24 +19,37 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 
 export const Button: Component<ButtonProps> = (props) => {
-  const variant = () => props.variant ?? 'primary';
-  const size = () => props.size ?? 'md';
+  const [local, rest] = splitProps(props, [
+    'variant',
+    'size',
+    'type',
+    'fullWidth',
+    'loading',
+    'leftIcon',
+    'rightIcon',
+    'class',
+    'children',
+    'disabled',
+    'onClick',
+  ]);
+  const variant = () => local.variant ?? 'primary';
+  const size = () => local.size ?? 'md';
 
   return (
     <button
-      ref={props.ref}
-      type={props.type ?? 'button'}
-      class={`${variantClasses[variant()]} ${sizeClasses[size()]} inline-flex items-center justify-center focus:outline-none focus-ring ${props.fullWidth ? 'w-full' : ''} ${props.class ?? ''}`}
-      onClick={props.onClick}
-      disabled={props.disabled || props.loading}
-      aria-busy={props.loading || undefined}
+      {...rest}
+      type={local.type ?? 'button'}
+      class={`${variantClasses[variant()]} ${sizeClasses[size()]} inline-flex items-center justify-center focus:outline-none focus-ring ${local.fullWidth ? 'w-full' : ''} ${local.class ?? ''}`}
+      onClick={local.onClick}
+      disabled={local.disabled || local.loading}
+      aria-busy={local.loading || undefined}
     >
-      <Show when={props.loading}>
+      <Show when={local.loading}>
         <Spinner size={size()} />
       </Show>
-      <Show when={!props.loading && props.leftIcon}>{props.leftIcon}</Show>
-      {props.children}
-      <Show when={props.rightIcon}>{props.rightIcon}</Show>
+      <Show when={!local.loading && local.leftIcon}>{local.leftIcon}</Show>
+      {local.children}
+      <Show when={local.rightIcon}>{local.rightIcon}</Show>
     </button>
   );
 };

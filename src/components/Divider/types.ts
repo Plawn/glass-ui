@@ -1,5 +1,4 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps } from '../../types';
 
 /**
  * Divider orientation
@@ -16,7 +15,11 @@ export type DividerLabelPosition = 'start' | 'center' | 'end';
  */
 export type DividerVariant = 'solid' | 'dashed' | 'dotted';
 
-export interface DividerProps extends BaseComponentProps {
+// Uses HTMLElement (not HTMLDivElement) because the root may render as
+// <div> or <hr> depending on orientation/label. `ref` is omitted since the
+// concrete element type is ambiguous across branches.
+export interface DividerProps
+  extends Omit<JSX.HTMLAttributes<HTMLElement>, 'ref'> {
   /** Orientation of the divider */
   orientation?: DividerOrientation;
   /** Optional label/text in the middle of the divider */

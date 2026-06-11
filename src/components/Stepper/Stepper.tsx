@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import type { Component } from 'solid-js';
-import { For, Show, createMemo } from 'solid-js';
+import { For, Show, createMemo, splitProps } from 'solid-js';
 import type { ComponentSize } from '../../types';
 import { CheckIcon } from '../shared';
 import type { StepperProps } from './types';
@@ -68,10 +68,21 @@ const verticalConnectorStyles: Record<
 // =============================================================================
 
 export const Stepper: Component<StepperProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'class',
+    'style',
+    'steps',
+    'currentStep',
+    'onStepClick',
+    'orientation',
+    'size',
+    'allowClickPrevious',
+  ]);
+
   // --- Defaults ---
-  const size = () => props.size ?? 'md';
-  const orientation = () => props.orientation ?? 'horizontal';
-  const allowClickPrevious = () => props.allowClickPrevious ?? false;
+  const size = () => local.size ?? 'md';
+  const orientation = () => local.orientation ?? 'horizontal';
+  const allowClickPrevious = () => local.allowClickPrevious ?? false;
 
   const styles = () => sizeStyles[size()];
   const isVertical = () => orientation() === 'vertical';
@@ -81,11 +92,11 @@ export const Stepper: Component<StepperProps> = (props) => {
   }));
 
   // --- Step state helpers ---
-  const isCompleted = (index: number) => index < props.currentStep;
-  const isCurrent = (index: number) => index === props.currentStep;
+  const isCompleted = (index: number) => index < local.currentStep;
+  const isCurrent = (index: number) => index === local.currentStep;
 
   const isClickable = (index: number) => {
-    if (!props.onStepClick) {
+    if (!local.onStepClick) {
       return false;
     }
     if (allowClickPrevious() && isCompleted(index)) {
@@ -96,7 +107,7 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   const handleStepClick = (index: number) => {
     if (isClickable(index)) {
-      props.onStepClick?.(index);
+      local.onStepClick?.(index);
     }
   };
 
@@ -166,7 +177,7 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   // --- Render horizontal step ---
   const renderHorizontalStep = (
-    step: (typeof props.steps)[0],
+    step: (typeof local.steps)[0],
     index: number,
   ) => {
     const clickable = () => isClickable(index);
@@ -221,10 +232,10 @@ export const Stepper: Component<StepperProps> = (props) => {
   };
 
   // --- Render vertical step ---
-  const renderVerticalStep = (step: (typeof props.steps)[0], index: number) => {
+  const renderVerticalStep = (step: (typeof local.steps)[0], index: number) => {
     const clickable = () => isClickable(index);
     const verticalStyles = () => verticalConnectorStyles[size()];
-    const isLast = () => index === props.steps.length - 1;
+    const isLast = () => index === local.steps.length - 1;
 
     return (
       <div class="relative">
@@ -294,16 +305,16 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   // --- Main render ---
   return (
-    <nav aria-label="Progress">
+    <nav {...rest} aria-label="Progress">
       <Show
         when={isVertical()}
         fallback={
           // Horizontal layout
           <ol
-            class={clsx('flex items-start list-none p-0 m-0', props.class)}
-            style={props.style}
+            class={clsx('flex items-start list-none p-0 m-0', local.class)}
+            style={local.style}
           >
-            <For each={props.steps}>
+            <For each={local.steps}>
               {(step, index) => (
                 <li
                   class="flex items-start"
@@ -311,7 +322,7 @@ export const Stepper: Component<StepperProps> = (props) => {
                 >
                   {renderHorizontalStep(step, index())}
                   {/* Connector between steps */}
-                  <Show when={index() < props.steps.length - 1}>
+                  <Show when={index() < local.steps.length - 1}>
                     <div
                       aria-hidden="true"
                       class={clsx(
@@ -331,10 +342,10 @@ export const Stepper: Component<StepperProps> = (props) => {
       >
         {/* Vertical layout */}
         <ol
-          class={clsx('flex flex-col list-none p-0 m-0', props.class)}
-          style={props.style}
+          class={clsx('flex flex-col list-none p-0 m-0', local.class)}
+          style={local.style}
         >
-          <For each={props.steps}>
+          <For each={local.steps}>
             {(step, index) => (
               <li aria-current={isCurrent(index()) ? 'step' : undefined}>
                 {renderVerticalStep(step, index())}

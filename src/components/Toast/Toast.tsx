@@ -1,4 +1,4 @@
-import { type Component, For, createSignal } from 'solid-js';
+import { type Component, For, createSignal, onCleanup } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { TOAST_COLORS, TOAST_ENTER } from '../../constants';
 import {
@@ -26,10 +26,12 @@ const ToastIcon: Component<{ type: ToastType }> = (props) => (
 const ToastItem: Component<{ toast: Toast }> = (props) => {
   const [exiting, setExiting] = createSignal(false);
   const styles = () => TOAST_COLORS[props.toast.type];
+  let dismissTimer: ReturnType<typeof setTimeout> | undefined;
+  onCleanup(() => clearTimeout(dismissTimer));
 
   const handleDismiss = () => {
     setExiting(true);
-    setTimeout(() => dismissToast(props.toast.id), 200);
+    dismissTimer = setTimeout(() => dismissToast(props.toast.id), 200);
   };
 
   return (

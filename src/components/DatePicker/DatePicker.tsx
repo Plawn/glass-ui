@@ -1,9 +1,11 @@
-import { type Component, Show, createSignal } from 'solid-js';
+import { type Component, Show, createSignal, splitProps } from 'solid-js';
+import { useControlled } from '../../hooks';
 import type { ComponentSize } from '../../types';
 import { Popover } from '../Popover';
 import { CloseIcon } from '../shared/icons/CloseIcon';
 import { Calendar } from './Calendar';
-import type { DateFormat, DatePickerProps } from './types';
+import type { DatePickerProps } from './types';
+import { formatDate } from './utils';
 
 /** Size classes for the input */
 const getSizeClasses = (size: ComponentSize): string => {
@@ -39,45 +41,6 @@ const CalendarIcon: Component<{ size?: number }> = (props) => {
   );
 };
 
-/** Format a date according to the specified format */
-const formatDate = (date: Date, format: DateFormat): string => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
-  const pad = (n: number) => n.toString().padStart(2, '0');
-
-  const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  switch (format) {
-    case 'yyyy-MM-dd':
-      return `${year}-${pad(month)}-${pad(day)}`;
-    case 'MM/dd/yyyy':
-      return `${pad(month)}/${pad(day)}/${year}`;
-    case 'dd/MM/yyyy':
-      return `${pad(day)}/${pad(month)}/${year}`;
-    case 'dd.MM.yyyy':
-      return `${pad(day)}.${pad(month)}.${year}`;
-    case 'MMM dd, yyyy':
-      return `${monthNames[date.getMonth()]} ${pad(day)}, ${year}`;
-    default:
-      return `${year}-${pad(month)}-${pad(day)}`;
-  }
-};
-
 /**
  * A glassmorphic date picker component with calendar popup.
  *
@@ -94,30 +57,58 @@ const formatDate = (date: Date, format: DateFormat): string => {
  * ```
  */
 export const DatePicker: Component<DatePickerProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'value',
+    'defaultValue',
+    'onChange',
+    'placeholder',
+    'format',
+    'min',
+    'max',
+    'size',
+    'clearable',
+    'weekStartsOn',
+    'name',
+    'required',
+    'disabled',
+    'label',
+    'error',
+    'id',
+    'class',
+    'style',
+  ]);
+
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const size = () => props.size ?? 'md';
-  const format = () => props.format ?? 'yyyy-MM-dd';
-  const weekStartsOn = () => props.weekStartsOn ?? 0;
-  const clearable = () => props.clearable ?? false;
-  const disabled = () => props.disabled ?? false;
+  const size = () => local.size ?? 'md';
+  const format = () => local.format ?? 'yyyy-MM-dd';
+  const weekStartsOn = () => local.weekStartsOn ?? 0;
+  const clearable = () => local.clearable ?? false;
+  const disabled = () => local.disabled ?? false;
+
+  const [value, setValue] = useControlled<Date | null>({
+    value: () => local.value,
+    defaultValue: local.defaultValue ?? null,
+    onChange: (v) => local.onChange?.(v),
+  });
 
   const displayValue = () => {
-    if (props.value) {
-      return formatDate(props.value, format());
+    const current = value();
+    if (current) {
+      return formatDate(current, format());
     }
     return '';
   };
 
   const handleDateSelect = (date: Date) => {
-    props.onChange(date);
+    setValue(date);
     setIsOpen(false);
   };
 
   const handleClear = (e: MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    props.onChange(null);
+    setValue(null);
   };
 
   const handleOpenChange = (open: boolean) => {
@@ -127,13 +118,16 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
   };
 
   return (
-    <div class={`w-full ${props.class ?? ''}`} style={props.style}>
-      <Show when={props.label}>
+    <div {...rest} class={`w-full ${local.class ?? ''}`} style={local.style}>
+      <Show when={local.label}>
         <label
-          for={props.id}
+          for={local.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {props.label}
+          {local.label}
+          <Show when={local.required}>
+            <span class="text-error-500 ml-0.5">*</span>
+          </Show>
         </label>
       </Show>
 
@@ -148,7 +142,7 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
             text-surface-900 dark:text-surface-100
             focus:outline-none
             ${disabled() ? 'opacity-50 cursor-not-allowed' : ''}
-            ${props.error ? 'border-error-500 dark:border-error-400' : ''}
+            ${local.error ? 'border-error-500 dark:border-error-400' : ''}
             ${getSizeClasses(size())}
           `,
           'aria-haspopup': 'dialog',
@@ -161,11 +155,11 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
             <span
               class={`flex-1 text-left ${displayValue() ? '' : 'text-surface-400 dark:text-surface-500'}`}
             >
-              {displayValue() || props.placeholder || 'Select date'}
+              {displayValue() || local.placeholder || 'Select date'}
             </span>
 
             {/* Clear button */}
-            <Show when={clearable() && props.value && !disabled()}>
+            <Show when={clearable() && value() && !disabled()}>
               <button
                 type="button"
                 onClick={handleClear}
@@ -180,22 +174,32 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
         contentClass="p-0"
       >
         <Calendar
-          value={props.value}
+          value={value()}
           onSelect={handleDateSelect}
-          min={props.min}
-          max={props.max}
+          min={local.min}
+          max={local.max}
           weekStartsOn={weekStartsOn()}
         />
       </Popover>
 
+      {/* Hidden input for native form submission */}
+      <Show when={local.name}>
+        <input
+          type="hidden"
+          name={local.name}
+          value={value() ? formatDate(value() as Date, 'yyyy-MM-dd') : ''}
+          required={local.required}
+        />
+      </Show>
+
       {/* Error message */}
-      <Show when={props.error}>
+      <Show when={local.error}>
         <p
-          id={props.id ? `${props.id}-error` : undefined}
+          id={local.id ? `${local.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {props.error}
+          {local.error}
         </p>
       </Show>
     </div>

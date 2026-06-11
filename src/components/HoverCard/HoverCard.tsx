@@ -4,6 +4,7 @@ import {
   createSignal,
   createUniqueId,
   onCleanup,
+  splitProps,
 } from 'solid-js';
 import { useFloatingContent } from '../../hooks/useFloatingContent';
 import type { HoverCardProps } from './types';
@@ -12,6 +13,19 @@ import type { HoverCardProps } from './types';
 const DEFAULT_OFFSET = 8;
 
 export const HoverCard: Component<HoverCardProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'class',
+    'style',
+    'children',
+    'trigger',
+    'placement',
+    'openDelay',
+    'closeDelay',
+    'showArrow',
+    'disabled',
+    'contentClass',
+  ]);
+
   const hovercardId = createUniqueId();
   let triggerRef: HTMLDivElement | undefined;
   let contentRef: HTMLDivElement | undefined;
@@ -20,12 +34,12 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
   const [isHoveringTrigger, setIsHoveringTrigger] = createSignal(false);
   const [isHoveringContent, setIsHoveringContent] = createSignal(false);
 
-  const placement = () => props.placement ?? 'bottom';
+  const placement = () => local.placement ?? 'bottom';
   const offset = () => DEFAULT_OFFSET;
-  const openDelay = () => props.openDelay ?? 200;
-  const closeDelay = () => props.closeDelay ?? 300;
-  const showArrow = () => props.showArrow ?? false;
-  const disabled = () => props.disabled ?? false;
+  const openDelay = () => local.openDelay ?? 200;
+  const closeDelay = () => local.closeDelay ?? 300;
+  const showArrow = () => local.showArrow ?? false;
+  const disabled = () => local.disabled ?? false;
 
   // Event handlers - defined before use to avoid hoisting issues
   const handleContentMouseEnter = () => {
@@ -46,7 +60,7 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
     direction: placement,
     offset,
     showArrow,
-    contentClass: () => props.contentClass,
+    contentClass: () => local.contentClass,
     role: 'tooltip',
     onMouseEnter: handleContentMouseEnter,
     onMouseLeave: handleContentMouseLeave,
@@ -82,16 +96,17 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
 
   return (
     <div
+      {...rest}
       ref={triggerRef}
-      class={`relative inline-block ${props.class ?? ''}`}
-      style={props.style}
+      class={`relative inline-block ${local.class ?? ''}`}
+      style={local.style}
       aria-describedby={isOpen() ? hovercardId : undefined}
       onMouseEnter={handleTriggerMouseEnter}
       onMouseLeave={handleTriggerMouseLeave}
     >
-      {props.trigger}
+      {local.trigger}
       <FloatingContent ref={(el) => (contentRef = el)}>
-        <div id={hovercardId}>{props.children}</div>
+        <div id={hovercardId}>{local.children}</div>
       </FloatingContent>
     </div>
   );

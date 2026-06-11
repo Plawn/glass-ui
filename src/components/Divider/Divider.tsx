@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show } from 'solid-js';
+import { Show, splitProps } from 'solid-js';
 import type {
   DividerLabelPosition,
   DividerProps,
@@ -22,12 +22,20 @@ const labelFlexGrow: Record<
 };
 
 export const Divider: Component<DividerProps> = (props) => {
-  const orientation = () => props.orientation ?? 'horizontal';
-  const variant = () => props.variant ?? 'solid';
-  const labelPosition = () => props.labelPosition ?? 'center';
+  const [local, rest] = splitProps(props, [
+    'orientation',
+    'variant',
+    'labelPosition',
+    'label',
+    'class',
+    'style',
+  ]);
+  const orientation = () => local.orientation ?? 'horizontal';
+  const variant = () => local.variant ?? 'solid';
+  const labelPosition = () => local.labelPosition ?? 'center';
 
   const isHorizontal = () => orientation() === 'horizontal';
-  const hasLabel = () => props.label !== undefined;
+  const hasLabel = () => local.label !== undefined;
 
   const lineClasses = () =>
     `border-surface-200 dark:border-surface-600 ${variantStyles[variant()]}`;
@@ -38,8 +46,9 @@ export const Divider: Component<DividerProps> = (props) => {
       fallback={
         // Vertical divider
         <div
-          class={`inline-block self-stretch border-l ${lineClasses()} ${props.class ?? ''}`}
-          style={props.style}
+          {...rest}
+          class={`inline-block self-stretch border-l ${lineClasses()} ${local.class ?? ''}`}
+          style={local.style}
           role="separator"
           aria-orientation="vertical"
         />
@@ -50,15 +59,17 @@ export const Divider: Component<DividerProps> = (props) => {
         when={hasLabel()}
         fallback={
           <hr
-            class={`border-t ${lineClasses()} ${props.class ?? ''}`}
-            style={props.style}
+            {...rest}
+            class={`border-t ${lineClasses()} ${local.class ?? ''}`}
+            style={local.style}
             aria-orientation="horizontal"
           />
         }
       >
         <div
-          class={`flex items-center w-full ${props.class ?? ''}`}
-          style={props.style}
+          {...rest}
+          class={`flex items-center w-full ${local.class ?? ''}`}
+          style={local.style}
           role="separator"
           aria-orientation="horizontal"
         >
@@ -66,7 +77,7 @@ export const Divider: Component<DividerProps> = (props) => {
             class={`${labelFlexGrow[labelPosition()].before} border-t ${lineClasses()}`}
           />
           <span class="px-3 text-sm text-surface-500 dark:text-surface-400 bg-white dark:bg-surface-900 shrink-0">
-            {props.label}
+            {local.label}
           </span>
           <div
             class={`${labelFlexGrow[labelPosition()].after} border-t ${lineClasses()}`}

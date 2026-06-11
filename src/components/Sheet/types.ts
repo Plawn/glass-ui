@@ -3,7 +3,7 @@ import type { JSX } from 'solid-js';
 /**
  * Sheet component props - mobile bottom sheet overlay
  */
-export interface SheetProps {
+export interface SheetProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Whether the sheet is open */
   open: boolean;
   /** Callback when the open state changes */

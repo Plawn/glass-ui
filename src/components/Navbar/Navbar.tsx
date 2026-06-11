@@ -5,6 +5,7 @@ import {
   createSignal,
   onCleanup,
   onMount,
+  splitProps,
 } from 'solid-js';
 import { useDisclosure } from '../../hooks';
 import type { NavbarItem, NavbarProps } from './types';
@@ -146,6 +147,15 @@ const MobileNavItem: Component<{ item: NavbarItem; onClose: () => void }> = (
  * ```
  */
 export const Navbar: Component<NavbarProps> = (props) => {
+  const [, rest] = splitProps(props, [
+    'brand',
+    'items',
+    'actions',
+    'sticky',
+    'transparent',
+    'class',
+  ]);
+
   const sticky = () => props.sticky ?? false;
   const transparent = () => props.transparent ?? false;
 
@@ -205,7 +215,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
   };
 
   return (
-    <nav class={navbarClasses()} aria-label="Main navigation">
+    <nav {...rest} class={navbarClasses()} aria-label="Main navigation">
       <div class="h-full px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl">
         <div class="flex items-center justify-between h-full">
           {/* Brand/Logo */}

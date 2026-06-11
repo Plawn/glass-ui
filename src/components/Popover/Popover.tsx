@@ -1,4 +1,4 @@
-import type { Component } from 'solid-js';
+import { type Component, splitProps } from 'solid-js';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { useControlled } from '../../hooks/useControlled';
 import { useEscapeKey } from '../../hooks/useEscapeKey';
@@ -10,19 +10,34 @@ import type { PopoverProps } from './types';
 const DEFAULT_OFFSET = 8;
 
 export const Popover: Component<PopoverProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'class',
+    'style',
+    'children',
+    'trigger',
+    'placement',
+    'open',
+    'onOpenChange',
+    'showArrow',
+    'offset',
+    'contentClass',
+    'triggerProps',
+    'scrollBehavior',
+  ]);
+
   let triggerRef: HTMLButtonElement | undefined;
   let contentRef: HTMLDivElement | undefined;
 
-  const placement = () => props.placement ?? 'bottom';
-  const offset = () => props.offset ?? DEFAULT_OFFSET;
-  const showArrow = () => props.showArrow ?? false;
-  const scrollBehavior = () => props.scrollBehavior ?? 'close';
+  const placement = () => local.placement ?? 'bottom';
+  const offset = () => local.offset ?? DEFAULT_OFFSET;
+  const showArrow = () => local.showArrow ?? false;
+  const scrollBehavior = () => local.scrollBehavior ?? 'close';
 
   // Controlled/uncontrolled state management
   const [isOpen, setOpen] = useControlled({
-    value: () => props.open,
+    value: () => local.open,
     defaultValue: false,
-    onChange: props.onOpenChange,
+    onChange: local.onOpenChange,
   });
 
   // Use the shared floating content hook
@@ -33,7 +48,7 @@ export const Popover: Component<PopoverProps> = (props) => {
     placement,
     offset,
     showArrow,
-    contentClass: () => props.contentClass,
+    contentClass: () => local.contentClass,
     role: 'dialog',
     ariaModal: false,
   });
@@ -81,28 +96,29 @@ export const Popover: Component<PopoverProps> = (props) => {
 
   return (
     <div
-      class={`relative inline-block ${props.class ?? ''}`}
-      style={props.style}
+      {...rest}
+      class={`relative inline-block ${local.class ?? ''}`}
+      style={local.style}
     >
       <button
         type="button"
-        {...props.triggerProps}
+        {...local.triggerProps}
         ref={triggerRef}
         onClick={handleToggle}
         onKeyDown={(e) => {
           handleKeyDown(e);
-          if (typeof props.triggerProps?.onKeyDown === 'function') {
-            props.triggerProps.onKeyDown(e);
+          if (typeof local.triggerProps?.onKeyDown === 'function') {
+            local.triggerProps.onKeyDown(e);
           }
         }}
-        aria-haspopup={props.triggerProps?.['aria-haspopup'] ?? 'true'}
+        aria-haspopup={local.triggerProps?.['aria-haspopup'] ?? 'true'}
         aria-expanded={isOpen()}
-        class={`appearance-none bg-transparent border-none p-0 m-0 cursor-pointer ${props.triggerProps?.class ?? ''}`}
+        class={`appearance-none bg-transparent border-none p-0 m-0 cursor-pointer ${local.triggerProps?.class ?? ''}`}
       >
-        {props.trigger}
+        {local.trigger}
       </button>
       <FloatingContent ref={(el) => (contentRef = el)}>
-        {props.children}
+        {local.children}
       </FloatingContent>
     </div>
   );

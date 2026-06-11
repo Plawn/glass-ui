@@ -1,6 +1,7 @@
-import type { AvatarSize, BaseComponentProps } from '../../types';
+import type { JSX } from 'solid-js';
+import type { AvatarSize } from '../../types';
 
-export interface AvatarProps extends BaseComponentProps {
+export interface AvatarProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Image source URL */
   src?: string;
   /** Name for generating initials fallback */

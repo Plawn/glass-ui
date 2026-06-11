@@ -1,9 +1,11 @@
-import { type Component, Show, createSignal } from 'solid-js';
+import { type Component, Show, createSignal, splitProps } from 'solid-js';
+import { useControlled } from '../../hooks';
 import type { ComponentSize } from '../../types';
 import { Popover } from '../Popover';
 import { CloseIcon } from '../shared/icons/CloseIcon';
 import { Calendar } from './Calendar';
-import type { DateFormat, DateRangePickerProps } from './types';
+import type { DateRange, DateRangePickerProps } from './types';
+import { formatDate } from './utils';
 
 /** Size classes for the input */
 const getSizeClasses = (size: ComponentSize): string => {
@@ -39,45 +41,6 @@ const CalendarIcon: Component<{ size?: number }> = (props) => {
   );
 };
 
-/** Format a date according to the specified format */
-const formatDate = (date: Date, format: DateFormat): string => {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-
-  const pad = (n: number) => n.toString().padStart(2, '0');
-
-  const monthNames = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  switch (format) {
-    case 'yyyy-MM-dd':
-      return `${year}-${pad(month)}-${pad(day)}`;
-    case 'MM/dd/yyyy':
-      return `${pad(month)}/${pad(day)}/${year}`;
-    case 'dd/MM/yyyy':
-      return `${pad(day)}/${pad(month)}/${year}`;
-    case 'dd.MM.yyyy':
-      return `${pad(day)}.${pad(month)}.${year}`;
-    case 'MMM dd, yyyy':
-      return `${monthNames[date.getMonth()]} ${pad(day)}, ${year}`;
-    default:
-      return `${year}-${pad(month)}-${pad(day)}`;
-  }
-};
-
 /** Check if date1 is before date2 */
 const isBeforeDay = (date1: Date, date2: Date): boolean => {
   const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
@@ -100,25 +63,53 @@ const isBeforeDay = (date1: Date, date2: Date): boolean => {
  * ```
  */
 export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'value',
+    'defaultValue',
+    'onChange',
+    'placeholder',
+    'startPlaceholder',
+    'endPlaceholder',
+    'format',
+    'min',
+    'max',
+    'size',
+    'clearable',
+    'weekStartsOn',
+    'separator',
+    'name',
+    'required',
+    'disabled',
+    'label',
+    'error',
+    'id',
+    'class',
+    'style',
+  ]);
+
   const [isOpen, setIsOpen] = createSignal(false);
   const [hoverDate, setHoverDate] = createSignal<Date | null>(null);
 
-  // Local state for selection in progress
-  const [localStart, setLocalStart] = createSignal<Date | null>(
-    props.value.start,
-  );
-  const [localEnd, setLocalEnd] = createSignal<Date | null>(props.value.end);
+  const [value, setValue] = useControlled<DateRange>({
+    value: () => local.value,
+    defaultValue: local.defaultValue ?? { start: null, end: null },
+    onChange: (v) => local.onChange?.(v),
+  });
 
-  const size = () => props.size ?? 'md';
-  const format = () => props.format ?? 'yyyy-MM-dd';
-  const weekStartsOn = () => props.weekStartsOn ?? 0;
-  const clearable = () => props.clearable ?? false;
-  const disabled = () => props.disabled ?? false;
-  const separator = () => props.separator ?? ' - ';
+  // Local state for selection in progress
+  const [localStart, setLocalStart] = createSignal<Date | null>(value().start);
+  const [localEnd, setLocalEnd] = createSignal<Date | null>(value().end);
+
+  const size = () => local.size ?? 'md';
+  const format = () => local.format ?? 'yyyy-MM-dd';
+  const weekStartsOn = () => local.weekStartsOn ?? 0;
+  const clearable = () => local.clearable ?? false;
+  const disabled = () => local.disabled ?? false;
+  const separator = () => local.separator ?? ' - ';
 
   const displayValue = () => {
-    const start = props.value.start;
-    const end = props.value.end;
+    const start = value().start;
+    const end = value().end;
     if (start && end) {
       return `${formatDate(start, format())}${separator()}${formatDate(end, format())}`;
     }
@@ -128,42 +119,32 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     return '';
   };
 
-  const hasValue = () => props.value.start !== null || props.value.end !== null;
+  const hasValue = () => value().start !== null || value().end !== null;
 
   const handleDateSelect = (date: Date) => {
-    console.log('handleDateSelect called', date);
-    try {
-      const start = localStart();
-      const end = localEnd();
-      console.log('current state:', { start, end });
+    const start = localStart();
+    const end = localEnd();
 
-      if (!start || (start && end)) {
-        // No selection or complete selection: start a new range
-        setLocalStart(date);
-        if (end) {
-          // Only reset end if it was set (avoid setting null which breaks reactivity)
-          setLocalEnd(null);
-        }
-        console.log('select2, localStart is now:', localStart());
-        // props.onChange({ start: date, end: null });
-        console.log('select3');
-      } else {
-        // We have a start but no end
-        console.log('select4');
-        if (isBeforeDay(date, start)) {
-          // Clicked before start: make this the new start
-          setLocalStart(date);
-          setLocalEnd(null);
-          props.onChange({ start: date, end: null });
-        } else {
-          // Clicked on or after start: complete the range
-          setLocalEnd(date);
-          props.onChange({ start, end: date });
-          setIsOpen(false);
-        }
+    if (!start || (start && end)) {
+      // No selection or complete selection: start a new range
+      setLocalStart(date);
+      if (end) {
+        // Only reset end if it was set (avoid setting null which breaks reactivity)
+        setLocalEnd(null);
       }
-    } catch (e) {
-      console.error('failed', e);
+    } else {
+      // We have a start but no end
+      if (isBeforeDay(date, start)) {
+        // Clicked before start: make this the new start
+        setLocalStart(date);
+        setLocalEnd(null);
+        setValue({ start: date, end: null });
+      } else {
+        // Clicked on or after start: complete the range
+        setLocalEnd(date);
+        setValue({ start, end: date });
+        setIsOpen(false);
+      }
     }
   };
 
@@ -181,19 +162,17 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     e.preventDefault();
     setLocalStart(null);
     setLocalEnd(null);
-    props.onChange({ start: null, end: null });
+    setValue({ start: null, end: null });
   };
 
   const handleOpenChange = (open: boolean) => {
     if (!disabled()) {
       const wasOpen = isOpen();
-      console.log('handleOpenChange:', { open, wasOpen });
       setIsOpen(open);
       if (open && !wasOpen) {
         // Sync local state with props only when first opening (not on quick re-open)
-        console.log('syncing from props:', props.value);
-        setLocalStart(props.value.start);
-        setLocalEnd(props.value.end);
+        setLocalStart(value().start);
+        setLocalEnd(value().end);
       }
       if (!open) {
         setHoverDate(null);
@@ -202,22 +181,25 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   };
 
   const placeholder = () => {
-    if (props.placeholder) {
-      return props.placeholder;
+    if (local.placeholder) {
+      return local.placeholder;
     }
-    const startText = props.startPlaceholder ?? 'Start date';
-    const endText = props.endPlaceholder ?? 'End date';
+    const startText = local.startPlaceholder ?? 'Start date';
+    const endText = local.endPlaceholder ?? 'End date';
     return `${startText}${separator()}${endText}`;
   };
 
   return (
-    <div class={`w-full ${props.class ?? ''}`} style={props.style}>
-      <Show when={props.label}>
+    <div {...rest} class={`w-full ${local.class ?? ''}`} style={local.style}>
+      <Show when={local.label}>
         <label
-          for={props.id}
+          for={local.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {props.label}
+          {local.label}
+          <Show when={local.required}>
+            <span class="text-error-500 ml-0.5">*</span>
+          </Show>
         </label>
       </Show>
 
@@ -232,7 +214,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
             text-surface-900 dark:text-surface-100
             focus:outline-none
             ${disabled() ? 'opacity-50 cursor-not-allowed' : ''}
-            ${props.error ? 'border-error-500 dark:border-error-400' : ''}
+            ${local.error ? 'border-error-500 dark:border-error-400' : ''}
             ${getSizeClasses(size())}
           `,
           'aria-haspopup': 'dialog',
@@ -258,7 +240,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                     e.preventDefault();
                     setLocalStart(null);
                     setLocalEnd(null);
-                    props.onChange({ start: null, end: null });
+                    setValue({ start: null, end: null });
                   }
                 }}
                 class="p-1 rounded-full hover:bg-surface-200 dark:hover:bg-surface-600 text-surface-400 dark:text-surface-500 transition-colors"
@@ -276,8 +258,8 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
         <Calendar
           value={null}
           onSelect={handleDateSelect}
-          min={props.min}
-          max={props.max}
+          min={local.min}
+          max={local.max}
           weekStartsOn={weekStartsOn()}
           rangeStart={localStart()}
           rangeEnd={localEnd()}
@@ -286,10 +268,32 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
         />
       </Popover>
 
+      {/* Hidden inputs for native form submission */}
+      <Show when={local.name}>
+        <input
+          type="hidden"
+          name={`${local.name}-start`}
+          value={
+            value().start ? formatDate(value().start as Date, 'yyyy-MM-dd') : ''
+          }
+        />
+        <input
+          type="hidden"
+          name={`${local.name}-end`}
+          value={
+            value().end ? formatDate(value().end as Date, 'yyyy-MM-dd') : ''
+          }
+        />
+      </Show>
+
       {/* Error message */}
-      <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
-          {props.error}
+      <Show when={local.error}>
+        <p
+          id={local.id ? `${local.id}-error` : undefined}
+          class="mt-1.5 text-sm text-error-500 dark:text-error-400"
+          role="alert"
+        >
+          {local.error}
         </p>
       </Show>
     </div>

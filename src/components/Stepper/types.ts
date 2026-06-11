@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps, ComponentSize } from '../../types';
+import type { ComponentSize } from '../../types';
 
 /**
  * Stepper orientation - horizontal or vertical layout
@@ -21,7 +21,7 @@ export interface StepperStep {
 /**
  * Props for the Stepper component
  */
-export interface StepperProps extends BaseComponentProps {
+export interface StepperProps extends JSX.HTMLAttributes<HTMLElement> {
   /** Array of step configurations */
   steps: StepperStep[];
   /** Current active step index (0-based) */

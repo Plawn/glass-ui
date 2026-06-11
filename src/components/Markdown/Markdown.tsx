@@ -7,6 +7,7 @@ import {
   createEffect,
   createMemo,
   onCleanup,
+  splitProps,
 } from 'solid-js';
 import { render } from 'solid-js/web';
 import type { CodeBlockAction, MarkdownProps } from './types';
@@ -71,20 +72,25 @@ const CodeBlockActionButton: Component<{
 };
 
 export const Markdown: Component<MarkdownProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'content',
+    'codeBlockActions',
+    'class',
+  ]);
   let containerRef: HTMLDivElement | undefined;
   const disposeCallbacks: (() => void)[] = [];
 
   const hasActions = createMemo(
-    () => props.codeBlockActions && props.codeBlockActions.length > 0,
+    () => local.codeBlockActions && local.codeBlockActions.length > 0,
   );
 
   const html = createMemo(() => {
-    if (!props.content) {
+    if (!local.content) {
       return '';
     }
     try {
       const renderer = createCustomRenderer(hasActions() ?? false);
-      const rawHtml = markedInstance.parse(props.content, {
+      const rawHtml = markedInstance.parse(local.content, {
         async: false,
         renderer,
       }) as string;
@@ -92,52 +98,64 @@ export const Markdown: Component<MarkdownProps> = (props) => {
         ADD_ATTR: ['data-language'],
       });
     } catch {
-      return purifier.sanitize(props.content);
+      return purifier.sanitize(local.content);
     }
   });
 
   // Inject action buttons into code block wrappers
   createEffect(() => {
-    const actions = props.codeBlockActions;
-    if (!containerRef || !actions || actions.length === 0) {
-      return;
-    }
+    const actions = local.codeBlockActions;
+    // Track the rendered HTML so buttons are re-injected whenever the content
+    // (and thus the code-block wrappers) changes — not only when the actions
+    // array changes.
+    void html();
 
-    // Clean up previous renders
+    // Clean up previous renders up-front (covers the "actions cleared" case too).
     for (const dispose of disposeCallbacks) {
       dispose();
     }
     disposeCallbacks.length = 0;
 
-    // Find all code block wrappers and inject action buttons
-    const wrappers = containerRef.querySelectorAll('.code-block-wrapper');
-    for (const wrapper of wrappers) {
-      const actionsContainer = wrapper.querySelector('.code-block-actions');
-      const codeElement = wrapper.querySelector('code');
-      if (!actionsContainer || !codeElement) {
-        continue;
-      }
-
-      const code = codeElement.textContent ?? '';
-      const language = (wrapper as HTMLElement).dataset.language ?? undefined;
-
-      // Render action buttons into the container
-      const dispose = render(
-        () => (
-          <For each={actions}>
-            {(action) => (
-              <CodeBlockActionButton
-                action={action}
-                code={code}
-                language={language}
-              />
-            )}
-          </For>
-        ),
-        actionsContainer,
-      );
-      disposeCallbacks.push(dispose);
+    if (!containerRef || !actions || actions.length === 0) {
+      return;
     }
+
+    // The `innerHTML` binding updates the DOM in a separate effect that runs
+    // after this one, so defer the wrapper lookup to a microtask to ensure the
+    // freshly-rendered wrappers exist before we inject into them.
+    queueMicrotask(() => {
+      if (!containerRef) {
+        return;
+      }
+      const wrappers = containerRef.querySelectorAll('.code-block-wrapper');
+      for (const wrapper of wrappers) {
+        const actionsContainer = wrapper.querySelector('.code-block-actions');
+        const codeElement = wrapper.querySelector('code');
+        if (!actionsContainer || !codeElement) {
+          continue;
+        }
+
+        const code = codeElement.textContent ?? '';
+        const language = (wrapper as HTMLElement).dataset.language ?? undefined;
+
+        // Render action buttons into the container
+        const dispose = render(
+          () => (
+            <For each={actions}>
+              {(action) => (
+                <CodeBlockActionButton
+                  action={action}
+                  code={code}
+                  language={language}
+                />
+              )}
+            </For>
+          ),
+          actionsContainer,
+        );
+        disposeCallbacks.push(dispose);
+      }
+    });
   });
 
   onCleanup(() => {
@@ -147,9 +165,10 @@ export const Markdown: Component<MarkdownProps> = (props) => {
   });
 
   return (
-    <Show when={props.content}>
+    <Show when={local.content}>
       {/* innerHTML is the correct SolidJS pattern for sanitized HTML - content is sanitized via DOMPurify above */}
       <div
+        {...rest}
         ref={containerRef}
         class={`markdown-content prose prose-sm max-w-none
           prose-headings:text-surface-900 dark:prose-headings:text-surface-100
@@ -188,7 +207,7 @@ export const Markdown: Component<MarkdownProps> = (props) => {
           prose-th:border-b prose-th:border-surface-200 dark:prose-th:border-surface-700
           prose-td:p-2 prose-td:text-surface-600 dark:prose-td:text-surface-400
           prose-td:border-b prose-td:border-surface-100 dark:prose-td:border-surface-800
-          ${props.class ?? ''}`}
+          ${local.class ?? ''}`}
         innerHTML={html()}
       />
     </Show>

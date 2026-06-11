@@ -3,14 +3,12 @@ import type {
   BaseComponentProps,
   ButtonVariant,
   ComponentSize,
-  DisableableProps,
   DualIconProps,
   LoadableProps,
 } from '../../types';
 
 export interface ButtonProps
-  extends BaseComponentProps,
-    DisableableProps,
+  extends Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>,
     LoadableProps,
     DualIconProps {
   /** Button content */
@@ -25,8 +23,6 @@ export interface ButtonProps
   type?: 'button' | 'submit' | 'reset';
   /** Whether the button should take full width of its container */
   fullWidth?: boolean;
-  /** Ref to the button element */
-  ref?: HTMLButtonElement | ((el: HTMLButtonElement) => void);
 }
 
 export interface SpinnerProps extends BaseComponentProps {

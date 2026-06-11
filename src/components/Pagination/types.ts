@@ -1,6 +1,7 @@
-import type { BaseComponentProps } from '../../types';
+import type { JSX } from 'solid-js';
 
-export interface PaginationProps extends BaseComponentProps {
+export interface PaginationProps
+  extends Omit<JSX.HTMLAttributes<HTMLElement>, 'onChange'> {
   /** Total number of items */
   total: number;
   /** Current page (1-indexed) */

@@ -1,5 +1,9 @@
 import type { JSX } from 'solid-js';
-import type { TextInputProps } from '../../types';
+import type {
+  ComponentSize,
+  FormFieldSemanticProps,
+  TextInputProps,
+} from '../../types';
 
 /**
  * Base props shared by text input components
@@ -7,13 +11,24 @@ import type { TextInputProps } from '../../types';
 export interface BaseInputProps extends TextInputProps {}
 
 /**
- * Props for the Input component
+ * Props for the Input component.
+ *
+ * Extends native `<input>` attributes (minus the ones we redefine with a
+ * different shape) so arbitrary `data-*`/`aria-*`/HTML attributes are forwarded
+ * to the underlying input element.
  */
-export interface InputProps extends BaseInputProps {
-  /** Current input value */
-  value: string;
+export interface InputProps
+  extends Omit<
+      JSX.InputHTMLAttributes<HTMLInputElement>,
+      'value' | 'onInput' | 'size' | 'type'
+    >,
+    FormFieldSemanticProps {
+  /** Current input value (controlled). Omit to use uncontrolled mode. */
+  value?: string;
+  /** Initial value for uncontrolled mode */
+  defaultValue?: string;
   /** Callback when value changes */
-  onInput: (value: string) => void;
+  onInput?: (value: string) => void;
   /** Input type */
   type?: 'text' | 'password' | 'email' | 'number' | 'url' | 'tel' | 'search';
   /** Keyboard event handler */
@@ -22,24 +37,35 @@ export interface InputProps extends BaseInputProps {
   autocomplete?: string;
   /** Whether the input is readonly */
   readonly?: boolean;
-  /** Ref to the input element */
-  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
+  /** Size variant */
+  size?: ComponentSize;
 }
 
 /**
- * Props for the Textarea component
+ * Props for the Textarea component.
+ *
+ * Extends native `<textarea>` attributes (minus the ones we redefine with a
+ * different shape) so arbitrary `data-*`/`aria-*`/HTML attributes are forwarded
+ * to the underlying textarea element.
  */
-export interface TextareaProps extends BaseInputProps {
-  /** Current textarea value */
-  value: string;
+export interface TextareaProps
+  extends Omit<
+      JSX.TextareaHTMLAttributes<HTMLTextAreaElement>,
+      'value' | 'onInput' | 'size'
+    >,
+    FormFieldSemanticProps {
+  /** Current textarea value (controlled). Omit to use uncontrolled mode. */
+  value?: string;
+  /** Initial value for uncontrolled mode */
+  defaultValue?: string;
   /** Callback when value changes */
-  onInput: (value: string) => void;
+  onInput?: (value: string) => void;
   /** Number of visible text rows */
   rows?: number;
   /** Whether the textarea is readonly */
   readonly?: boolean;
-  /** Ref to the textarea element */
-  ref?: HTMLTextAreaElement | ((el: HTMLTextAreaElement) => void);
+  /** Size variant */
+  size?: ComponentSize;
 }
 
 /**
@@ -57,11 +83,18 @@ export interface SelectOption<T = string> {
 /**
  * Props for the Select component with children (string values only)
  */
-export interface SelectPropsWithChildren extends BaseInputProps {
-  /** Current selected value */
-  value: string;
+export interface SelectPropsWithChildren
+  extends Omit<
+      JSX.SelectHTMLAttributes<HTMLSelectElement>,
+      'value' | 'onChange' | 'size'
+    >,
+    FormFieldSemanticProps {
+  /** Current selected value (controlled). Omit to use uncontrolled mode. */
+  value?: string;
+  /** Initial value for uncontrolled mode */
+  defaultValue?: string;
   /** Callback when selection changes */
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   /** Option elements */
   children: JSX.Element;
   /** Array of option objects - not used with children */
@@ -75,11 +108,18 @@ export interface SelectPropsWithChildren extends BaseInputProps {
 /**
  * Props for the Select component with options array (generic values)
  */
-export interface SelectPropsWithOptions<T> extends BaseInputProps {
-  /** Current selected value */
-  value: T | null;
+export interface SelectPropsWithOptions<T>
+  extends Omit<
+      JSX.SelectHTMLAttributes<HTMLSelectElement>,
+      'value' | 'onChange' | 'size'
+    >,
+    FormFieldSemanticProps {
+  /** Current selected value (controlled). Omit to use uncontrolled mode. */
+  value?: T | null;
+  /** Initial value for uncontrolled mode */
+  defaultValue?: T | null;
   /** Callback when selection changes */
-  onChange: (value: T | null) => void;
+  onChange?: (value: T | null) => void;
   /** Option elements - not used with options */
   children?: never;
   /** Array of option objects */
@@ -101,9 +141,15 @@ export type SelectProps<T = string> =
  * Props for the Checkbox component
  */
 export interface CheckboxProps
-  extends Omit<BaseInputProps, 'placeholder' | 'size'> {
-  /** Whether the checkbox is checked */
-  checked: boolean;
+  extends Omit<
+      JSX.InputHTMLAttributes<HTMLInputElement>,
+      'checked' | 'onChange' | 'size'
+    >,
+    FormFieldSemanticProps {
+  /** Whether the checkbox is checked (controlled). Omit to use uncontrolled mode. */
+  checked?: boolean;
+  /** Initial checked state for uncontrolled mode */
+  defaultChecked?: boolean;
   /** Whether the checkbox is in indeterminate state (partially selected) */
   indeterminate?: boolean;
   /** Size of the checkbox */

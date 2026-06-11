@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, createMemo } from 'solid-js';
+import { Show, createMemo, splitProps } from 'solid-js';
 import type { ProgressColor, ProgressProps, ProgressSize } from './types';
 
 const linearSizes: Record<ProgressSize, string> = {
@@ -62,15 +62,23 @@ const circularColorStyles: Record<
 };
 
 const LinearProgress: Component<ProgressProps> = (props) => {
-  const size = () => props.size ?? 'md';
-  const color = () => props.color ?? 'primary';
+  const [local, rest] = splitProps(props, [
+    'class',
+    'value',
+    'variant',
+    'size',
+    'color',
+    'showValue',
+  ]);
+  const size = () => local.size ?? 'md';
+  const color = () => local.color ?? 'primary';
   const styles = () => colorStyles[color()];
-  const clampedValue = () => Math.min(100, Math.max(0, props.value));
+  const clampedValue = () => Math.min(100, Math.max(0, local.value));
   const fillStyle = createMemo(() => ({ width: `${clampedValue()}%` }));
 
   return (
-    <div class={`w-full ${props.class ?? ''}`}>
-      <Show when={props.showValue}>
+    <div {...rest} class={`w-full ${local.class ?? ''}`}>
+      <Show when={local.showValue}>
         <div class="flex justify-between items-center mb-1">
           <span class="text-xs font-medium text-surface-600 dark:text-surface-400">
             {Math.round(clampedValue())}%
@@ -94,11 +102,19 @@ const LinearProgress: Component<ProgressProps> = (props) => {
 };
 
 const CircularProgress: Component<ProgressProps> = (props) => {
-  const size = () => props.size ?? 'md';
-  const color = () => props.color ?? 'primary';
+  const [local, rest] = splitProps(props, [
+    'class',
+    'value',
+    'variant',
+    'size',
+    'color',
+    'showValue',
+  ]);
+  const size = () => local.size ?? 'md';
+  const color = () => local.color ?? 'primary';
   const dimensions = () => circularSizes[size()];
   const styles = () => circularColorStyles[color()];
-  const clampedValue = () => Math.min(100, Math.max(0, props.value));
+  const clampedValue = () => Math.min(100, Math.max(0, local.value));
 
   const circumference = createMemo(() => {
     const radius = (dimensions().size - dimensions().stroke) / 2;
@@ -119,7 +135,8 @@ const CircularProgress: Component<ProgressProps> = (props) => {
 
   return (
     <div
-      class={`relative inline-flex items-center justify-center ${props.class ?? ''}`}
+      {...rest}
+      class={`relative inline-flex items-center justify-center ${local.class ?? ''}`}
       role="progressbar"
       aria-valuenow={clampedValue()}
       aria-valuemin={0}
@@ -154,7 +171,7 @@ const CircularProgress: Component<ProgressProps> = (props) => {
           stroke-dashoffset={strokeDashoffset()}
         />
       </svg>
-      <Show when={props.showValue}>
+      <Show when={local.showValue}>
         <span
           class="absolute text-surface-700 dark:text-surface-300 font-semibold"
           style={valueFontStyle()}

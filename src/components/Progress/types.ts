@@ -1,15 +1,13 @@
-import type {
-  BaseComponentProps,
-  ComponentSize,
-  ProgressVariant,
-} from '../../types';
+import type { JSX } from 'solid-js';
+import type { ComponentSize, ProgressVariant } from '../../types';
 
 /**
  * Progress color - primary plus status colors (no info/default)
  */
 export type ProgressColor = 'primary' | 'success' | 'warning' | 'error';
 
-export interface ProgressProps extends BaseComponentProps {
+export interface ProgressProps
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'color'> {
   /** Progress value (0-100) */
   value: number;
   /** Progress indicator variant */

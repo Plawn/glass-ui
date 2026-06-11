@@ -18,9 +18,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "types": ["vite/client"]
+    "declarationMap": false,
+    "sourceMap": false,
+    "types": ["vite/client", "bun"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "coverage"]

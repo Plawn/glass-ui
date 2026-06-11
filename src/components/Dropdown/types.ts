@@ -1,11 +1,11 @@
 import type { JSX } from 'solid-js';
 import type { OverlayScrollBehavior } from '../../hooks';
-import type { BaseComponentProps, DropdownPlacement } from '../../types';
+import type { DropdownPlacement } from '../../types';
 
 // Re-export from central types for backwards compatibility
 export type { DropdownPlacement } from '../../types';
 
-export interface DropdownProps extends BaseComponentProps {
+export interface DropdownProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Trigger element that opens the dropdown */
   trigger: JSX.Element;
   /** Content to display in the dropdown */

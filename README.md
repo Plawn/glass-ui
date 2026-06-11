@@ -65,6 +65,8 @@ function App() {
 - **Modal** - Centered dialog with backdrop
 - **Dialog** - Confirmation dialog with actions
 - **Drawer** - Slide-in panel (left/right/top/bottom)
+- **Sheet** - Draggable bottom sheet with snap points
+- **Window** - Draggable, resizable window panel
 
 ### Forms & Inputs
 - **Button** - Primary, secondary, tertiary variants with loading state
@@ -87,6 +89,9 @@ function App() {
 - **SegmentedControl** - iOS-style segmented control
 - **Breadcrumb** - Breadcrumb navigation
 - **Pagination** - Page navigation
+- **Stepper** - Multi-step progress indicator
+- **Navbar** - Top navigation bar with brand, items, and actions
+- **Sidebar** - Collapsible side navigation (desktop rail + mobile drawer)
 - **Menu** - Dropdown menu with items
 - **Dropdown** - Generic dropdown container
 - **ContextMenu** - Right-click context menu with data support for lists
@@ -105,6 +110,12 @@ function App() {
 
 ### Disclosure
 - **Accordion** - Collapsible accordion panels
+- **Collapsible** - Single collapsible region with a trigger
+
+### Chat & AI
+- **Chat** - Chat UI with messages, streaming, thinking steps, and tool calls
+- **Markdown** - Markdown renderer (also available via `glass-ui-solid/markdown`)
+- **CodeBlock** - Syntax-highlighted code with copy button (also via `glass-ui-solid/code`)
 
 ### Backgrounds
 - **GlassBackground** - Animated glassmorphism background with customizable blobs

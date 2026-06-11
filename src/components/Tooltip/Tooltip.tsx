@@ -5,6 +5,7 @@ import {
   createSignal,
   createUniqueId,
   onCleanup,
+  splitProps,
 } from 'solid-js';
 import { POPOVER_ENTER } from '../../constants';
 import type { TooltipPosition, TooltipProps } from './types';
@@ -26,12 +27,20 @@ const arrowStyles: Record<TooltipPosition, string> = {
 };
 
 export const Tooltip: Component<TooltipProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'class',
+    'children',
+    'content',
+    'position',
+    'delay',
+  ]);
+
   const tooltipId = createUniqueId();
   const [visible, setVisible] = createSignal(false);
   const [hovering, setHovering] = createSignal(false);
 
-  const position = () => props.position ?? 'top';
-  const delay = () => props.delay ?? 200;
+  const position = () => local.position ?? 'top';
+  const delay = () => local.delay ?? 200;
 
   // Handle delayed show with proper cleanup (idiomatic SolidJS pattern)
   createEffect(() => {
@@ -48,14 +57,15 @@ export const Tooltip: Component<TooltipProps> = (props) => {
 
   return (
     <div
-      class={`relative inline-flex ${props.class ?? ''}`}
+      {...rest}
+      class={`relative inline-flex ${local.class ?? ''}`}
       aria-describedby={visible() ? tooltipId : undefined}
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
       onFocusIn={showTooltip}
       onFocusOut={hideTooltip}
     >
-      {props.children}
+      {local.children}
       <Show when={visible()}>
         <div
           id={tooltipId}
@@ -63,7 +73,7 @@ export const Tooltip: Component<TooltipProps> = (props) => {
           role="tooltip"
         >
           <div class="px-3 py-1.5 text-xs font-medium glass-tooltip rounded-lg whitespace-nowrap">
-            {props.content}
+            {local.content}
           </div>
           <div
             class={`absolute w-0 h-0 border-4 ${arrowStyles[position()]}`}

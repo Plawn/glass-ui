@@ -1,10 +1,5 @@
 import type { JSX } from 'solid-js';
-import type {
-  Alignment,
-  BaseComponentProps,
-  ComponentSize,
-  LoadableProps,
-} from '../../types';
+import type { Alignment, ComponentSize, LoadableProps } from '../../types';
 
 // =============================================================================
 // SORT TYPES
@@ -86,7 +81,9 @@ export interface SelectionState {
 // TABLE PROPS
 // =============================================================================
 
-export interface TableProps<T> extends BaseComponentProps, LoadableProps {
+export interface TableProps<T>
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onSelectionChange'>,
+    LoadableProps {
   /** Accessible label for the table */
   'aria-label'?: string;
   /** Column definitions */

@@ -1,13 +1,11 @@
-import type {
-  BaseComponentProps,
-  DialogSize,
-  DialogVariant,
-} from '../../types';
+import type { JSX } from 'solid-js';
+import type { DialogSize, DialogVariant } from '../../types';
 
 // Re-export from central types for backwards compatibility
 export type { DialogSize } from '../../types';
 
-export interface DialogProps extends BaseComponentProps {
+export interface DialogProps
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'title'> {
   /** Whether the dialog is open */
   open: boolean;
   /** Callback when open state changes */

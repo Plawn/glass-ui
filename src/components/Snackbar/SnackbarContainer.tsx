@@ -27,6 +27,8 @@ const SnackbarItemComponent: Component<{
   position: SnackbarPosition;
 }> = (props) => {
   const [exiting, setExiting] = createSignal(false);
+  let exitTimer: ReturnType<typeof setTimeout> | undefined;
+  onCleanup(() => clearTimeout(exitTimer));
 
   // Auto-dismiss timer
   createEffect(() => {
@@ -41,7 +43,7 @@ const SnackbarItemComponent: Component<{
 
   const handleDismiss = () => {
     setExiting(true);
-    setTimeout(() => dismissSnackbar(props.snackbar.id), 200);
+    exitTimer = setTimeout(() => dismissSnackbar(props.snackbar.id), 200);
   };
 
   const handleAction = () => {

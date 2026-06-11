@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { type Component, For, Show, createSignal } from 'solid-js';
+import { type Component, For, Show, createSignal, splitProps } from 'solid-js';
 import { TrashIcon } from '../shared';
 import type { FileUploadProps } from './types';
 
@@ -32,6 +32,23 @@ const formatFileSize = (bytes: number): string => {
  * ```
  */
 export const FileUpload: Component<FileUploadProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'onFilesChange',
+    'accept',
+    'multiple',
+    'maxSize',
+    'maxFiles',
+    'description',
+    'name',
+    'required',
+    'disabled',
+    'label',
+    'error',
+    'id',
+    'class',
+    'style',
+  ]);
+
   const [isDragOver, setIsDragOver] = createSignal(false);
   const [files, setFiles] = createSignal<File[]>([]);
   const [validationError, setValidationError] = createSignal<string | null>(
@@ -39,10 +56,10 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
   );
   let inputRef: HTMLInputElement | undefined;
 
-  const isDisabled = () => props.disabled ?? false;
-  const multiple = () => props.multiple ?? false;
-  const maxFiles = () => props.maxFiles ?? Number.POSITIVE_INFINITY;
-  const maxSize = () => props.maxSize ?? Number.POSITIVE_INFINITY;
+  const isDisabled = () => local.disabled ?? false;
+  const multiple = () => local.multiple ?? false;
+  const maxFiles = () => local.maxFiles ?? Number.POSITIVE_INFINITY;
+  const maxSize = () => local.maxSize ?? Number.POSITIVE_INFINITY;
 
   const validateFiles = (
     newFiles: File[],
@@ -70,6 +87,19 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
     return { valid: newFiles, error: null };
   };
 
+  // Mirror the tracked files into the native input so form submission
+  // includes dropped files, not only picker-selected ones
+  const syncInputFiles = (fileList: File[]) => {
+    if (!inputRef) {
+      return;
+    }
+    const dataTransfer = new DataTransfer();
+    for (const file of fileList) {
+      dataTransfer.items.add(file);
+    }
+    inputRef.files = dataTransfer.files;
+  };
+
   const addFiles = (newFiles: File[]) => {
     if (isDisabled()) {
       return;
@@ -86,7 +116,8 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
     setValidationError(null);
     const updatedFiles = multiple() ? [...files(), ...valid] : valid;
     setFiles(updatedFiles);
-    props.onFilesChange(updatedFiles);
+    syncInputFiles(updatedFiles);
+    local.onFilesChange(updatedFiles);
   };
 
   const removeFile = (index: number) => {
@@ -96,8 +127,9 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
 
     const updatedFiles = files().filter((_, i) => i !== index);
     setFiles(updatedFiles);
+    syncInputFiles(updatedFiles);
     setValidationError(null);
-    props.onFilesChange(updatedFiles);
+    local.onFilesChange(updatedFiles);
   };
 
   const handleDragOver = (e: DragEvent) => {
@@ -137,19 +169,26 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
     const target = e.target as HTMLInputElement;
     if (target.files) {
       const selectedFiles = Array.from(target.files);
-      addFiles(selectedFiles);
-      // Reset input to allow selecting same file again
+      // Reset before addFiles: addFiles re-syncs the full accumulated list,
+      // and resetting allows selecting the same file again
       target.value = '';
+      addFiles(selectedFiles);
     }
   };
 
-  const displayError = () => props.error ?? validationError();
+  const displayError = () => local.error ?? validationError();
 
   return (
-    <div class={clsx('w-full', props.class)} style={props.style}>
-      <Show when={props.label}>
-        <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5">
-          {props.label}
+    <div {...rest} class={clsx('w-full', local.class)} style={local.style}>
+      <Show when={local.label}>
+        <label
+          for={local.id}
+          class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
+        >
+          {local.label}
+          <Show when={local.required}>
+            <span class="text-error-500 ml-0.5">*</span>
+          </Show>
         </label>
       </Show>
 
@@ -184,18 +223,21 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
         }}
         aria-disabled={isDisabled()}
         aria-label={
-          props.label
-            ? `${props.label}. Click to upload or drag and drop`
+          local.label
+            ? `${local.label}. Click to upload or drag and drop`
             : 'File upload. Click to upload or drag and drop'
         }
       >
         <input
           ref={inputRef}
           type="file"
+          id={local.id}
+          name={local.name}
           class="hidden"
-          accept={props.accept}
+          accept={local.accept}
           multiple={multiple()}
           disabled={isDisabled()}
+          required={local.required}
           onChange={handleInputChange}
         />
 
@@ -236,9 +278,9 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
             or drag and drop
           </p>
 
-          <Show when={props.description}>
+          <Show when={local.description}>
             <p class="text-xs text-surface-500 dark:text-surface-400">
-              {props.description}
+              {local.description}
             </p>
           </Show>
         </div>
@@ -246,7 +288,11 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
 
       {/* Error message */}
       <Show when={displayError()}>
-        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
+        <p
+          id={local.id ? `${local.id}-error` : undefined}
+          class="mt-1.5 text-sm text-error-500 dark:text-error-400"
+          role="alert"
+        >
           {displayError()}
         </p>
       </Show>

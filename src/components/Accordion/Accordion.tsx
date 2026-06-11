@@ -1,9 +1,11 @@
-import { type Component, For, Show, createSignal } from 'solid-js';
+import { type Component, For, Show, createSignal, splitProps } from 'solid-js';
 import { ACCORDION_CONTENT_ENTER } from '../../constants';
 import { ChevronDownIcon, ChevronRightIcon } from '../shared/icons';
 import type { AccordionProps } from './types';
 
 export const Accordion: Component<AccordionProps> = (props) => {
+  const [, rest] = splitProps(props, ['items', 'multiple', 'class']);
+
   const getDefaultOpen = () => {
     const defaults: string[] = [];
     for (const item of props.items) {
@@ -29,7 +31,7 @@ export const Accordion: Component<AccordionProps> = (props) => {
   };
 
   return (
-    <div class={`space-y-1.5 ${props.class ?? ''}`}>
+    <div {...rest} class={`space-y-1.5 ${props.class ?? ''}`}>
       <For each={props.items}>
         {(item) => (
           <div class="glass-card rounded-lg overflow-hidden">

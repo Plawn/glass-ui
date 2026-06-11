@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps, Direction } from '../../types';
+import type { Direction } from '../../types';
 
-export interface TooltipProps extends BaseComponentProps {
+export interface TooltipProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Tooltip content */
   content: string | JSX.Element;
   /** Trigger element */

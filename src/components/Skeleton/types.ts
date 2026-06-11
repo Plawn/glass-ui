@@ -1,6 +1,7 @@
-import type { BaseComponentProps, SkeletonVariant } from '../../types';
+import type { JSX } from 'solid-js';
+import type { SkeletonVariant } from '../../types';
 
-export interface SkeletonProps extends BaseComponentProps {
+export interface SkeletonProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Width of the skeleton (CSS value) */
   width?: string;
   /** Height of the skeleton (CSS value) */

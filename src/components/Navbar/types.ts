@@ -1,5 +1,4 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps } from '../../types';
 
 /**
  * Navigation item for the Navbar
@@ -15,7 +14,7 @@ export interface NavbarItem {
   active?: boolean;
 }
 
-export interface NavbarProps extends BaseComponentProps {
+export interface NavbarProps extends JSX.HTMLAttributes<HTMLElement> {
   /** Brand/logo element displayed on the left */
   brand?: JSX.Element;
   /** Navigation items */

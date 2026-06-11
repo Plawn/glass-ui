@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js';
 
-export interface CollapsibleProps {
+export interface CollapsibleProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Whether the collapsible is open (controlled mode) */
   open?: boolean;
   /** Callback when open state changes */
@@ -13,6 +13,4 @@ export interface CollapsibleProps {
   children: JSX.Element;
   /** Whether the collapsible is disabled */
   disabled?: boolean;
-  /** Additional CSS classes for the container */
-  class?: string;
 }

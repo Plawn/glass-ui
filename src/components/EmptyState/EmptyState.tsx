@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show } from 'solid-js';
+import { Show, splitProps } from 'solid-js';
 import type { EmptyStateProps, EmptyStateSize } from './types';
 
 const sizeStyles: Record<
@@ -27,38 +27,48 @@ const sizeStyles: Record<
 };
 
 export const EmptyState: Component<EmptyStateProps> = (props) => {
-  const size = () => props.size ?? 'md';
+  const [local, rest] = splitProps(props, [
+    'icon',
+    'title',
+    'description',
+    'action',
+    'size',
+    'class',
+    'style',
+  ]);
+  const size = () => local.size ?? 'md';
   const styles = () => sizeStyles[size()];
 
   return (
     <div
-      class={`flex flex-col items-center justify-center text-center ${styles().container} ${props.class ?? ''}`}
-      style={props.style}
+      {...rest}
+      class={`flex flex-col items-center justify-center text-center ${styles().container} ${local.class ?? ''}`}
+      style={local.style}
     >
-      <Show when={props.icon}>
+      <Show when={local.icon}>
         <div
           class={`flex items-center justify-center text-surface-400 dark:text-surface-500 mb-4 ${styles().icon}`}
         >
-          {props.icon}
+          {local.icon}
         </div>
       </Show>
 
       <h3
         class={`font-medium text-surface-700 dark:text-surface-200 ${styles().title}`}
       >
-        {props.title}
+        {local.title}
       </h3>
 
-      <Show when={props.description}>
+      <Show when={local.description}>
         <p
           class={`mt-2 text-surface-500 dark:text-surface-400 max-w-md ${styles().description}`}
         >
-          {props.description}
+          {local.description}
         </p>
       </Show>
 
-      <Show when={props.action}>
-        <div class="mt-6">{props.action}</div>
+      <Show when={local.action}>
+        <div class="mt-6">{local.action}</div>
       </Show>
     </div>
   );

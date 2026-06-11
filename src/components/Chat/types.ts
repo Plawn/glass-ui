@@ -69,7 +69,7 @@ export interface ChatMessage {
 /**
  * Props for the main Chat component
  */
-export interface ChatProps {
+export interface ChatProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Array of messages to display */
   messages: ChatMessage[];
   /** Callback when user sends a message */

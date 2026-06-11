@@ -1,46 +1,57 @@
-import { type Component, For, Show, createMemo } from 'solid-js';
+import { type Component, For, Show, createMemo, splitProps } from 'solid-js';
 import { ChevronLeftIcon, ChevronRightIcon } from '../shared/icons';
 import type { PaginationProps } from './types';
 
 export const Pagination: Component<PaginationProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'pageSizeOptions',
+    'total',
+    'pageSize',
+    'page',
+    'onChange',
+    'onPageSizeChange',
+    'showPageSize',
+    'class',
+  ]);
+
   const defaultPageSizeOptions = [10, 20, 50, 100];
-  const pageSizeOptions = () => props.pageSizeOptions ?? defaultPageSizeOptions;
+  const pageSizeOptions = () => local.pageSizeOptions ?? defaultPageSizeOptions;
 
-  const totalPages = createMemo(() => Math.ceil(props.total / props.pageSize));
+  const totalPages = createMemo(() => Math.ceil(local.total / local.pageSize));
 
-  const canGoPrev = () => props.page > 1;
-  const canGoNext = () => props.page < totalPages();
+  const canGoPrev = () => local.page > 1;
+  const canGoNext = () => local.page < totalPages();
 
   const handlePrev = () => {
     if (canGoPrev()) {
-      props.onChange(props.page - 1);
+      local.onChange(local.page - 1);
     }
   };
 
   const handleNext = () => {
     if (canGoNext()) {
-      props.onChange(props.page + 1);
+      local.onChange(local.page + 1);
     }
   };
 
   const handlePageClick = (page: number) => {
-    if (page !== props.page) {
-      props.onChange(page);
+    if (page !== local.page) {
+      local.onChange(page);
     }
   };
 
   const handlePageSizeChange = (e: Event) => {
     const target = e.target as HTMLSelectElement;
     const newPageSize = Number.parseInt(target.value, 10);
-    props.onPageSizeChange?.(newPageSize);
+    local.onPageSizeChange?.(newPageSize);
     // Reset to page 1 when page size changes
-    props.onChange(1);
+    local.onChange(1);
   };
 
   // Generate page numbers to display
   const pageNumbers = createMemo(() => {
     const total = totalPages();
-    const current = props.page;
+    const current = local.page;
     const pages: (number | 'ellipsis')[] = [];
 
     if (total <= 7) {
@@ -88,17 +99,18 @@ export const Pagination: Component<PaginationProps> = (props) => {
 
   return (
     <nav
+      {...rest}
       aria-label="Pagination"
-      class={`flex items-center gap-4 ${props.class ?? ''}`}
+      class={`flex items-center gap-4 ${local.class ?? ''}`}
     >
       {/* Page size selector */}
-      <Show when={props.showPageSize}>
+      <Show when={local.showPageSize}>
         <div class="flex items-center gap-2">
           <span class="text-sm text-surface-600 dark:text-surface-400">
             Show
           </span>
           <select
-            value={props.pageSize}
+            value={local.pageSize}
             onChange={handlePageSizeChange}
             class="glass-input px-2 py-1 text-sm rounded-lg"
             aria-label="Items per page"
@@ -144,10 +156,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
                 type="button"
                 onClick={() => handlePageClick(page as number)}
                 class={`${buttonBaseClass} ${
-                  props.page === page ? buttonActiveClass : buttonInactiveClass
+                  local.page === page ? buttonActiveClass : buttonInactiveClass
                 }`}
                 aria-label={`Page ${page}`}
-                aria-current={props.page === page ? 'page' : undefined}
+                aria-current={local.page === page ? 'page' : undefined}
               >
                 {page}
               </button>
@@ -168,10 +180,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
       </div>
 
       {/* Page info */}
-      <Show when={props.total > 0}>
+      <Show when={local.total > 0}>
         <span class="text-sm text-surface-600 dark:text-surface-400">
-          {(props.page - 1) * props.pageSize + 1}-
-          {Math.min(props.page * props.pageSize, props.total)} of {props.total}
+          {(local.page - 1) * local.pageSize + 1}-
+          {Math.min(local.page * local.pageSize, local.total)} of {local.total}
         </span>
       </Show>
     </nav>

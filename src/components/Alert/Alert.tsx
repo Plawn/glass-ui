@@ -1,4 +1,4 @@
-import { type Component, Show } from 'solid-js';
+import { type Component, Show, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { ALERT_COLORS } from '../../constants';
 import {
@@ -23,11 +23,20 @@ const DefaultIcon: Component<{ type: AlertType }> = (props) => (
 );
 
 export const Alert: Component<AlertProps> = (props) => {
-  const styles = () => ALERT_COLORS[props.type];
+  const [local, rest] = splitProps(props, [
+    'type',
+    'title',
+    'children',
+    'onClose',
+    'icon',
+    'class',
+  ]);
+  const styles = () => ALERT_COLORS[local.type];
 
   return (
     <div
-      class={`glass-card border-l-4 ${styles().border} ${styles().bg} p-4 rounded-xl ${props.class ?? ''}`}
+      {...rest}
+      class={`glass-card border-l-4 ${styles().border} ${styles().bg} p-4 rounded-xl ${local.class ?? ''}`}
       role="alert"
     >
       <div class="flex items-start gap-3">
@@ -36,28 +45,28 @@ export const Alert: Component<AlertProps> = (props) => {
           class={`flex-shrink-0 w-8 h-8 rounded-lg ${styles().iconBg} ${styles().icon} flex items-center justify-center`}
           aria-hidden="true"
         >
-          <Show when={props.icon} fallback={<DefaultIcon type={props.type} />}>
-            {props.icon}
+          <Show when={local.icon} fallback={<DefaultIcon type={local.type} />}>
+            {local.icon}
           </Show>
         </div>
 
         {/* Content */}
         <div class="flex-1 min-w-0">
-          <Show when={props.title}>
+          <Show when={local.title}>
             <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-100 mb-1">
-              {props.title}
+              {local.title}
             </h3>
           </Show>
           <div class="text-sm text-surface-700 dark:text-surface-300">
-            {props.children}
+            {local.children}
           </div>
         </div>
 
         {/* Close button */}
-        <Show when={props.onClose}>
+        <Show when={local.onClose}>
           <button
             type="button"
-            onClick={props.onClose}
+            onClick={local.onClose}
             class="flex-shrink-0 p-1.5 rounded-lg text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             aria-label="Close"
           >

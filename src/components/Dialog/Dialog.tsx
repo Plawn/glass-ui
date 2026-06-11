@@ -1,4 +1,4 @@
-import { type Component, Show } from 'solid-js';
+import { type Component, Show, splitProps } from 'solid-js';
 import { DIALOG_MAX_WIDTHS, MODAL_PANEL_ENTER } from '../../constants';
 import { PortalOverlay } from '../shared';
 import type { DialogProps, DialogVariant } from './types';
@@ -10,34 +10,49 @@ const confirmButtonStyles: Record<DialogVariant, string> = {
 };
 
 export const Dialog: Component<DialogProps> = (props) => {
-  const variant = () => props.variant ?? 'default';
-  const size = () => props.size ?? 'sm';
-  const confirmLabel = () => props.confirmLabel ?? 'Confirm';
-  const cancelLabel = () => props.cancelLabel ?? 'Cancel';
+  const [local, rest] = splitProps(props, [
+    'open',
+    'onOpenChange',
+    'title',
+    'description',
+    'confirmLabel',
+    'cancelLabel',
+    'onConfirm',
+    'onCancel',
+    'variant',
+    'size',
+    'class',
+  ]);
+
+  const variant = () => local.variant ?? 'default';
+  const size = () => local.size ?? 'sm';
+  const confirmLabel = () => local.confirmLabel ?? 'Confirm';
+  const cancelLabel = () => local.cancelLabel ?? 'Cancel';
 
   const handleCancel = () => {
-    props.onOpenChange(false);
-    props.onCancel?.();
+    local.onOpenChange(false);
+    local.onCancel?.();
   };
 
   const handleConfirm = () => {
-    props.onConfirm();
-    props.onOpenChange(false);
+    local.onConfirm();
+    local.onOpenChange(false);
   };
 
   return (
     <PortalOverlay
-      open={props.open}
+      open={local.open}
       onClose={handleCancel}
       closeOnEscape
       closeOnBackdrop
       backdropClass="flex items-center justify-center p-2 sm:p-4"
       role="alertdialog"
       ariaLabelledby="dialog-title"
-      ariaDescribedby={props.description ? 'dialog-description' : undefined}
+      ariaDescribedby={local.description ? 'dialog-description' : undefined}
     >
       <div
-        class={`w-full ${DIALOG_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER}`}
+        {...rest}
+        class={`w-full ${DIALOG_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER} ${local.class ?? ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Content */}
@@ -46,14 +61,14 @@ export const Dialog: Component<DialogProps> = (props) => {
             id="dialog-title"
             class="text-lg font-semibold text-surface-900 dark:text-surface-100"
           >
-            {props.title}
+            {local.title}
           </h2>
-          <Show when={props.description}>
+          <Show when={local.description}>
             <p
               id="dialog-description"
               class="mt-2 text-sm text-surface-600 dark:text-surface-400"
             >
-              {props.description}
+              {local.description}
             </p>
           </Show>
         </div>

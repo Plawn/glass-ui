@@ -1,10 +1,5 @@
 import type { JSX } from 'solid-js';
-import type {
-  BaseComponentProps,
-  DisableableProps,
-  IconProps,
-  Placement,
-} from '../../types';
+import type { DisableableProps, IconProps, Placement } from '../../types';
 
 /**
  * Menu placement - subset of Placement for vertical menus
@@ -33,7 +28,7 @@ export type MenuItem =
       disabled?: never;
     };
 
-export interface MenuProps extends BaseComponentProps {
+export interface MenuProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Trigger element that opens the menu */
   trigger: JSX.Element;
   /** Menu items to display */

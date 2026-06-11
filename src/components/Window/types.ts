@@ -14,7 +14,11 @@ export interface WindowConstraints {
   maxHeight?: number;
 }
 
-export interface WindowProps {
+export interface WindowProps
+  extends Omit<
+    JSX.HTMLAttributes<HTMLDivElement>,
+    'title' | 'onFocus' | 'style'
+  > {
   /** Whether the window is open */
   open: boolean;
   /** Callback when window should close */
@@ -59,8 +63,6 @@ export interface WindowProps {
   showClose?: boolean;
   /** Whether pressing Escape closes the window. Default: true */
   closeOnEscape?: boolean;
-  /** Additional CSS class for the window */
-  class?: string;
   /** Base z-index for the window. Default: 50. Actual z-index may be higher when focused. */
   zIndex?: number;
 

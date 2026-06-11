@@ -1,4 +1,4 @@
-import { type Component, Show } from 'solid-js';
+import { type Component, Show, splitProps } from 'solid-js';
 import {
   ANIMATION_DURATION,
   BACKDROP_ENTER,
@@ -22,22 +22,37 @@ const positionPanelStyles: Record<DrawerPosition, string> = {
 export const Drawer: Component<DrawerProps> = (props) => {
   let backdropRef: HTMLDivElement | undefined;
 
-  const position = () => props.position ?? 'right';
-  const size = () => props.size ?? 'md';
-  const showClose = () => props.showClose ?? true;
+  const [local, rest] = splitProps(props, [
+    'open',
+    'onClose',
+    'title',
+    'children',
+    'position',
+    'size',
+    'footer',
+    'noPadding',
+    'showClose',
+    'closeOnBackdrop',
+    'closeOnEscape',
+    'class',
+  ]);
+
+  const position = () => local.position ?? 'right';
+  const size = () => local.size ?? 'md';
+  const showClose = () => local.showClose ?? true;
 
   // Use animation state hook for enter/exit animations
   const { visible, isClosing } = useAnimationState({
-    open: () => props.open,
+    open: () => local.open,
     duration: () => ANIMATION_DURATION,
   });
 
   // Use shared dialog state hook for escape, scroll lock, and backdrop
   const { handleBackdropClick } = useDialogState({
     open: visible,
-    onClose: props.onClose,
-    closeOnEscape: () => props.closeOnEscape ?? true,
-    closeOnBackdrop: () => props.closeOnBackdrop ?? true,
+    onClose: local.onClose,
+    closeOnEscape: () => local.closeOnEscape ?? true,
+    closeOnBackdrop: () => local.closeOnBackdrop ?? true,
   });
 
   // Focus trap
@@ -71,23 +86,24 @@ export const Drawer: Component<DrawerProps> = (props) => {
           onClick={(e) => handleBackdropClick(e)}
           role="dialog"
           aria-modal="true"
-          aria-labelledby={props.title ? 'drawer-title' : undefined}
+          aria-labelledby={local.title ? 'drawer-title' : undefined}
         >
           <div
-            class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()}`}
+            {...rest}
+            class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()} ${local.class ?? ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div class="flex flex-col h-full overflow-hidden">
               <OverlayContent
-                title={props.title}
+                title={local.title}
                 titleId="drawer-title"
                 showClose={showClose()}
-                onClose={props.onClose}
-                footer={props.footer}
-                noPadding={props.noPadding}
+                onClose={local.onClose}
+                footer={local.footer}
+                noPadding={local.noPadding}
                 flexContent
               >
-                {props.children}
+                {local.children}
               </OverlayContent>
             </div>
           </div>

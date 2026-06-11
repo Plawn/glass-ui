@@ -1,5 +1,6 @@
-import { type Component, Show } from 'solid-js';
+import { type Component, Show, splitProps } from 'solid-js';
 import { INPUT_SIZE_CLASSES } from '../../constants';
+import { useControlled } from '../../hooks';
 import type { TextareaProps } from './types';
 
 /**
@@ -17,46 +18,69 @@ import type { TextareaProps } from './types';
  * ```
  */
 export const Textarea: Component<TextareaProps> = (props) => {
-  const size = () => props.size ?? 'md';
+  const [local, rest] = splitProps(props, [
+    'value',
+    'defaultValue',
+    'onInput',
+    'rows',
+    'readonly',
+    'size',
+    'label',
+    'error',
+    'id',
+    'name',
+    'class',
+    'placeholder',
+    'disabled',
+    'required',
+  ]);
+
+  const size = () => local.size ?? 'md';
   const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
+
+  const [value, setValue] = useControlled({
+    value: () => local.value,
+    defaultValue: local.defaultValue ?? '',
+    onChange: (v) => local.onInput?.(v),
+  });
 
   return (
     <div class="w-full">
-      <Show when={props.label}>
+      <Show when={local.label}>
         <label
-          for={props.id}
+          for={local.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {props.label}
-          <Show when={props.required}>
+          {local.label}
+          <Show when={local.required}>
             <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
       </Show>
       <textarea
-        ref={props.ref}
-        id={props.id}
-        name={props.name}
-        class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-error-500 dark:border-error-400' : ''} ${props.class ?? ''}`}
-        placeholder={props.placeholder}
-        value={props.value}
-        rows={props.rows}
-        disabled={props.disabled}
-        readonly={props.readonly}
-        required={props.required}
-        aria-invalid={!!props.error}
+        {...rest}
+        id={local.id}
+        name={local.name}
+        class={`w-full glass-input text-surface-800 dark:text-surface-200 resize-y focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${local.error ? 'border-error-500 dark:border-error-400' : ''} ${local.class ?? ''}`}
+        placeholder={local.placeholder}
+        value={value()}
+        rows={local.rows}
+        disabled={local.disabled}
+        readonly={local.readonly}
+        required={local.required}
+        aria-invalid={!!local.error}
         aria-describedby={
-          props.error && props.id ? `${props.id}-error` : undefined
+          local.error && local.id ? `${local.id}-error` : undefined
         }
-        onInput={(e) => props.onInput(e.currentTarget.value)}
+        onInput={(e) => setValue(e.currentTarget.value)}
       />
-      <Show when={props.error}>
+      <Show when={local.error}>
         <p
-          id={props.id ? `${props.id}-error` : undefined}
+          id={local.id ? `${local.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {props.error}
+          {local.error}
         </p>
       </Show>
     </div>

@@ -1,8 +1,5 @@
-import type {
-  BaseComponentProps,
-  ComponentSize,
-  DisableableProps,
-} from '../../types';
+import type { JSX } from 'solid-js';
+import type { ComponentSize, FormFieldSemanticProps } from '../../types';
 
 /**
  * Day of week enumeration for week start configuration
@@ -20,15 +17,21 @@ export type DateFormat =
   | 'MMM dd, yyyy';
 
 /**
- * Props for the DatePicker component
+ * Props for the DatePicker component.
+ *
+ * Extends native `<div>` attributes (minus the ones we redefine with a
+ * different shape) so arbitrary `data-*`/`aria-*`/HTML attributes are forwarded
+ * to the outer wrapper element.
  */
-export interface DatePickerProps extends BaseComponentProps, DisableableProps {
-  /** Currently selected date value */
-  value: Date | null;
+export interface DatePickerProps
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange'>,
+    FormFieldSemanticProps {
+  /** Currently selected date value (controlled). Omit to use uncontrolled mode. */
+  value?: Date | null;
+  /** Initial value for uncontrolled mode */
+  defaultValue?: Date | null;
   /** Callback when date selection changes */
-  onChange: (date: Date | null) => void;
-  /** Label text displayed above the input */
-  label?: string;
+  onChange?: (date: Date | null) => void;
   /** Placeholder text when no date is selected */
   placeholder?: string;
   /** Date format string for display */
@@ -39,16 +42,16 @@ export interface DatePickerProps extends BaseComponentProps, DisableableProps {
   max?: Date;
   /** Size variant of the input */
   size?: ComponentSize;
-  /** Error message displayed below the input */
-  error?: string;
   /** Whether to show the clear button */
   clearable?: boolean;
   /** Day of week to start the calendar on (0 = Sunday, 1 = Monday) */
   weekStartsOn?: WeekStartDay;
-  /** HTML id attribute */
-  id?: string;
-  /** HTML name attribute */
+  /** HTML name attribute (used for hidden form-submission input) */
   name?: string;
+  /** Whether the field is required */
+  required?: boolean;
+  /** Whether the field is disabled */
+  disabled?: boolean;
 }
 
 /**
@@ -110,17 +113,21 @@ export interface DateRange {
 }
 
 /**
- * Props for the DateRangePicker component
+ * Props for the DateRangePicker component.
+ *
+ * Extends native `<div>` attributes (minus the ones we redefine with a
+ * different shape) so arbitrary `data-*`/`aria-*`/HTML attributes are forwarded
+ * to the outer wrapper element.
  */
 export interface DateRangePickerProps
-  extends BaseComponentProps,
-    DisableableProps {
-  /** Currently selected date range */
-  value: DateRange;
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange'>,
+    FormFieldSemanticProps {
+  /** Currently selected date range (controlled). Omit to use uncontrolled mode. */
+  value?: DateRange;
+  /** Initial range for uncontrolled mode */
+  defaultValue?: DateRange;
   /** Callback when date range selection changes */
-  onChange: (range: DateRange) => void;
-  /** Label text displayed above the input */
-  label?: string;
+  onChange?: (range: DateRange) => void;
   /** Placeholder text when no dates are selected */
   placeholder?: string;
   /** Placeholder text for start date */
@@ -135,18 +142,18 @@ export interface DateRangePickerProps
   max?: Date;
   /** Size variant of the input */
   size?: ComponentSize;
-  /** Error message displayed below the input */
-  error?: string;
   /** Whether to show the clear button */
   clearable?: boolean;
   /** Day of week to start the calendar on (0 = Sunday, 1 = Monday) */
   weekStartsOn?: WeekStartDay;
-  /** HTML id attribute */
-  id?: string;
-  /** HTML name attribute */
-  name?: string;
   /** Separator text between start and end dates */
   separator?: string;
+  /** HTML name attribute (used for hidden form-submission inputs) */
+  name?: string;
+  /** Whether the field is required */
+  required?: boolean;
+  /** Whether the field is disabled */
+  disabled?: boolean;
 }
 
 // Re-export types for convenience

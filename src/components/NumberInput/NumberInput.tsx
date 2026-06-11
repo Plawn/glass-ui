@@ -1,6 +1,8 @@
-import { type Component, Show } from 'solid-js';
+import { type Component, Show, splitProps } from 'solid-js';
 import { INPUT_SIZE_CLASSES } from '../../constants';
+import { useControlled } from '../../hooks';
 import type { NumberInputProps, NumberInputSize } from './types';
+import { clampValue as clamp } from './utils';
 
 /**
  * Get size-specific classes for the buttons
@@ -32,48 +34,59 @@ const getButtonSizeClasses = (size: NumberInputSize): string => {
  * ```
  */
 export const NumberInput: Component<NumberInputProps> = (props) => {
-  const size = () => props.size ?? 'md';
-  const step = () => props.step ?? 1;
-  const min = () => props.min;
-  const max = () => props.max;
+  const [local, rest] = splitProps(props, [
+    'value',
+    'defaultValue',
+    'onChange',
+    'min',
+    'max',
+    'step',
+    'placeholder',
+    'size',
+    'label',
+    'error',
+    'required',
+    'disabled',
+    'id',
+    'name',
+    'class',
+    'style',
+  ]);
+  const size = () => local.size ?? 'md';
+  const step = () => local.step ?? 1;
+  const min = () => local.min;
+  const max = () => local.max;
+
+  const [value, setValue] = useControlled({
+    value: () => local.value,
+    defaultValue: local.defaultValue ?? local.min ?? 0,
+    onChange: (v) => local.onChange?.(v),
+  });
 
   const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
   const buttonSizeClasses = () => getButtonSizeClasses(size());
 
-  const clampValue = (value: number): number => {
-    let clamped = value;
-    const minVal = min();
-    const maxVal = max();
-    if (minVal !== undefined && clamped < minVal) {
-      clamped = minVal;
-    }
-    if (maxVal !== undefined && clamped > maxVal) {
-      clamped = maxVal;
-    }
-    return clamped;
-  };
+  const clampValue = (value: number): number => clamp(value, min(), max());
 
   const increment = () => {
-    if (props.disabled) {
+    if (local.disabled) {
       return;
     }
-    const newValue = clampValue(props.value + step());
-    props.onChange(newValue);
+    setValue(clampValue(value() + step()));
   };
 
   const decrement = () => {
-    if (props.disabled) {
+    if (local.disabled) {
       return;
     }
-    const newValue = clampValue(props.value - step());
-    props.onChange(newValue);
+    setValue(clampValue(value() - step()));
   };
 
   const handleInput = (e: Event) => {
     const target = e.currentTarget as HTMLInputElement;
     const parsed = Number.parseFloat(target.value);
     if (!Number.isNaN(parsed)) {
-      props.onChange(clampValue(parsed));
+      setValue(clampValue(parsed));
     } else if (target.value === '' || target.value === '-') {
       // Allow empty or negative sign while typing
     }
@@ -85,14 +98,14 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
     if (Number.isNaN(parsed)) {
       // Reset to min value or 0 if invalid
       const minVal = min();
-      props.onChange(minVal ?? 0);
+      setValue(minVal ?? 0);
     } else {
-      props.onChange(clampValue(parsed));
+      setValue(clampValue(parsed));
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (props.disabled) {
+    if (local.disabled) {
       return;
     }
     if (e.key === 'ArrowUp') {
@@ -106,22 +119,25 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
 
   const canDecrement = () => {
     const minVal = min();
-    return minVal === undefined || props.value > minVal;
+    return minVal === undefined || value() > minVal;
   };
 
   const canIncrement = () => {
     const maxVal = max();
-    return maxVal === undefined || props.value < maxVal;
+    return maxVal === undefined || value() < maxVal;
   };
 
   return (
-    <div class={`w-full ${props.class ?? ''}`}>
-      <Show when={props.label}>
+    <div class={`w-full ${local.class ?? ''}`} style={local.style}>
+      <Show when={local.label}>
         <label
-          for={props.id}
+          for={local.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {props.label}
+          {local.label}
+          <Show when={local.required}>
+            <span class="text-error-500 ml-0.5">*</span>
+          </Show>
         </label>
       </Show>
       <div class="flex items-center gap-2">
@@ -129,20 +145,26 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
           type="button"
           class={`shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
           onClick={decrement}
-          disabled={props.disabled || !canDecrement()}
+          disabled={local.disabled || !canDecrement()}
           aria-label="Decrement"
         >
           -
         </button>
         <input
+          {...rest}
           type="text"
           inputMode="decimal"
-          id={props.id}
-          name={props.name}
-          class={`flex-1 min-w-0 glass-input text-center text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-error-500 dark:border-error-400' : ''}`}
-          placeholder={props.placeholder}
-          value={props.value}
-          disabled={props.disabled}
+          id={local.id}
+          name={local.name}
+          class={`flex-1 min-w-0 glass-input text-center text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${local.error ? 'border-error-500 dark:border-error-400' : ''}`}
+          placeholder={local.placeholder}
+          value={value()}
+          disabled={local.disabled}
+          required={local.required}
+          aria-invalid={!!local.error}
+          aria-describedby={
+            local.error && local.id ? `${local.id}-error` : undefined
+          }
           onInput={handleInput}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
@@ -151,15 +173,19 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
           type="button"
           class={`shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
           onClick={increment}
-          disabled={props.disabled || !canIncrement()}
+          disabled={local.disabled || !canIncrement()}
           aria-label="Increment"
         >
           +
         </button>
       </div>
-      <Show when={props.error}>
-        <p class="mt-1.5 text-sm text-error-500 dark:text-error-400">
-          {props.error}
+      <Show when={local.error}>
+        <p
+          id={local.id ? `${local.id}-error` : undefined}
+          class="mt-1.5 text-sm text-error-500 dark:text-error-400"
+          role="alert"
+        >
+          {local.error}
         </p>
       </Show>
     </div>

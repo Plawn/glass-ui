@@ -235,6 +235,24 @@ export interface TextInputProps extends FormFieldProps {
 }
 
 /**
+ * Semantic form-field props that do NOT map 1:1 onto native HTML attributes.
+ * Combine this with the native JSX attribute interface of the control element
+ * (e.g. `Omit<JSX.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'>`)
+ * to enable HTML rest-prop forwarding on form components while keeping the
+ * library-specific `label`/`error` ergonomics.
+ *
+ * Note: `id`, `name`, `required`, `disabled`, `placeholder` are intentionally
+ * omitted here because they already exist (with compatible types) on the native
+ * attribute interfaces.
+ */
+export interface FormFieldSemanticProps {
+  /** Label text displayed with the field */
+  label?: string;
+  /** Error message displayed below the field */
+  error?: string;
+}
+
+/**
  * Props for overlay/dialog behavior (Modal, Drawer, Dialog)
  */
 export interface OverlayBehaviorProps {

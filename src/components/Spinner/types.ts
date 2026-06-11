@@ -1,4 +1,5 @@
-import type { BaseComponentProps, SpinnerSize } from '../../types';
+import type { JSX } from 'solid-js';
+import type { SpinnerSize } from '../../types';
 
 // Re-export from central types
 export type { SpinnerSize } from '../../types';
@@ -8,7 +9,8 @@ export type { SpinnerSize } from '../../types';
  */
 export type SpinnerColor = 'default' | 'white';
 
-export interface SpinnerProps extends BaseComponentProps {
+export interface SpinnerProps
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'color'> {
   /** Spinner size */
   size?: SpinnerSize;
   /** Color variant - use 'white' for dark backgrounds */

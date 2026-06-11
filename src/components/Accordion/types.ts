@@ -12,7 +12,7 @@ export interface AccordionItem {
   defaultOpen?: boolean;
 }
 
-export interface AccordionProps extends BaseComponentProps {
+export interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Accordion items */
   items: AccordionItem[];
   /** Allow multiple items to be open at once */

@@ -1,5 +1,4 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps } from '../../types';
 
 export interface GlassBackgroundBlob {
   /** Position from top (CSS value) */
@@ -30,7 +29,8 @@ export interface GlassBackgroundGradient {
   to: string;
 }
 
-export interface GlassBackgroundProps extends BaseComponentProps {
+export interface GlassBackgroundProps
+  extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Child content to render on top of the background */
   children?: JSX.Element;
   /** Custom blobs configuration. If not provided, uses default blobs */

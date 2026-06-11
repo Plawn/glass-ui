@@ -1,6 +1,6 @@
-import type { BaseComponentProps } from '../../types';
+import type { JSX } from 'solid-js';
 
-export interface CodeBlockProps extends BaseComponentProps {
+export interface CodeBlockProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** The code to display */
   code: string;
   /** The programming language for syntax highlighting (default: 'json') */

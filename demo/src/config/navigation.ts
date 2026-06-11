@@ -30,6 +30,11 @@ export const navigation: NavGroup[] = [
         label: 'LiquidGlass',
         path: '/styles/liquid-glass',
       },
+      {
+        id: 'glass-background',
+        label: 'GlassBackground',
+        path: '/styles/glass-background',
+      },
     ],
   },
   {

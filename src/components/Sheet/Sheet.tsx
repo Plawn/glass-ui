@@ -5,6 +5,7 @@ import {
   createEffect,
   createSignal,
   onCleanup,
+  splitProps,
 } from 'solid-js';
 import {
   ANIMATION_DURATION_SLOW,
@@ -18,11 +19,22 @@ import type { SheetProps } from './types';
 const DEFAULT_SNAP_POINTS = [0.5];
 
 export const Sheet: Component<SheetProps> = (props) => {
-  const snapPoints = () => props.snapPoints ?? DEFAULT_SNAP_POINTS;
+  const [local, rest] = splitProps(props, [
+    'open',
+    'onOpenChange',
+    'children',
+    'snapPoints',
+    'defaultSnapPoint',
+    'dismissible',
+    'showHandle',
+    'class',
+  ]);
+
+  const snapPoints = () => local.snapPoints ?? DEFAULT_SNAP_POINTS;
   const defaultSnapIndex = () =>
-    props.defaultSnapPoint ?? snapPoints().length - 1;
-  const dismissible = () => props.dismissible ?? true;
-  const showHandle = () => props.showHandle ?? true;
+    local.defaultSnapPoint ?? snapPoints().length - 1;
+  const dismissible = () => local.dismissible ?? true;
+  const showHandle = () => local.showHandle ?? true;
 
   // Current snap point index
   const [currentSnapIndex, setCurrentSnapIndex] = createSignal(
@@ -36,7 +48,7 @@ export const Sheet: Component<SheetProps> = (props) => {
 
   // Reset snap point when opening
   createEffect(() => {
-    if (props.open) {
+    if (local.open) {
       setCurrentSnapIndex(defaultSnapIndex());
       setDragOffset(0);
     }
@@ -82,13 +94,13 @@ export const Sheet: Component<SheetProps> = (props) => {
     if (offset > threshold) {
       if (dismissible() && currentSnapIndex() === 0) {
         // At lowest snap point and dismissible - close the sheet
-        props.onOpenChange(false);
+        local.onOpenChange(false);
       } else if (currentSnapIndex() > 0) {
         // Go to lower snap point
         setCurrentSnapIndex((prev) => prev - 1);
       } else if (dismissible()) {
         // Dismiss if at lowest point
-        props.onOpenChange(false);
+        local.onOpenChange(false);
       }
     }
     // If dragged up significantly, try to go to higher snap point
@@ -155,8 +167,8 @@ export const Sheet: Component<SheetProps> = (props) => {
 
   return (
     <PortalOverlay
-      open={props.open}
-      onClose={() => props.onOpenChange(false)}
+      open={local.open}
+      onClose={() => local.onOpenChange(false)}
       closeOnEscape={dismissible()}
       closeOnBackdrop={dismissible()}
       animated
@@ -176,6 +188,7 @@ export const Sheet: Component<SheetProps> = (props) => {
 
         return (
           <div
+            {...rest}
             class={clsx(
               'absolute bottom-0 left-0 right-0',
               'glass-thick shadow-2xl',
@@ -184,7 +197,7 @@ export const Sheet: Component<SheetProps> = (props) => {
               'flex flex-col',
               !isDragging() && 'transition-[height] duration-300 ease-out',
               sheetClasses(),
-              props.class,
+              local.class,
             )}
             style={{ height: `${currentHeight()}vh` }}
             onClick={stopPropagation}
@@ -202,7 +215,7 @@ export const Sheet: Component<SheetProps> = (props) => {
 
             {/* Content */}
             <div class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scrollbar-thin">
-              {props.children}
+              {local.children}
             </div>
           </div>
         );

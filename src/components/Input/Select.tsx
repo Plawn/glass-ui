@@ -1,6 +1,7 @@
-import { For, Show } from 'solid-js';
+import { For, Show, splitProps } from 'solid-js';
+import { useControlled } from '../../hooks';
 import { ChevronDownIcon } from '../shared/icons';
-import type { SelectProps } from './types';
+import type { SelectProps, SelectPropsWithOptions } from './types';
 
 /**
  * A glassmorphic select component with a custom dropdown indicator.
@@ -30,76 +31,94 @@ import type { SelectProps } from './types';
  * ```
  */
 export function Select<T = string>(props: SelectProps<T>) {
+  const [local, rest] = splitProps(props as SelectPropsWithOptions<T>, [
+    'value',
+    'defaultValue',
+    'onChange',
+    'children',
+    'options',
+    'emptyOption',
+    'label',
+    'error',
+    'id',
+    'name',
+    'class',
+    'disabled',
+    'required',
+  ]);
+
+  const [value, setValue] = useControlled<T | string | null>({
+    value: () => local.value,
+    defaultValue: local.defaultValue ?? (local.options ? null : ''),
+    onChange: (v) =>
+      (local.onChange as ((value: T | string | null) => void) | undefined)?.(v),
+  });
+
   // Find the index of the currently selected value
   const getSelectedIndex = () => {
-    if (!props.options || props.value === null || props.value === undefined) {
+    if (!local.options || value() === null || value() === undefined) {
       return '';
     }
-    const index = props.options.findIndex((opt) => opt.value === props.value);
+    const index = local.options.findIndex((opt) => opt.value === value());
     return index >= 0 ? String(index) : '';
   };
 
   // Handle change for options array
   const handleOptionsChange = (indexStr: string) => {
-    if (!props.options) {
+    if (!local.options) {
       return;
     }
     if (indexStr === '') {
-      (props.onChange as (value: T | null) => void)(null);
+      setValue(null);
     } else {
       const index = Number.parseInt(indexStr, 10);
-      const option = props.options[index];
+      const option = local.options[index];
       if (option) {
-        (props.onChange as (value: T | null) => void)(option.value);
+        setValue(option.value);
       }
     }
   };
 
-  // Handle change for children (string values)
-  const handleChildrenChange = (value: string) => {
-    (props.onChange as (value: string) => void)(value);
-  };
-
   return (
     <div class="w-full">
-      <Show when={props.label}>
+      <Show when={local.label}>
         <label
-          for={props.id}
+          for={local.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {props.label}
-          <Show when={props.required}>
+          {local.label}
+          <Show when={local.required}>
             <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
       </Show>
       <div class="relative overflow-hidden">
         <select
-          ref={props.ref}
-          id={props.id}
-          name={props.name}
-          class={`w-full px-3 py-2 sm:py-2.5 glass-input text-sm text-surface-800 dark:text-surface-200 font-medium focus:outline-none cursor-pointer appearance-none pr-9 disabled:opacity-50 disabled:cursor-not-allowed truncate ${props.error ? 'border-error-500 dark:border-error-400' : ''} ${props.class ?? ''}`}
-          value={props.options ? getSelectedIndex() : (props.value as string)}
-          disabled={props.disabled}
-          required={props.required}
-          aria-invalid={!!props.error}
+          {...rest}
+          id={local.id}
+          name={local.name}
+          class={`w-full px-3 py-2 sm:py-2.5 glass-input text-sm text-surface-800 dark:text-surface-200 font-medium focus:outline-none cursor-pointer appearance-none pr-9 disabled:opacity-50 disabled:cursor-not-allowed truncate ${local.error ? 'border-error-500 dark:border-error-400' : ''} ${local.class ?? ''}`}
+          value={local.options ? getSelectedIndex() : (value() as string)}
+          disabled={local.disabled}
+          required={local.required}
+          aria-invalid={!!local.error}
           aria-describedby={
-            props.error && props.id ? `${props.id}-error` : undefined
+            local.error && local.id ? `${local.id}-error` : undefined
           }
           onChange={(e) => {
-            if (props.options) {
+            if (local.options) {
               handleOptionsChange(e.currentTarget.value);
             } else {
-              handleChildrenChange(e.currentTarget.value);
+              setValue(e.currentTarget.value);
             }
           }}
           style={{ 'text-overflow': 'ellipsis' }}
         >
-          <Show when={props.options} fallback={props.children}>
-            <Show when={props.emptyOption}>
-              <option value="">{props.emptyOption}</option>
+          <Show when={local.options} fallback={local.children}>
+            <Show when={local.emptyOption}>
+              <option value="">{local.emptyOption}</option>
             </Show>
-            <For each={props.options}>
+            <For each={local.options}>
               {(option, index) => (
                 <option value={index()} disabled={option.disabled}>
                   {option.label}
@@ -115,13 +134,13 @@ export function Select<T = string>(props: SelectProps<T>) {
           />
         </div>
       </div>
-      <Show when={props.error}>
+      <Show when={local.error}>
         <p
-          id={props.id ? `${props.id}-error` : undefined}
+          id={local.id ? `${local.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {props.error}
+          {local.error}
         </p>
       </Show>
     </div>

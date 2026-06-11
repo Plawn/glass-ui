@@ -1,6 +1,5 @@
 import type { JSX } from 'solid-js';
 import type {
-  BaseComponentProps,
   ChipVariant,
   ComponentSize,
   DisableableProps,
@@ -12,7 +11,9 @@ import type {
  */
 export type ChipColor = Exclude<SemanticColor, 'info'>;
 
-export interface ChipProps extends BaseComponentProps, DisableableProps {
+export interface ChipProps
+  extends JSX.HTMLAttributes<HTMLSpanElement>,
+    DisableableProps {
   /** Chip content */
   children: JSX.Element;
   /** Callback when remove button is clicked */

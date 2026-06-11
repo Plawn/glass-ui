@@ -6,6 +6,7 @@ import {
   createEffect,
   createSignal,
   on,
+  splitProps,
 } from 'solid-js';
 import {
   ANIMATION_DURATION,
@@ -56,6 +57,32 @@ const RESIZE_DIRECTIONS: ResizeDirection[] = [
  * ```
  */
 export const Window: Component<WindowProps> = (props) => {
+  const [, rest] = splitProps(props, [
+    'open',
+    'onClose',
+    'title',
+    'children',
+    'footer',
+    'defaultPosition',
+    'defaultSize',
+    'position',
+    'onPositionChange',
+    'size',
+    'onSizeChange',
+    'constraints',
+    'draggable',
+    'resizable',
+    'bounded',
+    'showBackdrop',
+    'closeOnBackdrop',
+    'showClose',
+    'closeOnEscape',
+    'class',
+    'zIndex',
+    'onFocus',
+    'focused',
+  ]);
+
   const draggable = () => props.draggable ?? true;
   const resizable = () => props.resizable ?? true;
   const bounded = () => props.bounded ?? true;
@@ -212,6 +239,7 @@ export const Window: Component<WindowProps> = (props) => {
 
         {/* Window */}
         <div
+          {...rest}
           ref={windowRef}
           class={clsx(
             'fixed glass-card rounded-2xl shadow-2xl overflow-hidden flex flex-col',

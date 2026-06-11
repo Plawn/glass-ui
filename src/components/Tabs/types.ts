@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps, ComponentSize, IconProps } from '../../types';
+import type { ComponentSize, IconProps } from '../../types';
 
 // =============================================================================
 // TAB ORIENTATION
@@ -28,7 +28,7 @@ export interface TabItem extends IconProps {
 // TABS PROPS
 // =============================================================================
 
-export interface TabsProps extends BaseComponentProps {
+export interface TabsProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Tab items */
   items: TabItem[];
   /** Default tab id when uncontrolled */

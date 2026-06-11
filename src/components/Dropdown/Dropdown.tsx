@@ -1,4 +1,4 @@
-import type { Component } from 'solid-js';
+import { type Component, splitProps } from 'solid-js';
 import { Popover } from '../Popover';
 import type { DropdownProps } from './types';
 
@@ -8,19 +8,31 @@ import type { DropdownProps } from './types';
  * For more advanced features like arrows or custom offsets, use Popover directly.
  */
 export const Dropdown: Component<DropdownProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'trigger',
+    'placement',
+    'open',
+    'onOpenChange',
+    'class',
+    'style',
+    'contentClass',
+    'scrollBehavior',
+    'children',
+  ]);
   return (
     <Popover
-      trigger={props.trigger}
-      placement={props.placement ?? 'bottom-start'}
-      open={props.open}
-      onOpenChange={props.onOpenChange}
-      class={props.class}
-      style={props.style}
-      contentClass={props.contentClass}
+      {...rest}
+      trigger={local.trigger}
+      placement={local.placement ?? 'bottom-start'}
+      open={local.open}
+      onOpenChange={local.onOpenChange}
+      class={local.class}
+      style={local.style}
+      contentClass={local.contentClass}
       offset={4}
-      scrollBehavior={props.scrollBehavior}
+      scrollBehavior={local.scrollBehavior}
     >
-      {props.children}
+      {local.children}
     </Popover>
   );
 };

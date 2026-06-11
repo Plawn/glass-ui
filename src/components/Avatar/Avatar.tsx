@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, createMemo, createSignal } from 'solid-js';
+import { Show, createMemo, createSignal, splitProps } from 'solid-js';
 import type { AvatarProps, AvatarSize } from './types';
 
 const sizeStyles: Record<AvatarSize, { container: string; text: string }> = {
@@ -42,20 +42,29 @@ const getInitials = (name: string): string => {
 };
 
 export const Avatar: Component<AvatarProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    'src',
+    'name',
+    'size',
+    'fallbackColor',
+    'alt',
+    'class',
+  ]);
   const [imageError, setImageError] = createSignal(false);
-  const size = () => props.size ?? 'md';
+  const size = () => local.size ?? 'md';
   const styles = () => sizeStyles[size()];
 
-  const initials = createMemo(() => getInitials(props.name));
+  const initials = createMemo(() => getInitials(local.name));
   const fallbackBg = createMemo(
-    () => props.fallbackColor ?? getColorFromName(props.name),
+    () => local.fallbackColor ?? getColorFromName(local.name),
   );
 
-  const showImage = () => props.src && !imageError();
+  const showImage = () => local.src && !imageError();
 
   return (
     <div
-      class={`relative inline-flex items-center justify-center rounded-full overflow-hidden border-2 border-white/30 dark:border-white/10 shadow-sm ${styles().container} ${props.class ?? ''}`}
+      {...rest}
+      class={`relative inline-flex items-center justify-center rounded-full overflow-hidden border-2 border-white/30 dark:border-white/10 shadow-sm ${styles().container} ${local.class ?? ''}`}
     >
       <Show
         when={showImage()}
@@ -63,15 +72,15 @@ export const Avatar: Component<AvatarProps> = (props) => {
           <div
             class={`w-full h-full flex items-center justify-center font-semibold text-white ${fallbackBg()}`}
             role="img"
-            aria-label={props.name}
+            aria-label={local.name}
           >
             <span class={styles().text}>{initials()}</span>
           </div>
         }
       >
         <img
-          src={props.src}
-          alt={props.alt ?? props.name}
+          src={local.src}
+          alt={local.alt ?? local.name}
           class="w-full h-full object-cover"
           onError={() => setImageError(true)}
         />

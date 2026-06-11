@@ -1,34 +1,48 @@
-import type { Component } from 'solid-js';
+import { type Component, splitProps } from 'solid-js';
 import { MODAL_PANEL_ENTER, OVERLAY_MAX_WIDTHS } from '../../constants';
 import { OverlayContent, PortalOverlay } from '../shared';
 import type { ModalProps } from './types';
 
 export const Modal: Component<ModalProps> = (props) => {
-  const size = () => props.size ?? 'md';
-  const showClose = () => props.showClose ?? true;
+  const [local, rest] = splitProps(props, [
+    'open',
+    'onClose',
+    'title',
+    'children',
+    'size',
+    'footer',
+    'showClose',
+    'closeOnBackdrop',
+    'closeOnEscape',
+    'class',
+  ]);
+
+  const size = () => local.size ?? 'md';
+  const showClose = () => local.showClose ?? true;
 
   return (
     <PortalOverlay
-      open={props.open}
-      onClose={props.onClose}
-      closeOnEscape={props.closeOnEscape ?? true}
-      closeOnBackdrop={props.closeOnBackdrop ?? true}
+      open={local.open}
+      onClose={local.onClose}
+      closeOnEscape={local.closeOnEscape ?? true}
+      closeOnBackdrop={local.closeOnBackdrop ?? true}
       backdropClass="flex items-center justify-center p-2 sm:p-4"
-      ariaLabelledby={props.title ? 'modal-title' : undefined}
+      ariaLabelledby={local.title ? 'modal-title' : undefined}
     >
       <div
-        class={`w-full ${OVERLAY_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER}`}
+        {...rest}
+        class={`w-full ${OVERLAY_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER} ${local.class ?? ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         <OverlayContent
-          title={props.title}
+          title={local.title}
           titleId="modal-title"
           showClose={showClose()}
-          onClose={props.onClose}
-          footer={props.footer}
+          onClose={local.onClose}
+          footer={local.footer}
           contentClass="max-h-[80vh] sm:max-h-[70vh]"
         >
-          {props.children}
+          {local.children}
         </OverlayContent>
       </div>
     </PortalOverlay>

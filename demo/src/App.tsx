@@ -26,6 +26,9 @@ const Home = lazy(() => import('./pages/Home'));
 const GlassChromaticPage = lazy(() => import('./pages/styles/GlassChromatic'));
 const Glass3DButtonsPage = lazy(() => import('./pages/styles/Glass3DButtons'));
 const LiquidGlassPage = lazy(() => import('./pages/styles/LiquidGlass'));
+const GlassBackgroundPage = lazy(
+  () => import('./pages/styles/GlassBackground'),
+);
 
 // Layout pages
 const CardPage = lazy(() => import('./pages/layout/Card'));
@@ -250,6 +253,7 @@ export default function App() {
       <Route path="/styles/glass-chromatic" component={GlassChromaticPage} />
       <Route path="/styles/glass-3d-buttons" component={Glass3DButtonsPage} />
       <Route path="/styles/liquid-glass" component={LiquidGlassPage} />
+      <Route path="/styles/glass-background" component={GlassBackgroundPage} />
 
       {/* Layout */}
       <Route path="/layout/card" component={CardPage} />

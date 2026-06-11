@@ -5,12 +5,23 @@ import {
   on,
   onCleanup,
   onMount,
+  splitProps,
 } from 'solid-js';
+import { useControlled } from '../../hooks';
 import type { SegmentedControlProps } from './types';
 
 export function SegmentedControl<T extends string | number>(
   props: SegmentedControlProps<T>,
 ) {
+  const [local, rest] = splitProps(props, [
+    'options',
+    'value',
+    'defaultValue',
+    'onChange',
+    'size',
+    'orientation',
+    'class',
+  ]);
   const [indicatorStyle, setIndicatorStyle] = createSignal({
     left: 0,
     top: 0,
@@ -21,13 +32,19 @@ export function SegmentedControl<T extends string | number>(
   let containerRef: HTMLDivElement | undefined;
   const buttonRefs: Map<T, HTMLButtonElement> = new Map();
 
-  const isVertical = () => props.orientation === 'vertical';
+  const [value, setValue] = useControlled<T>({
+    value: () => local.value,
+    defaultValue: (local.defaultValue ?? local.options[0]?.value) as T,
+    onChange: (v) => local.onChange?.(v),
+  });
+
+  const isVertical = () => local.orientation === 'vertical';
 
   const sizeClasses = () =>
-    props.size === 'sm' ? 'px-2 py-1 text-[0.625rem]' : 'px-3 py-1.5 text-xs';
+    local.size === 'sm' ? 'px-2 py-1 text-[0.625rem]' : 'px-3 py-1.5 text-xs';
 
   const updateIndicator = () => {
-    const activeButton = buttonRefs.get(props.value);
+    const activeButton = buttonRefs.get(value());
     if (activeButton && containerRef) {
       const containerRect = containerRef.getBoundingClientRect();
       const buttonRect = activeButton.getBoundingClientRect();
@@ -55,23 +72,20 @@ export function SegmentedControl<T extends string | number>(
   onCleanup(() => observer.disconnect());
 
   createEffect(
-    on(
-      () => props.value,
-      () => {
-        if (isInitialized()) {
-          updateIndicator();
-        }
-      },
-    ),
+    on(value, () => {
+      if (isInitialized()) {
+        updateIndicator();
+      }
+    }),
   );
 
   return (
     <div
+      {...rest}
       ref={containerRef}
       role="group"
-      aria-label={props['aria-label']}
       class={`relative flex ${isVertical() ? 'flex-col' : 'items-center'} gap-1 p-1 bg-surface-200/80 dark:bg-surface-800/80 rounded-xl w-fit ${
-        props.class ?? ''
+        local.class ?? ''
       }`}
     >
       {/* Sliding indicator - iOS 26 style */}
@@ -87,15 +101,15 @@ export function SegmentedControl<T extends string | number>(
           'transition-timing-function': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
       />
-      <For each={props.options}>
+      <For each={local.options}>
         {(option) => (
           <button
             ref={(el) => buttonRefs.set(option.value, el)}
             type="button"
-            onClick={() => !option.disabled && props.onChange(option.value)}
+            onClick={() => !option.disabled && setValue(option.value)}
             disabled={option.disabled}
             class={`${sizeClasses()} font-bold rounded-lg transition-colors duration-200 relative z-10 ${
-              props.value === option.value
+              value() === option.value
                 ? 'text-surface-900 dark:text-surface-100'
                 : 'text-surface-600 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-100'
             } ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}`}

@@ -1,13 +1,13 @@
 import type { JSX } from 'solid-js';
 import type { OverlayScrollBehavior } from '../../hooks';
-import type { BaseComponentProps, Placement } from '../../types';
+import type { Placement } from '../../types';
 
 /**
  * Popover placement options - all 12 positions (alias for Placement)
  */
 export type PopoverPlacement = Placement;
 
-export interface PopoverProps extends BaseComponentProps {
+export interface PopoverProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Trigger element that opens the popover on click */
   trigger: JSX.Element;
   /** Content to display in the popover */

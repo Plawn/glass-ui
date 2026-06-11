@@ -1,5 +1,4 @@
 import type { JSX } from 'solid-js';
-import type { BaseComponentProps } from '../../types';
 
 export type JsonValue =
   | string
@@ -21,7 +20,7 @@ export type JsonValueRenderer = (
   context: JsonValueContext,
 ) => JSX.Element | null | undefined | false;
 
-export interface JsonViewerProps extends BaseComponentProps {
+export interface JsonViewerProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** The JSON data to display */
   data: unknown;
   /** Maximum height of the viewer (default: '31.25rem') */

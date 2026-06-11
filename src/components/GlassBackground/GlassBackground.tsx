@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, mergeProps } from 'solid-js';
+import { For, mergeProps, splitProps } from 'solid-js';
 import type { GlassBackgroundBlob, GlassBackgroundProps } from './types';
 import './GlassBackground.css';
 
@@ -65,24 +65,34 @@ export const GlassBackground: Component<GlassBackgroundProps> = (rawProps) => {
     rawProps,
   );
 
+  const [local, rest] = splitProps(props, [
+    'class',
+    'children',
+    'blobs',
+    'animated',
+    'gradient',
+    'darkGradient',
+  ]);
+
   return (
     <div
-      class={`glass-background min-h-screen relative overflow-x-hidden ${props.class ?? ''}`}
+      {...rest}
+      class={`glass-background min-h-screen relative overflow-x-hidden ${local.class ?? ''}`}
       style={{
-        '--bg-from': props.gradient.from,
-        '--bg-via': props.gradient.via ?? props.gradient.from,
-        '--bg-to': props.gradient.to,
-        '--bg-from-dark': props.darkGradient.from,
-        '--bg-via-dark': props.darkGradient.via ?? props.darkGradient.from,
-        '--bg-to-dark': props.darkGradient.to,
+        '--bg-from': local.gradient.from,
+        '--bg-via': local.gradient.via ?? local.gradient.from,
+        '--bg-to': local.gradient.to,
+        '--bg-from-dark': local.darkGradient.from,
+        '--bg-via-dark': local.darkGradient.via ?? local.darkGradient.from,
+        '--bg-to-dark': local.darkGradient.to,
       }}
     >
       {/* Decorative blobs */}
       <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <For each={props.blobs}>
+        <For each={local.blobs}>
           {(blob) => (
             <div
-              class={`glass-blob absolute ${props.animated ? 'glass-blob-animate' : 'rounded-full'} blur-3xl`}
+              class={`glass-blob absolute ${local.animated ? 'glass-blob-animate' : 'rounded-full'} blur-3xl`}
               style={{
                 top: blob.top,
                 left: blob.left,
@@ -102,7 +112,7 @@ export const GlassBackground: Component<GlassBackgroundProps> = (rawProps) => {
       </div>
 
       {/* Content */}
-      <div class="relative z-10">{props.children}</div>
+      <div class="relative z-10">{local.children}</div>
     </div>
   );
 };
