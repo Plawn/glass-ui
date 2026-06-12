@@ -9,9 +9,13 @@ export type JsonValue =
   | { [key: string]: JsonValue };
 
 export interface JsonValueContext {
+  /** Primitive type name or 'array' / 'object' */
   type: string;
+  /** Key name of this value within its parent object */
   keyName?: string;
+  /** Nesting depth of this value (root = 0) */
   depth: number;
+  /** Full path from root to this value */
   path: (string | number)[];
 }
 
@@ -40,11 +44,18 @@ export interface JsonViewerProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 
 export interface JsonNodeProps {
+  /** Key name of this node within its parent object */
   keyName?: string;
+  /** The JSON value to render */
   value: JsonValue;
+  /** Current nesting depth (root = 0) */
   depth: number;
+  /** Depth up to which nodes are expanded on initial render */
   initialExpandDepth: number;
+  /** Whether this node is the last sibling (controls trailing comma) */
   isLast: boolean;
+  /** Custom value renderers forwarded from JsonViewerProps */
   valueRenderers?: JsonValueRenderer[];
+  /** Full path from root to this node */
   path: (string | number)[];
 }

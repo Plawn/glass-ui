@@ -131,6 +131,29 @@ export default function FileUploadPage() {
         />
       </DemoSection>
 
+      <DemoSection title="Sizes">
+        <div class="space-y-4">
+          <FileUpload
+            size="sm"
+            onFilesChange={() => {}}
+            label="Small"
+            description="sm size variant"
+          />
+          <FileUpload
+            size="md"
+            onFilesChange={() => {}}
+            label="Medium"
+            description="md size variant (default)"
+          />
+          <FileUpload
+            size="lg"
+            onFilesChange={() => {}}
+            label="Large"
+            description="lg size variant"
+          />
+        </div>
+      </DemoSection>
+
       <DemoSection
         title="Disabled State"
         code={`<FileUpload
@@ -194,6 +217,13 @@ export default function FileUploadPage() {
               name: 'error',
               type: 'string',
               description: 'Error message to display',
+            },
+            {
+              name: 'size',
+              type: "'sm' | 'md' | 'lg'",
+              default: "'md'",
+              description:
+                'Size variant controlling dropzone padding, icon, and text scale',
             },
             {
               name: 'disabled',

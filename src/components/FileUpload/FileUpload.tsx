@@ -1,8 +1,39 @@
 import clsx from 'clsx';
 import { type Component, For, Show, createSignal, splitProps } from 'solid-js';
 import { TRANSITION_ALL } from '../../constants';
+import type { ComponentSize } from '../../types';
 import { TrashIcon } from '../shared';
 import type { FileUploadProps } from './types';
+
+const DROPZONE_PADDING: Record<ComponentSize, string> = {
+  sm: 'px-4 py-6',
+  md: 'px-6 py-8',
+  lg: 'px-8 py-10',
+};
+
+const ICON_CIRCLE: Record<ComponentSize, string> = {
+  sm: 'w-10 h-10 mb-2',
+  md: 'w-12 h-12 mb-3',
+  lg: 'w-14 h-14 mb-4',
+};
+
+const ICON_SVG: Record<ComponentSize, string> = {
+  sm: 'w-5 h-5',
+  md: 'w-6 h-6',
+  lg: 'w-7 h-7',
+};
+
+const UPLOAD_TEXT: Record<ComponentSize, string> = {
+  sm: 'text-xs',
+  md: 'text-sm',
+  lg: 'text-base',
+};
+
+const DESCRIPTION_TEXT: Record<ComponentSize, string> = {
+  sm: 'text-xs',
+  md: 'text-xs',
+  lg: 'text-sm',
+};
 
 /**
  * Format file size to human readable string
@@ -43,6 +74,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
     'name',
     'required',
     'disabled',
+    'size',
     'label',
     'error',
     'id',
@@ -58,6 +90,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
   let inputRef: HTMLInputElement | undefined;
 
   const isDisabled = () => local.disabled ?? false;
+  const size = () => local.size ?? 'md';
   const multiple = () => local.multiple ?? false;
   const maxFiles = () => local.maxFiles ?? Number.POSITIVE_INFINITY;
   const maxSize = () => local.maxSize ?? Number.POSITIVE_INFINITY;
@@ -242,11 +275,17 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
           onChange={handleInputChange}
         />
 
-        <div class="flex flex-col items-center justify-center px-6 py-8">
+        <div
+          class={clsx(
+            'flex flex-col items-center justify-center',
+            DROPZONE_PADDING[size()],
+          )}
+        >
           {/* Upload icon */}
           <div
             class={clsx(
-              'w-12 h-12 rounded-full flex items-center justify-center mb-3',
+              'rounded-full flex items-center justify-center',
+              ICON_CIRCLE[size()],
               'bg-surface-100 dark:bg-surface-700/50',
               {
                 'bg-primary-100 dark:bg-primary-900/50': isDragOver(),
@@ -254,7 +293,7 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
             )}
           >
             <svg
-              class={clsx('w-6 h-6', {
+              class={clsx(ICON_SVG[size()], {
                 'text-surface-400 dark:text-surface-500': !isDragOver(),
                 'text-primary-500 dark:text-primary-400': isDragOver(),
               })}
@@ -272,7 +311,12 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
             </svg>
           </div>
 
-          <p class="text-sm text-surface-700 dark:text-surface-300 mb-1">
+          <p
+            class={clsx(
+              UPLOAD_TEXT[size()],
+              'text-surface-700 dark:text-surface-300 mb-1',
+            )}
+          >
             <span class="font-medium text-primary-600 dark:text-primary-400">
               Click to upload
             </span>{' '}
@@ -280,7 +324,12 @@ export const FileUpload: Component<FileUploadProps> = (props) => {
           </p>
 
           <Show when={local.description}>
-            <p class="text-xs text-surface-500 dark:text-surface-400">
+            <p
+              class={clsx(
+                DESCRIPTION_TEXT[size()],
+                'text-surface-500 dark:text-surface-400',
+              )}
+            >
               {local.description}
             </p>
           </Show>

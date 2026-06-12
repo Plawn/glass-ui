@@ -24,8 +24,11 @@ export interface GlassBackgroundBlob {
 }
 
 export interface GlassBackgroundGradient {
+  /** Starting color of the gradient (CSS color value) */
   from: string;
+  /** Optional midpoint color of the gradient (CSS color value) */
   via?: string;
+  /** Ending color of the gradient (CSS color value) */
   to: string;
 }
 

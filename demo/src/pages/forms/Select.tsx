@@ -280,6 +280,14 @@ const userOptions = [
         </div>
       </DemoSection>
 
+      <DemoSection title="Loading">
+        <div class="max-w-xs">
+          <Select value="" onChange={() => {}} label="Loading" loading>
+            <option value="">Fetching options...</option>
+          </Select>
+        </div>
+      </DemoSection>
+
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
@@ -329,6 +337,13 @@ const userOptions = [
               type: 'boolean',
               default: 'false',
               description: 'Whether the select is required',
+            },
+            {
+              name: 'loading',
+              type: 'boolean',
+              default: 'false',
+              description:
+                'Show a spinner in place of the chevron; field stays editable',
             },
             { name: 'id', type: 'string', description: 'HTML id attribute' },
             {

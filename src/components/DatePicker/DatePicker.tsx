@@ -2,6 +2,7 @@ import { type Component, Show, createSignal, splitProps } from 'solid-js';
 import { useControlled } from '../../hooks';
 import type { ComponentSize } from '../../types';
 import { Popover } from '../Popover';
+import { Spinner } from '../Spinner';
 import { CloseIcon } from '../shared/icons/CloseIcon';
 import { Calendar } from './Calendar';
 import type { DatePickerProps } from './types';
@@ -71,6 +72,7 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
     'name',
     'required',
     'disabled',
+    'loading',
     'label',
     'error',
     'id',
@@ -146,12 +148,20 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
             ${getSizeClasses(size())}
           `,
           'aria-haspopup': 'dialog',
+          'aria-busy': local.loading || undefined,
         }}
         trigger={
           <div class="flex items-center gap-2 w-full">
-            <CalendarIcon
-              size={size() === 'sm' ? 14 : size() === 'lg' ? 18 : 16}
-            />
+            <Show
+              when={local.loading}
+              fallback={
+                <CalendarIcon
+                  size={size() === 'sm' ? 14 : size() === 'lg' ? 18 : 16}
+                />
+              }
+            >
+              <Spinner size="sm" />
+            </Show>
             <span
               class={`flex-1 text-left ${displayValue() ? '' : 'text-surface-400 dark:text-surface-500'}`}
             >

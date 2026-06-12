@@ -133,11 +133,27 @@ retenu comme pattern canonique (déjà utilisé par Dialog/Sheet/Dropdown/Popove
   `onClose` devenu optionnel, tout site oublié aurait cassé la compilation.
 
 ### 7. Incohérences d'API restantes
-- `size` manquant sur FileUpload, Collapsible, Accordion (présent sur leurs siblings).
-- `loading` seulement sur Button/Autocomplete — utile sur Select, Input, DatePicker.
-- Props ARIA (`aria-label`, `aria-describedby`) non exposées dans la plupart des types
-  (réglé automatiquement par le chantier rest props #1).
-- JSDoc absent sur la plupart des interfaces de `types.ts` (Button, Badge...).
+**Fait (chantier #7, 8 agents Sonnet parallèles + validation)** :
+- **7a — `loading?: boolean`** ajouté à Input, Select, DatePicker (miroir de
+  Button/Autocomplete). Un `<Spinner size="sm">` s'affiche dans la zone d'icône de fin
+  (Input : adornment droit dans un wrapper `relative` + `pr-10` ; Select : remplace le
+  chevron ; DatePicker : remplace l'icône calendrier en tête). `aria-busy` posé, champ
+  laissé **éditable** (non bloquant, comme Autocomplete). `'loading'` dans `splitProps`.
+- **7b — `size?: ComponentSize`** (`'sm'|'md'|'lg'`, défaut `'md'`) ajouté à FileUpload
+  (padding dropzone + cercle/svg icône + textes) et Accordion **+ AccordionPanel** (padding
+  header + texte titre + chevrons + padding contenu) via lookups `Record<ComponentSize,...>`.
+  **md reproduit le rendu actuel au pixel près** (zéro régression visuelle ; sm/lg en miroir).
+  **Collapsible volontairement SKIPPÉ** : son trigger est 100 % fourni par le consommateur
+  (`padding: 0`, contenu = `props.trigger`), la lib ne possède aucune chrome à mettre à
+  l'échelle — un `size` y ferait double emploi et changerait le rendu par défaut de tous les
+  triggers existants. Même logique de skip que les composants sans root stable du chantier #1.
+- **7c — JSDoc** : sweep additif sur les `types.ts` réellement sous-documentés (Toast — était
+  à zéro —, Chat, JsonViewer, JsonSchemaForm, virtual, ContextMenu, GlassBackground ;
+  Menu déjà complet). La grande majorité des `types.ts` étaient déjà à ~1:1.
+- ✅ Props ARIA déjà exposées partout (réglé par le chantier rest props #1).
+- Pages démo mises à jour (loading sur Input/Select/DatePicker, sizes sur FileUpload/Accordion)
+  — règle CLAUDE.md respectée. Script : `scripts/validate-api-consistency.sh` (props/Spinner/size
+  câblés, Collapsible vérifié sans size, démos à jour, typecheck/lint/build/test/demo:build verts).
 
 ---
 
@@ -180,12 +196,10 @@ retenu comme pattern canonique (déjà utilisé par Dialog/Sheet/Dropdown/Popove
 
 ### ~~6. Harmoniser les callbacks d'overlay~~ — ✅ fait (voir chantier #6 plus haut)
 
-### 7. Incohérences d'API restantes (feature work, pas quick win)
-- `size` manquant sur FileUpload, Collapsible, Accordion (nécessite de designer les
-  variantes de taille — pas mécanique).
-- `loading` sur Select, Input, DatePicker (ajout d'UI).
-- ✅ Props ARIA désormais exposées partout (réglé par le chantier rest props #1).
-- JSDoc absent sur la plupart des interfaces de `types.ts`.
+### ~~7. Incohérences d'API restantes~~ — ✅ fait (voir chantier #7 plus haut)
+- ✅ 7a `loading` sur Input/Select/DatePicker ; 7b `size` sur FileUpload + Accordion
+  (Collapsible skippé à dessein) ; 7c sweep JSDoc des types.ts sous-documentés.
+- ✅ Props ARIA exposées partout (chantier rest props #1).
 
 ---
 

@@ -24,40 +24,16 @@ Chaque chantier suit le même schéma :
 - **#4** (constantes d'animation) — commit `5facd6d`. 41 littéraux transition→constantes, section `INTERACTIVE TRANSITIONS` dans `src/constants/animations.ts`.
 - **#5** (OKLCH→vars CSS) — commit `7cb5a1e`. Palette `--glass-{light,dark,accent}-NN` (46 vars) dans `:root` de `global.css` ; 186 overlays migrés (glass 141 / buttons 24 / utilities 21) ; dédup miroir surface (`@theme` = source unique). Script : `scripts/validate-oklch.sh`. 4 agents.
 - **#6** (callbacks overlay) — commit `fece7a7`. `onOpenChange` canonique ; Modal/Drawer/Window adoptent `onOpenChange?` + `onClose?` `@deprecated` (optionnel, non-breaking) ; helper `requestClose()` déclenche les deux. Dialog/Sheet inchangés. Script : `scripts/validate-overlay-callbacks.sh`. 3 agents.
+- **#7** (incohérences d'API) — voir commit ci-dessous. **8 agents Sonnet parallèles** (périmètres disjoints, aucun fichier partagé). 7a `loading` sur Input/Select/DatePicker (Spinner `size="sm"` en zone d'icône de fin, champ éditable, `aria-busy`) ; 7b `size` sur FileUpload + Accordion+AccordionPanel (lookups `Record<ComponentSize,...>`, **md = rendu actuel au pixel près**) ; **Collapsible skippé volontairement** (trigger 100 % consommateur, aucune chrome lib à scaler) ; 7c sweep JSDoc des types.ts sous-documentés (Toast, Chat, JsonViewer/JsonSchemaForm, virtual, ContextMenu, GlassBackground). Pages démo à jour. Script : `scripts/validate-api-consistency.sh`. ⚠️ JSDoc/lignes longues ont déclenché du reformatage biome → rattrapé par `bunx biome check --write` (risque connu, le lint est dans le script).
 
-## ⏭️ PROCHAIN : chantier #7 — Incohérences d'API (EN COURS, pas démarré)
-Trois sous-sujets de natures différentes. **Recommandation : découper ainsi.**
+## ⏭️ PROCHAIN : chantier #3 — Tests composants (DOM)
+Gros chantier de mise en place :
+- Installer `@happy-dom/global-registrator` (devDep) + preload `bunfig.toml` (`[test] preload`) + `@solidjs/testing-library`.
+- `bun test` tourne déjà avec `--conditions=browser` (câblé). Cibles : `useFocusTrap`, `useDialogState` (manipulent `document`/focus/scroll-lock), nav clavier d'Autocomplete/Menu/RadioGroup/Tabs, rendu+interactions des composants de formulaire (soumission native, ARIA).
+- Pas de parallélisation évidente au début (mise en place commune) — faire le socle d'abord, puis éventuellement fan-out les fichiers de test par composant.
 
-### 7a. `loading` sur Select, Input, DatePicker (mécanique — pattern établi)
-Pattern de référence à RÉPLIQUER (déjà investigué) :
-- **Button** (`src/components/Button/Button.tsx`) : `splitProps` clé `'loading'` ; `disabled={local.disabled || local.loading}` ; `aria-busy={local.loading || undefined}` ; `<Show when={local.loading}><Spinner .../></Show>`.
-- **Autocomplete** (`Autocomplete.tsx:480`) : `import { Spinner } from '../Spinner'` ; `<Spinner size="sm" />` affiché dans l'adornment de fin quand `local.loading`, masque les autres icônes (`<Show when={!local.loading && ...}>`).
-- **Spinner** existe : `src/components/Spinner/`.
-- Contrat : ajouter `loading?: boolean` dans chaque `types.ts` (avec JSDoc) ; afficher un `<Spinner size="sm">` dans la zone d'icône de fin du champ, masquer l'icône native (chevron/calendrier) quand `loading`. Ne PAS forcément désactiver l'input (à trancher — Button désactive ; pour un champ de saisie, plutôt garder éditable mais c'est un choix → défaut : afficher le spinner sans bloquer la saisie, comme Autocomplete).
-- 1 agent par composant (Select / Input / DatePicker). Périmètres disjoints.
-
-### 7b. `size` sur FileUpload, Collapsible, Accordion (feature/design — moins mécanique)
-- `ComponentSize = 'sm' | 'md' | 'lg'` (`src/types/index.ts:42`). Défaut `'md'`.
-- Pattern siblings : objet lookup `Record<ComponentSize, string>` mappant vers des classes Tailwind (padding/text/icon), `const size = () => props.size ?? 'md'`.
-- **Point de design à trancher avec le user** : quelles dimensions varient pour chacun (FileUpload = padding du dropzone + tailles texte/icône ; Accordion = padding header + texte ; Collapsible = padding trigger). C'est le sous-sujet le moins « mécanique » → soit définir des échelles raisonnables en miroir d'un sibling, soit demander au user avant.
-- 1 agent par composant.
-
-### 7c. JSDoc sur les interfaces `types.ts` (mécanique, large sweep — sûr)
-- Beaucoup de `types.ts` sans JSDoc sur les props (Button, Badge, etc.). Ajouter un `/** ... */` par prop publique.
-- ARIA déjà exposée partout (chantier rest props #1) — ne pas y retoucher.
-- Découpe possible : 1 agent par lot de N composants (ex. 4-5 agents se répartissant `src/components/*/types.ts`). Risque faible (purement additif, commentaires).
-- ⚠️ JSDoc multi-lignes peut déclencher du reformatage biome → inclure `lint` dans la validation.
-
-### Script de validation #7 à écrire (`scripts/validate-api-consistency.sh`)
-Checks suggérés :
-- 7a : chaque `Select/Input/DatePicker/types.ts` contient `loading?:` ; chaque composant importe `Spinner` et référence `local.loading`/`props.loading`.
-- 7b : chaque `FileUpload/Collapsible/Accordion/types.ts` contient `size?:` ; composant a un lookup de tailles + défaut `'md'`.
-- 7c : (optionnel) ratio de props commentées, ou juste que le build/lint passent.
-- Toujours : `typecheck` + `lint` + `build` + `demo:build`.
-- **Règle CLAUDE.md** : tout nouveau prop visible doit être démontré dans la page démo correspondante (`demo/src/pages/`) — vérifier/ajouter (sinon viole la convention « tout composant exporté a une page démo à jour »). Penser à faire mettre à jour les pages démo (size/loading) par les agents ou en suivi.
-
-## Reste de l'audit après #7
-- **#3** Tests composants (DOM) — gros chantier : installer `@happy-dom/global-registrator` + preload `bunfig.toml` + `@solidjs/testing-library`, puis tester `useFocusTrap`/`useDialogState`, nav clavier, formulaires.
+## Reste de l'audit après #3
+- **#3 (rappel)** Tests composants (DOM) — voir ci-dessus.
 - **#8** Régénérer `llm.txt` (outil de génération requis).
 - **#9** CI : job `npm pack` + install du tarball dans une app minimale.
 - **#10** `Sheet.tsx` checks défensifs drag après unmount (faible prio).

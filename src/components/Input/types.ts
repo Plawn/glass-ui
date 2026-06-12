@@ -39,6 +39,8 @@ export interface InputProps
   readonly?: boolean;
   /** Size variant */
   size?: ComponentSize;
+  /** Whether the field is in a loading state. Shows a spinner in the trailing icon area; the field stays editable. */
+  loading?: boolean;
 }
 
 /**
@@ -101,6 +103,8 @@ export interface SelectPropsWithChildren
   options?: never;
   /** Placeholder text for empty option */
   emptyOption?: never;
+  /** Whether the field is in a loading state. Shows a spinner in the trailing icon area; the field stays editable. */
+  loading?: boolean;
   /** Ref to the select element */
   ref?: HTMLSelectElement | ((el: HTMLSelectElement) => void);
 }
@@ -126,6 +130,8 @@ export interface SelectPropsWithOptions<T>
   options: SelectOption<T>[];
   /** Placeholder text for empty option */
   emptyOption?: string;
+  /** Whether the field is in a loading state. Shows a spinner in the trailing icon area; the field stays editable. */
+  loading?: boolean;
   /** Ref to the select element */
   ref?: HTMLSelectElement | ((el: HTMLSelectElement) => void);
 }

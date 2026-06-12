@@ -25,8 +25,11 @@ export type MessageStatus = 'pending' | 'streaming' | 'complete' | 'error';
  * A thinking step for assistant reasoning
  */
 export interface ThinkingStep {
+  /** Unique identifier for the thinking step */
   id: string;
+  /** Reasoning text content */
   content: string;
+  /** Optional display title for the step */
   title?: string;
 }
 
@@ -39,12 +42,19 @@ export type ToolCallStatus = 'pending' | 'running' | 'complete' | 'error';
  * A tool call made by the assistant
  */
 export interface ToolCall {
+  /** Unique identifier for the tool call */
   id: string;
+  /** Name of the tool being called */
   name: string;
+  /** Arguments passed to the tool */
   arguments?: Record<string, unknown>;
+  /** Result returned by the tool */
   result?: unknown;
+  /** Current execution status */
   status: ToolCallStatus;
+  /** Error message if the tool call failed */
   error?: string;
+  /** Execution duration in milliseconds */
   duration?: number;
 }
 
@@ -52,13 +62,21 @@ export interface ToolCall {
  * A message in the chat
  */
 export interface ChatMessage {
+  /** Unique identifier for the message */
   id: string;
+  /** Role of the message author */
   role: MessageRole;
+  /** Text content of the message */
   content: string;
+  /** When the message was created */
   timestamp?: Date;
+  /** Current delivery or streaming status */
   status?: MessageStatus;
+  /** Reasoning steps shown in the thinking panel */
   thinking?: ThinkingStep[];
+  /** Tool calls made during this message */
   toolCalls?: ToolCall[];
+  /** Error message if the message failed */
   error?: string;
 }
 
@@ -106,14 +124,23 @@ export interface ChatProps extends JSX.HTMLAttributes<HTMLDivElement> {
  * Props for the ChatMessageList component
  */
 export interface ChatMessageListProps {
+  /** Array of messages to render */
   messages: ChatMessage[];
+  /** User display name for avatar fallback */
   userName?: string;
+  /** User avatar URL */
   userAvatarUrl?: string;
+  /** Assistant display name for avatar fallback */
   assistantName?: string;
+  /** Assistant avatar URL */
   assistantAvatarUrl?: string;
+  /** Show typing indicator when streaming */
   showTypingIndicator?: boolean;
+  /** Whether the assistant is currently streaming */
   isStreaming?: boolean;
+  /** Element to render when the message list is empty */
   emptyState?: JSX.Element;
+  /** Custom actions to display on code blocks */
   codeBlockActions?: CodeBlockAction[];
 }
 
@@ -121,11 +148,17 @@ export interface ChatMessageListProps {
  * Props for the ChatMessage component
  */
 export interface ChatMessageProps {
+  /** The message data to render */
   message: ChatMessage;
+  /** User display name for avatar fallback */
   userName?: string;
+  /** User avatar URL */
   userAvatarUrl?: string;
+  /** Assistant display name for avatar fallback */
   assistantName?: string;
+  /** Assistant avatar URL */
   assistantAvatarUrl?: string;
+  /** Custom actions to display on code blocks */
   codeBlockActions?: CodeBlockAction[];
 }
 
@@ -133,7 +166,9 @@ export interface ChatMessageProps {
  * Props for the ChatThinking component
  */
 export interface ChatThinkingProps {
+  /** Thinking steps to display */
   steps: ThinkingStep[];
+  /** Whether the panel is expanded by default */
   defaultOpen?: boolean;
 }
 
@@ -141,7 +176,9 @@ export interface ChatThinkingProps {
  * Props for the ChatToolCall component
  */
 export interface ChatToolCallProps {
+  /** Tool calls to display */
   toolCalls: ToolCall[];
+  /** Whether the panel is expanded by default */
   defaultOpen?: boolean;
 }
 
@@ -149,10 +186,15 @@ export interface ChatToolCallProps {
  * Props for the ChatInput component
  */
 export interface ChatInputProps {
+  /** Callback when the user submits a message */
   onSendMessage: (content: string) => void;
+  /** Callback to cancel an in-progress stream */
   onCancelStream?: () => void;
+  /** Whether the assistant is currently streaming */
   isStreaming?: boolean;
+  /** Whether the input is disabled */
   disabled?: boolean;
+  /** Placeholder text for the textarea */
   placeholder?: string;
 }
 
@@ -160,5 +202,6 @@ export interface ChatInputProps {
  * Props for the ChatTypingIndicator component
  */
 export interface ChatTypingIndicatorProps {
+  /** Additional CSS class */
   class?: string;
 }

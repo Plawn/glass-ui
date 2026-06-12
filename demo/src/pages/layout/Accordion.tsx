@@ -179,6 +179,98 @@ export default function AccordionPage() {
         </div>
       </DemoSection>
 
+      <DemoSection title="Sizes">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Small
+            </h3>
+            <Accordion
+              size="sm"
+              items={[
+                {
+                  id: 'sm1',
+                  title: 'Section 1',
+                  content: (
+                    <p class="text-surface-700 dark:text-surface-300">
+                      Content for section 1.
+                    </p>
+                  ),
+                  defaultOpen: true,
+                },
+                {
+                  id: 'sm2',
+                  title: 'Section 2',
+                  content: (
+                    <p class="text-surface-700 dark:text-surface-300">
+                      Content for section 2.
+                    </p>
+                  ),
+                },
+              ]}
+            />
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Medium (default)
+            </h3>
+            <Accordion
+              size="md"
+              items={[
+                {
+                  id: 'md1',
+                  title: 'Section 1',
+                  content: (
+                    <p class="text-surface-700 dark:text-surface-300">
+                      Content for section 1.
+                    </p>
+                  ),
+                  defaultOpen: true,
+                },
+                {
+                  id: 'md2',
+                  title: 'Section 2',
+                  content: (
+                    <p class="text-surface-700 dark:text-surface-300">
+                      Content for section 2.
+                    </p>
+                  ),
+                },
+              ]}
+            />
+          </div>
+          <div>
+            <h3 class="text-sm font-medium text-surface-700 dark:text-surface-300 mb-3">
+              Large
+            </h3>
+            <Accordion
+              size="lg"
+              items={[
+                {
+                  id: 'lg1',
+                  title: 'Section 1',
+                  content: (
+                    <p class="text-surface-700 dark:text-surface-300">
+                      Content for section 1.
+                    </p>
+                  ),
+                  defaultOpen: true,
+                },
+                {
+                  id: 'lg2',
+                  title: 'Section 2',
+                  content: (
+                    <p class="text-surface-700 dark:text-surface-300">
+                      Content for section 2.
+                    </p>
+                  ),
+                },
+              ]}
+            />
+          </div>
+        </div>
+      </DemoSection>
+
       <DemoSection title="Props" card={false}>
         {/* Accordion Props */}
         <div class="mb-6">
@@ -198,6 +290,13 @@ export default function AccordionPage() {
                 type: 'boolean',
                 default: 'false',
                 description: 'Allow multiple panels open',
+              },
+              {
+                name: 'size',
+                type: "'sm' | 'md' | 'lg'",
+                default: "'md'",
+                description:
+                  'Size variant controlling header padding, title text, and chevron scale',
               },
               {
                 name: 'class',
@@ -267,6 +366,13 @@ export default function AccordionPage() {
                 type: 'boolean',
                 default: 'false',
                 description: 'Open by default',
+              },
+              {
+                name: 'size',
+                type: "'sm' | 'md' | 'lg'",
+                default: "'md'",
+                description:
+                  'Size variant controlling header padding, title text, and chevron scale',
               },
               {
                 name: 'class',

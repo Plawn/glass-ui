@@ -302,6 +302,10 @@ const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() 
         />
       </DemoSection>
 
+      <DemoSection title="Loading">
+        <DatePicker label="Loading" loading placeholder="Loading..." />
+      </DemoSection>
+
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
@@ -355,6 +359,13 @@ const maxDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() 
               type: 'boolean',
               default: 'false',
               description: 'Whether the component is disabled',
+            },
+            {
+              name: 'loading',
+              type: 'boolean',
+              default: 'false',
+              description:
+                'Shows a spinner in place of the calendar icon; field stays usable',
             },
             {
               name: 'error',

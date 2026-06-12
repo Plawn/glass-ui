@@ -1,5 +1,5 @@
 import type { JSX } from 'solid-js';
-import type { FormFieldSemanticProps } from '../../types';
+import type { ComponentSize, FormFieldSemanticProps } from '../../types';
 
 /**
  * Props for the FileUpload component.
@@ -28,4 +28,9 @@ export interface FileUploadProps
   required?: boolean;
   /** Whether the field is disabled */
   disabled?: boolean;
+  /**
+   * Size variant controlling dropzone padding, icon, and text scale.
+   * @default 'md'
+   */
+  size?: ComponentSize;
 }

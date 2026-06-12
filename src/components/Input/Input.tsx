@@ -1,6 +1,7 @@
 import { type Component, Show, splitProps } from 'solid-js';
 import { INPUT_SIZE_CLASSES } from '../../constants';
 import { useControlled } from '../../hooks';
+import { Spinner } from '../Spinner';
 import type { InputProps } from './types';
 
 /**
@@ -34,6 +35,7 @@ export const Input: Component<InputProps> = (props) => {
     'autocomplete',
     'class',
     'onKeyDown',
+    'loading',
   ]);
   const size = () => local.size ?? 'md';
   const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
@@ -57,25 +59,33 @@ export const Input: Component<InputProps> = (props) => {
           </Show>
         </label>
       </Show>
-      <input
-        {...rest}
-        type={local.type ?? 'text'}
-        id={local.id}
-        name={local.name}
-        class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${local.error ? 'border-error-500 dark:border-error-400' : ''} ${local.class ?? ''}`}
-        placeholder={local.placeholder}
-        value={value()}
-        disabled={local.disabled}
-        readonly={local.readonly}
-        required={local.required}
-        autocomplete={local.autocomplete}
-        aria-invalid={!!local.error}
-        aria-describedby={
-          local.error && local.id ? `${local.id}-error` : undefined
-        }
-        onInput={(e) => setValue(e.currentTarget.value)}
-        onKeyDown={local.onKeyDown}
-      />
+      <div class="relative">
+        <input
+          {...rest}
+          type={local.type ?? 'text'}
+          id={local.id}
+          name={local.name}
+          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${local.loading ? 'pr-10' : ''} ${local.error ? 'border-error-500 dark:border-error-400' : ''} ${local.class ?? ''}`}
+          placeholder={local.placeholder}
+          value={value()}
+          disabled={local.disabled}
+          readonly={local.readonly}
+          required={local.required}
+          autocomplete={local.autocomplete}
+          aria-invalid={!!local.error}
+          aria-busy={local.loading || undefined}
+          aria-describedby={
+            local.error && local.id ? `${local.id}-error` : undefined
+          }
+          onInput={(e) => setValue(e.currentTarget.value)}
+          onKeyDown={local.onKeyDown}
+        />
+        <Show when={local.loading}>
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+            <Spinner size="sm" />
+          </div>
+        </Show>
+      </div>
       <Show when={local.error}>
         <p
           id={local.id ? `${local.id}-error` : undefined}

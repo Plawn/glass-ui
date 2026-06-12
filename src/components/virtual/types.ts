@@ -18,8 +18,11 @@ export type ScrollAlignment = 'start' | 'center' | 'end' | 'auto';
  * Location with alignment for scrolling
  */
 export interface ScrollToIndexLocation {
+  /** Target item index to scroll to */
   index: number;
+  /** Alignment of the item within the viewport */
   align?: ScrollAlignment;
+  /** Scroll animation behavior */
   behavior?: ScrollBehavior;
 }
 
@@ -27,7 +30,9 @@ export interface ScrollToIndexLocation {
  * Range of visible items
  */
 export interface ListRange {
+  /** Index of the first visible item */
   startIndex: number;
+  /** Index of the last visible item */
   endIndex: number;
 }
 
@@ -35,8 +40,11 @@ export interface ListRange {
  * Size range for batch size updates
  */
 export interface SizeRange {
+  /** Index of the first item in the batch */
   startIndex: number;
+  /** Index of the last item in the batch */
   endIndex: number;
+  /** Uniform size (height) for items in this range */
   size: number;
 }
 
@@ -44,9 +52,13 @@ export interface SizeRange {
  * Internal list item representation
  */
 export interface ListItem<D = unknown> {
+  /** Zero-based position of the item in the list */
   index: number;
+  /** Pixel offset from the top of the list */
   offset: number;
+  /** Measured height of the item in pixels */
   size: number;
+  /** Associated data item */
   data?: D;
 }
 
@@ -175,10 +187,13 @@ export interface VirtualListProps<D = unknown, C = unknown> {
   atTopThreshold?: number;
 
   // --- Styling ---
+  /** CSS class applied to the scroller element */
   class?: string;
+  /** Inline styles applied to the scroller element */
   style?: JSX.CSSProperties;
 
   // --- Ref ---
+  /** Callback ref to access the imperative VirtualHandle */
   ref?: (handle: VirtualHandle) => void;
 }
 
@@ -359,9 +374,12 @@ export interface VirtualTableProps<D = unknown, C = unknown> {
   atTopThreshold?: number;
 
   // --- Styling ---
+  /** CSS class applied to the scroller element */
   class?: string;
+  /** Inline styles applied to the scroller element */
   style?: JSX.CSSProperties;
 
   // --- Ref ---
+  /** Callback ref to access the imperative VirtualHandle */
   ref?: (handle: VirtualHandle) => void;
 }

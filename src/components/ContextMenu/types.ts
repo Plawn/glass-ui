@@ -31,6 +31,7 @@ export interface CreateContextMenuReturn<T> {
  */
 export interface ContextMenuProps<T = unknown>
   extends JSX.HTMLAttributes<HTMLDivElement> {
+  /** Content that provides the trigger and menu content via sub-components */
   children: JSX.Element;
   /** Callback when menu opens/closes */
   onOpenChange?: (open: boolean, data: T | null) => void;
@@ -43,6 +44,7 @@ export interface ContextMenuProps<T = unknown>
  */
 export interface ContextMenuTriggerProps<T = unknown>
   extends BaseComponentProps {
+  /** Element that listens for the right-click / contextmenu event */
   children: JSX.Element;
   /** Data associated with this trigger (passed to menu) */
   data?: T;
@@ -54,6 +56,7 @@ export interface ContextMenuTriggerProps<T = unknown>
  * Props for ContextMenuContent component
  */
 export interface ContextMenuContentProps extends BaseComponentProps {
+  /** Menu items and other content rendered inside the floating panel */
   children: JSX.Element;
   /**
    * How to handle scroll when context menu is open
@@ -68,6 +71,7 @@ export interface ContextMenuContentProps extends BaseComponentProps {
  * Props for ContextMenuItem component
  */
 export interface ContextMenuItemProps extends BaseComponentProps {
+  /** Label content for the menu item */
   children: JSX.Element;
   /** Callback when item is selected */
   onSelect?: () => void;

@@ -52,6 +52,8 @@ export interface DatePickerProps
   required?: boolean;
   /** Whether the field is disabled */
   disabled?: boolean;
+  /** Whether the field is in a loading state. Shows a spinner in place of the calendar icon; the field stays usable. */
+  loading?: boolean;
 }
 
 /**

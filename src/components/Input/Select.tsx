@@ -1,5 +1,6 @@
 import { For, Show, splitProps } from 'solid-js';
 import { useControlled } from '../../hooks';
+import { Spinner } from '../Spinner';
 import { ChevronDownIcon } from '../shared/icons';
 import type { SelectProps, SelectPropsWithOptions } from './types';
 
@@ -45,6 +46,7 @@ export function Select<T = string>(props: SelectProps<T>) {
     'class',
     'disabled',
     'required',
+    'loading',
   ]);
 
   const [value, setValue] = useControlled<T | string | null>({
@@ -102,6 +104,7 @@ export function Select<T = string>(props: SelectProps<T>) {
           disabled={local.disabled}
           required={local.required}
           aria-invalid={!!local.error}
+          aria-busy={local.loading || undefined}
           aria-describedby={
             local.error && local.id ? `${local.id}-error` : undefined
           }
@@ -128,10 +131,17 @@ export function Select<T = string>(props: SelectProps<T>) {
           </Show>
         </select>
         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-          <ChevronDownIcon
-            class="w-4 h-4 text-surface-400 dark:text-surface-500"
-            aria-hidden="true"
-          />
+          <Show
+            when={local.loading}
+            fallback={
+              <ChevronDownIcon
+                class="w-4 h-4 text-surface-400 dark:text-surface-500"
+                aria-hidden="true"
+              />
+            }
+          >
+            <Spinner size="sm" />
+          </Show>
         </div>
       </div>
       <Show when={local.error}>

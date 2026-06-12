@@ -305,6 +305,12 @@ export default function InputPage() {
         </form>
       </DemoSection>
 
+      <DemoSection title="Loading">
+        <div class="max-w-sm">
+          <Input label="Loading" loading placeholder="Fetching..." />
+        </div>
+      </DemoSection>
+
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
@@ -350,6 +356,13 @@ export default function InputPage() {
               type: 'boolean',
               default: 'false',
               description: 'Make input read-only',
+            },
+            {
+              name: 'loading',
+              type: 'boolean',
+              default: 'false',
+              description:
+                'Show a spinner in the trailing icon area; field stays editable',
             },
             {
               name: 'required',
