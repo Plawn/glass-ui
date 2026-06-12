@@ -13,8 +13,13 @@ export interface DrawerProps
     OverlayBehaviorProps {
   /** Whether the overlay is open */
   open: boolean;
-  /** Callback when the overlay should close */
-  onClose: () => void;
+  /**
+   * Called when the overlay requests to close.
+   * @deprecated Use `onOpenChange` instead. Kept for backwards compatibility.
+   */
+  onClose?: () => void;
+  /** Called when the open state should change (receives the new open state). */
+  onOpenChange?: (open: boolean) => void;
   /** Title displayed in the header */
   title?: string;
   /** Drawer content */

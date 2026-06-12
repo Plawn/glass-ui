@@ -25,6 +25,7 @@ export const Drawer: Component<DrawerProps> = (props) => {
   const [local, rest] = splitProps(props, [
     'open',
     'onClose',
+    'onOpenChange',
     'title',
     'children',
     'position',
@@ -41,6 +42,11 @@ export const Drawer: Component<DrawerProps> = (props) => {
   const size = () => local.size ?? 'md';
   const showClose = () => local.showClose ?? true;
 
+  const requestClose = () => {
+    local.onClose?.();
+    local.onOpenChange?.(false);
+  };
+
   // Use animation state hook for enter/exit animations
   const { visible, isClosing } = useAnimationState({
     open: () => local.open,
@@ -50,7 +56,7 @@ export const Drawer: Component<DrawerProps> = (props) => {
   // Use shared dialog state hook for escape, scroll lock, and backdrop
   const { handleBackdropClick } = useDialogState({
     open: visible,
-    onClose: local.onClose,
+    onClose: requestClose,
     closeOnEscape: () => local.closeOnEscape ?? true,
     closeOnBackdrop: () => local.closeOnBackdrop ?? true,
   });
@@ -98,7 +104,7 @@ export const Drawer: Component<DrawerProps> = (props) => {
                 title={local.title}
                 titleId="drawer-title"
                 showClose={showClose()}
-                onClose={local.onClose}
+                onClose={requestClose}
                 footer={local.footer}
                 noPadding={local.noPadding}
                 flexContent

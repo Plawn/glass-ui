@@ -61,6 +61,7 @@ export const Window: Component<WindowProps> = (props) => {
   const [, rest] = splitProps(props, [
     'open',
     'onClose',
+    'onOpenChange',
     'title',
     'children',
     'footer',
@@ -141,11 +142,16 @@ export const Window: Component<WindowProps> = (props) => {
     duration: () => ANIMATION_DURATION,
   });
 
+  const requestClose = () => {
+    props.onClose?.();
+    props.onOpenChange?.(false);
+  };
+
   // Escape key handling
   useEscapeKey({
     onEscape: () => {
       if (closeOnEscape()) {
-        props.onClose();
+        requestClose();
       }
     },
     enabled: visible,
@@ -196,7 +202,7 @@ export const Window: Component<WindowProps> = (props) => {
   // Handle backdrop click
   const handleBackdropClick = (e: MouseEvent) => {
     if (closeOnBackdrop() && e.target === e.currentTarget) {
-      props.onClose();
+      requestClose();
     }
   };
 
@@ -281,7 +287,7 @@ export const Window: Component<WindowProps> = (props) => {
               <div />
             </Show>
             <Show when={showClose()}>
-              <CloseButton onClick={props.onClose} size="sm" />
+              <CloseButton onClick={requestClose} size="sm" />
             </Show>
           </div>
 

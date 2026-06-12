@@ -21,8 +21,13 @@ export interface WindowProps
   > {
   /** Whether the window is open */
   open: boolean;
-  /** Callback when window should close */
-  onClose: () => void;
+  /**
+   * Called when the window requests to close.
+   * @deprecated Use `onOpenChange` instead. Kept for backwards compatibility.
+   */
+  onClose?: () => void;
+  /** Called when the open state should change (receives the new open state). */
+  onOpenChange?: (open: boolean) => void;
   /** Window title displayed in the header */
   title?: string;
   /** Window content */

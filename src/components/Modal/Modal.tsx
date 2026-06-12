@@ -7,6 +7,7 @@ export const Modal: Component<ModalProps> = (props) => {
   const [local, rest] = splitProps(props, [
     'open',
     'onClose',
+    'onOpenChange',
     'title',
     'children',
     'size',
@@ -20,10 +21,15 @@ export const Modal: Component<ModalProps> = (props) => {
   const size = () => local.size ?? 'md';
   const showClose = () => local.showClose ?? true;
 
+  const requestClose = () => {
+    local.onClose?.();
+    local.onOpenChange?.(false);
+  };
+
   return (
     <PortalOverlay
       open={local.open}
-      onClose={local.onClose}
+      onClose={requestClose}
       closeOnEscape={local.closeOnEscape ?? true}
       closeOnBackdrop={local.closeOnBackdrop ?? true}
       backdropClass="flex items-center justify-center p-2 sm:p-4"
@@ -38,7 +44,7 @@ export const Modal: Component<ModalProps> = (props) => {
           title={local.title}
           titleId="modal-title"
           showClose={showClose()}
-          onClose={local.onClose}
+          onClose={requestClose}
           footer={local.footer}
           contentClass="max-h-[80vh] sm:max-h-[70vh]"
         >
