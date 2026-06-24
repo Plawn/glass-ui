@@ -1,3 +1,4 @@
+import { A } from '@solidjs/router';
 import { Breadcrumb } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 import {
@@ -63,22 +64,45 @@ export default function BreadcrumbPage() {
       />
 
       <DemoSection
-        title="Basic Usage"
+        title="Basic Usage (links)"
+        description="Set `as: 'a'` (or a router link) to render a real anchor with href."
         code={`<Breadcrumb
   items={[
-    { label: 'Home', href: '/' },
-    { label: 'Products', href: '/products' },
-    { label: 'Electronics', href: '/products/electronics' },
+    { label: 'Home', as: 'a', href: '/' },
+    { label: 'Products', as: 'a', href: '/products' },
+    { label: 'Electronics', as: 'a', href: '/products/electronics' },
     { label: 'Laptops' },
   ]}
 />`}
       >
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Products', href: '/products' },
-            { label: 'Electronics', href: '/products/electronics' },
+            { label: 'Home', as: 'a', href: '/' },
+            { label: 'Products', as: 'a', href: '/products' },
+            { label: 'Electronics', as: 'a', href: '/products/electronics' },
             { label: 'Laptops' },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection
+        title="Router Links (as={A})"
+        description="Pass a router component via `as` for client-side navigation while keeping ⌘/middle-click affordances."
+        code={`import { A } from '@solidjs/router';
+
+<Breadcrumb
+  items={[
+    { label: 'Components', as: A, href: '/components' },
+    { label: 'Navigation', as: A, href: '/components/navigation' },
+    { label: 'Breadcrumb' },
+  ]}
+/>`}
+      >
+        <Breadcrumb
+          items={[
+            { label: 'Components', as: A, href: '/components' },
+            { label: 'Navigation', as: A, href: '/components/navigation' },
+            { label: 'Breadcrumb' },
           ]}
         />
       </DemoSection>
@@ -107,16 +131,21 @@ export default function BreadcrumbPage() {
         title="With Icons"
         code={`<Breadcrumb
   items={[
-    { label: 'Home', href: '/', icon: <HomeIcon class="w-4 h-4" /> },
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Analytics' },
+    { label: 'Home', as: 'a', href: '/', icon: <HomeIcon class="w-4 h-4" /> },
+    { label: 'Documents', as: 'a', href: '/documents', icon: <FolderIcon /> },
+    { label: 'Project Files' },
   ]}
 />`}
       >
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/', icon: <HomeIcon /> },
-            { label: 'Documents', href: '/documents', icon: <FolderIcon /> },
+            { label: 'Home', as: 'a', href: '/', icon: <HomeIcon /> },
+            {
+              label: 'Documents',
+              as: 'a',
+              href: '/documents',
+              icon: <FolderIcon />,
+            },
             { label: 'Project Files' },
           ]}
         />
@@ -136,8 +165,8 @@ export default function BreadcrumbPage() {
             </p>
             <Breadcrumb
               items={[
-                { label: 'Home', href: '/' },
-                { label: 'Products', href: '/products' },
+                { label: 'Home', as: 'a', href: '/' },
+                { label: 'Products', as: 'a', href: '/products' },
                 { label: 'Details' },
               ]}
               separator={<ChevronRightIcon />}
@@ -149,8 +178,8 @@ export default function BreadcrumbPage() {
             </p>
             <Breadcrumb
               items={[
-                { label: 'Home', href: '/' },
-                { label: 'Products', href: '/products' },
+                { label: 'Home', as: 'a', href: '/' },
+                { label: 'Products', as: 'a', href: '/products' },
                 { label: 'Details' },
               ]}
               separator={
@@ -168,8 +197,8 @@ export default function BreadcrumbPage() {
         code={`<div class="space-y-2">
   <Breadcrumb
     items={[
-      { label: 'Dashboard', href: '/dashboard' },
-      { label: 'Users', href: '/dashboard/users' },
+      { label: 'Dashboard', as: 'a', href: '/dashboard' },
+      { label: 'Users', as: 'a', href: '/dashboard/users' },
       { label: 'Edit User' },
     ]}
   />
@@ -179,8 +208,8 @@ export default function BreadcrumbPage() {
         <div class="space-y-2">
           <Breadcrumb
             items={[
-              { label: 'Dashboard', href: '/dashboard' },
-              { label: 'Users', href: '/dashboard/users' },
+              { label: 'Dashboard', as: 'a', href: '/dashboard' },
+              { label: 'Users', as: 'a', href: '/dashboard/users' },
               { label: 'Edit User' },
             ]}
           />
@@ -196,11 +225,11 @@ export default function BreadcrumbPage() {
       <DemoSection title="Long Path">
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Documents', href: '/documents' },
-            { label: 'Work', href: '/documents/work' },
-            { label: 'Projects', href: '/documents/work/projects' },
-            { label: '2024', href: '/documents/work/projects/2024' },
+            { label: 'Home', as: 'a', href: '/' },
+            { label: 'Documents', as: 'a', href: '/documents' },
+            { label: 'Work', as: 'a', href: '/documents/work' },
+            { label: 'Projects', as: 'a', href: '/documents/work/projects' },
+            { label: '2024', as: 'a', href: '/documents/work/projects/2024' },
             { label: 'Q4 Report' },
           ]}
         />
@@ -239,10 +268,20 @@ export default function BreadcrumbPage() {
               type: 'string',
               description: 'Display label (required)',
             },
-            { name: 'href', type: 'string', description: 'Link URL' },
+            {
+              name: 'as',
+              type: 'ValidComponent',
+              description:
+                "Element/component to render as (e.g. 'a' or a router A). Default: button when onClick is set, else span",
+            },
+            {
+              name: 'href',
+              type: 'string',
+              description: 'Link URL (forwarded; set `as` to render a link)',
+            },
             {
               name: 'onClick',
-              type: '() => void',
+              type: '(e: MouseEvent) => void',
               description: 'Click handler for programmatic navigation',
             },
             {
@@ -258,19 +297,24 @@ export default function BreadcrumbPage() {
         <ul class="list-disc list-inside text-surface-600 dark:text-surface-400 space-y-2">
           <li>
             The last item is automatically displayed as the current page
-            (non-clickable)
+            (non-clickable <CodePill>&lt;span&gt;</CodePill>)
           </li>
           <li>
-            Previous items are rendered as links (if <CodePill>href</CodePill>{' '}
-            is provided) or buttons (if <CodePill>onClick</CodePill> is
-            provided)
+            The rendered element is chosen explicitly via{' '}
+            <CodePill>as</CodePill> — set <CodePill>as: 'a'</CodePill> (or a
+            router link) for real anchors.{' '}
+            <strong>href is no longer inferred</strong>
           </li>
           <li>
-            Items with both <CodePill>href</CodePill> and{' '}
-            <CodePill>onClick</CodePill> will prevent default link behavior and
-            call the handler
+            Without <CodePill>as</CodePill>, an item renders a{' '}
+            <CodePill>button</CodePill> when <CodePill>onClick</CodePill> is
+            set, otherwise a plain <CodePill>span</CodePill>
           </li>
-          <li>Icons appear before the label with proper spacing</li>
+          <li>
+            Extra props (<CodePill>target</CodePill>, <CodePill>rel</CodePill>,
+            router <CodePill>activeClass</CodePill>…) are forwarded to the
+            rendered element
+          </li>
         </ul>
       </DemoSection>
 

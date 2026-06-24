@@ -143,6 +143,36 @@ export default function MenuPage() {
       </DemoSection>
 
       <DemoSection
+        title="Link Items (as)"
+        description="Set `as: 'a'` (or a router link) on an item to render a real anchor — middle-click/⌘-click opens in a new tab."
+        code={`<Menu
+  trigger={<Button>Resources</Button>}
+  items={[
+    { label: 'Docs', as: 'a', href: 'https://solidjs.com', target: '_blank' },
+    { label: 'GitHub', as: 'a', href: 'https://github.com' },
+    { divider: true },
+    { label: 'Settings', onClick: handleSettings },
+  ]}
+/>`}
+      >
+        <Menu
+          trigger={<Button>Resources</Button>}
+          items={[
+            {
+              label: 'Docs',
+              as: 'a',
+              href: 'https://www.solidjs.com',
+              target: '_blank',
+              rel: 'noopener',
+            },
+            { label: 'GitHub', as: 'a', href: 'https://github.com' },
+            { divider: true },
+            { label: 'Settings', onClick: () => handleAction('Settings') },
+          ]}
+        />
+      </DemoSection>
+
+      <DemoSection
         title="Placement"
         code={`<Menu
   trigger={<Button>Bottom Start</Button>}
@@ -244,6 +274,18 @@ export default function MenuPage() {
               name: 'onClick',
               type: '() => void',
               description: 'Click handler',
+            },
+            {
+              name: 'as',
+              type: 'ValidComponent',
+              default: "'button'",
+              description:
+                "Render the item as another element/component (e.g. 'a' or a router A)",
+            },
+            {
+              name: 'href',
+              type: 'string',
+              description: 'Link URL (forwarded; set `as` to render a link)',
             },
             {
               name: 'icon',

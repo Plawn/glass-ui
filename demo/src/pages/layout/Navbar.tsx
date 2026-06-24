@@ -17,10 +17,21 @@ const basicCode = `<Navbar
     </div>
   }
   items={[
-    { label: 'Home', href: '/', active: true },
-    { label: 'Features', href: '/features' },
-    { label: 'Pricing', href: '/pricing' },
-    { label: 'About', href: '/about' },
+    { label: 'Home', as: 'a', href: '/', active: true },
+    { label: 'Features', as: 'a', href: '/features' },
+    { label: 'Pricing', as: 'a', href: '/pricing' },
+    { label: 'About', as: 'a', href: '/about' },
+  ]}
+/>`;
+
+// Pass a router component via `as` for client-side navigation:
+const routerNavCode = `import { A } from '@solidjs/router';
+
+<Navbar
+  brand={<Logo />}
+  items={[
+    { label: 'Home', as: A, href: '/', active: true },
+    { label: 'Docs', as: A, href: '/docs' },
   ]}
 />`;
 
@@ -61,28 +72,25 @@ const brandOnlyCode = `<Navbar
 export default function NavbarPage() {
   const [activeNav, setActiveNav] = createSignal('home');
 
+  // Button-style items (onClick toggles active state, no navigation).
   const items: NavbarItem[] = [
     {
       label: 'Home',
-      href: '#',
       active: activeNav() === 'home',
       onClick: () => setActiveNav('home'),
     },
     {
       label: 'Features',
-      href: '#',
       active: activeNav() === 'features',
       onClick: () => setActiveNav('features'),
     },
     {
       label: 'Pricing',
-      href: '#',
       active: activeNav() === 'pricing',
       onClick: () => setActiveNav('pricing'),
     },
     {
       label: 'About',
-      href: '#',
       active: activeNav() === 'about',
       onClick: () => setActiveNav('about'),
     },
@@ -170,8 +178,8 @@ export default function NavbarPage() {
                   </span>
                 }
                 items={[
-                  { label: 'Home', href: '#' },
-                  { label: 'About', href: '#' },
+                  { label: 'Home', as: 'a', href: '#' },
+                  { label: 'About', as: 'a', href: '#' },
                 ]}
               />
               <div class="p-6 space-y-4">
@@ -212,8 +220,8 @@ export default function NavbarPage() {
                   <span class="font-semibold text-white">Transparent</span>
                 }
                 items={[
-                  { label: 'Home', href: '#' },
-                  { label: 'About', href: '#' },
+                  { label: 'Home', as: 'a', href: '#' },
+                  { label: 'About', as: 'a', href: '#' },
                 ]}
               />
               <div class="p-6 pt-20">
@@ -259,6 +267,21 @@ export default function NavbarPage() {
             />
           </DemoSection>
 
+          {/* Router Links */}
+          <DemoSection
+            title="Router Links (as={A})"
+            subsection
+            code={routerNavCode}
+            cardClass="p-6"
+          >
+            <p class="text-sm text-surface-600 dark:text-surface-400">
+              Set <CodePill>as: A</CodePill> (or <CodePill>as: 'a'</CodePill>)
+              on an item to render a real anchor — enabling ⌘/middle-click to
+              open in a new tab and client-side routing. Without{' '}
+              <CodePill>as</CodePill>, items render as buttons.
+            </p>
+          </DemoSection>
+
           {/* Brand Only */}
           <DemoSection
             title="Brand Only"
@@ -293,9 +316,15 @@ export default function NavbarPage() {
               description: 'Display label for the navigation item',
             },
             {
+              name: 'as',
+              type: 'ValidComponent',
+              description:
+                "Element/component to render as (e.g. 'a' or a router A). Default: 'button'",
+            },
+            {
               name: 'href',
               type: 'string',
-              description: 'Optional href for link-based navigation',
+              description: 'Link URL (forwarded; set `as` to render a link)',
             },
             {
               name: 'onClick',

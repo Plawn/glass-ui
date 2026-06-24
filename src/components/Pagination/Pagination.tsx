@@ -1,4 +1,5 @@
 import { type Component, For, Show, createMemo, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { ChevronLeftIcon, ChevronRightIcon } from '../shared/icons';
 import type { PaginationProps } from './types';
 
@@ -11,8 +12,13 @@ export const Pagination: Component<PaginationProps> = (props) => {
     'onChange',
     'onPageSizeChange',
     'showPageSize',
+    'as',
+    'getPageProps',
     'class',
   ]);
+
+  const pageTag = () => local.as ?? 'button';
+  const isPageButton = () => pageTag() === 'button';
 
   const defaultPageSizeOptions = [10, 20, 50, 100];
   const pageSizeOptions = () => local.pageSizeOptions ?? defaultPageSizeOptions;
@@ -152,8 +158,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
                 </span>
               }
             >
-              <button
-                type="button"
+              <Dynamic
+                component={pageTag()}
+                {...(local.getPageProps?.(page as number) ?? {})}
+                type={isPageButton() ? 'button' : undefined}
                 onClick={() => handlePageClick(page as number)}
                 class={`${buttonBaseClass} ${
                   local.page === page ? buttonActiveClass : buttonInactiveClass
@@ -162,7 +170,7 @@ export const Pagination: Component<PaginationProps> = (props) => {
                 aria-current={local.page === page ? 'page' : undefined}
               >
                 {page}
-              </button>
+              </Dynamic>
             </Show>
           )}
         </For>

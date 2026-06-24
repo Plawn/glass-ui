@@ -346,9 +346,15 @@ export default function SidebarPage() {
               description: 'Optional icon element',
             },
             {
+              name: 'as',
+              type: 'ValidComponent',
+              description:
+                "Render a leaf item as another element/component (e.g. 'a' or a router A). Default: 'button'",
+            },
+            {
               name: 'href',
               type: 'string',
-              description: 'Optional href for navigation links',
+              description: 'Link URL (forwarded; set `as` to render a link)',
             },
             {
               name: 'onClick',

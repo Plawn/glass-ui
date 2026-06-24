@@ -1,4 +1,5 @@
 import { type Component, For, Show, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import type { BreadcrumbItem, BreadcrumbProps } from './types';
 
 const DefaultSeparator: Component = () => (
@@ -7,13 +8,16 @@ const DefaultSeparator: Component = () => (
   </span>
 );
 
+const interactiveClass =
+  'flex items-center text-sm text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors';
+const staticClass =
+  'flex items-center text-sm text-surface-500 dark:text-surface-400';
+
 export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
   const [local, rest] = splitProps(props, ['items', 'separator', 'class']);
   const isLast = (index: number) => index === local.items.length - 1;
 
   const renderItem = (item: BreadcrumbItem, index: number) => {
-    const isCurrentPage = isLast(index);
-
     const content = (
       <>
         <Show when={item.icon}>
@@ -25,7 +29,7 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
       </>
     );
 
-    if (isCurrentPage) {
+    if (isLast(index)) {
       // Current page (last item) - not clickable
       return (
         <span
@@ -37,40 +41,20 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
       );
     }
 
-    if (item.href) {
-      return (
-        <a
-          href={item.href}
-          class="flex items-center text-sm text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
-          onClick={(e) => {
-            if (item.onClick) {
-              e.preventDefault();
-              item.onClick();
-            }
-          }}
-        >
-          {content}
-        </a>
-      );
-    }
+    // Polymorphic, explicit element selection (no href inference).
+    const tag = item.as ?? (item.onClick ? 'button' : 'span');
+    const interactive = Boolean(item.as || item.onClick);
+    const [, forwarded] = splitProps(item, ['label', 'icon', 'as']);
 
-    if (item.onClick) {
-      return (
-        <button
-          type="button"
-          onClick={item.onClick}
-          class="flex items-center text-sm text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
-        >
-          {content}
-        </button>
-      );
-    }
-
-    // Non-clickable item
     return (
-      <span class="flex items-center text-sm text-surface-500 dark:text-surface-400">
+      <Dynamic
+        component={tag}
+        {...forwarded}
+        type={tag === 'button' ? 'button' : undefined}
+        class={interactive ? interactiveClass : staticClass}
+      >
         {content}
-      </span>
+      </Dynamic>
     );
   };
 

@@ -7,6 +7,7 @@ import {
   onMount,
   splitProps,
 } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { TRANSITION_ALL, TRANSITION_TRANSFORM } from '../../constants';
 import { useDisclosure } from '../../hooks';
 import type { NavbarItem, NavbarProps } from './types';
@@ -50,33 +51,30 @@ const NavItem: Component<{ item: NavbarItem }> = (props) => {
   const baseClasses =
     'glass-nav-item focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500';
 
+  const tag = () => props.item.as ?? 'button';
+  const isButton = () => tag() === 'button';
+  const [, forwarded] = splitProps(props.item, [
+    'label',
+    'as',
+    'onClick',
+    'active',
+  ]);
+
   const handleClick = () => {
-    if (props.item.onClick) {
-      props.item.onClick();
-    }
+    props.item.onClick?.();
   };
 
   return (
-    <Show
-      when={props.item.href}
-      fallback={
-        <button
-          type="button"
-          onClick={handleClick}
-          class={`${baseClasses} ${props.item.active ? 'active' : ''}`}
-        >
-          {props.item.label}
-        </button>
-      }
+    <Dynamic
+      component={tag()}
+      {...forwarded}
+      type={isButton() ? 'button' : undefined}
+      onClick={handleClick}
+      aria-current={props.item.active ? 'page' : undefined}
+      class={`${baseClasses} ${props.item.active ? 'active' : ''}`}
     >
-      <a
-        href={props.item.href}
-        onClick={props.item.onClick}
-        class={`${baseClasses} ${props.item.active ? 'active' : ''}`}
-      >
-        {props.item.label}
-      </a>
-    </Show>
+      {props.item.label}
+    </Dynamic>
   );
 };
 
@@ -92,34 +90,31 @@ const MobileNavItem: Component<{ item: NavbarItem; onClose: () => void }> = (
   const inactiveClasses =
     'text-surface-700 dark:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5';
 
+  const tag = () => props.item.as ?? 'button';
+  const isButton = () => tag() === 'button';
+  const [, forwarded] = splitProps(props.item, [
+    'label',
+    'as',
+    'onClick',
+    'active',
+  ]);
+
   const handleClick = () => {
-    if (props.item.onClick) {
-      props.item.onClick();
-    }
+    props.item.onClick?.();
     props.onClose();
   };
 
   return (
-    <Show
-      when={props.item.href}
-      fallback={
-        <button
-          type="button"
-          onClick={handleClick}
-          class={`${baseClasses} ${props.item.active ? activeClasses : inactiveClasses}`}
-        >
-          {props.item.label}
-        </button>
-      }
+    <Dynamic
+      component={tag()}
+      {...forwarded}
+      type={isButton() ? 'button' : undefined}
+      onClick={handleClick}
+      aria-current={props.item.active ? 'page' : undefined}
+      class={`${baseClasses} ${props.item.active ? activeClasses : inactiveClasses}`}
     >
-      <a
-        href={props.item.href}
-        onClick={handleClick}
-        class={`${baseClasses} ${props.item.active ? activeClasses : inactiveClasses}`}
-      >
-        {props.item.label}
-      </a>
-    </Show>
+      {props.item.label}
+    </Dynamic>
   );
 };
 

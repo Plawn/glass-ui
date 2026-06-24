@@ -7,8 +7,11 @@ import {
   on,
   splitProps,
 } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { Popover } from '../Popover';
 import type { MenuItem, MenuProps } from './types';
+
+type MenuActionItem = Extract<MenuItem, { divider?: false }>;
 
 export const Menu: Component<MenuProps> = (props) => {
   const [local, rest] = splitProps(props, [
@@ -176,39 +179,57 @@ export const Menu: Component<MenuProps> = (props) => {
         onKeyDown={handleMenuKeyDown}
       >
         <For each={local.items}>
-          {(item, index) => (
-            <Show
-              when={!item.divider}
-              fallback={
-                <hr class="my-1.5 border-t border-surface-200 dark:border-white/10" />
-              }
-            >
-              <button
-                type="button"
-                class={`w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-left transition-colors
+          {(item, index) => {
+            const menuItem = item as MenuActionItem;
+            const tag = () => menuItem.as ?? 'button';
+            const isItemButton = () => tag() === 'button';
+            const [, forwarded] = splitProps(menuItem, [
+              'label',
+              'onClick',
+              'divider',
+              'icon',
+              'disabled',
+              'as',
+            ]);
+            return (
+              <Show
+                when={!item.divider}
+                fallback={
+                  <hr class="my-1.5 border-t border-surface-200 dark:border-white/10" />
+                }
+              >
+                <Dynamic
+                  component={tag()}
+                  {...forwarded}
+                  type={isItemButton() ? 'button' : undefined}
+                  class={`w-full flex items-center gap-2.5 px-3.5 py-2 text-sm text-left transition-colors
                   ${
-                    item.disabled
-                      ? 'text-surface-400 dark:text-surface-600 cursor-not-allowed'
+                    menuItem.disabled
+                      ? 'text-surface-400 dark:text-surface-600 cursor-not-allowed pointer-events-none'
                       : 'text-surface-700 dark:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5'
                   }
                   ${getActualIndex(focusedIndex()) === index() ? 'bg-black/5 dark:bg-white/5' : ''}`}
-                onClick={() => handleItemClick(item)}
-                disabled={item.disabled}
-                role="menuitem"
-                tabIndex={-1}
-              >
-                <Show when={item.icon}>
-                  <span
-                    class="w-4 h-4 flex items-center justify-center opacity-70"
-                    aria-hidden="true"
-                  >
-                    {item.icon}
-                  </span>
-                </Show>
-                <span>{item.label}</span>
-              </button>
-            </Show>
-          )}
+                  onClick={() => handleItemClick(item)}
+                  disabled={isItemButton() ? menuItem.disabled : undefined}
+                  aria-disabled={
+                    !isItemButton() && menuItem.disabled ? 'true' : undefined
+                  }
+                  role="menuitem"
+                  tabIndex={-1}
+                >
+                  <Show when={menuItem.icon}>
+                    <span
+                      class="w-4 h-4 flex items-center justify-center opacity-70"
+                      aria-hidden="true"
+                    >
+                      {menuItem.icon}
+                    </span>
+                  </Show>
+                  <span>{menuItem.label}</span>
+                </Dynamic>
+              </Show>
+            );
+          }}
         </For>
       </div>
     </Popover>

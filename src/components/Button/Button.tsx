@@ -1,7 +1,12 @@
-import type { Component } from 'solid-js';
-import { Show, splitProps } from 'solid-js';
+import { type JSX, Show, type ValidComponent, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import { Spinner } from './Spinner';
-import type { ButtonProps, ButtonSize, ButtonVariant } from './types';
+import type {
+  ButtonOwnProps,
+  ButtonProps,
+  ButtonSize,
+  ButtonVariant,
+} from './types';
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: 'btn-primary',
@@ -18,11 +23,24 @@ const sizeClasses: Record<ButtonSize, string> = {
   lg: '!px-6 !py-3 !text-base gap-2.5',
 };
 
-export const Button: Component<ButtonProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+/**
+ * A glassmorphism button. Renders a native `<button>` by default; pass `as` to
+ * render any other element or component while keeping the button styling.
+ *
+ * @example
+ * ```tsx
+ * <Button variant="primary">Save</Button>
+ * <Button as="a" href="/list">Back to list</Button>
+ * <Button as={A} href="/users">Users</Button> // @solidjs/router link
+ * ```
+ */
+export function Button<T extends ValidComponent = 'button'>(
+  props: ButtonProps<T>,
+): JSX.Element {
+  const [local, rest] = splitProps(props as ButtonProps & ButtonOwnProps, [
+    'as',
     'variant',
     'size',
-    'type',
     'fullWidth',
     'loading',
     'leftIcon',
@@ -30,18 +48,23 @@ export const Button: Component<ButtonProps> = (props) => {
     'class',
     'children',
     'disabled',
-    'onClick',
+    'type',
   ]);
+
+  const tag = () => local.as ?? 'button';
+  const isButton = () => tag() === 'button';
   const variant = () => local.variant ?? 'primary';
   const size = () => local.size ?? 'md';
+  const isDisabled = () => local.disabled || local.loading;
 
   return (
-    <button
+    <Dynamic
+      component={tag()}
       {...rest}
-      type={local.type ?? 'button'}
-      class={`${variantClasses[variant()]} ${sizeClasses[size()]} inline-flex items-center justify-center focus:outline-none focus-ring ${local.fullWidth ? 'w-full' : ''} ${local.class ?? ''}`}
-      onClick={local.onClick}
-      disabled={local.disabled || local.loading}
+      type={isButton() ? (local.type ?? 'button') : undefined}
+      class={`${variantClasses[variant()]} ${sizeClasses[size()]} inline-flex items-center justify-center focus:outline-none focus-ring ${local.fullWidth ? 'w-full' : ''} ${!isButton() && isDisabled() ? 'pointer-events-none' : ''} ${local.class ?? ''}`}
+      disabled={isButton() ? isDisabled() : undefined}
+      aria-disabled={!isButton() && isDisabled() ? 'true' : undefined}
       aria-busy={local.loading || undefined}
     >
       <Show when={local.loading}>
@@ -50,6 +73,6 @@ export const Button: Component<ButtonProps> = (props) => {
       <Show when={!local.loading && local.leftIcon}>{local.leftIcon}</Show>
       {local.children}
       <Show when={local.rightIcon}>{local.rightIcon}</Show>
-    </button>
+    </Dynamic>
   );
-};
+}

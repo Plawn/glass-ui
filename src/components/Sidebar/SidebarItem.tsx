@@ -1,4 +1,5 @@
-import { type Component, For, Show, createMemo } from 'solid-js';
+import { type Component, For, Show, createMemo, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import {
   ACCORDION_CONTENT_ENTER,
   TRANSITION_ALL_SLOW,
@@ -60,8 +61,21 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
     }
   };
 
-  // Determine the element type and props
-  const isLink = () => !hasChildren() && props.item.href;
+  // Leaf items render as a polymorphic element (default <button>); items with
+  // children are always a toggle <button>. No href inference — set `item.as`.
+  const leafTag = () => props.item.as ?? 'button';
+  const isLeafButton = () => leafTag() === 'button';
+  // Props forwarded to the rendered leaf element (href, target, rel, router extras…).
+  const [, forwarded] = splitProps(props.item, [
+    'id',
+    'label',
+    'icon',
+    'badge',
+    'children',
+    'disabled',
+    'as',
+    'onClick',
+  ]);
 
   const baseClasses = () => {
     const base = `
@@ -148,37 +162,44 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
   return (
     <div class="w-full">
       <Show
-        when={isLink()}
+        when={hasChildren()}
         fallback={
-          <button
-            type="button"
-            class={baseClasses()}
-            onClick={handleClick}
-            onKeyDown={handleKeyDown}
-            disabled={props.item.disabled}
-            aria-expanded={hasChildren() ? isExpanded() : undefined}
+          <Dynamic
+            component={leafTag()}
+            {...forwarded}
+            type={isLeafButton() ? 'button' : undefined}
+            class={`${baseClasses()} ${!isLeafButton() && props.item.disabled ? 'pointer-events-none' : ''}`}
+            onClick={(e: MouseEvent) => {
+              if (props.item.disabled) {
+                e.preventDefault();
+                return;
+              }
+              handleClick();
+            }}
+            onKeyDown={isLeafButton() ? handleKeyDown : undefined}
+            disabled={isLeafButton() ? props.item.disabled : undefined}
+            aria-disabled={
+              !isLeafButton() && props.item.disabled ? 'true' : undefined
+            }
             aria-current={isActive() ? 'page' : undefined}
             title={collapsed() ? props.item.label : undefined}
           >
             <ItemContent />
-          </button>
+          </Dynamic>
         }
       >
-        <a
-          href={props.item.href}
+        <button
+          type="button"
           class={baseClasses()}
-          onClick={(e) => {
-            if (props.item.disabled) {
-              e.preventDefault();
-              return;
-            }
-            props.onItemClick?.(props.item);
-          }}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          disabled={props.item.disabled}
+          aria-expanded={isExpanded()}
           aria-current={isActive() ? 'page' : undefined}
           title={collapsed() ? props.item.label : undefined}
         >
           <ItemContent />
-        </a>
+        </button>
       </Show>
 
       {/* Nested children */}

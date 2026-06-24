@@ -19,6 +19,9 @@ export type {
 export { OverlayContent } from './OverlayContent';
 export type { OverlayContentProps } from './OverlayContent';
 
+export { Polymorphic } from './Polymorphic';
+export type { PolymorphicProps } from './Polymorphic';
+
 export { PortalWithDarkMode } from './PortalWithDarkMode';
 export type { PortalWithDarkModeProps } from './PortalWithDarkMode';
 

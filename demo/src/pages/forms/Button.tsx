@@ -1,3 +1,4 @@
+import { A } from '@solidjs/router';
 import { Button, Spinner } from 'glass-ui-solid';
 import { For, createSignal } from 'solid-js';
 import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
@@ -124,6 +125,41 @@ export default function ButtonPage() {
       </DemoSection>
 
       <DemoSection
+        title="As a Link (as)"
+        description="Pass `as` to render a different element with button styling — e.g. an anchor or a router link. Anchors keep ⌘/middle-click 'open in new tab'."
+        code={`import { A } from '@solidjs/router';
+
+// Plain anchor
+<Button as="a" href="/list" variant="ghost">Back to list</Button>
+
+// Router link (client-side navigation)
+<Button as={A} href="/users">Users</Button>
+
+// Opens in a new tab
+<Button as="a" href="https://solidjs.com" target="_blank" rel="noopener">
+  Solid docs
+</Button>`}
+      >
+        <div class="flex flex-wrap gap-3">
+          <Button as="a" href="#/components/forms/button" variant="ghost">
+            Back to list
+          </Button>
+          <Button as={A} href="#/components/forms/button">
+            Router link
+          </Button>
+          <Button
+            as="a"
+            href="https://www.solidjs.com"
+            target="_blank"
+            rel="noopener"
+            variant="secondary"
+          >
+            New tab
+          </Button>
+        </div>
+      </DemoSection>
+
+      <DemoSection
         title="Loading State"
         code={`const [loading, setLoading] = createSignal(false);
 
@@ -193,6 +229,13 @@ export default function ButtonPage() {
               type: 'JSX.Element',
               default: 'required',
               description: 'Button content',
+            },
+            {
+              name: 'as',
+              type: 'ValidComponent',
+              default: "'button'",
+              description:
+                "Element/component to render as (e.g. 'a' or a router A). Forwards that element's props (href, target…)",
             },
             {
               name: 'variant',

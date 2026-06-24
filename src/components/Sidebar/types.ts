@@ -1,4 +1,4 @@
-import type { JSX } from 'solid-js';
+import type { JSX, ValidComponent } from 'solid-js';
 import type { BaseComponentProps } from '../../types';
 
 /**
@@ -11,8 +11,17 @@ export interface SidebarItem {
   label: string;
   /** Optional icon element */
   icon?: JSX.Element;
-  /** Optional href for navigation links */
+  /**
+   * Element or component to render a leaf item as (e.g. `'a'`, or `@solidjs/router`'s
+   * `A`). Defaults to `'button'`. Items with `children` are always a toggle `<button>`.
+   */
+  as?: ValidComponent;
+  /** Optional href, forwarded to the rendered element (set `as` to make it a link) */
   href?: string;
+  /** Anchor target, forwarded when rendering a link */
+  target?: string;
+  /** Anchor rel, forwarded when rendering a link */
+  rel?: string;
   /** Click handler */
   onClick?: () => void;
   /** Nested child items for groups */
@@ -21,6 +30,8 @@ export interface SidebarItem {
   badge?: string | number;
   /** Whether the item is disabled */
   disabled?: boolean;
+  /** Any additional props forwarded to the rendered element (e.g. router `activeClass`) */
+  [key: string]: unknown;
 }
 
 /**

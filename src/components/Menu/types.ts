@@ -1,4 +1,4 @@
-import type { JSX } from 'solid-js';
+import type { JSX, ValidComponent } from 'solid-js';
 import type { DisableableProps, IconProps, Placement } from '../../types';
 
 /**
@@ -15,8 +15,17 @@ export type MenuItem =
       label: string;
       /** Click handler */
       onClick?: () => void;
+      /**
+       * Element or component to render the item as (e.g. `'a'`, or `@solidjs/router`'s
+       * `A`). Defaults to `'button'`. Set `as` (with `href`) to render a real link.
+       */
+      as?: ValidComponent;
+      /** Optional href, forwarded to the rendered element (set `as` to make it a link) */
+      href?: string;
       /** Must be false or omitted for regular items */
       divider?: false;
+      /** Any additional props forwarded to the rendered element (e.g. `target`, `rel`) */
+      [key: string]: unknown;
     } & DisableableProps &
       IconProps)
   | {

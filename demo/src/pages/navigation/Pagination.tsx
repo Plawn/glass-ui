@@ -85,6 +85,30 @@ const [pageSize, setPageSize] = createSignal(10);
         />
       </DemoSection>
 
+      <DemoSection
+        title="Page Links (as + getPageProps)"
+        description="Render numbered pages as real anchors for SEO/new-tab support. `getPageProps` builds the per-page href; the row stays controlled via onChange."
+        code={`<Pagination
+  total={100}
+  page={page()}
+  pageSize={10}
+  onChange={setPage}
+  as="a"
+  getPageProps={(p) => ({ href: \`?page=\${p}\` })}
+/>`}
+      >
+        <Pagination
+          total={100}
+          page={page1()}
+          pageSize={10}
+          onChange={setPage1}
+          as="a"
+          getPageProps={(p) => ({
+            href: `#/components/navigation/pagination?page=${p}`,
+          })}
+        />
+      </DemoSection>
+
       <DemoSection title="Props" card={false}>
         <PropsTable
           props={[
@@ -128,6 +152,19 @@ const [pageSize, setPageSize] = createSignal(10);
               name: 'onPageSizeChange',
               type: '(size: number) => void',
               description: 'Page size change callback',
+            },
+            {
+              name: 'as',
+              type: 'ValidComponent',
+              default: "'button'",
+              description:
+                "Element/component for numbered pages (e.g. 'a' or a router A)",
+            },
+            {
+              name: 'getPageProps',
+              type: '(page: number) => object',
+              description:
+                'Per-page props for the numbered element (e.g. href). Use with `as`',
             },
             {
               name: 'class',
