@@ -67,6 +67,17 @@ export const Tabs: Component<TabsProps> = (props) => {
     'contentClass',
   ]);
 
+  // Snapshot `items` so imperative reads never re-evaluate a caller's inline
+  // `items={[...]}` getter. Such an array is dynamic, so Solid recompiles it
+  // into a getter that rebuilds (and re-creates) every tab's content on each
+  // read. The keydown/click handlers below read items synchronously, with no
+  // reactive owner — rebuilding there re-creates stateful content (live
+  // subscriptions reset) and throws if the content uses router primitives
+  // ("<A>/use can only be used inside a Route"). The memo returns a cached
+  // array on plain reads and only recomputes when the caller's reactive deps
+  // (e.g. badges) actually change, under this component's owner.
+  const items = createMemo(() => local.items);
+
   // --- Refs for indicator animation ---
   let containerRef: HTMLDivElement | undefined;
   const buttonRefs: Map<string, HTMLButtonElement> = new Map();
@@ -92,13 +103,13 @@ export const Tabs: Component<TabsProps> = (props) => {
   // --- Controlled/uncontrolled state management ---
   const [activeTab, setActiveTab] = useControlled({
     value: () => local.activeTab,
-    defaultValue: local.defaultTab || local.items[0]?.id,
+    defaultValue: local.defaultTab || items()[0]?.id,
     onChange: local.onTabChange,
   });
 
   // Track which tabs have been visited (for lazy loading with keepMounted)
   const [visitedTabs, setVisitedTabs] = createSignal<Set<string>>(
-    new Set([local.defaultTab || local.items[0]?.id]),
+    new Set([local.defaultTab || items()[0]?.id]),
   );
 
   // --- Indicator animation ---
@@ -133,7 +144,7 @@ export const Tabs: Component<TabsProps> = (props) => {
   );
 
   const handleTabChange = (tabId: string) => {
-    const tab = local.items.find((item) => item.id === tabId);
+    const tab = items().find((item) => item.id === tabId);
     if (tab?.disabled) {
       return;
     }
@@ -149,7 +160,7 @@ export const Tabs: Component<TabsProps> = (props) => {
     const vert = isVertical();
     const nextKeys = vert ? ['ArrowDown'] : ['ArrowRight'];
     const prevKeys = vert ? ['ArrowUp'] : ['ArrowLeft'];
-    const enabledItems = local.items.filter((item) => !item.disabled);
+    const enabledItems = items().filter((item) => !item.disabled);
 
     if (enabledItems.length === 0) {
       return;
@@ -242,7 +253,7 @@ export const Tabs: Component<TabsProps> = (props) => {
           style={indicatorCssStyle()}
         />
 
-        <For each={local.items}>
+        <For each={items()}>
           {(item) => {
             const isActive = () => activeTab() === item.id;
             const isDisabled = () => item.disabled ?? false;
@@ -287,7 +298,7 @@ export const Tabs: Component<TabsProps> = (props) => {
       <div
         class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${local.contentClass ?? ''}`}
       >
-        <For each={local.items}>
+        <For each={items()}>
           {(item) => (
             <Show when={shouldRenderContent(item.id)}>
               <div

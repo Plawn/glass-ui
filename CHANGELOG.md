@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.1
+
+### Fixes
+
+**Tabs**: no longer rebuilds tab content on every tab switch. The keydown/click
+handlers read `items` imperatively (with no reactive owner); when a caller
+passes an inline `items={[...]}` array, Solid compiles it into a getter that
+rebuilds — and re-creates — every tab's content on each read. That reset
+stateful content (e.g. live subscriptions) and threw
+`<A> and 'use' router primitives can be only used inside a Route` when a tab's
+content used router primitives. `items` is now snapshotted via `createMemo`, so
+imperative reads return a cached array and only recompute when the caller's
+reactive deps (e.g. badges) actually change.
+
 ## 0.6.0
 
 ### Breaking changes
