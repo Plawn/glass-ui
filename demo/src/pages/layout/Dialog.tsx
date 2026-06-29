@@ -1,4 +1,4 @@
-import { Button, Card, Dialog, useDisclosure } from 'glass-ui-solid';
+import { Button, Card, Dialog, Input, useDisclosure } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 import {
   CodePill,
@@ -60,11 +60,38 @@ const loadingExample = `const [loading, setLoading] = createSignal(false);
   }}
 />`;
 
+const validatedExample = `const [name, setName] = createSignal('');
+const isValid = () => name().trim().length >= 3;
+
+<Dialog
+  open={dialog.isOpen()}
+  onOpenChange={(open) => !open && dialog.onClose()}
+  title="Add Member"
+  confirmLabel="Add"
+  confirmDisabled={!isValid()}
+  onConfirm={() => {
+    // Return false to veto the auto-close (e.g. failed validation).
+    // Async handlers are awaited, so a rejected API call can keep it open.
+    if (!isValid()) return false;
+    // ...persist the member
+  }}
+>
+  <Input
+    label="Full name"
+    value={name()}
+    onInput={(e) => setName(e.currentTarget.value)}
+    error={name().length > 0 && !isValid() ? 'At least 3 characters' : undefined}
+  />
+</Dialog>`;
+
 export default function DialogPage() {
   const basicDialog = useDisclosure();
   const dangerDialog = useDisclosure();
   const loadingDialog = useDisclosure();
   const [loading, setLoading] = createSignal(false);
+  const validatedDialog = useDisclosure();
+  const [name, setName] = createSignal('');
+  const isValid = () => name().trim().length >= 3;
 
   const handleLoadingConfirm = async () => {
     setLoading(true);
@@ -142,6 +169,48 @@ export default function DialogPage() {
         />
       </DemoSection>
 
+      <DemoSection
+        title="Validated Form"
+        description={
+          <>
+            Host a form inside the dialog. Use{' '}
+            <CodePill>confirmDisabled</CodePill> to grey out the confirm button,
+            and return <CodePill>false</CodePill> from{' '}
+            <CodePill>onConfirm</CodePill> to veto the auto-close when
+            validation fails.
+          </>
+        }
+        code={validatedExample}
+      >
+        <Button onClick={validatedDialog.onOpen}>Add Member</Button>
+        <Dialog
+          open={validatedDialog.isOpen()}
+          onOpenChange={(open) => !open && validatedDialog.onClose()}
+          title="Add Member"
+          description="Enter the new member's name."
+          confirmLabel="Add"
+          confirmDisabled={!isValid()}
+          onConfirm={() => {
+            if (!isValid()) {
+              return false;
+            }
+            setName('');
+          }}
+          onCancel={() => setName('')}
+        >
+          <Input
+            label="Full name"
+            value={name()}
+            onInput={(e) => setName(e.currentTarget.value)}
+            error={
+              name().length > 0 && !isValid()
+                ? 'At least 3 characters'
+                : undefined
+            }
+          />
+        </Dialog>
+      </DemoSection>
+
       <DemoSection title="Props" card={false}>
         <PropsTable
           compact
@@ -195,14 +264,28 @@ export default function DialogPage() {
             },
             {
               name: 'onConfirm',
-              type: '() => void',
+              type: '() => void | boolean | Promise<void | boolean>',
               default: 'required',
-              description: 'Confirm button callback',
+              description:
+                'Confirm callback. Return false (or Promise<false>) to keep the dialog open; awaited when async.',
+            },
+            {
+              name: 'confirmDisabled',
+              type: 'boolean',
+              default: 'false',
+              description:
+                'Disables the confirm button (also auto-disabled while an async onConfirm is pending)',
             },
             {
               name: 'onCancel',
               type: '() => void',
               description: 'Cancel button callback',
+            },
+            {
+              name: 'children',
+              type: 'JSX.Element',
+              description:
+                'Optional body content rendered below the description (e.g. a form)',
             },
           ]}
         />

@@ -1,4 +1,4 @@
-import { type Component, Show, splitProps } from 'solid-js';
+import { type Component, Show, createSignal, splitProps } from 'solid-js';
 import { DIALOG_MAX_WIDTHS, MODAL_PANEL_ENTER } from '../../constants';
 import { PortalOverlay } from '../shared';
 import type { DialogProps, DialogVariant } from './types';
@@ -19,9 +19,11 @@ export const Dialog: Component<DialogProps> = (props) => {
     'cancelLabel',
     'onConfirm',
     'onCancel',
+    'confirmDisabled',
     'variant',
     'size',
     'class',
+    'children',
   ]);
 
   const variant = () => local.variant ?? 'default';
@@ -34,9 +36,22 @@ export const Dialog: Component<DialogProps> = (props) => {
     local.onCancel?.();
   };
 
-  const handleConfirm = () => {
-    local.onConfirm();
-    local.onOpenChange(false);
+  const [pending, setPending] = createSignal(false);
+  const confirmDisabled = () => local.confirmDisabled || pending();
+
+  const handleConfirm = async () => {
+    if (confirmDisabled()) {
+      return;
+    }
+    setPending(true);
+    try {
+      const result = await local.onConfirm();
+      if (result !== false) {
+        local.onOpenChange(false);
+      }
+    } finally {
+      setPending(false);
+    }
   };
 
   return (
@@ -71,6 +86,9 @@ export const Dialog: Component<DialogProps> = (props) => {
               {local.description}
             </p>
           </Show>
+          <Show when={local.children}>
+            <div class="mt-4">{local.children}</div>
+          </Show>
         </div>
 
         {/* Actions */}
@@ -85,7 +103,8 @@ export const Dialog: Component<DialogProps> = (props) => {
           <button
             type="button"
             onClick={handleConfirm}
-            class={`${confirmButtonStyles[variant()]} px-4 py-2 text-sm`}
+            disabled={confirmDisabled()}
+            class={`${confirmButtonStyles[variant()]} px-4 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {confirmLabel()}
           </button>
