@@ -304,6 +304,8 @@ Props:
 - `showClose?: boolean` (default: `true`)
 - `closeOnBackdrop?: boolean` (default: `true`)
 - `closeOnEscape?: boolean` (default: `true`)
+- `role?: 'dialog' | 'alertdialog'` (default: `'dialog'`) — role, `aria-modal` and `aria-label*` go on the panel; `title` names it by default
+- `returnFocusTo?: HTMLElement | (() => HTMLElement | null | undefined)` — focus target on close (default: element focused before opening)
 - `class?: string`
 
 ### Dialog
@@ -332,6 +334,8 @@ Props:
 - `onCancel?: () => void`
 - `variant?: 'default' | 'danger'` (default: `'default'`)
 - `size?: 'sm' | 'md' | 'lg'`
+- `role?: 'alertdialog' | 'dialog'` (default: `'alertdialog'`) — named by `title`, described by `description`
+- `returnFocusTo?: FocusReturnTarget`
 
 ### Drawer
 
@@ -350,6 +354,7 @@ Props:
 - `size?: 'sm' | 'md' | 'lg' | 'xl'` (default: `'md'`)
 - `title?: string`, `footer?: JSX.Element`
 - `noPadding?: boolean`, `showClose?: boolean`, `closeOnBackdrop?: boolean`, `closeOnEscape?: boolean`
+- `role?: string` (default: `'dialog'`, on the panel), `returnFocusTo?: FocusReturnTarget`
 
 ### Sheet
 
@@ -439,6 +444,11 @@ toast.warning('Low disk space');
 toast.info('Update available');
 // Optional duration: toast.success('Saved', 5000);
 ```
+
+Default duration is `TOAST_DEFAULT_DURATION` (4000 ms), or `TOAST_ERROR_DURATION`
+(10000 ms) for errors; `0` keeps the toast until dismissed. The countdown pauses on
+hover and focus (`pauseToast(id)` / `resumeToast(id)`). Announcements go through two
+persistent live regions: polite for success/info/warning, assertive for errors.
 
 ### Snackbar (Global Notification)
 
@@ -641,6 +651,10 @@ Props:
 - `onChange: (value: T) => void` (required)
 - `size?: 'sm' | 'md'`, `orientation?: 'horizontal' | 'vertical'`
 
+Rendered as a `radiogroup` (items are `radio` with `aria-checked`) with roving tabindex;
+arrow keys (wrapping), Home and End move focus and select, skipping disabled options.
+Pass `aria-label` / `aria-labelledby` to name the group.
+
 ---
 
 ### Table
@@ -671,7 +685,9 @@ Props:
 - `data: T[]` (required)
 - `sortable?: boolean`, `sort?: { key: string; direction: 'asc' | 'desc' }`, `onSort?: (sort) => void`
 - `selectable?: boolean | 'single' | 'multiple'`, `selectedKeys?: Set<RowKey>`, `onSelectionChange?: (keys, rows) => void`
-- `onRowClick?: (row, index, event) => void`, `onRowDoubleClick?: (row, index, event) => void`
+- `onRowClick?: (row, index, event) => void`, `onRowDoubleClick?: (row, index, event) => void` — clickable rows without `rowHref` are focusable and activate on Enter
+- `rowHref?: (row, index) => string | undefined` — renders a real `<a href>` in the `rowLinkColumn` cell (default: first column); a plain click elsewhere on the row follows it
+- `rowLinkColumn?: string`
 - `size?: 'sm' | 'md' | 'lg'`
 - `variant?: 'default' | 'bordered' | 'striped'`
 - `hoverable?: boolean`, `clickableRows?: boolean`
@@ -812,6 +828,7 @@ Props:
 - `variant?: 'linear' | 'circular'` (default: `'linear'`)
 - `size?: 'sm' | 'md' | 'lg'`, `color?: 'primary' | 'success' | 'warning' | 'error'`
 - `showValue?: boolean`
+- `aria-label?: string` (default: `'Progress'`), `aria-labelledby?`, `aria-describedby?`, `aria-valuetext?` (default: `'N%'`) — applied to the `progressbar` element
 
 ### Spinner
 
@@ -822,6 +839,7 @@ Props:
 Props:
 - `size?: 'sm' | 'md' | 'lg' | 'xl'`, `color?: 'default' | 'white'`
 - `label?: string`, `centered?: boolean`
+- `role?: string` (default: `'status'`); with `aria-hidden` the spinner is decorative (no role, no label)
 
 ### Skeleton
 
@@ -856,6 +874,7 @@ Props:
 - `title: string` (required)
 - `icon?: JSX.Element`, `description?: string`, `action?: JSX.Element`
 - `size?: 'sm' | 'md' | 'lg'`
+- `headingLevel?: 2 | 3 | 4 | 5 | 6` (default: `3`)
 
 ### ErrorDisplay
 
@@ -1134,6 +1153,9 @@ const { value, setValue } = useControlled({ value: props.value, defaultValue: 'd
 useEscapeKey(() => close(), { enabled: () => isOpen() });
 ```
 
+Handlers share one stack: only the most recently enabled one runs, so a nested overlay
+closes alone. An Escape event already `preventDefault`-ed by a nested widget is ignored.
+
 ### useBodyScrollLock
 
 ```tsx
@@ -1147,6 +1169,9 @@ Trap Tab/Shift+Tab focus within an element.
 ```tsx
 useFocusTrap({ elementRef: ref, enabled: () => isOpen(), autoFocus: true, restoreFocus: true });
 ```
+
+`returnFocusTo?: Accessor<FocusReturnTarget | undefined>` overrides the restored element
+(ignored when it is no longer in the document).
 
 ### usePositioning
 

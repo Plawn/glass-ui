@@ -3,6 +3,9 @@ import type { ComponentSize } from '../../types';
 
 export type EmptyStateSize = ComponentSize;
 
+/** Heading level used for the EmptyState title */
+export type EmptyStateHeadingLevel = 2 | 3 | 4 | 5 | 6;
+
 export interface EmptyStateProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** Optional icon element displayed at the top */
   icon?: JSX.Element;
@@ -14,4 +17,6 @@ export interface EmptyStateProps extends JSX.HTMLAttributes<HTMLDivElement> {
   action?: JSX.Element;
   /** Size variant affecting icon and text sizes */
   size?: EmptyStateSize;
+  /** Heading level of the title, to fit the page outline (default: 3) */
+  headingLevel?: EmptyStateHeadingLevel;
 }

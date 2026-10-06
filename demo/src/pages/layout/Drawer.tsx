@@ -331,6 +331,12 @@ export default function DrawerPage() {
               description: 'Close when pressing Escape',
             },
             {
+              name: 'returnFocusTo',
+              type: 'HTMLElement | (() => HTMLElement | null | undefined)',
+              description:
+                'Element focused on close (default: element focused before opening)',
+            },
+            {
               name: 'noPadding',
               type: 'boolean',
               default: 'false',

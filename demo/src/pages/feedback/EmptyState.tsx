@@ -211,6 +211,13 @@ export default function EmptyStatePage() {
               description: 'Size variant affecting icon and text sizes',
             },
             {
+              name: 'headingLevel',
+              type: '2 | 3 | 4 | 5 | 6',
+              default: '3',
+              description:
+                'Heading level of the title, to fit the page outline',
+            },
+            {
               name: 'class',
               type: 'string',
               description: 'Additional CSS classes',

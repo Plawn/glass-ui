@@ -1,6 +1,11 @@
 import { createTypedNotificationStore } from '../shared/createNotificationStore';
 import type { Toast, ToastStore, ToastType } from './types';
 
+/** Default auto-dismiss delay for success/info/warning toasts (ms) */
+export const TOAST_DEFAULT_DURATION = 4000;
+/** Default auto-dismiss delay for error toasts (ms) */
+export const TOAST_ERROR_DURATION = 10000;
+
 // Create the toast notification store using the factory
 const {
   store: internalStore,
@@ -11,8 +16,13 @@ const {
   add,
   dismiss,
   clear,
+  pause,
+  resume,
+  durationFor,
 } = createTypedNotificationStore<Toast>({
-  defaultDuration: 4000,
+  defaultDuration: TOAST_DEFAULT_DURATION,
+  // Errors stay longer so they can be read (and are paused on hover/focus)
+  durationByType: { error: TOAST_ERROR_DURATION },
   idPrefix: 'toast',
 });
 
@@ -26,7 +36,7 @@ const toastStore: ToastStore = {
 
 /** Toast API with helper methods */
 export const toast = Object.assign(
-  (message: string, type: ToastType = 'info', duration = 4000) =>
+  (message: string, type: ToastType = 'info', duration = durationFor(type)) =>
     add({ message, type, duration }),
   {
     success,
@@ -39,6 +49,16 @@ export const toast = Object.assign(
 /** Dismiss a toast by ID */
 export function dismissToast(id: string) {
   dismiss(id);
+}
+
+/** Pause a toast's auto-dismiss countdown (used on hover/focus) */
+export function pauseToast(id: string) {
+  pause(id);
+}
+
+/** Resume a paused toast's auto-dismiss countdown */
+export function resumeToast(id: string) {
+  resume(id);
 }
 
 /** Clear all toasts */

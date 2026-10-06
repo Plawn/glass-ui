@@ -91,6 +91,34 @@ describe('createNotificationStore', () => {
     expect(store.items).toHaveLength(1);
     expect(store.items[0]?.message).toBe('b');
   });
+
+  test('pause stops the countdown and resume continues it', async () => {
+    const { store, add, pause, resume } = createNotificationStore({
+      defaultDuration: 0,
+    });
+
+    const id = add({ message: 'hovered', duration: 20 });
+    pause(id);
+    await sleep(40);
+    expect(store.items).toHaveLength(1);
+
+    resume(id);
+    resume(id); // idempotent: does not schedule a second timer
+    await sleep(40);
+    expect(store.items).toHaveLength(0);
+  });
+
+  test('pause/resume ignore unknown or persistent items', () => {
+    const { store, add, pause, resume } = createNotificationStore({
+      defaultDuration: 0,
+    });
+    const id = add({ message: 'persistent' });
+    pause(id);
+    resume(id);
+    pause('missing');
+    resume('missing');
+    expect(store.items).toHaveLength(1);
+  });
 });
 
 describe('createTypedNotificationStore', () => {
@@ -117,5 +145,20 @@ describe('createTypedNotificationStore', () => {
 
     await sleep(30);
     expect(api.store.items).toHaveLength(0);
+  });
+
+  test('durationByType overrides the default for one type', async () => {
+    const api = createTypedNotificationStore({
+      defaultDuration: 10,
+      durationByType: { error: 0 },
+    });
+
+    expect(api.durationFor('error')).toBe(0);
+    expect(api.durationFor('info')).toBe(10);
+
+    api.info('short');
+    api.error('sticky');
+    await sleep(30);
+    expect(api.store.items.map((i) => i.type)).toEqual(['error']);
   });
 });

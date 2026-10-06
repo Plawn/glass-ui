@@ -42,6 +42,18 @@ export interface CreateNotificationStoreOptions {
   idPrefix?: string;
 }
 
+/**
+ * Options for typed notification stores.
+ */
+export interface CreateTypedNotificationStoreOptions
+  extends CreateNotificationStoreOptions {
+  /**
+   * Default duration per status type, overriding `defaultDuration`
+   * (0 = no auto-dismiss for that type).
+   */
+  durationByType?: Partial<Record<StatusColor, number>>;
+}
+
 // =============================================================================
 // Factory Return Types
 // =============================================================================
@@ -58,6 +70,10 @@ export interface NotificationStoreAPI<T extends BaseNotification> {
   dismiss: (id: string) => void;
   /** Clear all notifications */
   clear: () => void;
+  /** Pause the auto-dismiss countdown of a notification (e.g. on hover/focus) */
+  pause: (id: string) => void;
+  /** Resume a paused auto-dismiss countdown with its remaining time */
+  resume: (id: string) => void;
 }
 
 /**
@@ -73,6 +89,8 @@ export interface TypedNotificationAPI<T extends TypedNotification>
   warning: (message: string, duration?: number) => string;
   /** Show an info notification */
   info: (message: string, duration?: number) => string;
+  /** Default duration applied to a type when no duration is given */
+  durationFor: (type: StatusColor) => number;
 }
 
 // =============================================================================
@@ -103,7 +121,22 @@ export function createNotificationStore<T extends BaseNotification>(
   const [store, setStore] = createStore<NotificationStore<T>>({ items: [] });
 
   let idCounter = 0;
-  const timers = new Map<string, ReturnType<typeof setTimeout>>();
+
+  /** Auto-dismiss countdown; `timer` is undefined while paused. */
+  interface Countdown {
+    remaining: number;
+    startedAt: number;
+    timer?: ReturnType<typeof setTimeout>;
+  }
+  const countdowns = new Map<string, Countdown>();
+
+  function startCountdown(id: string, countdown: Countdown): void {
+    countdown.startedAt = Date.now();
+    countdown.timer = setTimeout(() => {
+      countdowns.delete(id);
+      dismiss(id);
+    }, countdown.remaining);
+  }
 
   function add(notification: Omit<T, 'id'>): string {
     const id = `${idPrefix}-${++idCounter}`;
@@ -117,21 +150,19 @@ export function createNotificationStore<T extends BaseNotification>(
 
     const duration = notification.duration ?? defaultDuration;
     if (duration > 0) {
-      const timer = setTimeout(() => {
-        timers.delete(id);
-        dismiss(id);
-      }, duration);
-      timers.set(id, timer);
+      const countdown: Countdown = { remaining: duration, startedAt: 0 };
+      countdowns.set(id, countdown);
+      startCountdown(id, countdown);
     }
 
     return id;
   }
 
   function dismiss(id: string): void {
-    const timer = timers.get(id);
-    if (timer) {
-      clearTimeout(timer);
-      timers.delete(id);
+    const countdown = countdowns.get(id);
+    if (countdown) {
+      clearTimeout(countdown.timer);
+      countdowns.delete(id);
     }
     setStore(
       produce((state) => {
@@ -141,11 +172,32 @@ export function createNotificationStore<T extends BaseNotification>(
   }
 
   function clear(): void {
-    for (const timer of timers.values()) {
-      clearTimeout(timer);
+    for (const countdown of countdowns.values()) {
+      clearTimeout(countdown.timer);
     }
-    timers.clear();
+    countdowns.clear();
     setStore('items', []);
+  }
+
+  function pause(id: string): void {
+    const countdown = countdowns.get(id);
+    if (!countdown || countdown.timer === undefined) {
+      return;
+    }
+    clearTimeout(countdown.timer);
+    countdown.timer = undefined;
+    countdown.remaining = Math.max(
+      0,
+      countdown.remaining - (Date.now() - countdown.startedAt),
+    );
+  }
+
+  function resume(id: string): void {
+    const countdown = countdowns.get(id);
+    if (!countdown || countdown.timer !== undefined) {
+      return;
+    }
+    startCountdown(id, countdown);
   }
 
   return {
@@ -153,6 +205,8 @@ export function createNotificationStore<T extends BaseNotification>(
     add,
     dismiss,
     clear,
+    pause,
+    resume,
   };
 }
 
@@ -175,13 +229,16 @@ export function createNotificationStore<T extends BaseNotification>(
  * ```
  */
 export function createTypedNotificationStore<T extends TypedNotification>(
-  options: CreateNotificationStoreOptions = {},
+  options: CreateTypedNotificationStoreOptions = {},
 ): TypedNotificationAPI<T> {
   const baseAPI = createNotificationStore<T>(options);
-  const { defaultDuration = 4000 } = options;
+  const { defaultDuration = 4000, durationByType = {} } = options;
+
+  const durationFor = (type: StatusColor): number =>
+    durationByType[type] ?? defaultDuration;
 
   function createTypedHelper(type: StatusColor) {
-    return (message: string, duration: number = defaultDuration): string => {
+    return (message: string, duration: number = durationFor(type)): string => {
       return baseAPI.add({ message, type, duration } as Omit<T, 'id'>);
     };
   }
@@ -192,5 +249,6 @@ export function createTypedNotificationStore<T extends TypedNotification>(
     error: createTypedHelper('error'),
     warning: createTypedHelper('warning'),
     info: createTypedHelper('info'),
+    durationFor,
   };
 }

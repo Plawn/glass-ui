@@ -24,6 +24,7 @@ export type {
   FormFieldProps,
   TextInputProps,
   OverlayBehaviorProps,
+  FocusReturnTarget,
   OverlayProps,
   LoadableProps,
   IconProps,

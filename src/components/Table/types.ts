@@ -116,8 +116,23 @@ export interface TableProps<T>
   onSelectionChange?: (selectedKeys: Set<RowKey>, selectedRows: T[]) => void;
 
   // --- Row interaction ---
-  /** Callback when a row is clicked */
+  /**
+   * Callback when a row is clicked.
+   * Rows with a click behavior (and no `rowHref`) are focusable and also
+   * activate on Enter; the handler then receives a synthetic `click`
+   * MouseEvent carrying the keyboard modifiers.
+   */
   onRowClick?: (row: T, index: number, event: MouseEvent) => void;
+  /**
+   * Link target of a row. When it returns a URL, the primary cell
+   * (`rowLinkColumn`) renders its content inside an `<a href>` — the keyboard
+   * and screen-reader entry point — and a plain click elsewhere on the row
+   * follows that link. Rows with a link are not focusable themselves.
+   * The primary column's `render` must not output its own link.
+   */
+  rowHref?: (row: T, index: number) => string | undefined;
+  /** Column key rendering the row link (default: the first column) */
+  rowLinkColumn?: string;
   /** Callback when a row is double-clicked */
   onRowDoubleClick?: (row: T, index: number, event: MouseEvent) => void;
   /** Custom class name for rows (can be static or dynamic based on row data) */

@@ -1,4 +1,4 @@
-import { type Component, splitProps } from 'solid-js';
+import { type Component, createUniqueId, splitProps } from 'solid-js';
 import { MODAL_PANEL_ENTER, OVERLAY_MAX_WIDTHS } from '../../constants';
 import { OverlayContent, PortalOverlay } from '../shared';
 import type { ModalProps } from './types';
@@ -15,11 +15,21 @@ export const Modal: Component<ModalProps> = (props) => {
     'showClose',
     'closeOnBackdrop',
     'closeOnEscape',
+    'returnFocusTo',
     'class',
+    'role',
+    'aria-label',
+    'aria-labelledby',
   ]);
 
   const size = () => local.size ?? 'md';
   const showClose = () => local.showClose ?? true;
+  const titleId = `glass-modal-${createUniqueId()}-title`;
+
+  // A caller-provided name wins over the visible title
+  const labelledBy = () =>
+    local['aria-labelledby'] ??
+    (local.title && !local['aria-label'] ? titleId : undefined);
 
   const requestClose = () => {
     local.onClose?.();
@@ -32,17 +42,22 @@ export const Modal: Component<ModalProps> = (props) => {
       onClose={requestClose}
       closeOnEscape={local.closeOnEscape ?? true}
       closeOnBackdrop={local.closeOnBackdrop ?? true}
+      returnFocusTo={local.returnFocusTo}
       backdropClass="flex items-center justify-center p-2 sm:p-4"
-      ariaLabelledby={local.title ? 'modal-title' : undefined}
+      semanticsOnContent
     >
       <div
         {...rest}
+        role={local.role ?? 'dialog'}
+        aria-modal="true"
+        aria-label={local['aria-label']}
+        aria-labelledby={labelledBy()}
         class={`w-full ${OVERLAY_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER} ${local.class ?? ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         <OverlayContent
           title={local.title}
-          titleId="modal-title"
+          titleId={titleId}
           showClose={showClose()}
           onClose={requestClose}
           footer={local.footer}

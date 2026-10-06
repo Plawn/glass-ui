@@ -1,4 +1,10 @@
-import { type Component, Show, createSignal, splitProps } from 'solid-js';
+import {
+  type Component,
+  Show,
+  createSignal,
+  createUniqueId,
+  splitProps,
+} from 'solid-js';
 import { DIALOG_MAX_WIDTHS, MODAL_PANEL_ENTER } from '../../constants';
 import { PortalOverlay } from '../shared';
 import type { DialogProps, DialogVariant } from './types';
@@ -22,9 +28,23 @@ export const Dialog: Component<DialogProps> = (props) => {
     'confirmDisabled',
     'variant',
     'size',
+    'returnFocusTo',
     'class',
     'children',
+    'role',
+    'aria-label',
+    'aria-labelledby',
+    'aria-describedby',
   ]);
+
+  const baseId = `glass-dialog-${createUniqueId()}`;
+  const titleId = `${baseId}-title`;
+  const descriptionId = `${baseId}-description`;
+  const labelledBy = () =>
+    local['aria-labelledby'] ?? (local['aria-label'] ? undefined : titleId);
+  const describedBy = () =>
+    local['aria-describedby'] ??
+    (local.description ? descriptionId : undefined);
 
   const variant = () => local.variant ?? 'default';
   const size = () => local.size ?? 'sm';
@@ -60,27 +80,31 @@ export const Dialog: Component<DialogProps> = (props) => {
       onClose={handleCancel}
       closeOnEscape
       closeOnBackdrop
+      returnFocusTo={local.returnFocusTo}
       backdropClass="flex items-center justify-center p-2 sm:p-4"
-      role="alertdialog"
-      ariaLabelledby="dialog-title"
-      ariaDescribedby={local.description ? 'dialog-description' : undefined}
+      semanticsOnContent
     >
       <div
         {...rest}
+        role={local.role ?? 'alertdialog'}
+        aria-modal="true"
+        aria-label={local['aria-label']}
+        aria-labelledby={labelledBy()}
+        aria-describedby={describedBy()}
         class={`w-full ${DIALOG_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER} ${local.class ?? ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Content */}
         <div class="p-4 sm:p-6">
           <h2
-            id="dialog-title"
+            id={titleId}
             class="text-lg font-semibold text-surface-900 dark:text-surface-100"
           >
             {local.title}
           </h2>
           <Show when={local.description}>
             <p
-              id="dialog-description"
+              id={descriptionId}
               class="mt-2 text-sm text-surface-600 dark:text-surface-400"
             >
               {local.description}

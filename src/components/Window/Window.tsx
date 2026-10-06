@@ -148,13 +148,11 @@ export const Window: Component<WindowProps> = (props) => {
   };
 
   // Escape key handling
+  // Only register while Escape can close the window, so a non-closable
+  // window never swallows Escape from the overlay stack.
   useEscapeKey({
-    onEscape: () => {
-      if (closeOnEscape()) {
-        requestClose();
-      }
-    },
-    enabled: visible,
+    onEscape: requestClose,
+    enabled: () => visible() && closeOnEscape(),
   });
 
   // Draggable hook

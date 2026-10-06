@@ -262,7 +262,23 @@ export interface OverlayBehaviorProps {
   closeOnBackdrop?: boolean;
   /** Whether pressing Escape closes the overlay */
   closeOnEscape?: boolean;
+  /**
+   * Element receiving focus when the overlay closes.
+   * Defaults to the element that was focused before the overlay opened.
+   * Useful when that element no longer exists (e.g. a menu item that
+   * unmounted when the overlay was opened).
+   */
+  returnFocusTo?: FocusReturnTarget;
 }
+
+/**
+ * Element (or lazy getter) receiving focus when an overlay closes.
+ * When the getter returns nothing, or the element is detached from the
+ * document, focus falls back to the element focused before opening.
+ */
+export type FocusReturnTarget =
+  | HTMLElement
+  | (() => HTMLElement | null | undefined);
 
 /**
  * Props for overlay/dialog components

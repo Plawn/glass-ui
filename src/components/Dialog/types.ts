@@ -1,11 +1,20 @@
 import type { JSX } from 'solid-js';
-import type { DialogSize, DialogVariant } from '../../types';
+import type { DialogSize, DialogVariant, FocusReturnTarget } from '../../types';
 
 // Re-export from central types for backwards compatibility
 export type { DialogSize } from '../../types';
 
 export interface DialogProps
-  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'title'> {
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'title' | 'role'> {
+  /**
+   * ARIA role of the dialog panel (default: 'alertdialog', since Dialog is a
+   * confirmation that interrupts the user). Pass 'dialog' for neutral forms.
+   * The panel is named by `title` and described by `description` unless
+   * `aria-label` / `aria-labelledby` / `aria-describedby` are provided.
+   */
+  role?: JSX.HTMLAttributes<HTMLDivElement>['role'];
+  /** Element receiving focus on close (default: element focused before opening) */
+  returnFocusTo?: FocusReturnTarget;
   /** Whether the dialog is open */
   open: boolean;
   /** Callback when open state changes */

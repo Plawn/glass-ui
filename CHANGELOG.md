@@ -1,5 +1,59 @@
 # Changelog
 
+## 0.7.0
+
+Accessibility release. No prop was removed, but several defaults change
+behavior (see **Behavior changes**).
+
+### Behavior changes
+
+- **Escape**: `useEscapeKey` handlers share one stack; only the top-most overlay
+  closes. A Popover or Dialog opened inside a Modal/Drawer now closes alone, and
+  an Escape already `preventDefault`-ed by a nested widget (Autocomplete,
+  CommandPalette input, Popover trigger) no longer closes the parent. `Window`
+  only registers while `closeOnEscape` is enabled.
+- **Modal / Dialog / Drawer**: `role`, `aria-modal` and `aria-labelledby` /
+  `aria-describedby` move from the backdrop to the panel.
+- **Toast**: error toasts default to 10000 ms (others stay at 4000 ms) and pause
+  on hover/focus. Announcements go through two persistent visually hidden live
+  regions (polite, and assertive for errors); the visible toast no longer has
+  `role="alert"`.
+- **Progress**: ARIA props are applied to the `progressbar` element; the default
+  name is "Progress" (was "Progress: N%", and the linear bar had none) and
+  `aria-valuetext` defaults to "N%".
+- **SegmentedControl**: radiogroup semantics with roving tabindex — only one
+  option is in the Tab order; arrows/Home/End move and select. `sm` is at least
+  24 px high.
+- **Styles**: `prefers-reduced-motion: reduce` makes animations and transitions
+  near-instant through a global `*` rule, which also affects the host app;
+  `.animate-spin` keeps turning at 1.5 s.
+
+### Features
+
+- **Modal / Dialog**: `role` prop (`dialog` / `alertdialog`; Modal defaults to
+  `dialog`, Dialog keeps `alertdialog`). Title/description IDs come from
+  `createUniqueId()`.
+- **Modal / Dialog / Drawer**: `returnFocusTo?: FocusReturnTarget`, also on
+  `useFocusTrap`. Falls back to the element focused before opening when it is
+  still in the document. `FocusReturnTarget` is exported.
+- **Table**: `rowHref` and `rowLinkColumn` render a real `<a href>` per row;
+  clickable rows without a link are focusable and activate on Enter
+  (`onRowClick` receives a synthetic `click` carrying the modifiers).
+- **EmptyState**: `headingLevel` (2–6, default 3); `EmptyStateHeadingLevel` exported.
+- **Toast**: `TOAST_DEFAULT_DURATION`, `TOAST_ERROR_DURATION`, `pauseToast`,
+  `resumeToast`; notification stores accept `durationByType`.
+- **Spinner**: overridable `role`; with `aria-hidden` it is decorative.
+
+### Known issue
+
+- Table selected-row classes `bg-primary-*` generate no CSS (the theme has no
+  `primary` color); unchanged in this release.
+
+## 0.6.2
+
+**Dialog**: `confirmDisabled`, `onConfirm` may return `false` (or a promise of
+it) to keep the dialog open, and `children` are rendered.
+
 ## 0.6.1
 
 ### Fixes

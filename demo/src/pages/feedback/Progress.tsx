@@ -172,6 +172,20 @@ export default function ProgressPage() {
               description: 'Show percentage value',
             },
             {
+              name: 'aria-label',
+              type: 'string',
+              default: "'Progress'",
+              description:
+                'Accessible name of the progressbar (or use aria-labelledby)',
+            },
+            {
+              name: 'aria-valuetext',
+              type: 'string',
+              default: "'42%'",
+              description:
+                'Human-readable value exposed to assistive technologies',
+            },
+            {
               name: 'class',
               type: 'string',
               description: 'Additional CSS classes',

@@ -233,6 +233,19 @@ export default function ModalPage() {
               default: 'true',
               description: 'Close when pressing Escape',
             },
+            {
+              name: 'role',
+              type: "'dialog' | 'alertdialog'",
+              default: "'dialog'",
+              description:
+                'ARIA role of the dialog panel; aria-label/labelledby/describedby are applied to the panel',
+            },
+            {
+              name: 'returnFocusTo',
+              type: 'HTMLElement | (() => HTMLElement | null | undefined)',
+              description:
+                'Element focused on close (default: element focused before opening)',
+            },
           ]}
         />
       </DemoSection>

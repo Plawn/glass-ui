@@ -251,6 +251,19 @@ export default function DialogPage() {
               description: 'Dialog size',
             },
             {
+              name: 'role',
+              type: "'dialog' | 'alertdialog'",
+              default: "'alertdialog'",
+              description:
+                'ARIA role of the dialog panel (described by `description`)',
+            },
+            {
+              name: 'returnFocusTo',
+              type: 'HTMLElement | (() => HTMLElement | null | undefined)',
+              description:
+                'Element focused on close (default: element focused before opening)',
+            },
+            {
               name: 'confirmLabel',
               type: 'string',
               default: "'Confirm'",

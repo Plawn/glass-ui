@@ -7,7 +7,10 @@ export interface Toast {
   type: StatusColor;
   /** Text content displayed in the toast */
   message: string;
-  /** Auto-dismiss delay in milliseconds (defaults to library default when omitted) */
+  /**
+   * Auto-dismiss delay in milliseconds (0 = until dismissed). Defaults to
+   * 4000 ms, or 10000 ms for `error`. The countdown pauses on hover/focus.
+   */
   duration?: number;
 }
 

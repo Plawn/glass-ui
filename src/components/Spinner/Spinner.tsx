@@ -40,7 +40,17 @@ export const Spinner: Component<SpinnerProps> = (props) => {
     'color',
     'label',
     'centered',
+    'role',
+    'aria-label',
+    'aria-hidden',
   ]);
+
+  // A decorative spinner (aria-hidden) must not also be a live status region
+  const isHidden = () =>
+    local['aria-hidden'] === true || local['aria-hidden'] === 'true';
+  const role = () => local.role ?? (isHidden() ? undefined : 'status');
+  const ariaLabel = () =>
+    isHidden() ? undefined : (local['aria-label'] ?? local.label ?? 'Loading');
 
   const size = () => local.size ?? 'md';
   const color = () => local.color ?? 'default';
@@ -57,8 +67,9 @@ export const Spinner: Component<SpinnerProps> = (props) => {
       {...rest}
       class={wrapperClasses()}
       style={local.style}
-      role="status"
-      aria-label={local.label ?? 'Loading'}
+      role={role()}
+      aria-hidden={local['aria-hidden']}
+      aria-label={ariaLabel()}
     >
       <svg
         class={`animate-spin ${sizeClasses[size()]}`}

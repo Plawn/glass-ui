@@ -9,8 +9,14 @@ import type {
 export type { DrawerSize } from '../../types';
 
 export interface DrawerProps
-  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'title'>,
+  extends Omit<JSX.HTMLAttributes<HTMLDivElement>, 'title' | 'role'>,
     OverlayBehaviorProps {
+  /**
+   * ARIA role of the drawer panel (default: 'dialog').
+   * `aria-label`, `aria-labelledby` and `aria-describedby` are applied to the
+   * panel; without them the visible `title` names the drawer.
+   */
+  role?: JSX.HTMLAttributes<HTMLDivElement>['role'];
   /** Whether the overlay is open */
   open: boolean;
   /**

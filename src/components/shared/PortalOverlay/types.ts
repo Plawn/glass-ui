@@ -1,4 +1,5 @@
 import type { Accessor, JSX } from 'solid-js';
+import type { FocusReturnTarget } from '../../../types';
 
 export interface PortalOverlayRenderProps {
   /** Whether the overlay is in closing state (only valid when animated is true) */
@@ -25,6 +26,15 @@ export interface PortalOverlayProps {
   closeOnEscape?: boolean;
   /** ARIA role for the overlay container (default: 'dialog') */
   role?: 'dialog' | 'alertdialog';
+  /**
+   * Set when the content renders its own dialog panel carrying `role`,
+   * `aria-modal` and its accessible name. The backdrop then has no dialog
+   * semantics and `role` / `ariaModal` / `ariaLabelledby` /
+   * `ariaDescribedby` are ignored. (default: false)
+   */
+  semanticsOnContent?: boolean;
+  /** Element receiving focus on close (default: element focused before opening) */
+  returnFocusTo?: FocusReturnTarget;
   /** Whether the overlay is modal (default: true) */
   ariaModal?: boolean;
   /** ID of the element that labels the overlay */

@@ -1,4 +1,5 @@
 import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import type { FocusReturnTarget } from '../types';
 
 export interface UseFocusTrapOptions {
   /** Whether the focus trap is active */
@@ -9,6 +10,18 @@ export interface UseFocusTrapOptions {
   restoreFocus?: boolean;
   /** Whether to auto-focus the first focusable element when enabled */
   autoFocus?: boolean;
+  /**
+   * Explicit element receiving focus on cleanup (when `restoreFocus` is true).
+   * Falls back to the element focused before the trap was enabled.
+   */
+  returnFocusTo?: Accessor<FocusReturnTarget | undefined>;
+}
+
+function resolveFocusTarget(
+  target: FocusReturnTarget | undefined,
+): HTMLElement | undefined {
+  const element = typeof target === 'function' ? target() : target;
+  return element?.isConnected ? element : undefined;
 }
 
 const FOCUSABLE_SELECTOR = [
@@ -103,10 +116,14 @@ export function useFocusTrap(options: UseFocusTrapOptions): void {
     onCleanup(() => {
       document.removeEventListener('keydown', handleKeyDown, true);
 
-      // Restore focus to previously focused element
-      if (restoreFocus && previouslyFocused && previouslyFocused.focus) {
-        previouslyFocused.focus();
+      if (!restoreFocus) {
+        return;
       }
+      // Prefer the explicit target, then the previously focused element
+      const target =
+        resolveFocusTarget(options.returnFocusTo?.()) ??
+        (previouslyFocused?.isConnected ? previouslyFocused : undefined);
+      target?.focus?.();
     });
   });
 }

@@ -1,4 +1,10 @@
-import { type Component, For, createSignal, onCleanup } from 'solid-js';
+import {
+  type Component,
+  For,
+  createEffect,
+  createSignal,
+  onCleanup,
+} from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { TOAST_COLORS, TOAST_ENTER, TRANSITION_ALL } from '../../constants';
 import {
@@ -8,7 +14,7 @@ import {
   InfoIcon,
   WarningIcon,
 } from '../shared/icons';
-import { dismissToast, getToastStore } from './store';
+import { dismissToast, getToastStore, pauseToast, resumeToast } from './store';
 import type { Toast, ToastType } from './types';
 
 /** Icon component mapping by toast type */
@@ -34,11 +40,31 @@ const ToastItem: Component<{ toast: Toast }> = (props) => {
     dismissTimer = setTimeout(() => dismissToast(props.toast.id), 200);
   };
 
+  // Pause auto-dismiss while the pointer is over the toast or focus is inside
+  const [hovered, setHovered] = createSignal(false);
+  const [focused, setFocused] = createSignal(false);
+  createEffect(() => {
+    if (hovered() || focused()) {
+      pauseToast(props.toast.id);
+    } else {
+      resumeToast(props.toast.id);
+    }
+  });
+
+  // Announcements go through the container's persistent live regions, so the
+  // visible toast carries no live role (avoids double announcements).
   return (
     <div
       class={`flex items-start gap-3 p-4 rounded-xl border shadow-lg backdrop-blur-sm ${TRANSITION_ALL} ${styles().bg} ${exiting() ? 'opacity-0 translate-x-4' : TOAST_ENTER}`}
-      role="alert"
-      aria-atomic="true"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusIn={() => setFocused(true)}
+      onFocusOut={(e) => {
+        const next = e.relatedTarget as Node | null;
+        if (!next || !e.currentTarget.contains(next)) {
+          setFocused(false);
+        }
+      }}
     >
       <div
         class={`flex-shrink-0 w-8 h-8 rounded-lg ${styles().iconBg} ${styles().icon} flex items-center justify-center`}
@@ -61,19 +87,38 @@ const ToastItem: Component<{ toast: Toast }> = (props) => {
   );
 };
 
+/** Toasts announced assertively (role="alert"); others are polite. */
+const isUrgent = (t: Toast) => t.type === 'error';
+
 /** Toast container - add once to your app root */
 export const ToastContainer: Component = () => {
   const store = getToastStore();
 
   return (
-    <div class="fixed top-4 right-4 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
-      <For each={store.toasts}>
-        {(t) => (
-          <div class="pointer-events-auto">
-            <ToastItem toast={t} />
-          </div>
-        )}
-      </For>
-    </div>
+    <>
+      {/*
+        Persistent live regions: they exist before any toast is added so
+        screen readers reliably announce inserted messages.
+      */}
+      <div class="sr-only" role="status" aria-live="polite">
+        <For each={store.toasts.filter((t) => !isUrgent(t))}>
+          {(t) => <p>{t.message}</p>}
+        </For>
+      </div>
+      <div class="sr-only" role="alert" aria-live="assertive">
+        <For each={store.toasts.filter(isUrgent)}>
+          {(t) => <p>{t.message}</p>}
+        </For>
+      </div>
+      <div class="fixed top-4 right-4 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+        <For each={store.toasts}>
+          {(t) => (
+            <div class="pointer-events-auto">
+              <ToastItem toast={t} />
+            </div>
+          )}
+        </For>
+      </div>
+    </>
   );
 };

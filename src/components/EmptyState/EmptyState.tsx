@@ -1,5 +1,6 @@
 import type { Component } from 'solid-js';
 import { Show, splitProps } from 'solid-js';
+import { Dynamic } from 'solid-js/web';
 import type { EmptyStateProps, EmptyStateSize } from './types';
 
 const sizeStyles: Record<
@@ -33,10 +34,12 @@ export const EmptyState: Component<EmptyStateProps> = (props) => {
     'description',
     'action',
     'size',
+    'headingLevel',
     'class',
     'style',
   ]);
   const size = () => local.size ?? 'md';
+  const headingTag = () => `h${local.headingLevel ?? 3}` as const;
   const styles = () => sizeStyles[size()];
 
   return (
@@ -53,11 +56,12 @@ export const EmptyState: Component<EmptyStateProps> = (props) => {
         </div>
       </Show>
 
-      <h3
+      <Dynamic
+        component={headingTag()}
         class={`font-medium text-surface-700 dark:text-surface-200 ${styles().title}`}
       >
         {local.title}
-      </h3>
+      </Dynamic>
 
       <Show when={local.description}>
         <p

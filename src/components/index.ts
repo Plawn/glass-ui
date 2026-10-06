@@ -281,7 +281,11 @@ export type {
 
 // EmptyState
 export { EmptyState } from './EmptyState';
-export type { EmptyStateProps, EmptyStateSize } from './EmptyState';
+export type {
+  EmptyStateProps,
+  EmptyStateSize,
+  EmptyStateHeadingLevel,
+} from './EmptyState';
 
 // Navbar
 export { Navbar } from './Navbar';

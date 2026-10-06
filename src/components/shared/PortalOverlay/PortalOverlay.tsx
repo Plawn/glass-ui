@@ -103,7 +103,10 @@ export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
   useFocusTrap({
     enabled: isVisible,
     containerRef: backdropRef,
+    returnFocusTo: () => props.returnFocusTo,
   });
+
+  const hasDialogSemantics = () => !props.semanticsOnContent;
 
   // Compute backdrop classes
   const backdropClasses = createMemo(() => {
@@ -138,10 +141,14 @@ export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
           ref={setBackdropRef}
           class={backdropClasses()}
           onClick={(e) => handleBackdropClick(e)}
-          role={role()}
-          aria-modal={ariaModal()}
-          aria-labelledby={props.ariaLabelledby}
-          aria-describedby={props.ariaDescribedby}
+          role={hasDialogSemantics() ? role() : undefined}
+          aria-modal={hasDialogSemantics() ? ariaModal() : undefined}
+          aria-labelledby={
+            hasDialogSemantics() ? props.ariaLabelledby : undefined
+          }
+          aria-describedby={
+            hasDialogSemantics() ? props.ariaDescribedby : undefined
+          }
         >
           {renderChildren()}
         </div>

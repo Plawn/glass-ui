@@ -12,6 +12,7 @@ export type {
   TypedNotification,
   NotificationStore,
   CreateNotificationStoreOptions,
+  CreateTypedNotificationStoreOptions,
   NotificationStoreAPI,
   TypedNotificationAPI,
 } from './createNotificationStore';

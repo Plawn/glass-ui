@@ -1,4 +1,5 @@
 import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import { pushEscapeHandler } from './escapeStack';
 
 export interface UseEscapeKeyOptions {
   /** Callback function to execute when Escape key is pressed */
@@ -9,7 +10,11 @@ export interface UseEscapeKeyOptions {
 
 /**
  * Hook to handle Escape key press events.
- * Automatically manages adding/removing the event listener based on the enabled signal.
+ *
+ * Handlers share a global overlay stack: while several are enabled, only the
+ * most recently enabled one runs (e.g. a Dialog opened from a Drawer closes
+ * alone). Escape events already handled by a nested widget
+ * (`event.defaultPrevented`) are ignored.
  *
  * @example
  * ```tsx
@@ -29,18 +34,11 @@ export function useEscapeKey(options: UseEscapeKeyOptions): void {
   const { onEscape, enabled } = options;
 
   createEffect(() => {
-    // If enabled signal is provided and returns false, don't add listener
+    // If enabled signal is provided and returns false, don't register
     if (enabled !== undefined && !enabled()) {
       return;
     }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onEscape();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
+    onCleanup(pushEscapeHandler(() => onEscape()));
   });
 }

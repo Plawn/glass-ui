@@ -139,6 +139,8 @@ export function Table<T extends Record<string, unknown>>(
     'clickableRows',
     'onRowClick',
     'onRowDoubleClick',
+    'rowHref',
+    'rowLinkColumn',
     'rowClass',
     'maxHeight',
     'stickyHeader',
@@ -343,6 +345,66 @@ export function Table<T extends Record<string, unknown>>(
       const key = getRowKey(row, index);
       const isSelected = currentSelectedKeys().has(key);
       handleRowSelect(row, index, !isSelected);
+    }
+  };
+
+  let forwardingRowClick = false;
+
+  /** Key of the column whose cell carries the row link */
+  const linkColumnKey = () => local.rowLinkColumn ?? local.columns[0]?.key;
+
+  /** Activates a focused row with Enter, mirroring a click */
+  const handleRowKeyDown = (row: T, index: number, event: KeyboardEvent) => {
+    // Ignore keys coming from nested controls (checkbox, buttons, inputs)
+    if (event.key !== 'Enter' || event.target !== event.currentTarget) {
+      return;
+    }
+    event.preventDefault();
+    handleRowClick(
+      row,
+      index,
+      new MouseEvent('click', {
+        ctrlKey: event.ctrlKey,
+        shiftKey: event.shiftKey,
+        altKey: event.altKey,
+        metaKey: event.metaKey,
+      }),
+    );
+  };
+
+  /**
+   * A plain click on a linked row (outside interactive content) follows the
+   * row link, so the whole row stays clickable while the link remains the
+   * keyboard/assistive-technology entry point.
+   */
+  const followRowLink = (
+    link: HTMLAnchorElement | undefined,
+    e: MouseEvent,
+  ) => {
+    if (!link || e.defaultPrevented || e.button !== 0) {
+      return;
+    }
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
+      return;
+    }
+    const target = e.target as Element | null;
+    if (
+      target?.closest(
+        'a, button, input, select, textarea, label, [role="button"]',
+      )
+    ) {
+      return;
+    }
+    // Don't navigate when the user is selecting text
+    if (window.getSelection()?.toString()) {
+      return;
+    }
+    // The forwarded click bubbles back to the row: don't handle it twice
+    forwardingRowClick = true;
+    try {
+      link.click();
+    } finally {
+      forwardingRowClick = false;
     }
   };
 
@@ -606,10 +668,16 @@ export function Table<T extends Record<string, unknown>>(
                 {(row, index) => {
                   const rowKey = () => getRowKey(row, index());
                   const isSelected = () => currentSelectedKeys().has(rowKey());
+                  const href = () => local.rowHref?.(row, index());
+                  let rowLink: HTMLAnchorElement | undefined;
                   const clickable = () =>
+                    !!href() ||
                     local.clickableRows ||
                     !!local.onRowClick ||
                     selectionMode() === 'single';
+                  // Without a link, an interactive row needs its own
+                  // keyboard access (focus + Enter)
+                  const keyboardRow = () => clickable() && !href();
 
                   const isEven = () => index() % 2 === 1;
                   const stripedClass = () =>
@@ -625,10 +693,23 @@ export function Table<T extends Record<string, unknown>>(
                           ${hoverable() ? 'hover:bg-surface-50/50 dark:hover:bg-surface-800/30' : ''}
                           ${isSelected() ? 'bg-primary-50/50 dark:bg-primary-900/20' : ''}
                           ${clickable() ? 'cursor-pointer' : ''}
+                          ${keyboardRow() ? 'focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent-500' : ''}
                           ${getRowClassName(row, index())}
                           transition-colors
                         `}
-                      onClick={(e) => handleRowClick(row, index(), e)}
+                      tabIndex={keyboardRow() ? 0 : undefined}
+                      onKeyDown={(e) => {
+                        if (keyboardRow()) {
+                          handleRowKeyDown(row, index(), e);
+                        }
+                      }}
+                      onClick={(e) => {
+                        if (forwardingRowClick) {
+                          return;
+                        }
+                        handleRowClick(row, index(), e);
+                        followRowLink(rowLink, e);
+                      }}
                       onDblClick={(e) =>
                         local.onRowDoubleClick?.(row, index(), e)
                       }
@@ -668,10 +749,28 @@ export function Table<T extends Record<string, unknown>>(
                               }}
                             >
                               <Show
-                                when={column.render}
-                                fallback={String(value() ?? '')}
+                                when={href() && column.key === linkColumnKey()}
+                                fallback={
+                                  <Show
+                                    when={column.render}
+                                    fallback={String(value() ?? '')}
+                                  >
+                                    {column.render?.(value(), row, index())}
+                                  </Show>
+                                }
                               >
-                                {column.render?.(value(), row, index())}
+                                <a
+                                  ref={rowLink}
+                                  href={href()}
+                                  class="text-inherit no-underline hover:underline focus:outline-none focus-visible:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 rounded-sm"
+                                >
+                                  <Show
+                                    when={column.render}
+                                    fallback={String(value() ?? '')}
+                                  >
+                                    {column.render?.(value(), row, index())}
+                                  </Show>
+                                </a>
                               </Show>
                             </td>
                           );

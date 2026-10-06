@@ -1,5 +1,6 @@
 import {
   For,
+  type JSX,
   createEffect,
   createSignal,
   on,
@@ -9,6 +10,7 @@ import {
 } from 'solid-js';
 import { TRANSITION_COLORS, TRANSITION_INDICATOR } from '../../constants';
 import { useControlled } from '../../hooks';
+import { nextRadioIndex } from './keyboard';
 import type { SegmentedControlProps } from './types';
 
 export function SegmentedControl<T extends string | number>(
@@ -22,6 +24,7 @@ export function SegmentedControl<T extends string | number>(
     'size',
     'orientation',
     'class',
+    'onKeyDown',
   ]);
   const [indicatorStyle, setIndicatorStyle] = createSignal({
     left: 0,
@@ -41,8 +44,51 @@ export function SegmentedControl<T extends string | number>(
 
   const isVertical = () => local.orientation === 'vertical';
 
+  // `sm` keeps a 24px minimum target height (WCAG 2.5.8)
   const sizeClasses = () =>
-    local.size === 'sm' ? 'px-2 py-1 text-[0.625rem]' : 'px-3 py-1.5 text-xs';
+    local.size === 'sm'
+      ? 'min-h-6 px-2 py-1 text-[0.625rem]'
+      : 'px-3 py-1.5 text-xs';
+
+  const enabledOptions = () => local.options.filter((o) => !o.disabled);
+
+  /**
+   * Roving tabindex: only one radio is in the tab order — the selected one,
+   * or the first enabled option when the selection is missing/disabled.
+   */
+  const tabStopValue = (): T | undefined => {
+    const enabled = enabledOptions();
+    return enabled.find((o) => o.value === value())?.value ?? enabled[0]?.value;
+  };
+
+  const selectAndFocus = (next: T) => {
+    setValue(next);
+    buttonRefs.get(next)?.focus();
+  };
+
+  // Radiogroup keyboard pattern: arrows move and select (wrapping),
+  // Home/End jump to the first/last enabled option.
+  const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (
+    e,
+  ) => {
+    const callerHandler = local.onKeyDown;
+    if (typeof callerHandler === 'function') {
+      callerHandler(e);
+    } else if (callerHandler) {
+      callerHandler[0](callerHandler[1], e);
+    }
+    if (e.defaultPrevented) {
+      return;
+    }
+    const enabled = enabledOptions();
+    const current = enabled.findIndex((o) => o.value === value());
+    const nextIndex = nextRadioIndex(e.key, current, enabled.length);
+    if (nextIndex === undefined) {
+      return;
+    }
+    e.preventDefault();
+    selectAndFocus(enabled[nextIndex].value);
+  };
 
   const updateIndicator = () => {
     const activeButton = buttonRefs.get(value());
@@ -84,7 +130,8 @@ export function SegmentedControl<T extends string | number>(
     <div
       {...rest}
       ref={containerRef}
-      role="group"
+      role="radiogroup"
+      onKeyDown={handleKeyDown}
       class={`relative flex ${isVertical() ? 'flex-col' : 'items-center'} gap-1 p-1 bg-surface-200/80 dark:bg-surface-800/80 rounded-xl w-fit ${
         local.class ?? ''
       }`}
@@ -107,6 +154,9 @@ export function SegmentedControl<T extends string | number>(
           <button
             ref={(el) => buttonRefs.set(option.value, el)}
             type="button"
+            role="radio"
+            aria-checked={value() === option.value}
+            tabIndex={tabStopValue() === option.value ? 0 : -1}
             onClick={() => !option.disabled && setValue(option.value)}
             disabled={option.disabled}
             class={`${sizeClasses()} font-bold rounded-lg ${TRANSITION_COLORS} relative z-10 ${

@@ -62,6 +62,29 @@ const circularColorStyles: Record<
   },
 };
 
+/** ARIA props applied to the `progressbar` element rather than the wrapper */
+const ARIA_KEYS = [
+  'aria-label',
+  'aria-labelledby',
+  'aria-describedby',
+  'aria-valuetext',
+] as const;
+
+type ProgressAria = Pick<ProgressProps, (typeof ARIA_KEYS)[number]>;
+
+/**
+ * Accessible name/value for the progressbar: a caller-provided
+ * `aria-label`/`aria-labelledby` wins over the default "Progress" label, and
+ * the value is exposed as text ("42%") unless `aria-valuetext` is given.
+ */
+const progressbarAria = (aria: ProgressAria, value: number) => ({
+  'aria-label':
+    aria['aria-label'] ?? (aria['aria-labelledby'] ? undefined : 'Progress'),
+  'aria-labelledby': aria['aria-labelledby'],
+  'aria-describedby': aria['aria-describedby'],
+  'aria-valuetext': aria['aria-valuetext'] ?? `${Math.round(value)}%`,
+});
+
 const LinearProgress: Component<ProgressProps> = (props) => {
   const [local, rest] = splitProps(props, [
     'class',
@@ -71,6 +94,7 @@ const LinearProgress: Component<ProgressProps> = (props) => {
     'color',
     'showValue',
   ]);
+  const [aria, others] = splitProps(rest, ARIA_KEYS);
   const size = () => local.size ?? 'md';
   const color = () => local.color ?? 'primary';
   const styles = () => colorStyles[color()];
@@ -78,7 +102,7 @@ const LinearProgress: Component<ProgressProps> = (props) => {
   const fillStyle = createMemo(() => ({ width: `${clampedValue()}%` }));
 
   return (
-    <div {...rest} class={`w-full ${local.class ?? ''}`}>
+    <div {...others} class={`w-full ${local.class ?? ''}`}>
       <Show when={local.showValue}>
         <div class="flex justify-between items-center mb-1">
           <span class="text-xs font-medium text-surface-600 dark:text-surface-400">
@@ -92,6 +116,7 @@ const LinearProgress: Component<ProgressProps> = (props) => {
         aria-valuenow={clampedValue()}
         aria-valuemin={0}
         aria-valuemax={100}
+        {...progressbarAria(aria, clampedValue())}
       >
         <div
           class={`h-full rounded-full ${TRANSITION_ALL_SLOW} ${styles().fill}`}
@@ -111,6 +136,7 @@ const CircularProgress: Component<ProgressProps> = (props) => {
     'color',
     'showValue',
   ]);
+  const [aria, others] = splitProps(rest, ARIA_KEYS);
   const size = () => local.size ?? 'md';
   const color = () => local.color ?? 'primary';
   const dimensions = () => circularSizes[size()];
@@ -136,13 +162,13 @@ const CircularProgress: Component<ProgressProps> = (props) => {
 
   return (
     <div
-      {...rest}
+      {...others}
       class={`relative inline-flex items-center justify-center ${local.class ?? ''}`}
       role="progressbar"
       aria-valuenow={clampedValue()}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-label={`Progress: ${Math.round(clampedValue())}%`}
+      {...progressbarAria(aria, clampedValue())}
     >
       <svg
         width={dimensions().size}

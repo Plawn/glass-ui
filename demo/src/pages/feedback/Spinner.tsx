@@ -116,6 +116,12 @@ export default function SpinnerPage() {
               description: 'Optional label text',
             },
             {
+              name: 'aria-hidden',
+              type: 'boolean',
+              description:
+                'Decorative spinner: removes role="status" and aria-label',
+            },
+            {
               name: 'centered',
               type: 'boolean',
               default: 'false',

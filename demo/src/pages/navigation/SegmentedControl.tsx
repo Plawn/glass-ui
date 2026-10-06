@@ -301,7 +301,8 @@ export default function SegmentedControlPage() {
               name: 'size',
               type: "'sm' | 'md'",
               default: "'md'",
-              description: 'Control size',
+              description:
+                'Control size (sm keeps a 24px min target). Arrow keys / Home / End move and select (radiogroup)',
             },
             {
               name: 'orientation',

@@ -1,4 +1,4 @@
-import { type Component, Show, splitProps } from 'solid-js';
+import { type Component, Show, createUniqueId, splitProps } from 'solid-js';
 import {
   ANIMATION_DURATION,
   BACKDROP_ENTER,
@@ -35,8 +35,18 @@ export const Drawer: Component<DrawerProps> = (props) => {
     'showClose',
     'closeOnBackdrop',
     'closeOnEscape',
+    'returnFocusTo',
     'class',
+    'role',
+    'aria-label',
+    'aria-labelledby',
   ]);
+
+  const titleId = `glass-drawer-${createUniqueId()}-title`;
+  // A caller-provided name wins over the visible title
+  const labelledBy = () =>
+    local['aria-labelledby'] ??
+    (local.title && !local['aria-label'] ? titleId : undefined);
 
   const position = () => local.position ?? 'right';
   const size = () => local.size ?? 'md';
@@ -65,6 +75,7 @@ export const Drawer: Component<DrawerProps> = (props) => {
   useFocusTrap({
     enabled: visible,
     containerRef: () => backdropRef,
+    returnFocusTo: () => local.returnFocusTo,
   });
 
   const panelStyle = () => positionPanelStyles[position()];
@@ -90,19 +101,20 @@ export const Drawer: Component<DrawerProps> = (props) => {
           ref={backdropRef}
           class={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm ${backdropClasses()}`}
           onClick={(e) => handleBackdropClick(e)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={local.title ? 'drawer-title' : undefined}
         >
           <div
             {...rest}
+            role={local.role ?? 'dialog'}
+            aria-modal="true"
+            aria-label={local['aria-label']}
+            aria-labelledby={labelledBy()}
             class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()} ${local.class ?? ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div class="flex flex-col h-full overflow-hidden">
               <OverlayContent
                 title={local.title}
-                titleId="drawer-title"
+                titleId={titleId}
                 showClose={showClose()}
                 onClose={requestClose}
                 footer={local.footer}

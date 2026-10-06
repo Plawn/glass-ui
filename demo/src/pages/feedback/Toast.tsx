@@ -84,7 +84,7 @@ toast('Message', 'error', 5000);`}
 
       <DemoSection
         title="Custom Duration"
-        description="Control how long the toast is displayed. Default is 4000ms."
+        description="Control how long the toast is displayed. Default is 4000ms (10000ms for errors); the countdown pauses on hover/focus. Use 0 to keep it until dismissed."
         code={`// Quick message (2 seconds)
 toast.success('Saved!', 2000);
 
@@ -180,7 +180,8 @@ clearToasts();`}
               {
                 name: 'toast.error(message, duration?)',
                 type: 'string, number',
-                description: 'Show an error toast',
+                description:
+                  'Show an error toast (default 10000ms, announced assertively)',
               },
               {
                 name: 'toast.warning(message, duration?)',

@@ -18,6 +18,15 @@ export interface ProgressProps
   color?: ProgressColor;
   /** Whether to show the percentage value */
   showValue?: boolean;
+  /**
+   * Accessible name of the progressbar (default: "Progress", unless
+   * `aria-labelledby` is set). Applied to the `progressbar` element.
+   */
+  'aria-label'?: string;
+  /** ID(s) of the element(s) naming the progressbar */
+  'aria-labelledby'?: string;
+  /** Human-readable value (default: the rounded percentage, e.g. "42%") */
+  'aria-valuetext'?: string;
 }
 
 // Re-export shared types for convenience
