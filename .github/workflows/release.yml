@@ -37,11 +37,12 @@ jobs:
         with:
           bun-version: latest
 
+      # No `registry-url`: it would write a placeholder auth token into .npmrc,
+      # which hides trusted publishing failures behind a 404.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org
 
       # Trusted publishing needs npm >= 11.5.1
       - name: Update npm
@@ -121,7 +122,7 @@ jobs:
         if: steps.meta.outputs.published == 'false'
         env:
           DIST_TAG: ${{ steps.meta.outputs.dist_tag }}
-        run: npm publish --access public --ignore-scripts --tag "$DIST_TAG"
+        run: npm publish --access public --ignore-scripts --tag "$DIST_TAG" --loglevel verbose
 
       - name: Create GitHub release
         env:
