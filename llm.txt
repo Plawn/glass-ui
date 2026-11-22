@@ -2,7 +2,7 @@
 
 > iOS 26-inspired glassmorphism UI components for SolidJS with Tailwind CSS v4.
 
-Package: `glass-ui-solid` v0.8.0
+Package: `glass-ui-solid` v0.8.1-rc.0
 License: Apache-2.0
 Peer dependencies: `solid-js` and `@solidjs/web`, both ^2.0.3
 Repository: https://github.com/Plawn/glass-ui

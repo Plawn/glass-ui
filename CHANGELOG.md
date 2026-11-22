@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.8.1-rc.0
+
+Release pipeline test: first version published by the GitHub Actions release
+workflow (see `RELEASING.md`). No code change since 0.8.0.
+
 ## 0.8.0
 
 Glass UI now targets Solid 2. Install both `solid-js` and `@solidjs/web` at
