@@ -47,6 +47,9 @@
     "./theme.css": "./src/styles/theme.css",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "tag": "solid1"
+  },
   "files": ["dist", "src/styles/theme.css", "README.md"],
   "scripts": {
     "dev": "vite build --watch",
