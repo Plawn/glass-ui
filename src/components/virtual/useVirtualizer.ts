@@ -414,14 +414,30 @@ export function useVirtualizer(options: VirtualizerOptions) {
   });
 
   // 6. DYNAMIC MEASUREMENT
-  // Measurements are accumulated and flushed once per microtask: a render wave
-  // measures many items at once and each flush triggers a full range/items
-  // recompute, so applying them one by one is O(visible²).
+  // Measurements are accumulated and applied once per animation frame: a
+  // render wave measures many items at once and each flush triggers a full
+  // range/items recompute, so applying them one by one is O(visible²).
+  //
+  // The frame boundary matters: measurements arrive from a ResizeObserver
+  // callback, and applying them there (or in a microtask, which still runs
+  // inside the observer's delivery step) mounts and resizes items the browser
+  // can no longer report in that frame — it then raises "ResizeObserver loop
+  // completed with undelivered notifications" on window. Applying them in the
+  // next frame lets that layout go through a regular observer pass.
   let pendingMeasurements: Map<number, number> | null = null;
+  let measurementFrame: number | undefined;
+
+  onCleanup(() => {
+    if (measurementFrame !== undefined) {
+      cancelAnimationFrame(measurementFrame);
+    }
+    pendingMeasurements = null;
+  });
 
   const flushMeasurements = () => {
     const pending = pendingMeasurements;
     pendingMeasurements = null;
+    measurementFrame = undefined;
     if (!pending || pending.size === 0) {
       return;
     }
@@ -488,7 +504,11 @@ export function useVirtualizer(options: VirtualizerOptions) {
 
     if (!pendingMeasurements) {
       pendingMeasurements = new Map();
-      queueMicrotask(flushMeasurements);
+      if (typeof requestAnimationFrame === 'function') {
+        measurementFrame = requestAnimationFrame(flushMeasurements);
+      } else {
+        queueMicrotask(flushMeasurements);
+      }
     }
     pendingMeasurements.set(index, size);
   };

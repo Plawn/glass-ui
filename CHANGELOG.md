@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.1
+
+### Fixes
+
+- **VirtualList / VirtualTable**: item measurements are applied on the next
+  animation frame instead of inside the `ResizeObserver` callback. Scrolling no
+  longer raises "ResizeObserver loop completed with undelivered notifications"
+  on `window` (which error trackers and dev overlays reported).
+
 ## 0.7.0
 
 Accessibility release. No prop was removed, but several defaults change
