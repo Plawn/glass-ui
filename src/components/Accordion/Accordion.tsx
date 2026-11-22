@@ -1,4 +1,4 @@
-import { type Component, For, Show, createSignal, splitProps } from 'solid-js';
+import { type Component, For, Show, createSignal, omit } from 'solid-js';
 import { ACCORDION_CONTENT_ENTER, TRANSITION_TRANSFORM } from '../../constants';
 import type { ComponentSize } from '../../types';
 import { ChevronDownIcon, ChevronRightIcon } from '../shared/icons';
@@ -35,7 +35,7 @@ const ACCORDION_CONTENT_INNER_PT: Record<ComponentSize, string> = {
 };
 
 export const Accordion: Component<AccordionProps> = (props) => {
-  const [, rest] = splitProps(props, ['items', 'multiple', 'size', 'class']);
+  const rest = omit(props, 'items', 'multiple', 'size', 'class');
 
   const getDefaultOpen = () => {
     const defaults: string[] = [];
@@ -73,7 +73,7 @@ export const Accordion: Component<AccordionProps> = (props) => {
               id={`accordion-trigger-${item.id}`}
               onClick={() => toggle(item.id)}
               class={`w-full flex items-center justify-between ${ACCORDION_HEADER_PADDING[size()]} hover:bg-black/2 dark:hover:bg-white/2 transition-colors`}
-              aria-expanded={isOpen(item.id)}
+              aria-expanded={isOpen(item.id) ? 'true' : 'false'}
               aria-controls={`accordion-content-${item.id}`}
             >
               <div class="flex items-center gap-2 text-left">

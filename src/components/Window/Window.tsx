@@ -5,8 +5,8 @@ import {
   Show,
   createEffect,
   createSignal,
-  on,
-  splitProps,
+  omit,
+  untrack,
 } from 'solid-js';
 import {
   ANIMATION_DURATION,
@@ -58,7 +58,8 @@ const RESIZE_DIRECTIONS: ResizeDirection[] = [
  * ```
  */
 export const Window: Component<WindowProps> = (props) => {
-  const [, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'open',
     'onClose',
     'onOpenChange',
@@ -83,7 +84,7 @@ export const Window: Component<WindowProps> = (props) => {
     'zIndex',
     'onFocus',
     'focused',
-  ]);
+  );
 
   const draggable = () => props.draggable ?? true;
   const resizable = () => props.resizable ?? true;
@@ -181,20 +182,20 @@ export const Window: Component<WindowProps> = (props) => {
   });
 
   // Recenter when opening if using 'center'
-  // Use on() to only track props.open, not size changes
   createEffect(
-    on(
-      () => props.open,
-      (open) => {
-        if (open && props.defaultPosition === 'center') {
-          const s = props.size ?? size();
-          setInternalPosition({
-            x: Math.max(0, (window.innerWidth - s.width) / 2),
-            y: Math.max(0, (window.innerHeight - s.height) / 2),
-          });
-        }
-      },
-    ),
+    () => props.open,
+    (open) => {
+      // Peek at the current size: only (re)opening should recenter
+      const s = untrack(() =>
+        props.defaultPosition === 'center' ? (props.size ?? size()) : null,
+      );
+      if (open && s) {
+        setInternalPosition({
+          x: Math.max(0, (window.innerWidth - s.width) / 2),
+          y: Math.max(0, (window.innerHeight - s.height) / 2),
+        });
+      }
+    },
   );
 
   // Handle backdrop click
@@ -256,7 +257,7 @@ export const Window: Component<WindowProps> = (props) => {
             height: `${props.size?.height ?? size().height}px`,
           }}
           role="dialog"
-          aria-modal={showBackdrop()}
+          aria-modal={showBackdrop() ? 'true' : 'false'}
           aria-labelledby={props.title ? 'window-title' : undefined}
           onMouseDown={handleWindowFocus}
           onTouchStart={handleWindowFocus}

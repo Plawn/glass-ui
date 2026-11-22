@@ -1,10 +1,4 @@
-import {
-  type Component,
-  Show,
-  createEffect,
-  createSignal,
-  splitProps,
-} from 'solid-js';
+import { type Component, Show, createSignal, omit } from 'solid-js';
 import { TRANSITION_ALL } from '../../constants';
 import { CheckIcon } from '../shared/icons';
 import type { CheckboxProps } from './types';
@@ -28,7 +22,8 @@ const SIZE_STYLES = {
 } as const;
 
 export const Checkbox: Component<CheckboxProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'checked',
     'defaultChecked',
     'indeterminate',
@@ -42,35 +37,15 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
     'class',
     'disabled',
     'required',
-  ]);
+  );
 
-  let inputRef: HTMLInputElement | undefined;
-  const size = () => local.size ?? 'md';
+  const size = () => props.size ?? 'md';
   const sizeStyle = () => SIZE_STYLES[size()];
 
-  // Internal visual state - this is what drives the UI
-  const [visualChecked, setVisualChecked] = createSignal(
-    local.checked ?? local.defaultChecked ?? false,
+  const [visualChecked, setVisualChecked] = createSignal<boolean>(
+    (previous) => props.checked ?? previous ?? props.defaultChecked ?? false,
   );
-  const [visualIndeterminate, setVisualIndeterminate] = createSignal(
-    local.indeterminate ?? false,
-  );
-
-  // Sync with props.checked - works if props are reactive OR if component remounts
-  createEffect(() => {
-    const propValue = local.checked;
-    if (propValue !== undefined) {
-      setVisualChecked(propValue);
-    }
-  });
-
-  createEffect(() => {
-    const propValue = local.indeterminate;
-    setVisualIndeterminate(propValue ?? false);
-    if (inputRef) {
-      inputRef.indeterminate = propValue ?? false;
-    }
-  });
+  const visualIndeterminate = () => props.indeterminate ?? false;
 
   const isActive = () => visualChecked() || visualIndeterminate();
   const iconClass = () =>
@@ -81,38 +56,32 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
     // Update visual state immediately for responsiveness
     setVisualChecked(newChecked);
     // Notify parent
-    local.onChange?.(newChecked);
-  };
-
-  const setRef = (el: HTMLInputElement) => {
-    inputRef = el;
-    // Sync initial indeterminate state
-    el.indeterminate = local.indeterminate ?? false;
-    if (typeof local.ref === 'function') {
-      local.ref(el);
-    }
+    props.onChange?.(newChecked);
   };
 
   return (
     <label
-      class={`inline-flex items-center gap-3 cursor-pointer ${local.disabled ? 'opacity-50 cursor-not-allowed' : ''} ${local.class ?? ''}`}
+      class={`inline-flex items-center gap-3 cursor-pointer ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''} ${props.class ?? ''}`}
     >
       <div
-        class={`${sizeStyle().box} flex items-center justify-center`}
-        classList={{
-          'glass-checkbox-checked': isActive(),
-          'glass-checkbox': !isActive(),
-        }}
+        class={[
+          `${sizeStyle().box} flex items-center justify-center`,
+          {
+            'glass-checkbox-checked': isActive(),
+            'glass-checkbox': !isActive(),
+          },
+        ]}
       >
         <input
           {...rest}
-          ref={setRef}
+          ref={props.ref}
+          prop:indeterminate={visualIndeterminate()}
           type="checkbox"
-          id={local.id}
-          name={local.name}
+          id={props.id}
+          name={props.name}
           checked={visualChecked()}
-          disabled={local.disabled}
-          required={local.required}
+          disabled={props.disabled}
+          required={props.required}
           aria-checked={visualIndeterminate() ? 'mixed' : undefined}
           onChange={handleChange}
           class="sr-only"
@@ -124,9 +93,9 @@ export const Checkbox: Component<CheckboxProps> = (props) => {
           <CheckIcon class={iconClass()} />
         </Show>
       </div>
-      <Show when={local.label}>
+      <Show when={props.label}>
         <span class="text-sm text-surface-700 dark:text-surface-300">
-          {local.label}
+          {props.label}
         </span>
       </Show>
     </label>

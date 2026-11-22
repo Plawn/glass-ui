@@ -1,10 +1,4 @@
-import {
-  type Component,
-  For,
-  Show,
-  createUniqueId,
-  splitProps,
-} from 'solid-js';
+import { type Component, For, Show, createUniqueId, omit } from 'solid-js';
 import { TRANSITION_ALL_SLOW } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { RadioGroupProps, RadioGroupSize } from './types';
@@ -55,7 +49,8 @@ const sizeConfig: Record<
  * ```
  */
 export const RadioGroup: Component<RadioGroupProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'options',
     'value',
     'defaultValue',
@@ -67,27 +62,27 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
     'label',
     'error',
     'class',
-  ]);
+  );
   const fallbackName = createUniqueId();
-  const groupName = () => local.name ?? fallbackName;
-  const size = () => local.size ?? 'md';
+  const groupName = () => props.name ?? fallbackName;
+  const size = () => props.size ?? 'md';
 
   const [value, setValue] = useControlled({
-    value: () => local.value,
-    defaultValue: local.defaultValue ?? '',
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.value,
+    getDefaultValue: () => props.defaultValue ?? '',
+    onChange: (v) => props.onChange?.(v),
   });
-  const orientation = () => local.orientation ?? 'vertical';
+  const orientation = () => props.orientation ?? 'vertical';
   const config = () => sizeConfig[size()];
 
   const isOptionDisabled = (optionDisabled?: boolean) =>
-    local.disabled || optionDisabled;
+    props.disabled || optionDisabled;
 
   // Refs for roving tabindex
   const radioRefs: Map<string, HTMLInputElement> = new Map();
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    const enabledOptions = local.options.filter(
+    const enabledOptions = props.options.filter(
       (opt) => !isOptionDisabled(opt.disabled),
     );
     if (enabledOptions.length === 0) {
@@ -125,19 +120,19 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
   };
 
   return (
-    <div {...rest} class={`w-full ${local.class ?? ''}`}>
-      <Show when={local.label}>
+    <div {...rest} class={`w-full ${props.class ?? ''}`}>
+      <Show when={props.label}>
         <div class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
-          {local.label}
+          {props.label}
         </div>
       </Show>
       <div
         role="radiogroup"
-        aria-label={local.label}
+        aria-label={props.label}
         aria-describedby={
-          local.error
-            ? local.name
-              ? `${local.name}-error`
+          props.error
+            ? props.name
+              ? `${props.name}-error`
               : `${fallbackName}-error`
             : undefined
         }
@@ -146,7 +141,7 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
         }`}
         onKeyDown={handleKeyDown}
       >
-        <For each={local.options}>
+        <For each={props.options}>
           {(option) => {
             const optionId = createUniqueId();
             const disabled = () => isOptionDisabled(option.disabled);
@@ -166,9 +161,9 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
                   value={option.value}
                   checked={isSelected()}
                   disabled={disabled()}
-                  tabIndex={
+                  tabindex={
                     isSelected() ||
-                    (!value() && local.options.indexOf(option) === 0)
+                    (!value() && props.options.indexOf(option) === 0)
                       ? 0
                       : -1
                   }
@@ -222,13 +217,13 @@ export const RadioGroup: Component<RadioGroupProps> = (props) => {
           }}
         </For>
       </div>
-      <Show when={local.error}>
+      <Show when={props.error}>
         <p
-          id={local.name ? `${local.name}-error` : `${fallbackName}-error`}
+          id={props.name ? `${props.name}-error` : `${fallbackName}-error`}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {local.error}
+          {props.error}
         </p>
       </Show>
     </div>

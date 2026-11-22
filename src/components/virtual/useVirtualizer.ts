@@ -1,12 +1,4 @@
-import {
-  batch,
-  createEffect,
-  createMemo,
-  createSignal,
-  on,
-  onCleanup,
-  untrack,
-} from 'solid-js';
+import { createEffect, createMemo, createSignal, untrack } from 'solid-js';
 import type {
   ListItem,
   ListRange,
@@ -164,50 +156,55 @@ export function useVirtualizer(options: VirtualizerOptions) {
   let scrollTimeout: number | undefined;
   let itemRefCache = new Map<number, ListItem>();
 
-  const [sizeCache, setSizeCache] = createSignal<SizeCache>({
-    tree: new FenwickTree(
-      Math.max(1, options.totalCount()),
-      options.getEstimatedSize(),
-    ),
-    sizes: new Map(),
-    defaultSize: options.getEstimatedSize(),
-    totalCount: options.totalCount(),
-    version: 0,
-  });
+  // Initial snapshot only: the DATA SYNC effect below keeps the cache in step
+  // with later changes of the count / estimated size.
+  const [sizeCache, setSizeCache] = createSignal<SizeCache>(
+    untrack(() => {
+      const totalCount = options.totalCount();
+      const defaultSize = options.getEstimatedSize();
+      return {
+        tree: new FenwickTree(Math.max(1, totalCount), defaultSize),
+        sizes: new Map(),
+        defaultSize,
+        totalCount,
+        version: 0,
+      };
+    }),
+  );
 
   // 1. DATA SYNC (Total Count / Estimated Size)
-  createEffect(() => {
-    const count = options.totalCount();
-    const estSize = options.getEstimatedSize();
+  createEffect(
+    () => [options.totalCount(), options.getEstimatedSize()] as const,
+    ([count, estSize]) => {
+      setSizeCache((prev) => {
+        // Optimization: No-op if nothing relevant changed
+        if (prev.totalCount === count && prev.defaultSize === estSize) {
+          return prev;
+        }
 
-    setSizeCache((prev) => {
-      // Optimization: No-op if nothing relevant changed
-      if (prev.totalCount === count && prev.defaultSize === estSize) {
-        return prev;
-      }
-
-      // Filter out sizes for indices that no longer exist
-      const newSizes = new Map<number, number>();
-      if (prev.sizes.size > 0) {
-        for (const [idx, size] of prev.sizes) {
-          if (idx < count) {
-            newSizes.set(idx, size);
+        // Filter out sizes for indices that no longer exist
+        const newSizes = new Map<number, number>();
+        if (prev.sizes.size > 0) {
+          for (const [idx, size] of prev.sizes) {
+            if (idx < count) {
+              newSizes.set(idx, size);
+            }
           }
         }
-      }
 
-      // Bulk Load Tree - O(N)
-      const newTree = new FenwickTree(Math.max(1, count), estSize, newSizes);
+        // Bulk Load Tree - O(N)
+        const newTree = new FenwickTree(Math.max(1, count), estSize, newSizes);
 
-      return {
-        tree: newTree,
-        sizes: newSizes,
-        defaultSize: estSize,
-        totalCount: count,
-        version: prev.version + 1,
-      };
-    });
-  });
+        return {
+          tree: newTree,
+          sizes: newSizes,
+          defaultSize: estSize,
+          totalCount: count,
+          version: prev.version + 1,
+        };
+      });
+    },
+  );
 
   // 2. VISIBLE INDICES
   // Custom equality: scroll moves every pixel but the range only changes every
@@ -245,7 +242,6 @@ export function useVirtualizer(options: VirtualizerOptions) {
         end: Math.min(cache.totalCount - 1, endIndex + os),
       };
     },
-    undefined,
     { equals: (a, b) => a.start === b.start && a.end === b.end },
   );
 
@@ -315,103 +311,109 @@ export function useVirtualizer(options: VirtualizerOptions) {
   let prevAtBottom: boolean | undefined;
   let prevAtTop: boolean | undefined;
 
-  createEffect(() => {
-    const scroll = scrollTop();
-    const viewport = viewportSize();
-    const total = totalSize();
-
-    if (viewport === 0) {
-      return;
-    }
-
-    const bottomThreshold = options.atBottomThreshold?.() ?? 4;
-    const topThreshold = options.atTopThreshold?.() ?? 0;
-
-    const distanceFromBottom = total - scroll - viewport;
-    const atBottom = distanceFromBottom <= bottomThreshold;
-    const atTop = scroll <= topThreshold;
-
-    const bottomChanged = prevAtBottom !== atBottom;
-    const topChanged = prevAtTop !== atTop;
-
-    if (bottomChanged) {
-      prevAtBottom = atBottom;
-      options.onAtBottomChange?.(atBottom);
-    }
-
-    if (topChanged) {
-      prevAtTop = atTop;
-      options.onAtTopChange?.(atTop);
-
-      // Start reached (only on transition to at-top)
-      if (atTop && options.onStartReached) {
-        const { start } = untrack(visibleRange);
-        options.onStartReached(start);
+  createEffect(
+    () => {
+      const viewport = viewportSize();
+      if (!viewport) {
+        return;
       }
-    }
-  });
+      const scroll = scrollTop();
+      return {
+        atBottom:
+          totalSize() - scroll - viewport <=
+          (options.atBottomThreshold?.() ?? 4),
+        atTop: scroll <= (options.atTopThreshold?.() ?? 0),
+      };
+    },
+    (edges) => {
+      if (!edges) {
+        return;
+      }
+      const { atTop, atBottom } = edges;
+      const bottomChanged = prevAtBottom !== atBottom;
+      const topChanged = prevAtTop !== atTop;
+
+      if (bottomChanged) {
+        prevAtBottom = atBottom;
+        options.onAtBottomChange?.(atBottom);
+      }
+
+      if (topChanged) {
+        prevAtTop = atTop;
+        options.onAtTopChange?.(atTop);
+
+        // Start reached (only on transition to at-top)
+        if (atTop && options.onStartReached) {
+          const { start } = untrack(visibleRange);
+          options.onStartReached(start);
+        }
+      }
+    },
+  );
 
   // 5b. OBSERVERS
-  createEffect(() => {
-    const container = options.getScrollContainer();
-    if (!container) {
-      return;
-    }
-
-    // ResizeObserver
-    const ro = new ResizeObserver((entries) => {
-      // Wrap in animation frame to prevent "ResizeObserver loop limit exceeded"
-      requestAnimationFrame(() => {
-        if (!Array.isArray(entries) || !entries.length) {
-          return;
-        }
-        const entry = entries[0];
-        const size = options.horizontal
-          ? entry.contentRect.width
-          : entry.contentRect.height;
-        setViewportSize(size);
-      });
-    });
-    ro.observe(container);
-
-    // Scroll Handler
-    const onScroll = () => {
-      if (ignoreNextScrollEvent) {
-        ignoreNextScrollEvent = false;
+  createEffect(
+    () => options.getScrollContainer(),
+    (container) => {
+      if (!container) {
         return;
       }
 
-      const current = options.horizontal
-        ? container.scrollLeft
-        : container.scrollTop;
-      setScrollTop(current);
+      // ResizeObserver
+      const ro = new ResizeObserver((entries) => {
+        // Wrap in animation frame to prevent "ResizeObserver loop limit exceeded"
+        requestAnimationFrame(() => {
+          if (!Array.isArray(entries) || !entries.length) {
+            return;
+          }
+          const entry = entries[0];
+          const size = options.horizontal
+            ? entry.contentRect.width
+            : entry.contentRect.height;
+          setViewportSize(size);
+        });
+      });
+      ro.observe(container);
 
-      if (!isScrolling()) {
-        setIsScrolling(true);
-        options.onScrollingChanged?.(true);
-      }
+      // Scroll Handler
+      const onScroll = () => {
+        if (ignoreNextScrollEvent) {
+          ignoreNextScrollEvent = false;
+          return;
+        }
 
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-      scrollTimeout = window.setTimeout(() => {
-        setIsScrolling(false);
-        options.onScrollingChanged?.(false);
-      }, 150);
-    };
+        const current = options.horizontal
+          ? container.scrollLeft
+          : container.scrollTop;
+        setScrollTop(current);
 
-    container.addEventListener('scroll', onScroll, { passive: true });
-    // Initial measure
-    onScroll();
+        if (!untrack(isScrolling)) {
+          setIsScrolling(true);
+          options.onScrollingChanged?.(true);
+        }
 
-    onCleanup(() => {
-      ro.disconnect();
-      container.removeEventListener('scroll', onScroll);
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-    });
-  });
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+        }
+        scrollTimeout = window.setTimeout(() => {
+          setIsScrolling(false);
+          options.onScrollingChanged?.(false);
+        }, 150);
+      };
+
+      container.addEventListener('scroll', onScroll, { passive: true });
+      // Initial measure
+      onScroll();
+
+      return () => {
+        ro.disconnect();
+        container.removeEventListener('scroll', onScroll);
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+        }
+      };
+    },
+  );
 
   // 6. DYNAMIC MEASUREMENT
   // Measurements are accumulated and flushed once per microtask: a render wave
@@ -430,53 +432,51 @@ export function useVirtualizer(options: VirtualizerOptions) {
     // Use untrack to avoid subscription loops
     const { start } = untrack(visibleRange);
 
-    batch(() => {
-      setSizeCache((prev) => {
-        let changed = false;
-        let scrollDelta = 0;
+    setSizeCache((prev) => {
+      let changed = false;
+      let scrollDelta = 0;
 
-        for (const [index, size] of pending) {
-          if (index >= prev.totalCount) {
-            continue;
-          }
-          const currentSize = prev.sizes.get(index) ?? prev.defaultSize;
-          if (Math.abs(currentSize - size) < 0.5) {
-            continue;
-          }
-
-          const delta = size - currentSize;
-          prev.tree.update(index, delta);
-          prev.sizes.set(index, size);
-          changed = true;
-
-          // Items above the viewport shift everything below them
-          if (index < start) {
-            scrollDelta += delta;
-          }
+      for (const [index, size] of pending) {
+        if (index >= prev.totalCount) {
+          continue;
+        }
+        const currentSize = prev.sizes.get(index) ?? prev.defaultSize;
+        if (Math.abs(currentSize - size) < 0.5) {
+          continue;
         }
 
-        if (!changed) {
-          return prev;
+        const delta = size - currentSize;
+        prev.tree.update(index, delta);
+        prev.sizes.set(index, size);
+        changed = true;
+
+        // Items above the viewport shift everything below them
+        if (index < start) {
+          scrollDelta += delta;
         }
+      }
 
-        // Scroll Anchoring
-        if (container && scrollDelta !== 0) {
-          const currentScroll = options.horizontal
-            ? container.scrollLeft
-            : container.scrollTop;
-          const newScroll = currentScroll + scrollDelta;
+      if (!changed) {
+        return prev;
+      }
 
-          ignoreNextScrollEvent = true;
-          if (options.horizontal) {
-            container.scrollLeft = newScroll;
-          } else {
-            container.scrollTop = newScroll;
-          }
-          setScrollTop(newScroll);
+      // Scroll Anchoring
+      if (container && scrollDelta !== 0) {
+        const currentScroll = options.horizontal
+          ? container.scrollLeft
+          : container.scrollTop;
+        const newScroll = currentScroll + scrollDelta;
+
+        ignoreNextScrollEvent = true;
+        if (options.horizontal) {
+          container.scrollLeft = newScroll;
+        } else {
+          container.scrollTop = newScroll;
         }
+        setScrollTop(newScroll);
+      }
 
-        return { ...prev, version: prev.version + 1 };
-      });
+      return { ...prev, version: prev.version + 1 };
     });
   };
 
@@ -493,17 +493,16 @@ export function useVirtualizer(options: VirtualizerOptions) {
     pendingMeasurements.set(index, size);
   };
 
-  createEffect(
-    on(visibleRange, (range) => {
-      options.onRangeChanged?.({
-        startIndex: range.start,
-        endIndex: range.end,
-      });
-      if (range.end >= options.totalCount() - 1 && range.end > 0) {
-        options.onEndReached?.(range.end);
-      }
-    }),
-  );
+  createEffect(visibleRange, (range) => {
+    options.onRangeChanged?.({
+      startIndex: range.start,
+      endIndex: range.end,
+    });
+    // Peek at the count: only a range change should fire `onEndReached`
+    if (range.end >= untrack(options.totalCount) - 1 && range.end > 0) {
+      options.onEndReached?.(range.end);
+    }
+  });
 
   // 7. PUBLIC API
   return {

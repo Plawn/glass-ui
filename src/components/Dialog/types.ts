@@ -1,4 +1,5 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+
 import type { DialogSize, DialogVariant, FocusReturnTarget } from '../../types';
 
 // Re-export from central types for backwards compatibility

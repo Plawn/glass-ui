@@ -1,4 +1,4 @@
-import { For, Show, splitProps } from 'solid-js';
+import { For, Show, omit } from 'solid-js';
 import { useControlled } from '../../hooks';
 import { Spinner } from '../Spinner';
 import { ChevronDownIcon } from '../shared/icons';
@@ -32,7 +32,9 @@ import type { SelectProps, SelectPropsWithOptions } from './types';
  * ```
  */
 export function Select<T = string>(props: SelectProps<T>) {
-  const [local, rest] = splitProps(props as SelectPropsWithOptions<T>, [
+  const local = props as SelectPropsWithOptions<T>;
+  const rest = omit(
+    local,
     'value',
     'defaultValue',
     'onChange',
@@ -47,11 +49,11 @@ export function Select<T = string>(props: SelectProps<T>) {
     'disabled',
     'required',
     'loading',
-  ]);
+  );
 
   const [value, setValue] = useControlled<T | string | null>({
     value: () => local.value,
-    defaultValue: local.defaultValue ?? (local.options ? null : ''),
+    getDefaultValue: () => local.defaultValue ?? (local.options ? null : ''),
     onChange: (v) =>
       (local.onChange as ((value: T | string | null) => void) | undefined)?.(v),
   });
@@ -103,8 +105,8 @@ export function Select<T = string>(props: SelectProps<T>) {
           value={local.options ? getSelectedIndex() : (value() as string)}
           disabled={local.disabled}
           required={local.required}
-          aria-invalid={!!local.error}
-          aria-busy={local.loading || undefined}
+          aria-invalid={local.error ? 'true' : 'false'}
+          aria-busy={local.loading ? 'true' : undefined}
           aria-describedby={
             local.error && local.id ? `${local.id}-error` : undefined
           }

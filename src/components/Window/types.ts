@@ -1,4 +1,5 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+
 import type { Position, ResizeDirection, Size } from '../../hooks';
 
 export type { ResizeDirection };
@@ -17,7 +18,7 @@ export interface WindowConstraints {
 export interface WindowProps
   extends Omit<
     JSX.HTMLAttributes<HTMLDivElement>,
-    'title' | 'onFocus' | 'style'
+    'title' | 'onFocus' | 'style' | 'draggable'
   > {
   /** Whether the window is open */
   open: boolean;

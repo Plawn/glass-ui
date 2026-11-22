@@ -67,7 +67,11 @@ export function useWindowZIndex(initialZIndex: number = BASE_Z_INDEX) {
  */
 export function useWindowManager() {
   // Ordered list of window IDs (last = top/focused)
-  const [windowOrder, setWindowOrder] = createSignal<string[]>([]);
+  // `register` is meant to be called from a component body, which Solid 2
+  // treats as an owned scope: opt in to writes from there.
+  const [windowOrder, setWindowOrder] = createSignal<string[]>([], {
+    ownedWrite: true,
+  });
 
   /**
    * Get z-index for a window based on its position in the stack

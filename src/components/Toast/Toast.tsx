@@ -1,3 +1,4 @@
+import { Dynamic } from '@solidjs/web';
 import {
   type Component,
   For,
@@ -5,7 +6,6 @@ import {
   createSignal,
   onCleanup,
 } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
 import { TOAST_COLORS, TOAST_ENTER, TRANSITION_ALL } from '../../constants';
 import {
   CheckIcon,
@@ -43,13 +43,16 @@ const ToastItem: Component<{ toast: Toast }> = (props) => {
   // Pause auto-dismiss while the pointer is over the toast or focus is inside
   const [hovered, setHovered] = createSignal(false);
   const [focused, setFocused] = createSignal(false);
-  createEffect(() => {
-    if (hovered() || focused()) {
-      pauseToast(props.toast.id);
-    } else {
-      resumeToast(props.toast.id);
-    }
-  });
+  createEffect(
+    () => [hovered() || focused(), props.toast.id] as const,
+    ([paused, id]) => {
+      if (paused) {
+        pauseToast(id);
+      } else {
+        resumeToast(id);
+      }
+    },
+  );
 
   // Announcements go through the container's persistent live regions, so the
   // visible toast carries no live role (avoids double announcements).

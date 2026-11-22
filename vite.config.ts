@@ -1,7 +1,7 @@
 import { resolve } from 'node:path';
+import solid from '@solidjs/vite-plugin';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import solid from 'vite-plugin-solid';
 
 export default defineConfig({
   plugins: [
@@ -19,13 +19,13 @@ export default defineConfig({
       // inlined away by preserveModules. This lets consumers deep-import the
       // heavy components in isolation (prismjs / marked+dompurify).
       entry: {
-        index: resolve(__dirname, 'src/index.ts'),
+        index: resolve(import.meta.dirname, 'src/index.ts'),
         'components/CodeBlock/index': resolve(
-          __dirname,
+          import.meta.dirname,
           'src/components/CodeBlock/index.ts',
         ),
         'components/Markdown/index': resolve(
-          __dirname,
+          import.meta.dirname,
           'src/components/Markdown/index.ts',
         ),
       },
@@ -36,14 +36,9 @@ export default defineConfig({
     // styles2.css (consumers lost those styles). One file keeps the public
     // `glass-ui-solid/styles.css` import complete.
     cssCodeSplit: false,
-    rollupOptions: {
-      external: ['solid-js', 'solid-js/web', 'solid-js/store'],
+    rolldownOptions: {
+      external: (id) => /^(solid-js|@solidjs\/web)(\/|$)/.test(id),
       output: {
-        globals: {
-          'solid-js': 'SolidJS',
-          'solid-js/web': 'SolidJSWeb',
-          'solid-js/store': 'SolidJSStore',
-        },
         // Preserve modules for tree-shaking
         preserveModules: true,
         preserveModulesRoot: 'src',
@@ -57,6 +52,6 @@ export default defineConfig({
       },
     },
     sourcemap: false,
-    minify: 'esbuild',
+    minify: 'oxc',
   },
 });

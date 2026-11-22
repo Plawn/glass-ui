@@ -1,4 +1,5 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+
 import type { AvatarSize } from '../../types';
 
 export interface AvatarProps extends JSX.HTMLAttributes<HTMLDivElement> {

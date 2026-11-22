@@ -69,8 +69,8 @@ export const ContextMenuItem: Component<ContextMenuItemProps> = (props) => {
   return (
     <div
       role="menuitem"
-      tabIndex={props.disabled ? -1 : 0}
-      aria-disabled={props.disabled}
+      tabindex={props.disabled ? -1 : 0}
+      aria-disabled={props.disabled ? 'true' : undefined}
       class={`
         ${baseClasses}
         ${props.disabled ? disabledClasses : ''}

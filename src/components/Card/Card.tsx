@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, splitProps } from 'solid-js';
+import { Show, omit } from 'solid-js';
 import type { CardProps, CardVariant } from './types';
 
 const variantStyles: Record<CardVariant, string> = {
@@ -10,31 +10,25 @@ const variantStyles: Record<CardVariant, string> = {
 };
 
 export const Card: Component<CardProps> = (props) => {
-  const [local, rest] = splitProps(props, [
-    'variant',
-    'class',
-    'header',
-    'children',
-    'footer',
-  ]);
-  const variant = () => local.variant ?? 'default';
+  const rest = omit(props, 'variant', 'class', 'header', 'children', 'footer');
+  const variant = () => props.variant ?? 'default';
 
   return (
     <div
       {...rest}
-      class={`rounded-xl overflow-hidden ${variantStyles[variant()]} ${local.class ?? ''}`}
+      class={`rounded-xl overflow-hidden ${variantStyles[variant()]} ${props.class ?? ''}`}
     >
-      <Show when={local.header}>
+      <Show when={props.header}>
         <div class="px-4 py-3 border-b border-surface-200/50 dark:border-surface-700/50">
-          {local.header}
+          {props.header}
         </div>
       </Show>
 
-      <div class="p-4">{local.children}</div>
+      <div class="p-4">{props.children}</div>
 
-      <Show when={local.footer}>
+      <Show when={props.footer}>
         <div class="px-4 py-3 border-t border-surface-200/50 dark:border-surface-700/50 bg-surface-50/30 dark:bg-surface-900/30">
-          {local.footer}
+          {props.footer}
         </div>
       </Show>
     </div>

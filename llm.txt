@@ -2,15 +2,15 @@
 
 > iOS 26-inspired glassmorphism UI components for SolidJS with Tailwind CSS v4.
 
-Package: `glass-ui-solid` v0.4.2
+Package: `glass-ui-solid` v0.8.0
 License: Apache-2.0
-Peer dependency: `solid-js` ^1.8.0
+Peer dependencies: `solid-js` and `@solidjs/web`, both ^2.0.3
 Repository: https://github.com/Plawn/glass-ui
 
 ## Installation
 
 ```bash
-npm install glass-ui-solid solid-js
+npm install glass-ui-solid solid-js@^2.0.3 @solidjs/web@^2.0.3
 ```
 
 ## Setup
@@ -1144,7 +1144,11 @@ useClickOutside(elementRef, () => close(), { enabled: () => isOpen() });
 Manage controlled/uncontrolled component state.
 
 ```tsx
-const { value, setValue } = useControlled({ value: props.value, defaultValue: 'default', onChange: props.onChange });
+const [value, setValue] = useControlled({
+  value: () => props.value,
+  getDefaultValue: () => props.defaultValue ?? 'default',
+  onChange: (v) => props.onChange?.(v),
+});
 ```
 
 ### useEscapeKey

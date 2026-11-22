@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import { type Accessor, createEffect } from 'solid-js';
 import { pushEscapeHandler } from './escapeStack';
 
 export interface UseEscapeKeyOptions {
@@ -33,12 +33,8 @@ export interface UseEscapeKeyOptions {
 export function useEscapeKey(options: UseEscapeKeyOptions): void {
   const { onEscape, enabled } = options;
 
-  createEffect(() => {
-    // If enabled signal is provided and returns false, don't register
-    if (enabled !== undefined && !enabled()) {
-      return;
-    }
-
-    onCleanup(pushEscapeHandler(() => onEscape()));
-  });
+  createEffect(
+    () => enabled?.() ?? true,
+    (active) => (active ? pushEscapeHandler(onEscape) : undefined),
+  );
 }

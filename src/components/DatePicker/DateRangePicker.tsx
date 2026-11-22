@@ -1,4 +1,4 @@
-import { type Component, Show, createSignal, splitProps } from 'solid-js';
+import { type Component, Show, createSignal, omit } from 'solid-js';
 import { useControlled } from '../../hooks';
 import type { ComponentSize } from '../../types';
 import { Popover } from '../Popover';
@@ -63,7 +63,8 @@ const isBeforeDay = (date1: Date, date2: Date): boolean => {
  * ```
  */
 export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'value',
     'defaultValue',
     'onChange',
@@ -85,27 +86,30 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
     'id',
     'class',
     'style',
-  ]);
+  );
 
   const [isOpen, setIsOpen] = createSignal(false);
   const [hoverDate, setHoverDate] = createSignal<Date | null>(null);
 
   const [value, setValue] = useControlled<DateRange>({
-    value: () => local.value,
-    defaultValue: local.defaultValue ?? { start: null, end: null },
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.value,
+    getDefaultValue: () => props.defaultValue ?? { start: null, end: null },
+    onChange: (v) => props.onChange?.(v),
   });
 
   // Local state for selection in progress
-  const [localStart, setLocalStart] = createSignal<Date | null>(value().start);
-  const [localEnd, setLocalEnd] = createSignal<Date | null>(value().end);
+  // Writable derived: follow the committed value, diverge while picking
+  const [localStart, setLocalStart] = createSignal<Date | null>(
+    () => value().start,
+  );
+  const [localEnd, setLocalEnd] = createSignal<Date | null>(() => value().end);
 
-  const size = () => local.size ?? 'md';
-  const format = () => local.format ?? 'yyyy-MM-dd';
-  const weekStartsOn = () => local.weekStartsOn ?? 0;
-  const clearable = () => local.clearable ?? false;
-  const disabled = () => local.disabled ?? false;
-  const separator = () => local.separator ?? ' - ';
+  const size = () => props.size ?? 'md';
+  const format = () => props.format ?? 'yyyy-MM-dd';
+  const weekStartsOn = () => props.weekStartsOn ?? 0;
+  const clearable = () => props.clearable ?? false;
+  const disabled = () => props.disabled ?? false;
+  const separator = () => props.separator ?? ' - ';
 
   const displayValue = () => {
     const start = value().start;
@@ -181,23 +185,23 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
   };
 
   const placeholder = () => {
-    if (local.placeholder) {
-      return local.placeholder;
+    if (props.placeholder) {
+      return props.placeholder;
     }
-    const startText = local.startPlaceholder ?? 'Start date';
-    const endText = local.endPlaceholder ?? 'End date';
+    const startText = props.startPlaceholder ?? 'Start date';
+    const endText = props.endPlaceholder ?? 'End date';
     return `${startText}${separator()}${endText}`;
   };
 
   return (
-    <div {...rest} class={`w-full ${local.class ?? ''}`} style={local.style}>
-      <Show when={local.label}>
+    <div {...rest} class={`w-full ${props.class ?? ''}`} style={props.style}>
+      <Show when={props.label}>
         <label
-          for={local.id}
+          for={props.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {local.label}
-          <Show when={local.required}>
+          {props.label}
+          <Show when={props.required}>
             <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
@@ -214,7 +218,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
             text-surface-900 dark:text-surface-100
             focus:outline-none
             ${disabled() ? 'opacity-50 cursor-not-allowed' : ''}
-            ${local.error ? 'border-error-500 dark:border-error-400' : ''}
+            ${props.error ? 'border-error-500 dark:border-error-400' : ''}
             ${getSizeClasses(size())}
           `,
           'aria-haspopup': 'dialog',
@@ -245,7 +249,7 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
                 }}
                 class="p-1 rounded-full hover:bg-surface-200 dark:hover:bg-surface-600 text-surface-400 dark:text-surface-500 transition-colors"
                 role="button"
-                tabIndex={0}
+                tabindex={0}
                 aria-label="Clear date range"
               >
                 <CloseIcon size={14} />
@@ -258,8 +262,8 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
         <Calendar
           value={null}
           onSelect={handleDateSelect}
-          min={local.min}
-          max={local.max}
+          min={props.min}
+          max={props.max}
           weekStartsOn={weekStartsOn()}
           rangeStart={localStart()}
           rangeEnd={localEnd()}
@@ -269,17 +273,17 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       </Popover>
 
       {/* Hidden inputs for native form submission */}
-      <Show when={local.name}>
+      <Show when={props.name}>
         <input
           type="hidden"
-          name={`${local.name}-start`}
+          name={`${props.name}-start`}
           value={
             value().start ? formatDate(value().start as Date, 'yyyy-MM-dd') : ''
           }
         />
         <input
           type="hidden"
-          name={`${local.name}-end`}
+          name={`${props.name}-end`}
           value={
             value().end ? formatDate(value().end as Date, 'yyyy-MM-dd') : ''
           }
@@ -287,13 +291,13 @@ export const DateRangePicker: Component<DateRangePickerProps> = (props) => {
       </Show>
 
       {/* Error message */}
-      <Show when={local.error}>
+      <Show when={props.error}>
         <p
-          id={local.id ? `${local.id}-error` : undefined}
+          id={props.id ? `${props.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {local.error}
+          {props.error}
         </p>
       </Show>
     </div>

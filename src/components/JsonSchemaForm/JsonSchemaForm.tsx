@@ -1,6 +1,6 @@
+import { Dynamic } from '@solidjs/web';
 import type { Component } from 'solid-js';
 import { Match, Switch, createMemo } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
 // Direct imports to avoid circular dependency with barrel file
 import { ArrayField } from './fields/ArrayField';
 import { BooleanField } from './fields/BooleanField';
@@ -11,6 +11,7 @@ import { OneOfField } from './fields/OneOfField';
 import { StringField } from './fields/StringField';
 import {
   FieldRegistryContext,
+  liveConfig,
   mergeConfigs,
   resolveFieldFromRegistry,
   useFieldRegistry,
@@ -169,9 +170,9 @@ export const JsonSchemaForm: Component<JsonSchemaFormProps> = (props) => {
   return (
     <>
       {props.fields ? (
-        <FieldRegistryContext.Provider value={mergedConfig()}>
+        <FieldRegistryContext value={liveConfig(mergedConfig)}>
           {fieldContent()}
-        </FieldRegistryContext.Provider>
+        </FieldRegistryContext>
       ) : (
         fieldContent()
       )}

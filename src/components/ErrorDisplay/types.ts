@@ -1,4 +1,4 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
 
 export interface ErrorDisplayProps extends JSX.HTMLAttributes<HTMLDivElement> {
   /** The error message to display */

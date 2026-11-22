@@ -1,5 +1,6 @@
+import type { JSX } from '@solidjs/web';
 import { Card, CodeBlock } from 'glass-ui-solid';
-import type { JSX } from 'solid-js';
+
 import { Show, children } from 'solid-js';
 
 export interface DemoSectionProps {

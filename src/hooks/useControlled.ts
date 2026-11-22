@@ -11,9 +11,18 @@ export interface UseControlledOptions<T> {
   value: T | undefined | (() => T | undefined);
 
   /**
-   * The default value for uncontrolled mode
+   * The default value for uncontrolled mode. Stored as-is, even when it is a
+   * function. Either this or `getDefaultValue` must be provided.
    */
-  defaultValue: T;
+  defaultValue?: T;
+
+  /**
+   * Reactive default for uncontrolled mode; takes precedence over
+   * `defaultValue`. Use it when the default derives from props: the
+   * uncontrolled state follows it until the user changes the value, and
+   * resets if the default itself changes.
+   */
+  getDefaultValue?: () => T;
 
   /**
    * Callback when the value changes
@@ -42,8 +51,8 @@ export type UseControlledReturn<T> = [
  * ```tsx
  * const [isOpen, setIsOpen] = useControlled({
  *   value: () => props.open,
- *   defaultValue: props.defaultOpen ?? false,
- *   onChange: props.onOpenChange,
+ *   getDefaultValue: () => props.defaultOpen ?? false,
+ *   onChange: (open) => props.onOpenChange?.(open),
  * });
  *
  * // Use isOpen() to read the current value
@@ -53,9 +62,16 @@ export type UseControlledReturn<T> = [
 export function useControlled<T>(
   options: UseControlledOptions<T>,
 ): UseControlledReturn<T> {
-  const [internal, setInternal] = createSignal<T>(options.defaultValue);
+  // Memoised so the uncontrolled state resets only when the default itself
+  // changes value, not every time one of its dependencies re-evaluates.
+  const defaultValue = createMemo(() =>
+    options.getDefaultValue
+      ? options.getDefaultValue()
+      : (options.defaultValue as T),
+  );
+  const [internal, setInternal] = createSignal<T>(() => defaultValue());
 
-  // Resolve value - support both direct values and accessor functions
+  // Resolve the controlled value - support both direct values and accessors
   const getValue = () => {
     const v = options.value;
     return typeof v === 'function' ? (v as () => T | undefined)() : v;

@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, createSignal, onCleanup } from 'solid-js';
+import { type Accessor, createEffect, createSignal } from 'solid-js';
 
 export interface Position {
   x: number;
@@ -153,8 +153,8 @@ export function useDraggable(
   };
 
   // Global mouse/touch move and end handlers
-  createEffect(() => {
-    if (!isDragging()) {
+  createEffect(isDragging, (dragging) => {
+    if (!dragging) {
       return;
     }
 
@@ -182,12 +182,12 @@ export function useDraggable(
     document.addEventListener('touchmove', handleTouchMove, { passive: true });
     document.addEventListener('touchend', handleTouchEnd);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
-    });
+    };
   });
 
   return {

@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.8.0
+
+Glass UI now targets Solid 2. Install both `solid-js` and `@solidjs/web` at
+`^2.0.3` and set the TypeScript JSX import source to `@solidjs/web`.
+The root, `/code`, `/markdown` and CSS entry points keep their existing paths.
+Solid 1 applications can continue using Glass UI 0.7.x.
+
+### Behavior changes
+
+- **Uncontrolled defaults are reactive**: when a `default*` prop (or a derived
+  default such as the first tab, the first option or `min`) changes value, the
+  uncontrolled state resets to it. A default that keeps the same value leaves
+  the user's state untouched.
+- **Calendar / DatePicker / DateRangePicker**: the visible month follows the
+  selection when its month changes.
+- **VirtualTable**: `components` overrides are resolved once at mount.
+
+### Features
+
+- **useControlled**: `getDefaultValue` accessor for a reactive default
+  (`defaultValue` is still stored as-is, including function values).
+- **JsonSchemaForm**: `liveConfig()` wraps a registry-config accessor so a
+  context value stays reactive.
+
 ## 0.7.0
 
 Accessibility release. No prop was removed, but several defaults change

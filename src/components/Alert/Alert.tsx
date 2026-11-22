@@ -1,5 +1,5 @@
-import { type Component, Show, splitProps } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { Dynamic } from '@solidjs/web';
+import { type Component, Show, omit } from 'solid-js';
 import { ALERT_COLORS } from '../../constants';
 import {
   CheckCircleIcon,
@@ -23,20 +23,21 @@ const DefaultIcon: Component<{ type: AlertType }> = (props) => (
 );
 
 export const Alert: Component<AlertProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'type',
     'title',
     'children',
     'onClose',
     'icon',
     'class',
-  ]);
-  const styles = () => ALERT_COLORS[local.type];
+  );
+  const styles = () => ALERT_COLORS[props.type];
 
   return (
     <div
       {...rest}
-      class={`glass-card border-l-4 ${styles().border} ${styles().bg} p-4 rounded-xl ${local.class ?? ''}`}
+      class={`glass-card border-l-4 ${styles().border} ${styles().bg} p-4 rounded-xl ${props.class ?? ''}`}
       role="alert"
     >
       <div class="flex items-start gap-3">
@@ -45,28 +46,28 @@ export const Alert: Component<AlertProps> = (props) => {
           class={`flex-shrink-0 w-8 h-8 rounded-lg ${styles().iconBg} ${styles().icon} flex items-center justify-center`}
           aria-hidden="true"
         >
-          <Show when={local.icon} fallback={<DefaultIcon type={local.type} />}>
-            {local.icon}
+          <Show when={props.icon} fallback={<DefaultIcon type={props.type} />}>
+            {props.icon}
           </Show>
         </div>
 
         {/* Content */}
         <div class="flex-1 min-w-0">
-          <Show when={local.title}>
+          <Show when={props.title}>
             <h3 class="text-sm font-semibold text-surface-900 dark:text-surface-100 mb-1">
-              {local.title}
+              {props.title}
             </h3>
           </Show>
           <div class="text-sm text-surface-700 dark:text-surface-300">
-            {local.children}
+            {props.children}
           </div>
         </div>
 
         {/* Close button */}
-        <Show when={local.onClose}>
+        <Show when={props.onClose}>
           <button
             type="button"
-            onClick={local.onClose}
+            onClick={props.onClose}
             class="flex-shrink-0 p-1.5 rounded-lg text-surface-400 hover:text-surface-600 dark:hover:text-surface-200 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             aria-label="Close"
           >

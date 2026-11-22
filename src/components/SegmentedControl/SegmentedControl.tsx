@@ -1,12 +1,12 @@
+import type { JSX } from '@solidjs/web';
 import {
   For,
-  type JSX,
   createEffect,
   createSignal,
-  on,
+  omit,
   onCleanup,
-  onMount,
-  splitProps,
+  onSettled,
+  untrack,
 } from 'solid-js';
 import { TRANSITION_COLORS, TRANSITION_INDICATOR } from '../../constants';
 import { useControlled } from '../../hooks';
@@ -16,7 +16,8 @@ import type { SegmentedControlProps } from './types';
 export function SegmentedControl<T extends string | number>(
   props: SegmentedControlProps<T>,
 ) {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'options',
     'value',
     'defaultValue',
@@ -25,7 +26,7 @@ export function SegmentedControl<T extends string | number>(
     'orientation',
     'class',
     'onKeyDown',
-  ]);
+  );
   const [indicatorStyle, setIndicatorStyle] = createSignal({
     left: 0,
     top: 0,
@@ -37,20 +38,20 @@ export function SegmentedControl<T extends string | number>(
   const buttonRefs: Map<T, HTMLButtonElement> = new Map();
 
   const [value, setValue] = useControlled<T>({
-    value: () => local.value,
-    defaultValue: (local.defaultValue ?? local.options[0]?.value) as T,
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.value,
+    getDefaultValue: () => (props.defaultValue ?? props.options[0]?.value) as T,
+    onChange: (v) => props.onChange?.(v),
   });
 
-  const isVertical = () => local.orientation === 'vertical';
+  const isVertical = () => props.orientation === 'vertical';
 
   // `sm` keeps a 24px minimum target height (WCAG 2.5.8)
   const sizeClasses = () =>
-    local.size === 'sm'
+    props.size === 'sm'
       ? 'min-h-6 px-2 py-1 text-[0.625rem]'
       : 'px-3 py-1.5 text-xs';
 
-  const enabledOptions = () => local.options.filter((o) => !o.disabled);
+  const enabledOptions = () => props.options.filter((o) => !o.disabled);
 
   /**
    * Roving tabindex: only one radio is in the tab order — the selected one,
@@ -71,7 +72,7 @@ export function SegmentedControl<T extends string | number>(
   const handleKeyDown: JSX.EventHandler<HTMLDivElement, KeyboardEvent> = (
     e,
   ) => {
-    const callerHandler = local.onKeyDown;
+    const callerHandler = props.onKeyDown;
     if (typeof callerHandler === 'function') {
       callerHandler(e);
     } else if (callerHandler) {
@@ -91,7 +92,8 @@ export function SegmentedControl<T extends string | number>(
   };
 
   const updateIndicator = () => {
-    const activeButton = buttonRefs.get(value());
+    // Imperative DOM measurement: callers decide when to re-run it
+    const activeButton = buttonRefs.get(untrack(value));
     if (activeButton && containerRef) {
       const containerRect = containerRef.getBoundingClientRect();
       const buttonRect = activeButton.getBoundingClientRect();
@@ -106,7 +108,7 @@ export function SegmentedControl<T extends string | number>(
 
   const observer = new ResizeObserver(() => updateIndicator());
 
-  onMount(() => {
+  onSettled(() => {
     for (const btn of buttonRefs.values()) {
       observer.observe(btn);
     }
@@ -119,11 +121,12 @@ export function SegmentedControl<T extends string | number>(
   onCleanup(() => observer.disconnect());
 
   createEffect(
-    on(value, () => {
-      if (isInitialized()) {
+    () => [value(), isInitialized()] as const,
+    ([, initialized]) => {
+      if (initialized) {
         updateIndicator();
       }
-    }),
+    },
   );
 
   return (
@@ -133,7 +136,7 @@ export function SegmentedControl<T extends string | number>(
       role="radiogroup"
       onKeyDown={handleKeyDown}
       class={`relative flex ${isVertical() ? 'flex-col' : 'items-center'} gap-1 p-1 bg-surface-200/80 dark:bg-surface-800/80 rounded-xl w-fit ${
-        local.class ?? ''
+        props.class ?? ''
       }`}
     >
       {/* Sliding indicator - iOS 26 style */}
@@ -149,14 +152,14 @@ export function SegmentedControl<T extends string | number>(
           'transition-timing-function': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
         }}
       />
-      <For each={local.options}>
+      <For each={props.options}>
         {(option) => (
           <button
             ref={(el) => buttonRefs.set(option.value, el)}
             type="button"
             role="radio"
-            aria-checked={value() === option.value}
-            tabIndex={tabStopValue() === option.value ? 0 : -1}
+            aria-checked={value() === option.value ? 'true' : 'false'}
+            tabindex={tabStopValue() === option.value ? 0 : -1}
             onClick={() => !option.disabled && setValue(option.value)}
             disabled={option.disabled}
             class={`${sizeClasses()} font-bold rounded-lg ${TRANSITION_COLORS} relative z-10 ${

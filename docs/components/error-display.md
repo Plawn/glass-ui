@@ -25,21 +25,21 @@ import { ErrorDisplay } from 'glass-ui-solid';
 />
 ```
 
-### In Error Boundaries
+### In Error Boundaries (`Errored`)
 
 ```tsx
 function App() {
   return (
-    <ErrorBoundary
+    <Errored
       fallback={(err) => (
         <ErrorDisplay
           title="Something went wrong"
-          message={err.message}
+          message={String(err())}
         />
       )}
     >
       <MainContent />
-    </ErrorBoundary>
+    </Errored>
   );
 }
 ```
@@ -48,20 +48,22 @@ function App() {
 
 ```tsx
 function UserProfile() {
-  const [user] = createResource(() => fetchUser());
+  // Async memo: a rejected promise surfaces at the nearest <Errored>
+  const user = createMemo(() => fetchUser());
 
   return (
-    <Show
-      when={!user.error}
-      fallback={
+    <Errored
+      fallback={(err) => (
         <ErrorDisplay
           title="Failed to load profile"
-          message={user.error?.message || 'Unknown error'}
+          message={String(err()) || 'Unknown error'}
         />
-      }
+      )}
     >
-      <UserDetails user={user()} />
-    </Show>
+      <Loading fallback={<Spinner />}>
+        <UserDetails user={user()} />
+      </Loading>
+    </Errored>
   );
 }
 ```

@@ -6,9 +6,9 @@ import {
   createMemo,
   createSignal,
   createUniqueId,
-  on,
+  omit,
   onCleanup,
-  splitProps,
+  untrack,
 } from 'solid-js';
 import {
   DROPDOWN_ITEM_SIZE_CLASSES,
@@ -93,7 +93,8 @@ const HighlightedText: Component<{ text: string; highlight: string }> = (
  * ```
  */
 export const Autocomplete: Component<AutocompleteProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'options',
     'value',
     'defaultValue',
@@ -114,7 +115,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
     'error',
     'class',
     'style',
-  ]);
+  );
   const [isOpen, setIsOpen] = createSignal(false);
   const [inputValue, setInputValue] = createSignal('');
   const [focusedIndex, setFocusedIndex] = createSignal(-1);
@@ -128,47 +129,47 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   onCleanup(() => clearTimeout(blurTimer));
 
   const [selectedValue, setSelectedValue] = useControlled({
-    value: () => local.value,
-    defaultValue: local.defaultValue ?? '',
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.value,
+    getDefaultValue: () => props.defaultValue ?? '',
+    onChange: (v) => props.onChange?.(v),
   });
 
   // Combine internal ref with user-provided ref
   const setInputRef = (el: HTMLInputElement) => {
     internalInputRef = el;
-    if (typeof local.ref === 'function') {
-      local.ref(el);
-    } else if (local.ref !== undefined) {
+    if (typeof props.ref === 'function') {
+      props.ref(el);
+    } else if (props.ref !== undefined) {
       // For direct assignment refs, we can't set them directly
       // but SolidJS handles this case automatically
     }
   };
 
-  const size = () => local.size ?? 'md';
-  const emptyText = () => local.emptyText ?? 'No options found';
-  const filterFn = () => local.filterFn ?? defaultFilterFn;
+  const size = () => props.size ?? 'md';
+  const emptyText = () => props.emptyText ?? 'No options found';
+  const filterFn = () => props.filterFn ?? defaultFilterFn;
 
   // Sync input value with selected value
-  createEffect(() => {
-    const selectedOption = local.options.find(
-      (opt) => opt.value === selectedValue(),
-    );
-    if (selectedOption) {
-      setInputValue(selectedOption.label);
-    } else if (local.allowCustomValue) {
-      setInputValue(selectedValue());
-    } else {
-      setInputValue('');
-    }
-  });
+  createEffect(
+    () => {
+      const value = selectedValue();
+      return (
+        props.options.find((option) => option.value === value)?.label ??
+        (props.allowCustomValue ? value : '')
+      );
+    },
+    (text) => {
+      setInputValue(text);
+    },
+  );
 
   // Filtered options based on input
   const filteredOptions = createMemo(() => {
     const input = inputValue().trim();
     if (!input) {
-      return local.options;
+      return props.options;
     }
-    return local.options.filter((opt) => filterFn()(opt, input));
+    return props.options.filter((opt) => filterFn()(opt, input));
   });
 
   // Focusable options (non-disabled)
@@ -178,20 +179,17 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
   // Reset focused index when options change (keep first item highlighted)
   createEffect(
-    on(
-      () => filteredOptions(),
-      () => {
-        if (isOpen()) {
-          const firstFocusable = focusableOptions().length > 0 ? 0 : -1;
-          setFocusedIndex(firstFocusable);
-        }
-      },
-    ),
+    () => [filteredOptions(), focusableOptions().length > 0] as const,
+    ([, hasFocusable]) => {
+      // Peek at the open state: opening alone must not move the highlight
+      if (untrack(isOpen)) {
+        setFocusedIndex(hasFocusable ? 0 : -1);
+      }
+    },
   );
 
   // Scroll focused item into view
-  createEffect(() => {
-    const idx = focusedIndex();
+  createEffect(focusedIndex, (idx) => {
     if (idx >= 0 && dropdownRef) {
       const items = dropdownRef.querySelectorAll('[data-option]');
       const item = items[idx];
@@ -202,7 +200,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   });
 
   const handleOpen = () => {
-    if (local.disabled) {
+    if (props.disabled) {
       return;
     }
     setIsOpen(true);
@@ -212,7 +210,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   };
 
   const handleToggle = () => {
-    if (local.disabled) {
+    if (props.disabled) {
       return;
     }
     if (isOpen()) {
@@ -243,7 +241,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
     e.stopPropagation();
     setInputValue('');
     setSelectedValue('');
-    local.onInputChange?.('');
+    props.onInputChange?.('');
     internalInputRef?.focus();
   };
 
@@ -251,7 +249,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
-    local.onInputChange?.(value);
+    props.onInputChange?.(value);
     if (!isOpen()) {
       handleOpen();
     }
@@ -279,18 +277,18 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         return;
       }
 
-      const matchingOption = local.options.find(
+      const matchingOption = props.options.find(
         (opt) => opt.label.toLowerCase() === inputValue().toLowerCase(),
       );
 
       if (matchingOption) {
         setSelectedValue(matchingOption.value);
         setInputValue(matchingOption.label);
-      } else if (local.allowCustomValue) {
+      } else if (props.allowCustomValue) {
         setSelectedValue(inputValue());
       } else {
         // Reset to current value
-        const selectedOption = local.options.find(
+        const selectedOption = props.options.find(
           (opt) => opt.value === selectedValue(),
         );
         setInputValue(selectedOption?.label ?? '');
@@ -327,7 +325,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         e.preventDefault();
         if (open && idx >= 0 && idx < len) {
           handleSelect(options[idx]);
-        } else if (local.allowCustomValue && inputValue().trim()) {
+        } else if (props.allowCustomValue && inputValue().trim()) {
           setSelectedValue(inputValue());
           handleClose();
         }
@@ -337,11 +335,11 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         if (open) {
           e.preventDefault();
           handleClose();
-          const selected = local.options.find(
+          const selected = props.options.find(
             (opt) => opt.value === selectedValue(),
           );
           setInputValue(
-            selected?.label ?? (local.allowCustomValue ? selectedValue() : ''),
+            selected?.label ?? (props.allowCustomValue ? selectedValue() : ''),
           );
         }
         break;
@@ -376,8 +374,8 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   });
 
   // Close on scroll (any scrollable container, but not internal scroll)
-  createEffect(() => {
-    if (!isOpen()) {
+  createEffect(isOpen, (open) => {
+    if (!open) {
       return;
     }
 
@@ -391,7 +389,7 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
     // Use capture to catch scroll events on any scrollable ancestor
     window.addEventListener('scroll', handleScroll, true);
-    onCleanup(() => window.removeEventListener('scroll', handleScroll, true));
+    return () => window.removeEventListener('scroll', handleScroll, true);
   });
 
   // Calculate dropdown position
@@ -424,17 +422,17 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
   return (
     <div
       {...rest}
-      class={`w-full ${local.class ?? ''}`}
-      style={local.style}
+      class={`w-full ${props.class ?? ''}`}
+      style={props.style}
       ref={containerRef}
     >
-      <Show when={local.label}>
+      <Show when={props.label}>
         <label
-          for={local.id}
+          for={props.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {local.label}
-          <Show when={local.required}>
+          {props.label}
+          <Show when={props.required}>
             <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
@@ -444,16 +442,16 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         <input
           ref={setInputRef}
           type="text"
-          id={local.id}
-          name={local.name}
-          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${hasValue() && !local.disabled ? 'pr-16' : 'pr-10'} ${sizeClasses()} ${local.error ? 'border-error-500 dark:border-error-400' : ''}`}
-          placeholder={local.placeholder}
+          id={props.id}
+          name={props.name}
+          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${hasValue() && !props.disabled ? 'pr-16' : 'pr-10'} ${sizeClasses()} ${props.error ? 'border-error-500 dark:border-error-400' : ''}`}
+          placeholder={props.placeholder}
           value={inputValue()}
-          disabled={local.disabled}
-          required={local.required}
+          disabled={props.disabled}
+          required={props.required}
           autocomplete="off"
           role="combobox"
-          aria-expanded={isOpen()}
+          aria-expanded={isOpen() ? 'true' : 'false'}
           aria-haspopup="listbox"
           aria-autocomplete="list"
           aria-controls={isOpen() ? listboxId : undefined}
@@ -464,9 +462,9 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
               ? `${listboxId}-option-${focusedIndex()}`
               : undefined
           }
-          aria-invalid={!!local.error}
+          aria-invalid={props.error ? 'true' : 'false'}
           aria-describedby={
-            local.error && local.id ? `${local.id}-error` : undefined
+            props.error && props.id ? `${props.id}-error` : undefined
           }
           onInput={(e) => handleInputChange(e.currentTarget.value)}
           onFocus={handleInputFocus}
@@ -477,31 +475,31 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
 
         {/* Right side indicators */}
         <div class="absolute inset-y-0 right-0 flex items-center gap-1 pr-2">
-          <Show when={local.loading}>
+          <Show when={props.loading}>
             <div class="pointer-events-none">
               <Spinner size="sm" />
             </div>
           </Show>
 
-          <Show when={!local.loading && hasValue() && !local.disabled}>
+          <Show when={!props.loading && hasValue() && !props.disabled}>
             <button
               type="button"
               class="p-1 rounded-full text-surface-400 hover:text-surface-600 dark:hover:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 transition-colors"
               onClick={handleClear}
-              tabIndex={-1}
+              tabindex={-1}
               aria-label="Clear selection"
             >
               <CloseIcon class="w-4 h-4" />
             </button>
           </Show>
 
-          <Show when={!local.loading}>
+          <Show when={!props.loading}>
             <button
               type="button"
               class="p-1 text-surface-400 cursor-pointer disabled:cursor-not-allowed"
               onClick={handleToggle}
-              disabled={local.disabled}
-              tabIndex={-1}
+              disabled={props.disabled}
+              tabindex={-1}
               aria-label={isOpen() ? 'Close dropdown' : 'Open dropdown'}
             >
               <ChevronDownIcon
@@ -512,13 +510,13 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
         </div>
       </div>
 
-      <Show when={local.error}>
+      <Show when={props.error}>
         <p
-          id={local.id ? `${local.id}-error` : undefined}
+          id={props.id ? `${props.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {local.error}
+          {props.error}
         </p>
       </Show>
 
@@ -581,8 +579,8 @@ export const Autocomplete: Component<AutocompleteProps> = (props) => {
                         }}
                         disabled={option.disabled}
                         role="option"
-                        aria-selected={isSelected()}
-                        tabIndex={-1}
+                        aria-selected={isSelected() ? 'true' : 'false'}
+                        tabindex={-1}
                       >
                         <HighlightedText
                           text={option.label}

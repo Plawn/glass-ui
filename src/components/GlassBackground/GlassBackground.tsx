@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, mergeProps, splitProps } from 'solid-js';
+import { For, omit } from 'solid-js';
 import type { GlassBackgroundBlob, GlassBackgroundProps } from './types';
 import './GlassBackground.css';
 
@@ -46,53 +46,53 @@ const defaultBlobs: GlassBackgroundBlob[] = [
   },
 ];
 
-export const GlassBackground: Component<GlassBackgroundProps> = (rawProps) => {
-  const props = mergeProps(
-    {
-      animated: true,
-      blobs: defaultBlobs,
-      gradient: {
-        from: 'rgb(237, 233, 254)', // violet-100
-        via: 'rgb(253, 242, 248)', // pink-50
-        to: 'rgb(207, 250, 254)', // cyan-100
-      },
-      darkGradient: {
-        from: 'rgb(46, 16, 101)', // violet-950
-        via: 'rgb(9, 9, 11)', // surface-950
-        to: 'rgb(8, 51, 68)', // cyan-950
-      },
-    },
-    rawProps,
-  );
+const defaults = {
+  animated: true,
+  blobs: defaultBlobs,
+  gradient: {
+    from: 'rgb(237, 233, 254)', // violet-100
+    via: 'rgb(253, 242, 248)', // pink-50
+    to: 'rgb(207, 250, 254)', // cyan-100
+  },
+  darkGradient: {
+    from: 'rgb(46, 16, 101)', // violet-950
+    via: 'rgb(9, 9, 11)', // surface-950
+    to: 'rgb(8, 51, 68)', // cyan-950
+  },
+};
 
-  const [local, rest] = splitProps(props, [
+export const GlassBackground: Component<GlassBackgroundProps> = (props) => {
+  const gradient = () => props.gradient ?? defaults.gradient;
+  const darkGradient = () => props.darkGradient ?? defaults.darkGradient;
+  const rest = omit(
+    props,
     'class',
     'children',
     'blobs',
     'animated',
     'gradient',
     'darkGradient',
-  ]);
+  );
 
   return (
     <div
       {...rest}
-      class={`glass-background min-h-screen relative overflow-x-hidden ${local.class ?? ''}`}
+      class={`glass-background min-h-screen relative overflow-x-hidden ${props.class ?? ''}`}
       style={{
-        '--bg-from': local.gradient.from,
-        '--bg-via': local.gradient.via ?? local.gradient.from,
-        '--bg-to': local.gradient.to,
-        '--bg-from-dark': local.darkGradient.from,
-        '--bg-via-dark': local.darkGradient.via ?? local.darkGradient.from,
-        '--bg-to-dark': local.darkGradient.to,
+        '--bg-from': gradient().from,
+        '--bg-via': gradient().via ?? gradient().from,
+        '--bg-to': gradient().to,
+        '--bg-from-dark': darkGradient().from,
+        '--bg-via-dark': darkGradient().via ?? darkGradient().from,
+        '--bg-to-dark': darkGradient().to,
       }}
     >
       {/* Decorative blobs */}
       <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <For each={local.blobs}>
+        <For each={props.blobs ?? defaults.blobs}>
           {(blob) => (
             <div
-              class={`glass-blob absolute ${local.animated ? 'glass-blob-animate' : 'rounded-full'} blur-3xl`}
+              class={`glass-blob absolute ${(props.animated ?? defaults.animated) ? 'glass-blob-animate' : 'rounded-full'} blur-3xl`}
               style={{
                 top: blob.top,
                 left: blob.left,
@@ -112,7 +112,7 @@ export const GlassBackground: Component<GlassBackgroundProps> = (rawProps) => {
       </div>
 
       {/* Content */}
-      <div class="relative z-10">{local.children}</div>
+      <div class="relative z-10">{props.children}</div>
     </div>
   );
 };

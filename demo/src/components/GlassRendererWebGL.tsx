@@ -1,11 +1,11 @@
+import type { JSX } from '@solidjs/web';
 import {
   type Accessor,
-  type JSX,
   createContext,
-  createEffect,
   createSignal,
+  createTrackedEffect,
   onCleanup,
-  onMount,
+  onSettled,
   useContext,
 } from 'solid-js';
 
@@ -810,7 +810,7 @@ export function GlassRendererWebGLProvider(props: { children: JSX.Element }) {
     instance.elements.delete(id);
   };
 
-  onMount(() => {
+  onSettled(() => {
     initRenderer();
   });
 
@@ -830,7 +830,7 @@ export function GlassRendererWebGLProvider(props: { children: JSX.Element }) {
     'backdrop-blur-lg bg-white/10 border border-white/20';
 
   return (
-    <GlassRendererWebGLContext.Provider value={contextValue}>
+    <GlassRendererWebGLContext value={contextValue}>
       {webglSupported() ? (
         <div ref={containerRef} class="relative w-full min-h-[inherit]">
           <canvas
@@ -857,7 +857,7 @@ export function GlassRendererWebGLProvider(props: { children: JSX.Element }) {
           </div>
         </div>
       )}
-    </GlassRendererWebGLContext.Provider>
+    </GlassRendererWebGLContext>
   );
 }
 
@@ -889,7 +889,7 @@ export function GlassSurfaceWebGL(props: {
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (ctx?.isReady() && elementRef) {
       ctx.register(id, elementRef);
     }

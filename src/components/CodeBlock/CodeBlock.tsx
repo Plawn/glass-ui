@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { type Component, Show, createMemo, splitProps } from 'solid-js';
+import { type Component, Show, createMemo, omit } from 'solid-js';
 import { useCopyToClipboard } from '../../hooks';
 import { Prism } from './prism';
 import type { CodeBlockProps } from './types';
@@ -17,7 +17,8 @@ function escapeHtml(text: string): string {
 }
 
 export const CodeBlock: Component<CodeBlockProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'code',
     'language',
     'maxHeight',
@@ -26,18 +27,18 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
     'copyLabel',
     'copiedLabel',
     'class',
-  ]);
+  );
   const { copied, copy } = useCopyToClipboard();
   let codeRef: HTMLElement | undefined;
 
-  const language = () => local.language || 'json';
-  const maxHeight = () => local.maxHeight || '31.25rem';
-  const copyLabel = () => local.copyLabel ?? 'Copy';
-  const copiedLabel = () => local.copiedLabel ?? 'Copied';
+  const language = () => props.language || 'json';
+  const maxHeight = () => props.maxHeight || '31.25rem';
+  const copyLabel = () => props.copyLabel ?? 'Copy';
+  const copiedLabel = () => props.copiedLabel ?? 'Copied';
 
   // Highlight code whenever it changes
   const highlightedCode = createMemo(() => {
-    const code = local.code;
+    const code = props.code;
     const lang = language();
 
     // Get the grammar for the language, fallback to plain text
@@ -56,13 +57,13 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
   return (
     <div
       {...rest}
-      class={`relative group rounded-xl overflow-hidden ${local.class ?? ''}`}
+      class={`relative group rounded-xl overflow-hidden ${props.class ?? ''}`}
     >
       {/* Copy button */}
-      <Show when={!local.hideCopyButton}>
+      <Show when={!props.hideCopyButton}>
         <button
           type="button"
-          onClick={() => copy(local.code)}
+          onClick={() => copy(props.code)}
           class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 text-xs font-medium text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300 glass-button rounded-lg transition-all"
           aria-label={copied() ? copiedLabel() : copyLabel()}
         >
@@ -119,7 +120,7 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
       {/* Code container with syntax highlighting */}
       {/* innerHTML is the correct SolidJS pattern - content is sanitized via DOMPurify in highlightedCode() */}
       <pre
-        class={`p-6 pt-10 text-sm font-mono overflow-auto scrollbar-thin glass-thin rounded-xl ${local.wrap ? 'whitespace-pre-wrap break-all' : ''}`}
+        class={`p-6 pt-10 text-sm font-mono overflow-auto scrollbar-thin glass-thin rounded-xl ${props.wrap ? 'whitespace-pre-wrap break-all' : ''}`}
         style={{ 'max-height': maxHeight() }}
       >
         <code

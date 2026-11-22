@@ -102,7 +102,7 @@ const ToolCallItem: Component<{ tool: ToolCall }> = (props) => {
         type="button"
         onClick={() => setIsOpen(!isOpen())}
         class="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors cursor-pointer"
-        aria-expanded={isOpen()}
+        aria-expanded={isOpen() ? 'true' : 'false'}
       >
         <ToolCallStatusIcon status={props.tool.status} />
         <span class="font-mono text-xs text-surface-700 dark:text-surface-300">
@@ -190,11 +190,14 @@ export const ChatToolCall: Component<ChatToolCallProps> = (props) => {
   const totalCalls = createMemo(() => props.toolCalls.length);
 
   // Auto-open when any tool call is running
-  createEffect(() => {
-    if (props.toolCalls.some((tc) => tc.status === 'running')) {
-      setIsOpen(true);
-    }
-  });
+  createEffect(
+    () => props.toolCalls.some((tc) => tc.status === 'running'),
+    (running) => {
+      if (running) {
+        setIsOpen(true);
+      }
+    },
+  );
 
   const handleToggle = () => {
     setIsOpen(!isOpen());
@@ -225,7 +228,7 @@ export const ChatToolCall: Component<ChatToolCallProps> = (props) => {
         type="button"
         onClick={handleToggle}
         class="flex items-center gap-2 text-sm text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-300 transition-colors cursor-pointer"
-        aria-expanded={isOpen()}
+        aria-expanded={isOpen() ? 'true' : 'false'}
       >
         <Switch
           fallback={

@@ -46,9 +46,9 @@ This is a SolidJS component library called `glass-ui-solid` that provides iOS 26
 
 3. **Tailwind Classes**: Use `clsx` for conditional classes. Button variants and sizes use lookup objects mapping to Tailwind classes.
 
-4. **Portals**: Modal, Drawer, Toast, Snackbar use `Portal` from `solid-js/web` to render outside the component tree. They use `useIsDark()` to apply the `dark` class to portal content.
+4. **Portals**: Modal, Drawer, Toast, Snackbar use `Portal` from `@solidjs/web` to render outside the component tree. They use `useIsDark()` to apply the `dark` class to portal content.
 
-5. **Global State**: Toast and Snackbar have global stores (`store.ts`) using `solid-js/store` with `createStore` and `produce`. Export imperative APIs like `toast.success()`, `showSnackbar()`.
+5. **Global State**: Toast and Snackbar have global stores (`store.ts`) using `createStore` from `solid-js` and draft setters. Export imperative APIs like `toast.success()`, `showSnackbar()`.
 
 6. **Dialog Behavior**: Modal/Drawer components implement escape key handling, body scroll lock, and backdrop click closing. The `useDialogState` hook provides this shared logic.
 
@@ -64,17 +64,17 @@ This is a SolidJS component library called `glass-ui-solid` that provides iOS 26
 
 ### Key Dependencies
 
-- `solid-js` - Peer dependency (^1.8.0)
+- `solid-js` and `@solidjs/web` - Peer dependencies (^2.0.3)
 - `clsx` - Class name composition
 - `marked` + `dompurify` - Markdown component sanitization
 - `prismjs` - CodeBlock syntax highlighting
 
 ### Build Configuration
 
-- Vite library mode with `vite-plugin-solid` and `vite-plugin-dts`
+- Vite library mode with `@solidjs/vite-plugin` and `vite-plugin-dts`
 - ES modules only (`formats: ['es']`)
 - Preserves module structure for tree-shaking (`preserveModules: true`)
-- External: solid-js, solid-js/web, solid-js/store
+- External: solid-js, @solidjs/web
 
 ## Demo Requirements
 

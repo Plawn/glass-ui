@@ -48,14 +48,14 @@ export default function SectionPage() {
                     <Input
                       label="Name"
                       value={name()}
-                      onInput={(e) => setName(e.currentTarget.value)}
+                      onInput={setName}
                       placeholder="Enter your name"
                     />
                     <Input
                       label="Email"
                       type="email"
                       value={email()}
-                      onInput={(e) => setEmail(e.currentTarget.value)}
+                      onInput={setEmail}
                       placeholder="Enter your email"
                     />
                   </div>

@@ -36,15 +36,15 @@ export interface FieldRegistryProviderProps {
   config: FieldRegistryConfig;
 }
 
-export const FieldRegistryContext = createContext<
-  FieldRegistryConfig | undefined
->();
+export const FieldRegistryContext = createContext<FieldRegistryConfig | null>(
+  null,
+);
 
 /**
  * Hook to access the field registry from context.
  */
 export function useFieldRegistry(): FieldRegistryConfig | undefined {
-  return useContext(FieldRegistryContext);
+  return useContext(FieldRegistryContext) ?? undefined;
 }
 
 /**
@@ -69,11 +69,32 @@ export const FieldRegistryProvider: ParentComponent<
   const merged = createMemo(() => mergeConfigs(parentConfig, props.config));
 
   return (
-    <FieldRegistryContext.Provider value={merged()}>
+    <FieldRegistryContext value={liveConfig(merged)}>
       {props.children}
-    </FieldRegistryContext.Provider>
+    </FieldRegistryContext>
   );
 };
+
+/**
+ * A context value is read once when the provider is created, so a plain
+ * config object would freeze the registry. This returns a stable object whose
+ * fields read through to `config()`, keeping consumers reactive.
+ */
+export function liveConfig(
+  config: () => FieldRegistryConfig | undefined,
+): FieldRegistryConfig {
+  return {
+    get types() {
+      return config()?.types;
+    },
+    get formats() {
+      return config()?.formats;
+    },
+    get resolvers() {
+      return config()?.resolvers;
+    },
+  };
+}
 
 /**
  * Merge two registry configs. `primary` takes priority over `secondary`.

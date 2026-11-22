@@ -348,11 +348,13 @@ const StarRatingField: Component<BaseFieldProps> = (props) => {
           <button
             type="button"
             onClick={() => props.onChange(star)}
-            class="text-2xl transition-colors focus:outline-none"
-            classList={{
-              'text-amber-400': star <= currentValue(),
-              'text-surface-300 dark:text-surface-600': star > currentValue(),
-            }}
+            class={[
+              'text-2xl transition-colors focus:outline-none',
+              {
+                'text-amber-400': star <= currentValue(),
+                'text-surface-300 dark:text-surface-600': star > currentValue(),
+              },
+            ]}
           >
             {star <= currentValue() ? '\u2605' : '\u2606'}
           </button>

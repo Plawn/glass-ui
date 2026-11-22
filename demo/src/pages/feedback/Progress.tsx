@@ -1,5 +1,5 @@
 import { Progress } from 'glass-ui-solid';
-import { createSignal, onCleanup, onMount } from 'solid-js';
+import { createSignal, onSettled } from 'solid-js';
 import {
   DemoSection,
   PageHeader,
@@ -11,11 +11,11 @@ import {
 export default function ProgressPage() {
   const [dynamicProgress, setDynamicProgress] = createSignal(0);
 
-  onMount(() => {
+  onSettled(() => {
     const interval = setInterval(() => {
       setDynamicProgress((p) => (p >= 100 ? 0 : p + 10));
     }, 500);
-    onCleanup(() => clearInterval(interval));
+    return () => clearInterval(interval);
   });
 
   return (
@@ -109,11 +109,11 @@ export default function ProgressPage() {
         code={`function UploadProgress() {
   const [progress, setProgress] = createSignal(0);
 
-  onMount(() => {
+  onSettled(() => {
     const interval = setInterval(() => {
       setProgress((p) => (p >= 100 ? 0 : p + 10));
     }, 500);
-    onCleanup(() => clearInterval(interval));
+    return () => clearInterval(interval);
   });
 
   return (

@@ -1,4 +1,5 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+
 import { For } from 'solid-js';
 
 export interface VariantShowcaseProps<T extends string> {

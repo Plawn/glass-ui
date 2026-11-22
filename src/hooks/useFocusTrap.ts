@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import { type Accessor, createEffect } from 'solid-js';
 import type { FocusReturnTarget } from '../types';
 
 export interface UseFocusTrapOptions {
@@ -55,75 +55,73 @@ export function useFocusTrap(options: UseFocusTrapOptions): void {
   const restoreFocus = options.restoreFocus ?? true;
   const autoFocus = options.autoFocus ?? true;
 
-  createEffect(() => {
-    if (!options.enabled()) {
-      return;
-    }
+  createEffect(
+    () => (options.enabled() ? options.containerRef() : undefined),
+    (container) => {
+      if (!container) {
+        return;
+      }
 
-    const container = options.containerRef();
-    if (!container) {
-      return;
-    }
+      // Save the previously focused element
+      const previouslyFocused = document.activeElement as HTMLElement | null;
 
-    // Save the previously focused element
-    const previouslyFocused = document.activeElement as HTMLElement | null;
+      // Auto-focus the first focusable element
+      if (autoFocus) {
+        requestAnimationFrame(() => {
+          const focusable = getFocusableElements(container);
+          if (focusable.length > 0) {
+            focusable[0].focus();
+          } else {
+            // If no focusable element, make the container itself focusable
+            container.setAttribute('tabindex', '-1');
+            container.focus();
+          }
+        });
+      }
 
-    // Auto-focus the first focusable element
-    if (autoFocus) {
-      requestAnimationFrame(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key !== 'Tab') {
+          return;
+        }
+
         const focusable = getFocusableElements(container);
-        if (focusable.length > 0) {
-          focusable[0].focus();
+        if (focusable.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey) {
+          // Shift+Tab: if focus is on first element, wrap to last
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
         } else {
-          // If no focusable element, make the container itself focusable
-          container.setAttribute('tabindex', '-1');
-          container.focus();
+          // Tab: if focus is on last element, wrap to first
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
-      });
-    }
+      };
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') {
-        return;
-      }
+      document.addEventListener('keydown', handleKeyDown, true);
 
-      const focusable = getFocusableElements(container);
-      if (focusable.length === 0) {
-        e.preventDefault();
-        return;
-      }
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown, true);
 
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      if (e.shiftKey) {
-        // Shift+Tab: if focus is on first element, wrap to last
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
+        if (!restoreFocus) {
+          return;
         }
-      } else {
-        // Tab: if focus is on last element, wrap to first
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown, true);
-
-    onCleanup(() => {
-      document.removeEventListener('keydown', handleKeyDown, true);
-
-      if (!restoreFocus) {
-        return;
-      }
-      // Prefer the explicit target, then the previously focused element
-      const target =
-        resolveFocusTarget(options.returnFocusTo?.()) ??
-        (previouslyFocused?.isConnected ? previouslyFocused : undefined);
-      target?.focus?.();
-    });
-  });
+        // Prefer the explicit target, then the previously focused element
+        const target =
+          resolveFocusTarget(options.returnFocusTo?.()) ??
+          (previouslyFocused?.isConnected ? previouslyFocused : undefined);
+        target?.focus?.();
+      };
+    },
+  );
 }

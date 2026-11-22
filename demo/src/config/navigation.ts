@@ -1,3 +1,7 @@
+export function demoPath(path: string) {
+  return import.meta.env.BASE_URL + path.replace(/^\//, '');
+}
+
 export interface NavItem {
   id: string;
   label: string;

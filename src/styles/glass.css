@@ -154,12 +154,12 @@
   background: var(--glass-light-10);
 }
 
-.glass-nav-item.active {
+.glass-nav-item:is(.active, [data-active]) {
   color: var(--color-accent-600);
   background: var(--glass-accent-10);
 }
 
-.dark .glass-nav-item.active {
+.dark .glass-nav-item:is(.active, [data-active]) {
   color: var(--color-accent-400);
   background: var(--glass-accent-20);
 }

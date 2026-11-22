@@ -1,4 +1,5 @@
-import type { Accessor, JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+import type { Accessor } from 'solid-js';
 import { Show } from 'solid-js';
 import { PortalWithDarkMode } from '../components/shared/PortalWithDarkMode/PortalWithDarkMode';
 import { POPOVER_ENTER } from '../constants/animations';
@@ -127,7 +128,9 @@ export function useFloatingContent(
             class={`fixed z-50 glass-card rounded-xl shadow-lg ${POPOVER_ENTER} ${contentClass()}`}
             style={positionStyles()}
             role={role}
-            aria-modal={role === 'dialog' ? ariaModal : undefined}
+            aria-modal={
+              role === 'dialog' ? (ariaModal ? 'true' : 'false') : undefined
+            }
             aria-label={options.ariaLabel}
             onMouseEnter={options.onMouseEnter}
             onMouseLeave={options.onMouseLeave}

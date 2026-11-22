@@ -4,8 +4,7 @@ import {
   Show,
   createEffect,
   createSignal,
-  onCleanup,
-  splitProps,
+  omit,
 } from 'solid-js';
 import {
   ANIMATION_DURATION_SLOW,
@@ -20,7 +19,8 @@ import type { SheetProps } from './types';
 const DEFAULT_SNAP_POINTS = [0.5];
 
 export const Sheet: Component<SheetProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'open',
     'onOpenChange',
     'children',
@@ -29,13 +29,13 @@ export const Sheet: Component<SheetProps> = (props) => {
     'dismissible',
     'showHandle',
     'class',
-  ]);
+  );
 
-  const snapPoints = () => local.snapPoints ?? DEFAULT_SNAP_POINTS;
+  const snapPoints = () => props.snapPoints ?? DEFAULT_SNAP_POINTS;
   const defaultSnapIndex = () =>
-    local.defaultSnapPoint ?? snapPoints().length - 1;
-  const dismissible = () => local.dismissible ?? true;
-  const showHandle = () => local.showHandle ?? true;
+    props.defaultSnapPoint ?? snapPoints().length - 1;
+  const dismissible = () => props.dismissible ?? true;
+  const showHandle = () => props.showHandle ?? true;
 
   // Current snap point index
   const [currentSnapIndex, setCurrentSnapIndex] = createSignal(
@@ -48,12 +48,15 @@ export const Sheet: Component<SheetProps> = (props) => {
   const [startY, setStartY] = createSignal(0);
 
   // Reset snap point when opening
-  createEffect(() => {
-    if (local.open) {
-      setCurrentSnapIndex(defaultSnapIndex());
-      setDragOffset(0);
-    }
-  });
+  createEffect(
+    () => (props.open ? defaultSnapIndex() : undefined),
+    (index) => {
+      if (index !== undefined) {
+        setCurrentSnapIndex(index);
+        setDragOffset(0);
+      }
+    },
+  );
 
   // Calculate current height percentage
   const currentHeight = () => {
@@ -95,13 +98,13 @@ export const Sheet: Component<SheetProps> = (props) => {
     if (offset > threshold) {
       if (dismissible() && currentSnapIndex() === 0) {
         // At lowest snap point and dismissible - close the sheet
-        local.onOpenChange(false);
+        props.onOpenChange(false);
       } else if (currentSnapIndex() > 0) {
         // Go to lower snap point
         setCurrentSnapIndex((prev) => prev - 1);
       } else if (dismissible()) {
         // Dismiss if at lowest point
-        local.onOpenChange(false);
+        props.onOpenChange(false);
       }
     }
     // If dragged up significantly, try to go to higher snap point
@@ -129,8 +132,8 @@ export const Sheet: Component<SheetProps> = (props) => {
   };
 
   // Global mouse/touch move and end handlers
-  createEffect(() => {
-    if (!isDragging()) {
+  createEffect(isDragging, (dragging) => {
+    if (!dragging) {
       return;
     }
 
@@ -158,18 +161,18 @@ export const Sheet: Component<SheetProps> = (props) => {
     document.addEventListener('touchmove', handleTouchMove, { passive: true });
     document.addEventListener('touchend', handleTouchEnd);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
-    });
+    };
   });
 
   return (
     <PortalOverlay
-      open={local.open}
-      onClose={() => local.onOpenChange(false)}
+      open={props.open}
+      onClose={() => props.onOpenChange(false)}
       closeOnEscape={dismissible()}
       closeOnBackdrop={dismissible()}
       animated
@@ -198,7 +201,7 @@ export const Sheet: Component<SheetProps> = (props) => {
               'flex flex-col',
               !isDragging() && TRANSITION_HEIGHT_SLOW,
               sheetClasses(),
-              local.class,
+              props.class,
             )}
             style={{ height: `${currentHeight()}vh` }}
             onClick={stopPropagation}
@@ -216,7 +219,7 @@ export const Sheet: Component<SheetProps> = (props) => {
 
             {/* Content */}
             <div class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scrollbar-thin">
-              {local.children}
+              {props.children}
             </div>
           </div>
         );

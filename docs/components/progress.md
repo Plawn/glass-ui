@@ -58,11 +58,11 @@ import { Progress } from 'glass-ui-solid';
 function UploadProgress() {
   const [progress, setProgress] = createSignal(0);
 
-  onMount(() => {
+  onSettled(() => {
     const interval = setInterval(() => {
       setProgress((p) => (p >= 100 ? 0 : p + 10));
     }, 500);
-    onCleanup(() => clearInterval(interval));
+    return () => clearInterval(interval);
   });
 
   return (

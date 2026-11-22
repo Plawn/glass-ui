@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { createRoot, createSignal } from 'solid-js';
+import { createRoot, createSignal, flush } from 'solid-js';
 import {
   dispatchEscape,
   escapeStackSize,
@@ -59,17 +59,22 @@ describe('escape stack', () => {
       return dispose;
     });
 
+    flush();
     expect(escapeStackSize()).toBe(1);
     setInnerOpen(true);
+    flush();
     expect(escapeStackSize()).toBe(2);
     dispatchEscape({ key: 'Escape' });
     expect(calls).toEqual(['inner']);
     setInnerOpen(false);
+    flush();
     dispatchEscape({ key: 'Escape' });
     expect(calls).toEqual(['inner', 'outer']);
     setOuterOpen(false);
+    flush();
     expect(escapeStackSize()).toBe(0);
     setOuterOpen(true);
+    flush();
     dispose();
     expect(escapeStackSize()).toBe(0);
   });

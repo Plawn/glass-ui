@@ -3,8 +3,8 @@ import {
   createEffect,
   createSignal,
   createUniqueId,
-  onCleanup,
-  splitProps,
+  omit,
+  untrack,
 } from 'solid-js';
 import { useFloatingContent } from '../../hooks/useFloatingContent';
 import type { HoverCardProps } from './types';
@@ -13,7 +13,8 @@ import type { HoverCardProps } from './types';
 const DEFAULT_OFFSET = 8;
 
 export const HoverCard: Component<HoverCardProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'class',
     'style',
     'children',
@@ -24,7 +25,7 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
     'showArrow',
     'disabled',
     'contentClass',
-  ]);
+  );
 
   const hovercardId = createUniqueId();
   let triggerRef: HTMLDivElement | undefined;
@@ -34,12 +35,12 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
   const [isHoveringTrigger, setIsHoveringTrigger] = createSignal(false);
   const [isHoveringContent, setIsHoveringContent] = createSignal(false);
 
-  const placement = () => local.placement ?? 'bottom';
+  const placement = () => props.placement ?? 'bottom';
   const offset = () => DEFAULT_OFFSET;
-  const openDelay = () => local.openDelay ?? 200;
-  const closeDelay = () => local.closeDelay ?? 300;
-  const showArrow = () => local.showArrow ?? false;
-  const disabled = () => local.disabled ?? false;
+  const openDelay = () => props.openDelay ?? 200;
+  const closeDelay = () => props.closeDelay ?? 300;
+  const showArrow = () => props.showArrow ?? false;
+  const disabled = () => props.disabled ?? false;
 
   // Event handlers - defined before use to avoid hoisting issues
   const handleContentMouseEnter = () => {
@@ -60,29 +61,31 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
     direction: placement,
     offset,
     showArrow,
-    contentClass: () => local.contentClass,
+    contentClass: () => props.contentClass,
     role: 'tooltip',
     onMouseEnter: handleContentMouseEnter,
     onMouseLeave: handleContentMouseLeave,
   });
 
   // Handle delayed open with proper cleanup
-  createEffect(() => {
-    if (disabled()) {
-      setIsOpen(false);
-      return;
-    }
-
-    const shouldBeOpen = isHoveringTrigger() || isHoveringContent();
-
-    if (shouldBeOpen && !isOpen()) {
-      const timer = setTimeout(() => setIsOpen(true), openDelay());
-      onCleanup(() => clearTimeout(timer));
-    } else if (!shouldBeOpen && isOpen()) {
-      const timer = setTimeout(() => setIsOpen(false), closeDelay());
-      onCleanup(() => clearTimeout(timer));
-    }
-  });
+  createEffect(
+    () => {
+      const hover = isHoveringTrigger() || isHoveringContent();
+      return {
+        disabled: disabled(),
+        hover,
+        delay: hover ? openDelay() : closeDelay(),
+      };
+    },
+    ({ disabled, hover, delay }) => {
+      if (disabled) {
+        setIsOpen(false);
+      } else if (hover !== untrack(isOpen)) {
+        const timer = setTimeout(() => setIsOpen(hover), delay);
+        return () => clearTimeout(timer);
+      }
+    },
+  );
 
   const handleTriggerMouseEnter = () => {
     if (!disabled()) {
@@ -98,15 +101,15 @@ export const HoverCard: Component<HoverCardProps> = (props) => {
     <div
       {...rest}
       ref={triggerRef}
-      class={`relative inline-block ${local.class ?? ''}`}
-      style={local.style}
+      class={`relative inline-block ${props.class ?? ''}`}
+      style={props.style}
       aria-describedby={isOpen() ? hovercardId : undefined}
       onMouseEnter={handleTriggerMouseEnter}
       onMouseLeave={handleTriggerMouseLeave}
     >
-      {local.trigger}
+      {props.trigger}
       <FloatingContent ref={(el) => (contentRef = el)}>
-        <div id={hovercardId}>{local.children}</div>
+        <div id={hovercardId}>{props.children}</div>
       </FloatingContent>
     </div>
   );

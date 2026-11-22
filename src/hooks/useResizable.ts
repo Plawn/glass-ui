@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, createSignal, onCleanup } from 'solid-js';
+import { type Accessor, createEffect, createSignal } from 'solid-js';
 import type { Position } from './useDraggable';
 
 export type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';
@@ -259,8 +259,8 @@ export function useResizable(
   };
 
   // Global mouse/touch move and end handlers
-  createEffect(() => {
-    if (!isResizing()) {
+  createEffect(isResizing, (resizing) => {
+    if (!resizing) {
       return;
     }
 
@@ -288,12 +288,12 @@ export function useResizable(
     document.addEventListener('touchmove', handleTouchMove, { passive: true });
     document.addEventListener('touchend', handleTouchEnd);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
-    });
+    };
   });
 
   return {

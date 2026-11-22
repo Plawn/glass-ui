@@ -4,7 +4,7 @@ import {
   Show,
   createMemo,
   createSignal,
-  splitProps,
+  omit,
 } from 'solid-js';
 import { TRANSITION_TRANSFORM_FAST } from '../../constants';
 import { useCopyToClipboard } from '../../hooks';
@@ -76,8 +76,10 @@ const getValueColor = (type: string): string => {
 const JsonNode: Component<JsonNodeProps> = (props) => {
   const type = () => getValueType(props.value);
   const isExpandable = () => type() === 'object' || type() === 'array';
+  // Writable derived: follows the requested depth until the user toggles the
+  // node, and resets when "expand/collapse all" changes that depth.
   const [expanded, setExpanded] = createSignal(
-    props.depth < props.initialExpandDepth,
+    () => props.depth < props.initialExpandDepth,
   );
 
   const entries = createMemo(() => {
@@ -241,7 +243,8 @@ const JsonNode: Component<JsonNodeProps> = (props) => {
 };
 
 export const JsonViewer: Component<JsonViewerProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'class',
     'data',
     'maxHeight',
@@ -251,18 +254,18 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
     'expandAllLabel',
     'collapseAllLabel',
     'valueRenderers',
-  ]);
+  );
 
   const { copied, copy } = useCopyToClipboard();
 
-  const maxHeight = () => local.maxHeight ?? '31.25rem';
-  const initialExpandDepth = () => local.initialExpandDepth ?? 2;
-  const copyLabel = () => local.copyLabel ?? 'Copy';
-  const copiedLabel = () => local.copiedLabel ?? 'Copied';
-  const expandAllLabel = () => local.expandAllLabel ?? 'Expand all';
-  const collapseAllLabel = () => local.collapseAllLabel ?? 'Collapse all';
+  const maxHeight = () => props.maxHeight ?? '31.25rem';
+  const initialExpandDepth = () => props.initialExpandDepth ?? 2;
+  const copyLabel = () => props.copyLabel ?? 'Copy';
+  const copiedLabel = () => props.copiedLabel ?? 'Copied';
+  const expandAllLabel = () => props.expandAllLabel ?? 'Expand all';
+  const collapseAllLabel = () => props.collapseAllLabel ?? 'Collapse all';
 
-  const jsonString = createMemo(() => formatJson(local.data));
+  const jsonString = createMemo(() => formatJson(props.data));
 
   const [expandState, setExpandState] = createSignal<boolean | null>(null);
   const [key, setKey] = createSignal(1);
@@ -291,7 +294,7 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
   return (
     <div
       {...rest}
-      class={`relative group rounded-xl overflow-hidden glass-card ${local.class ?? ''}`}
+      class={`relative group rounded-xl overflow-hidden glass-card ${props.class ?? ''}`}
     >
       {/* Toolbar */}
       <div class="absolute top-3 right-3 z-10 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -394,11 +397,11 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
           {() => (
             <div class="pl-4">
               <JsonNode
-                value={local.data as JsonValue}
+                value={props.data as JsonValue}
                 depth={0}
                 initialExpandDepth={currentExpandDepth()}
                 isLast
-                valueRenderers={local.valueRenderers}
+                valueRenderers={props.valueRenderers}
                 path={[]}
               />
             </div>

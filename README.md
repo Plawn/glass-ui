@@ -4,16 +4,20 @@ iOS 26-inspired glassmorphism UI components for SolidJS.
 
 ## Installation
 
+This version targets Solid 2.0.3 or later in the 2.x series and requires Node.js 22.12 or later. For Solid 1 applications, use the 0.7.x series.
+
 ```bash
 # npm
-npm install glass-ui-solid solid-js
+npm install glass-ui-solid solid-js@^2.0.3 @solidjs/web@^2.0.3
 
 # bun
-bun add glass-ui-solid solid-js
+bun add glass-ui-solid solid-js@^2.0.3 @solidjs/web@^2.0.3
 
 # pnpm
-pnpm add glass-ui-solid solid-js
+pnpm add glass-ui-solid solid-js@^2.0.3 @solidjs/web@^2.0.3
 ```
+
+For TypeScript projects, set `jsx` to `preserve` and `jsxImportSource` to `@solidjs/web`. For Vite projects, use `@solidjs/vite-plugin`.
 
 ## Setup
 

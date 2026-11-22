@@ -1,7 +1,7 @@
+import type { JSX } from '@solidjs/web';
 import {
   type Accessor,
   type Component,
-  type JSX,
   Show,
   createMemo,
   createSignal,
@@ -142,7 +142,9 @@ export const PortalOverlay: Component<PortalOverlayProps> = (props) => {
           class={backdropClasses()}
           onClick={(e) => handleBackdropClick(e)}
           role={hasDialogSemantics() ? role() : undefined}
-          aria-modal={hasDialogSemantics() ? ariaModal() : undefined}
+          aria-modal={
+            hasDialogSemantics() ? (ariaModal() ? 'true' : 'false') : undefined
+          }
           aria-labelledby={
             hasDialogSemantics() ? props.ariaLabelledby : undefined
           }

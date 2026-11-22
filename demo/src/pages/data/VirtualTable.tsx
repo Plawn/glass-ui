@@ -1,6 +1,7 @@
+import type { JSX } from '@solidjs/web';
 import { Badge, Button, VirtualTable } from 'glass-ui-solid';
 import type { VirtualHandle, VirtualTableColumn } from 'glass-ui-solid';
-import { For, type JSX, Show, createMemo, createSignal } from 'solid-js';
+import { For, Show, createMemo, createSignal } from 'solid-js';
 import {
   CodePill,
   DemoSection,

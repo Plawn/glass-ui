@@ -1,4 +1,4 @@
-import type { JSX, ValidComponent } from 'solid-js';
+import type { JSX, ValidComponent } from '@solidjs/web';
 
 export interface PaginationProps
   extends Omit<JSX.HTMLAttributes<HTMLElement>, 'onChange'> {

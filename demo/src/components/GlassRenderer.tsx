@@ -1,11 +1,11 @@
+import type { JSX } from '@solidjs/web';
 import {
   type Accessor,
-  type JSX,
   createContext,
-  createEffect,
   createSignal,
+  createTrackedEffect,
   onCleanup,
-  onMount,
+  onSettled,
   useContext,
 } from 'solid-js';
 import type * as THREE from 'three';
@@ -341,7 +341,7 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
     }
   };
 
-  onMount(() => {
+  onSettled(() => {
     initRenderer();
   });
 
@@ -356,7 +356,7 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
   };
 
   return (
-    <GlassRendererContext.Provider value={contextValue}>
+    <GlassRendererContext value={contextValue}>
       <div ref={containerRef} class="relative w-full min-h-[inherit]">
         <canvas
           ref={canvasRef}
@@ -367,7 +367,7 @@ export function GlassRendererProvider(props: { children: JSX.Element }) {
           {props.children}
         </div>
       </div>
-    </GlassRendererContext.Provider>
+    </GlassRendererContext>
   );
 }
 
@@ -399,7 +399,7 @@ export function GlassSurface(props: {
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (ctx?.isReady() && elementRef) {
       ctx.register(id, elementRef);
     }

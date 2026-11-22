@@ -1,10 +1,8 @@
-import { A, useLocation } from '@solidjs/router';
 import { For, createSignal } from 'solid-js';
-import { type NavGroup, navigation } from '../config/navigation';
+import { type NavGroup, demoPath, navigation } from '../config/navigation';
 
 function NavGroupComponent(props: { group: NavGroup; defaultOpen?: boolean }) {
   const [isOpen, setIsOpen] = createSignal(props.defaultOpen ?? true);
-  const location = useLocation();
 
   return (
     <div class="mb-4">
@@ -38,13 +36,9 @@ function NavGroupComponent(props: { group: NavGroup; defaultOpen?: boolean }) {
       >
         <For each={props.group.items}>
           {(item) => (
-            <A
-              href={item.path}
-              activeClass="active"
-              class="glass-nav-item block mx-1"
-            >
+            <a href={demoPath(item.path)} class="glass-nav-item block mx-1">
               {item.label}
-            </A>
+            </a>
           )}
         </For>
       </div>
@@ -57,14 +51,9 @@ export default function DocSidebar() {
     <nav class="w-60 shrink-0">
       <div class="sticky top-24 pb-12">
         <div class="px-1 mb-6">
-          <A
-            href="/"
-            activeClass="active"
-            class="glass-nav-item block font-semibold"
-            end
-          >
+          <a href={demoPath('/')} class="glass-nav-item block font-semibold">
             Overview
-          </A>
+          </a>
         </div>
 
         <For each={navigation}>

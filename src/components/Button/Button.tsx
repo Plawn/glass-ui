@@ -1,5 +1,6 @@
-import { type JSX, Show, type ValidComponent, splitProps } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import type { JSX, ValidComponent } from '@solidjs/web';
+import { Dynamic } from '@solidjs/web';
+import { Show, omit } from 'solid-js';
 import { Spinner } from './Spinner';
 import type {
   ButtonOwnProps,
@@ -31,13 +32,14 @@ const sizeClasses: Record<ButtonSize, string> = {
  * ```tsx
  * <Button variant="primary">Save</Button>
  * <Button as="a" href="/list">Back to list</Button>
- * <Button as={A} href="/users">Users</Button> // @solidjs/router link
  * ```
  */
 export function Button<T extends ValidComponent = 'button'>(
   props: ButtonProps<T>,
 ): JSX.Element {
-  const [local, rest] = splitProps(props as ButtonProps & ButtonOwnProps, [
+  const local = props as ButtonProps & ButtonOwnProps;
+  const rest = omit(
+    local,
     'as',
     'variant',
     'size',
@@ -49,7 +51,7 @@ export function Button<T extends ValidComponent = 'button'>(
     'children',
     'disabled',
     'type',
-  ]);
+  );
 
   const tag = () => local.as ?? 'button';
   const isButton = () => tag() === 'button';
@@ -65,7 +67,7 @@ export function Button<T extends ValidComponent = 'button'>(
       class={`${variantClasses[variant()]} ${sizeClasses[size()]} inline-flex items-center justify-center focus:outline-none focus-ring ${local.fullWidth ? 'w-full' : ''} ${!isButton() && isDisabled() ? 'pointer-events-none' : ''} ${local.class ?? ''}`}
       disabled={isButton() ? isDisabled() : undefined}
       aria-disabled={!isButton() && isDisabled() ? 'true' : undefined}
-      aria-busy={local.loading || undefined}
+      aria-busy={local.loading ? 'true' : undefined}
     >
       <Show when={local.loading}>
         <Spinner size={size()} />

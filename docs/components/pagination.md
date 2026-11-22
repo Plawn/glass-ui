@@ -46,13 +46,14 @@ const [pageSize, setPageSize] = createSignal(10);
 function UsersTable() {
   const [page, setPage] = createSignal(1);
   const [pageSize, setPageSize] = createSignal(10);
-  const [users] = createResource(() => fetchUsers(page(), pageSize()));
+  // Async memo: refetches whenever page or pageSize changes
+  const users = createMemo(() => fetchUsers(page(), pageSize()));
 
   return (
-    <>
-      <Table columns={columns} data={users()} />
+    <Loading fallback={<Spinner />}>
+      <Table columns={columns} data={users().items} />
       <Pagination
-        total={users.total}
+        total={users().total}
         page={page()}
         pageSize={pageSize()}
         onChange={setPage}
@@ -62,7 +63,7 @@ function UsersTable() {
           setPage(1); // Reset to first page
         }}
       />
-    </>
+    </Loading>
   );
 }
 ```

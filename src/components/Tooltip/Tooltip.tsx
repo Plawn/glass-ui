@@ -4,8 +4,7 @@ import {
   createEffect,
   createSignal,
   createUniqueId,
-  onCleanup,
-  splitProps,
+  omit,
 } from 'solid-js';
 import { POPOVER_ENTER } from '../../constants';
 import type { TooltipPosition, TooltipProps } from './types';
@@ -27,30 +26,26 @@ const arrowStyles: Record<TooltipPosition, string> = {
 };
 
 export const Tooltip: Component<TooltipProps> = (props) => {
-  const [local, rest] = splitProps(props, [
-    'class',
-    'children',
-    'content',
-    'position',
-    'delay',
-  ]);
+  const rest = omit(props, 'class', 'children', 'content', 'position', 'delay');
 
   const tooltipId = createUniqueId();
   const [visible, setVisible] = createSignal(false);
   const [hovering, setHovering] = createSignal(false);
 
-  const position = () => local.position ?? 'top';
-  const delay = () => local.delay ?? 200;
+  const position = () => props.position ?? 'top';
+  const delay = () => props.delay ?? 200;
 
   // Handle delayed show with proper cleanup (idiomatic SolidJS pattern)
-  createEffect(() => {
-    if (hovering()) {
-      const timer = setTimeout(() => setVisible(true), delay());
-      onCleanup(() => clearTimeout(timer));
-    } else {
+  createEffect(
+    () => (hovering() ? delay() : undefined),
+    (showDelay) => {
+      if (showDelay !== undefined) {
+        const timer = setTimeout(() => setVisible(true), showDelay);
+        return () => clearTimeout(timer);
+      }
       setVisible(false);
-    }
-  });
+    },
+  );
 
   const showTooltip = () => setHovering(true);
   const hideTooltip = () => setHovering(false);
@@ -58,14 +53,14 @@ export const Tooltip: Component<TooltipProps> = (props) => {
   return (
     <div
       {...rest}
-      class={`relative inline-flex ${local.class ?? ''}`}
+      class={`relative inline-flex ${props.class ?? ''}`}
       aria-describedby={visible() ? tooltipId : undefined}
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
       onFocusIn={showTooltip}
       onFocusOut={hideTooltip}
     >
-      {local.children}
+      {props.children}
       <Show when={visible()}>
         <div
           id={tooltipId}
@@ -73,7 +68,7 @@ export const Tooltip: Component<TooltipProps> = (props) => {
           role="tooltip"
         >
           <div class="px-3 py-1.5 text-xs font-medium glass-tooltip rounded-lg whitespace-nowrap">
-            {local.content}
+            {props.content}
           </div>
           <div
             class={`absolute w-0 h-0 border-4 ${arrowStyles[position()]}`}

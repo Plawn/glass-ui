@@ -1,4 +1,4 @@
-import { type Component, Show, createEffect, onCleanup } from 'solid-js';
+import { type Component, Show, createEffect } from 'solid-js';
 import {
   ANIMATION_DURATION,
   DURATION_DEFAULT,
@@ -29,14 +29,17 @@ export const Snackbar: Component<SnackbarProps> = (props) => {
   });
 
   // Auto-dismiss timer
-  createEffect(() => {
-    if (props.open && duration() > 0) {
-      const timer = setTimeout(() => {
-        props.onClose();
-      }, duration());
-      onCleanup(() => clearTimeout(timer));
-    }
-  });
+  createEffect(
+    () => (props.open ? duration() : 0),
+    (timeout) => {
+      if (timeout > 0) {
+        const timer = setTimeout(() => {
+          props.onClose();
+        }, timeout);
+        return () => clearTimeout(timer);
+      }
+    },
+  );
 
   const handleAction = () => {
     props.onAction?.();

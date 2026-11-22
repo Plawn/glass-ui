@@ -1,5 +1,6 @@
-import type { Component, JSX } from 'solid-js';
-import { Show, createEffect, createSignal, on } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+import type { Component } from 'solid-js';
+import { Show, createEffect, createSignal, untrack } from 'solid-js';
 import { VirtualList } from '../virtual';
 import type { VirtualHandle } from '../virtual';
 import type { ScrollBehavior as VirtualScrollBehavior } from '../virtual';
@@ -62,30 +63,30 @@ export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
 
   // Auto-scroll to bottom when new messages arrive (if user hasn't scrolled up)
   createEffect(
-    on(
-      () => props.messages.length,
-      () => {
-        const handle = listHandle();
-        if (handle && (isAtBottom() || !userScrolled())) {
-          scrollToEnd(handle, props.messages.length);
-        }
-      },
-    ),
+    () => props.messages.length,
+    (length) => {
+      // Peek at the scroll state: only new messages should trigger a scroll
+      const handle = untrack(listHandle);
+      if (handle && untrack(() => isAtBottom() || !userScrolled())) {
+        scrollToEnd(handle, length);
+      }
+    },
   );
 
   // Also scroll when streaming status changes (for typing indicator)
   createEffect(
-    on(
-      () => props.isStreaming,
-      (streaming) => {
-        if (streaming) {
-          const handle = listHandle();
-          if (handle && isAtBottom()) {
-            scrollToEnd(handle, props.messages.length);
-          }
+    () => props.isStreaming,
+    (streaming) => {
+      if (streaming) {
+        const handle = untrack(listHandle);
+        if (handle && untrack(isAtBottom)) {
+          scrollToEnd(
+            handle,
+            untrack(() => props.messages.length),
+          );
         }
-      },
-    ),
+      }
+    },
   );
 
   const handleAtBottomChange = (atBottom: boolean) => {
@@ -96,7 +97,7 @@ export const ChatMessageList: Component<ChatMessageListProps> = (props) => {
   };
 
   const handleScrolling = (scrolling: boolean) => {
-    if (scrolling && !isAtBottom()) {
+    if (scrolling && !untrack(isAtBottom)) {
       setUserScrolled(true);
     }
   };

@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, createSignal, onCleanup } from 'solid-js';
+import { type Accessor, createEffect, createSignal } from 'solid-js';
 
 export interface UseAnimationStateOptions {
   /** The open state accessor from the parent component */
@@ -42,29 +42,20 @@ export interface UseAnimationStateReturn {
 export function useAnimationState(
   options: UseAnimationStateOptions,
 ): UseAnimationStateReturn {
-  // Track visibility separately from open state for exit animation
   const [visible, setVisible] = createSignal(false);
-  const [isClosing, setIsClosing] = createSignal(false);
+  const isClosing = () => visible() && !options.open();
 
-  // Handle open/close transitions
-  createEffect(() => {
-    if (options.open()) {
-      // Opening: immediately show and clear closing state
-      setIsClosing(false);
-      setVisible(true);
-    } else if (visible()) {
-      // Closing: start exit animation, then hide after duration
-      setIsClosing(true);
-      const timer = setTimeout(() => {
-        setVisible(false);
-        setIsClosing(false);
-      }, options.duration());
-      onCleanup(() => clearTimeout(timer));
-    }
-  });
+  createEffect(
+    () => (options.open() ? null : options.duration()),
+    (closeDelay, previous) => {
+      if (closeDelay === null) {
+        setVisible(true);
+      } else if (previous !== undefined) {
+        const timer = setTimeout(() => setVisible(false), closeDelay);
+        return () => clearTimeout(timer);
+      }
+    },
+  );
 
-  return {
-    visible,
-    isClosing,
-  };
+  return { visible, isClosing };
 }

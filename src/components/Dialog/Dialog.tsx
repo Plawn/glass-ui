@@ -3,7 +3,7 @@ import {
   Show,
   createSignal,
   createUniqueId,
-  splitProps,
+  omit,
 } from 'solid-js';
 import { DIALOG_MAX_WIDTHS, MODAL_PANEL_ENTER } from '../../constants';
 import { PortalOverlay } from '../shared';
@@ -16,7 +16,8 @@ const confirmButtonStyles: Record<DialogVariant, string> = {
 };
 
 export const Dialog: Component<DialogProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'open',
     'onOpenChange',
     'title',
@@ -35,29 +36,29 @@ export const Dialog: Component<DialogProps> = (props) => {
     'aria-label',
     'aria-labelledby',
     'aria-describedby',
-  ]);
+  );
 
   const baseId = `glass-dialog-${createUniqueId()}`;
   const titleId = `${baseId}-title`;
   const descriptionId = `${baseId}-description`;
   const labelledBy = () =>
-    local['aria-labelledby'] ?? (local['aria-label'] ? undefined : titleId);
+    props['aria-labelledby'] ?? (props['aria-label'] ? undefined : titleId);
   const describedBy = () =>
-    local['aria-describedby'] ??
-    (local.description ? descriptionId : undefined);
+    props['aria-describedby'] ??
+    (props.description ? descriptionId : undefined);
 
-  const variant = () => local.variant ?? 'default';
-  const size = () => local.size ?? 'sm';
-  const confirmLabel = () => local.confirmLabel ?? 'Confirm';
-  const cancelLabel = () => local.cancelLabel ?? 'Cancel';
+  const variant = () => props.variant ?? 'default';
+  const size = () => props.size ?? 'sm';
+  const confirmLabel = () => props.confirmLabel ?? 'Confirm';
+  const cancelLabel = () => props.cancelLabel ?? 'Cancel';
 
   const handleCancel = () => {
-    local.onOpenChange(false);
-    local.onCancel?.();
+    props.onOpenChange(false);
+    props.onCancel?.();
   };
 
   const [pending, setPending] = createSignal(false);
-  const confirmDisabled = () => local.confirmDisabled || pending();
+  const confirmDisabled = () => props.confirmDisabled || pending();
 
   const handleConfirm = async () => {
     if (confirmDisabled()) {
@@ -65,9 +66,9 @@ export const Dialog: Component<DialogProps> = (props) => {
     }
     setPending(true);
     try {
-      const result = await local.onConfirm();
+      const result = await props.onConfirm();
       if (result !== false) {
-        local.onOpenChange(false);
+        props.onOpenChange(false);
       }
     } finally {
       setPending(false);
@@ -76,22 +77,22 @@ export const Dialog: Component<DialogProps> = (props) => {
 
   return (
     <PortalOverlay
-      open={local.open}
+      open={props.open}
       onClose={handleCancel}
       closeOnEscape
       closeOnBackdrop
-      returnFocusTo={local.returnFocusTo}
+      returnFocusTo={props.returnFocusTo}
       backdropClass="flex items-center justify-center p-2 sm:p-4"
       semanticsOnContent
     >
       <div
         {...rest}
-        role={local.role ?? 'alertdialog'}
+        role={props.role ?? 'alertdialog'}
         aria-modal="true"
-        aria-label={local['aria-label']}
+        aria-label={props['aria-label']}
         aria-labelledby={labelledBy()}
         aria-describedby={describedBy()}
-        class={`w-full ${DIALOG_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER} ${local.class ?? ''}`}
+        class={`w-full ${DIALOG_MAX_WIDTHS[size()]} glass-card rounded-2xl shadow-2xl ${MODAL_PANEL_ENTER} ${props.class ?? ''}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Content */}
@@ -100,18 +101,18 @@ export const Dialog: Component<DialogProps> = (props) => {
             id={titleId}
             class="text-lg font-semibold text-surface-900 dark:text-surface-100"
           >
-            {local.title}
+            {props.title}
           </h2>
-          <Show when={local.description}>
+          <Show when={props.description}>
             <p
               id={descriptionId}
               class="mt-2 text-sm text-surface-600 dark:text-surface-400"
             >
-              {local.description}
+              {props.description}
             </p>
           </Show>
-          <Show when={local.children}>
-            <div class="mt-4">{local.children}</div>
+          <Show when={props.children}>
+            <div class="mt-4">{props.children}</div>
           </Show>
         </div>
 

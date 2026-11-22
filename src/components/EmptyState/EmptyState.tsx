@@ -1,6 +1,6 @@
+import { Dynamic } from '@solidjs/web';
 import type { Component } from 'solid-js';
-import { Show, splitProps } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { Show, omit } from 'solid-js';
 import type { EmptyStateProps, EmptyStateSize } from './types';
 
 const sizeStyles: Record<
@@ -28,7 +28,8 @@ const sizeStyles: Record<
 };
 
 export const EmptyState: Component<EmptyStateProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'icon',
     'title',
     'description',
@@ -37,22 +38,22 @@ export const EmptyState: Component<EmptyStateProps> = (props) => {
     'headingLevel',
     'class',
     'style',
-  ]);
-  const size = () => local.size ?? 'md';
-  const headingTag = () => `h${local.headingLevel ?? 3}` as const;
+  );
+  const size = () => props.size ?? 'md';
+  const headingTag = () => `h${props.headingLevel ?? 3}` as const;
   const styles = () => sizeStyles[size()];
 
   return (
     <div
       {...rest}
-      class={`flex flex-col items-center justify-center text-center ${styles().container} ${local.class ?? ''}`}
-      style={local.style}
+      class={`flex flex-col items-center justify-center text-center ${styles().container} ${props.class ?? ''}`}
+      style={props.style}
     >
-      <Show when={local.icon}>
+      <Show when={props.icon}>
         <div
           class={`flex items-center justify-center text-surface-400 dark:text-surface-500 mb-4 ${styles().icon}`}
         >
-          {local.icon}
+          {props.icon}
         </div>
       </Show>
 
@@ -60,19 +61,19 @@ export const EmptyState: Component<EmptyStateProps> = (props) => {
         component={headingTag()}
         class={`font-medium text-surface-700 dark:text-surface-200 ${styles().title}`}
       >
-        {local.title}
+        {props.title}
       </Dynamic>
 
-      <Show when={local.description}>
+      <Show when={props.description}>
         <p
           class={`mt-2 text-surface-500 dark:text-surface-400 max-w-md ${styles().description}`}
         >
-          {local.description}
+          {props.description}
         </p>
       </Show>
 
-      <Show when={local.action}>
-        <div class="mt-6">{local.action}</div>
+      <Show when={props.action}>
+        <div class="mt-6">{props.action}</div>
       </Show>
     </div>
   );

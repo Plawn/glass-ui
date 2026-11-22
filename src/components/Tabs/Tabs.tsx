@@ -5,9 +5,9 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  on,
-  onMount,
-  splitProps,
+  omit,
+  onSettled,
+  untrack,
 } from 'solid-js';
 import {
   GAP_SIZES,
@@ -52,7 +52,8 @@ const sizeStyles: Record<
 // =============================================================================
 
 export const Tabs: Component<TabsProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'size',
     'orientation',
     'fullWidth',
@@ -65,7 +66,7 @@ export const Tabs: Component<TabsProps> = (props) => {
     'class',
     'tabListClass',
     'contentClass',
-  ]);
+  );
 
   // Snapshot `items` so imperative reads never re-evaluate a caller's inline
   // `items={[...]}` getter. Such an array is dynamic, so Solid recompiles it
@@ -76,7 +77,7 @@ export const Tabs: Component<TabsProps> = (props) => {
   // ("<A>/use can only be used inside a Route"). The memo returns a cached
   // array on plain reads and only recomputes when the caller's reactive deps
   // (e.g. badges) actually change, under this component's owner.
-  const items = createMemo(() => local.items);
+  const items = createMemo(() => props.items);
 
   // --- Refs for indicator animation ---
   let containerRef: HTMLDivElement | undefined;
@@ -92,29 +93,34 @@ export const Tabs: Component<TabsProps> = (props) => {
   const [isInitialized, setIsInitialized] = createSignal(false);
 
   // --- Defaults ---
-  const size = () => local.size ?? 'md';
-  const orientation = () => local.orientation ?? 'horizontal';
-  const fullWidth = () => local.fullWidth ?? false;
-  const lazy = () => local.lazy ?? true;
-  const keepMounted = () => local.keepMounted ?? false;
+  const size = () => props.size ?? 'md';
+  const orientation = () => props.orientation ?? 'horizontal';
+  const fullWidth = () => props.fullWidth ?? false;
+  const lazy = () => props.lazy ?? true;
+  const keepMounted = () => props.keepMounted ?? false;
 
   const isVertical = () => orientation() === 'vertical';
 
   // --- Controlled/uncontrolled state management ---
   const [activeTab, setActiveTab] = useControlled({
-    value: () => local.activeTab,
-    defaultValue: local.defaultTab || items()[0]?.id,
-    onChange: local.onTabChange,
+    value: () => props.activeTab,
+    getDefaultValue: () => props.defaultTab || items()[0]?.id,
+    onChange: (v) => props.onTabChange?.(v),
   });
 
-  // Track which tabs have been visited (for lazy loading with keepMounted)
-  const [visitedTabs, setVisitedTabs] = createSignal<Set<string>>(
-    new Set([local.defaultTab || items()[0]?.id]),
-  );
+  // Track which tabs have been visited (for lazy loading with keepMounted).
+  // Fed from `activeTab` so controlled changes are recorded too.
+  const [visitedTabs, setVisitedTabs] = createSignal<Set<string>>(new Set());
+  createEffect(activeTab, (tabId) => {
+    setVisitedTabs((prev) =>
+      prev.has(tabId) ? prev : new Set([...prev, tabId]),
+    );
+  });
 
   // --- Indicator animation ---
   const updateIndicator = () => {
-    const activeButton = buttonRefs.get(activeTab());
+    // Imperative DOM measurement: callers decide when to re-run it
+    const activeButton = buttonRefs.get(untrack(activeTab));
     if (activeButton && containerRef) {
       const containerRect = containerRef.getBoundingClientRect();
       const buttonRect = activeButton.getBoundingClientRect();
@@ -127,20 +133,18 @@ export const Tabs: Component<TabsProps> = (props) => {
     }
   };
 
-  onMount(() => {
+  onSettled(() => {
     updateIndicator();
     requestAnimationFrame(() => setIsInitialized(true));
   });
 
   createEffect(
-    on(
-      () => activeTab(),
-      () => {
-        if (isInitialized()) {
-          updateIndicator();
-        }
-      },
-    ),
+    () => [activeTab(), isInitialized()] as const,
+    ([, initialized]) => {
+      if (initialized) {
+        updateIndicator();
+      }
+    },
   );
 
   const handleTabChange = (tabId: string) => {
@@ -150,10 +154,6 @@ export const Tabs: Component<TabsProps> = (props) => {
     }
 
     setActiveTab(tabId);
-
-    if (keepMounted()) {
-      setVisitedTabs((prev) => new Set([...prev, tabId]));
-    }
   };
 
   const handleTabKeyDown = (e: KeyboardEvent) => {
@@ -215,7 +215,7 @@ export const Tabs: Component<TabsProps> = (props) => {
       return true;
     }
     if (keepMounted()) {
-      return visitedTabs().has(tabId);
+      return activeTab() === tabId || visitedTabs().has(tabId);
     }
     return activeTab() === tabId;
   };
@@ -234,14 +234,14 @@ export const Tabs: Component<TabsProps> = (props) => {
   return (
     <div
       {...rest}
-      class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${local.class ?? ''}`}
+      class={`w-full flex ${isVertical() ? 'flex-row gap-4' : 'flex-col'} ${props.class ?? ''}`}
     >
       {/* Tab List - Segmented Control Style */}
       <div
         ref={containerRef}
         class={`relative flex gap-0.5 p-1 bg-black/5 dark:bg-white/10 rounded-xl ${
           isVertical() ? 'flex-col shrink-0 h-fit' : 'flex-row items-center'
-        } ${fullWidth() && !isVertical() ? 'w-full' : 'w-fit'} ${local.tabListClass ?? ''}`}
+        } ${fullWidth() && !isVertical() ? 'w-full' : 'w-fit'} ${props.tabListClass ?? ''}`}
         role="tablist"
         aria-orientation={orientation()}
       >
@@ -266,12 +266,12 @@ export const Tabs: Component<TabsProps> = (props) => {
                 onKeyDown={handleTabKeyDown}
                 id={`tab-${item.id}`}
                 class={`${getTabClass(isActive(), isDisabled())} ${fullWidth() && !isVertical() ? 'flex-1 justify-center' : ''}`}
-                aria-selected={isActive()}
-                aria-disabled={isDisabled()}
+                aria-selected={isActive() ? 'true' : 'false'}
+                aria-disabled={isDisabled() ? 'true' : 'false'}
                 aria-controls={`tabpanel-${item.id}`}
                 disabled={isDisabled()}
                 role="tab"
-                tabIndex={isActive() ? 0 : -1}
+                tabindex={isActive() ? 0 : -1}
               >
                 <Show when={item.icon}>
                   <span class={sizeStyle().icon}>{item.icon}</span>
@@ -296,7 +296,7 @@ export const Tabs: Component<TabsProps> = (props) => {
 
       {/* Tab Content */}
       <div
-        class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${local.contentClass ?? ''}`}
+        class={`${isVertical() ? 'flex-1 min-w-0' : 'mt-4'} ${props.contentClass ?? ''}`}
       >
         <For each={items()}>
           {(item) => (
@@ -306,7 +306,7 @@ export const Tabs: Component<TabsProps> = (props) => {
                 role="tabpanel"
                 aria-labelledby={`tab-${item.id}`}
                 class={`${activeTab() === item.id ? TAB_PANEL_ENTER : 'hidden'}`}
-                aria-hidden={activeTab() !== item.id}
+                aria-hidden={activeTab() !== item.id ? 'true' : 'false'}
               >
                 {item.content}
               </div>

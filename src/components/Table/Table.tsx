@@ -1,5 +1,6 @@
-import type { Component, JSX } from 'solid-js';
-import { For, Show, createMemo, createSignal, splitProps } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+import type { Component } from 'solid-js';
+import { For, Show, createMemo, createSignal, omit } from 'solid-js';
 import type { ComponentSize } from '../../types';
 import { Checkbox } from '../Input/Checkbox';
 import {
@@ -122,7 +123,8 @@ const SkeletonCell: Component<{ size: ComponentSize; index: number }> = (
 export function Table<T extends Record<string, unknown>>(
   props: Readonly<TableProps<T>>,
 ): ReturnType<Component> {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'size',
     'variant',
     'hoverable',
@@ -150,13 +152,13 @@ export function Table<T extends Record<string, unknown>>(
     'class',
     'style',
     'aria-label',
-  ]);
+  );
 
   // --- Memoized defaults ---
-  const size = createMemo(() => local.size ?? 'md');
-  const variant = createMemo(() => local.variant ?? 'default');
-  const hoverable = createMemo(() => local.hoverable ?? true);
-  const loadingRows = createMemo(() => local.loadingRows ?? 5);
+  const size = createMemo(() => props.size ?? 'md');
+  const variant = createMemo(() => props.variant ?? 'default');
+  const hoverable = createMemo(() => props.hoverable ?? true);
+  const loadingRows = createMemo(() => props.loadingRows ?? 5);
 
   // --- Memoized style lookups (avoid object creation in render) ---
   const sizeStyle = createMemo(() => SIZE_STYLES[size()]);
@@ -174,25 +176,25 @@ export function Table<T extends Record<string, unknown>>(
   >(new Set());
 
   // --- Computed values ---
-  const currentSort = createMemo(() => local.sort ?? internalSort());
+  const currentSort = createMemo(() => props.sort ?? internalSort());
   const currentSelectedKeys = createMemo(
-    () => local.selectedKeys ?? internalSelectedKeys(),
+    () => props.selectedKeys ?? internalSelectedKeys(),
   );
 
   const selectionMode = createMemo((): SelectionMode | null => {
-    if (!local.selectable) {
+    if (!props.selectable) {
       return null;
     }
-    if (local.selectable === true) {
+    if (props.selectable === true) {
       return 'multiple';
     }
-    return local.selectable;
+    return props.selectable;
   });
 
   // --- Memoized row key getter ---
   const getRowKey = (row: T, index: number): RowKey => {
-    if (local.getRowKey) {
-      return local.getRowKey(row, index);
+    if (props.getRowKey) {
+      return props.getRowKey(row, index);
     }
     if ('id' in row) {
       return row.id as RowKey;
@@ -234,8 +236,8 @@ export function Table<T extends Record<string, unknown>>(
 
     // Calculate left sticky offsets
     let leftOffset = hasSelection ? checkboxWidth : 0;
-    for (let i = 0; i < local.columns.length; i++) {
-      const col = local.columns[i];
+    for (let i = 0; i < props.columns.length; i++) {
+      const col = props.columns[i];
       if (col?.sticky === 'left') {
         styles.set(i, {
           position: 'sticky',
@@ -248,8 +250,8 @@ export function Table<T extends Record<string, unknown>>(
 
     // Calculate right sticky offsets
     let rightOffset = 0;
-    for (let i = local.columns.length - 1; i >= 0; i--) {
-      const col = local.columns[i];
+    for (let i = props.columns.length - 1; i >= 0; i--) {
+      const col = props.columns[i];
       if (col?.sticky === 'right') {
         styles.set(i, {
           position: 'sticky',
@@ -265,8 +267,8 @@ export function Table<T extends Record<string, unknown>>(
 
   // --- Handlers ---
   const handleSort = (columnKey: string) => {
-    const column = local.columns.find((c) => c.key === columnKey);
-    if (!column?.sortable && !local.sortable) {
+    const column = props.columns.find((c) => c.key === columnKey);
+    if (!column?.sortable && !props.sortable) {
       return;
     }
 
@@ -286,8 +288,8 @@ export function Table<T extends Record<string, unknown>>(
       direction: newDirection,
     };
 
-    if (local.onSort) {
-      local.onSort(newSort);
+    if (props.onSort) {
+      props.onSort(newSort);
     } else {
       setInternalSort(newSort);
     }
@@ -312,11 +314,11 @@ export function Table<T extends Record<string, unknown>>(
       }
     }
 
-    if (local.onSelectionChange) {
+    if (props.onSelectionChange) {
       const selectedRows = sortedData().filter((r, i) =>
         newKeys.has(getRowKey(r, i)),
       );
-      local.onSelectionChange(newKeys, selectedRows);
+      props.onSelectionChange(newKeys, selectedRows);
     } else {
       setInternalSelectedKeys(newKeys);
     }
@@ -331,17 +333,17 @@ export function Table<T extends Record<string, unknown>>(
       ? new Set(sortedData().map((row, index) => getRowKey(row, index)))
       : new Set<RowKey>();
 
-    if (local.onSelectionChange) {
-      local.onSelectionChange(newKeys, checked ? [...sortedData()] : []);
+    if (props.onSelectionChange) {
+      props.onSelectionChange(newKeys, checked ? [...sortedData()] : []);
     } else {
       setInternalSelectedKeys(newKeys);
     }
   };
 
   const handleRowClick = (row: T, index: number, event: MouseEvent) => {
-    local.onRowClick?.(row, index, event);
+    props.onRowClick?.(row, index, event);
 
-    if (selectionMode() === 'single' && local.clickableRows) {
+    if (selectionMode() === 'single' && props.clickableRows) {
       const key = getRowKey(row, index);
       const isSelected = currentSelectedKeys().has(key);
       handleRowSelect(row, index, !isSelected);
@@ -351,7 +353,7 @@ export function Table<T extends Record<string, unknown>>(
   let forwardingRowClick = false;
 
   /** Key of the column whose cell carries the row link */
-  const linkColumnKey = () => local.rowLinkColumn ?? local.columns[0]?.key;
+  const linkColumnKey = () => props.rowLinkColumn ?? props.columns[0]?.key;
 
   /** Activates a focused row with Enter, mirroring a click */
   const handleRowKeyDown = (row: T, index: number, event: KeyboardEvent) => {
@@ -411,16 +413,16 @@ export function Table<T extends Record<string, unknown>>(
   // --- Sorted data ---
   const sortedData = createMemo(() => {
     const sort = currentSort();
-    if (local.onSort || !sort.column || !sort.direction) {
-      return local.data;
+    if (props.onSort || !sort.column || !sort.direction) {
+      return props.data;
     }
 
-    const column = local.columns.find((c) => c.key === sort.column);
+    const column = props.columns.find((c) => c.key === sort.column);
     if (!column) {
-      return local.data;
+      return props.data;
     }
 
-    return [...local.data].sort((a, b) => {
+    return [...props.data].sort((a, b) => {
       const aVal = getCellValue(a, sort.column as string);
       const bVal = getCellValue(b, sort.column as string);
 
@@ -462,14 +464,14 @@ export function Table<T extends Record<string, unknown>>(
 
   // --- Computed container styles ---
   const containerStyle = createMemo((): JSX.CSSProperties => {
-    if (!local.maxHeight) {
+    if (!props.maxHeight) {
       return {};
     }
-    return { 'max-height': local.maxHeight };
+    return { 'max-height': props.maxHeight };
   });
 
   const shouldStickyHeader = createMemo(
-    () => local.stickyHeader || !!local.maxHeight,
+    () => props.stickyHeader || !!props.maxHeight,
   );
   const checkboxColumnStyle = createMemo(() => ({
     width: size() === 'sm' ? '32px' : size() === 'lg' ? '48px' : '40px',
@@ -477,12 +479,12 @@ export function Table<T extends Record<string, unknown>>(
 
   // --- Memoized row class names ---
   const getRowClassName = (row: T, index: number): string => {
-    if (!local.rowClass) {
+    if (!props.rowClass) {
       return '';
     }
-    return typeof local.rowClass === 'function'
-      ? local.rowClass(row, index)
-      : local.rowClass;
+    return typeof props.rowClass === 'function'
+      ? props.rowClass(row, index)
+      : props.rowClass;
   };
 
   // --- Pre-computed base classes ---
@@ -522,9 +524,9 @@ export function Table<T extends Record<string, unknown>>(
       </Show>
 
       {/* Data columns */}
-      <For each={local.columns}>
+      <For each={props.columns}>
         {(column, columnIndex) => {
-          const isSortable = column.sortable ?? local.sortable;
+          const isSortable = column.sortable ?? props.sortable;
           const isActive = () => currentSort().column === column.key;
           const sortDirection = () =>
             isActive() ? currentSort().direction : null;
@@ -564,7 +566,7 @@ export function Table<T extends Record<string, unknown>>(
                   handleSort(column.key);
                 }
               }}
-              tabIndex={isSortable ? 0 : undefined}
+              tabindex={isSortable ? 0 : undefined}
             >
               <Show
                 when={!column.headerRender}
@@ -588,11 +590,11 @@ export function Table<T extends Record<string, unknown>>(
   return (
     <div
       {...rest}
-      class={`glass-card rounded-xl overflow-hidden ${local.class ?? ''}`}
-      style={local.style}
+      class={`glass-card rounded-xl overflow-hidden ${props.class ?? ''}`}
+      style={props.style}
     >
       <div class="overflow-x-auto overflow-y-auto" style={containerStyle()}>
-        <table class="w-full" aria-label={local['aria-label'] ?? undefined}>
+        <table class="w-full" aria-label={props['aria-label'] ?? undefined}>
           <thead
             class={
               shouldStickyHeader()
@@ -604,7 +606,7 @@ export function Table<T extends Record<string, unknown>>(
           </thead>
           <tbody>
             {/* Loading state */}
-            <Show when={local.loading}>
+            <Show when={props.loading}>
               <For each={Array.from({ length: loadingRows() }, (_, i) => i)}>
                 {(rowIdx) => (
                   <tr class={variantStyle().row}>
@@ -621,7 +623,7 @@ export function Table<T extends Record<string, unknown>>(
                         />
                       </td>
                     </Show>
-                    <For each={local.columns}>
+                    <For each={props.columns}>
                       {(column, columnIndex) => (
                         <td
                           class={`${sizeStyle().cell} ${ALIGN_CLASSES[column.align ?? 'left']} ${variantStyle().cell} ${column.cellClass ?? ''}`}
@@ -634,7 +636,7 @@ export function Table<T extends Record<string, unknown>>(
                           <SkeletonCell
                             size={size()}
                             index={
-                              rowIdx * local.columns.length + columnIndex()
+                              rowIdx * props.columns.length + columnIndex()
                             }
                           />
                         </td>
@@ -646,34 +648,34 @@ export function Table<T extends Record<string, unknown>>(
             </Show>
 
             {/* Empty state */}
-            <Show when={!local.loading && sortedData().length === 0}>
+            <Show when={!props.loading && sortedData().length === 0}>
               <tr>
                 <td
-                  colspan={local.columns.length + (selectionMode() ? 1 : 0)}
+                  colspan={props.columns.length + (selectionMode() ? 1 : 0)}
                   class={`${sizeStyle().cell} py-8 text-center text-surface-500 dark:text-surface-400`}
                 >
                   <Show
-                    when={!local.emptyRender}
-                    fallback={local.emptyRender?.()}
+                    when={!props.emptyRender}
+                    fallback={props.emptyRender?.()}
                   >
-                    {local.emptyMessage ?? 'No data available'}
+                    {props.emptyMessage ?? 'No data available'}
                   </Show>
                 </td>
               </tr>
             </Show>
 
             {/* Data rows */}
-            <Show when={!local.loading && sortedData().length > 0}>
+            <Show when={!props.loading && sortedData().length > 0}>
               <For each={sortedData()}>
                 {(row, index) => {
                   const rowKey = () => getRowKey(row, index());
                   const isSelected = () => currentSelectedKeys().has(rowKey());
-                  const href = () => local.rowHref?.(row, index());
+                  const href = () => props.rowHref?.(row, index());
                   let rowLink: HTMLAnchorElement | undefined;
                   const clickable = () =>
                     !!href() ||
-                    local.clickableRows ||
-                    !!local.onRowClick ||
+                    props.clickableRows ||
+                    !!props.onRowClick ||
                     selectionMode() === 'single';
                   // Without a link, an interactive row needs its own
                   // keyboard access (focus + Enter)
@@ -697,7 +699,7 @@ export function Table<T extends Record<string, unknown>>(
                           ${getRowClassName(row, index())}
                           transition-colors
                         `}
-                      tabIndex={keyboardRow() ? 0 : undefined}
+                      tabindex={keyboardRow() ? 0 : undefined}
                       onKeyDown={(e) => {
                         if (keyboardRow()) {
                           handleRowKeyDown(row, index(), e);
@@ -711,7 +713,7 @@ export function Table<T extends Record<string, unknown>>(
                         followRowLink(rowLink, e);
                       }}
                       onDblClick={(e) =>
-                        local.onRowDoubleClick?.(row, index(), e)
+                        props.onRowDoubleClick?.(row, index(), e)
                       }
                     >
                       <Show when={selectionMode()}>
@@ -729,7 +731,7 @@ export function Table<T extends Record<string, unknown>>(
                         </td>
                       </Show>
 
-                      <For each={local.columns}>
+                      <For each={props.columns}>
                         {(column, columnIndex) => {
                           const value = () => getCellValue(row, column.key);
                           const stickyStyle = () =>

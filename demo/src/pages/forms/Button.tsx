@@ -1,4 +1,3 @@
-import { A } from '@solidjs/router';
 import { Button, Spinner } from 'glass-ui-solid';
 import { For, createSignal } from 'solid-js';
 import { DemoSection, PageHeader, PropsTable } from '../../components/demo';
@@ -127,13 +126,11 @@ export default function ButtonPage() {
       <DemoSection
         title="As a Link (as)"
         description="Pass `as` to render a different element with button styling — e.g. an anchor or a router link. Anchors keep ⌘/middle-click 'open in new tab'."
-        code={`import { A } from '@solidjs/router';
-
-// Plain anchor
+        code={`// Plain anchor
 <Button as="a" href="/list" variant="ghost">Back to list</Button>
 
 // Router link (client-side navigation)
-<Button as={A} href="/users">Users</Button>
+<Button as="a" href="/users">Users</Button>
 
 // Opens in a new tab
 <Button as="a" href="https://solidjs.com" target="_blank" rel="noopener">
@@ -144,7 +141,7 @@ export default function ButtonPage() {
           <Button as="a" href="#/components/forms/button" variant="ghost">
             Back to list
           </Button>
-          <Button as={A} href="#/components/forms/button">
+          <Button as="a" href="#/components/forms/button">
             Router link
           </Button>
           <Button

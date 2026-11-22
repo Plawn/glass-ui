@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import { type Accessor, createEffect } from 'solid-js';
 import { useBodyScrollLock } from './useBodyScrollLock';
 
 /**
@@ -51,24 +51,27 @@ export function useScrollBehavior(options: UseScrollBehaviorOptions): void {
   });
 
   // Handle 'close' behavior - close on external scroll
-  createEffect(() => {
-    if (!enabled() || behavior() !== 'close') {
-      return;
-    }
-
-    const handleScroll = (e: Event) => {
-      // Ignore scroll events from inside the floating element
-      const ref = ignoreRef?.();
-      if (ref?.contains(e.target as Node)) {
+  createEffect(
+    () => enabled() && behavior() === 'close',
+    (active) => {
+      if (!active) {
         return;
       }
-      onClose();
-    };
 
-    // Use capture to catch scroll events on any scrollable ancestor
-    window.addEventListener('scroll', handleScroll, true);
-    onCleanup(() => window.removeEventListener('scroll', handleScroll, true));
-  });
+      const handleScroll = (e: Event) => {
+        // Ignore scroll events from inside the floating element
+        const ref = ignoreRef?.();
+        if (ref?.contains(e.target as Node)) {
+          return;
+        }
+        onClose();
+      };
+
+      // Use capture to catch scroll events on any scrollable ancestor
+      window.addEventListener('scroll', handleScroll, true);
+      return () => window.removeEventListener('scroll', handleScroll, true);
+    },
+  );
 
   // 'none' behavior requires no additional handling
 }

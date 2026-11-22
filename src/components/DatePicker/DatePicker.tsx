@@ -1,4 +1,4 @@
-import { type Component, Show, createSignal, splitProps } from 'solid-js';
+import { type Component, Show, createSignal, omit } from 'solid-js';
 import { useControlled } from '../../hooks';
 import type { ComponentSize } from '../../types';
 import { Popover } from '../Popover';
@@ -58,7 +58,8 @@ const CalendarIcon: Component<{ size?: number }> = (props) => {
  * ```
  */
 export const DatePicker: Component<DatePickerProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'value',
     'defaultValue',
     'onChange',
@@ -78,20 +79,20 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
     'id',
     'class',
     'style',
-  ]);
+  );
 
   const [isOpen, setIsOpen] = createSignal(false);
 
-  const size = () => local.size ?? 'md';
-  const format = () => local.format ?? 'yyyy-MM-dd';
-  const weekStartsOn = () => local.weekStartsOn ?? 0;
-  const clearable = () => local.clearable ?? false;
-  const disabled = () => local.disabled ?? false;
+  const size = () => props.size ?? 'md';
+  const format = () => props.format ?? 'yyyy-MM-dd';
+  const weekStartsOn = () => props.weekStartsOn ?? 0;
+  const clearable = () => props.clearable ?? false;
+  const disabled = () => props.disabled ?? false;
 
   const [value, setValue] = useControlled<Date | null>({
-    value: () => local.value,
-    defaultValue: local.defaultValue ?? null,
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.value,
+    getDefaultValue: () => props.defaultValue ?? null,
+    onChange: (v) => props.onChange?.(v),
   });
 
   const displayValue = () => {
@@ -120,14 +121,14 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
   };
 
   return (
-    <div {...rest} class={`w-full ${local.class ?? ''}`} style={local.style}>
-      <Show when={local.label}>
+    <div {...rest} class={`w-full ${props.class ?? ''}`} style={props.style}>
+      <Show when={props.label}>
         <label
-          for={local.id}
+          for={props.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {local.label}
-          <Show when={local.required}>
+          {props.label}
+          <Show when={props.required}>
             <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
@@ -144,16 +145,16 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
             text-surface-900 dark:text-surface-100
             focus:outline-none
             ${disabled() ? 'opacity-50 cursor-not-allowed' : ''}
-            ${local.error ? 'border-error-500 dark:border-error-400' : ''}
+            ${props.error ? 'border-error-500 dark:border-error-400' : ''}
             ${getSizeClasses(size())}
           `,
           'aria-haspopup': 'dialog',
-          'aria-busy': local.loading || undefined,
+          'aria-busy': props.loading ? 'true' : undefined,
         }}
         trigger={
           <div class="flex items-center gap-2 w-full">
             <Show
-              when={local.loading}
+              when={props.loading}
               fallback={
                 <CalendarIcon
                   size={size() === 'sm' ? 14 : size() === 'lg' ? 18 : 16}
@@ -165,7 +166,7 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
             <span
               class={`flex-1 text-left ${displayValue() ? '' : 'text-surface-400 dark:text-surface-500'}`}
             >
-              {displayValue() || local.placeholder || 'Select date'}
+              {displayValue() || props.placeholder || 'Select date'}
             </span>
 
             {/* Clear button */}
@@ -186,30 +187,30 @@ export const DatePicker: Component<DatePickerProps> = (props) => {
         <Calendar
           value={value()}
           onSelect={handleDateSelect}
-          min={local.min}
-          max={local.max}
+          min={props.min}
+          max={props.max}
           weekStartsOn={weekStartsOn()}
         />
       </Popover>
 
       {/* Hidden input for native form submission */}
-      <Show when={local.name}>
+      <Show when={props.name}>
         <input
           type="hidden"
-          name={local.name}
+          name={props.name}
           value={value() ? formatDate(value() as Date, 'yyyy-MM-dd') : ''}
-          required={local.required}
+          required={props.required}
         />
       </Show>
 
       {/* Error message */}
-      <Show when={local.error}>
+      <Show when={props.error}>
         <p
-          id={local.id ? `${local.id}-error` : undefined}
+          id={props.id ? `${props.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {local.error}
+          {props.error}
         </p>
       </Show>
     </div>

@@ -1,13 +1,13 @@
+import type { JSX } from '@solidjs/web';
 import {
   type Component,
   For,
-  type JSX,
   Show,
   createEffect,
   createMemo,
   createSignal,
   onCleanup,
-  onMount,
+  onSettled,
 } from 'solid-js';
 import type { ListItem, VirtualHandle, VirtualListProps } from './types';
 import { useVirtualizer } from './useVirtualizer';
@@ -61,7 +61,7 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
   // The shared ResizeObserver fires once on observe(), which covers the
   // initial measurement; the rAF path is only a fallback for environments
   // without ResizeObserver.
-  onMount(() => {
+  onSettled(() => {
     if (props.fixedItemHeight !== undefined || !itemRef) {
       return;
     }
@@ -69,17 +69,16 @@ function ItemWrapper<D, C>(props: Readonly<ItemWrapperProps<D, C>>) {
     if (props.observer) {
       const el = itemRef;
       props.observer.observe(el);
-      onCleanup(() => props.observer?.unobserve(el));
-    } else {
-      requestAnimationFrame(() => {
-        if (itemRef) {
-          const height = itemRef.offsetHeight;
-          if (height > 0) {
-            props.measureItem(props.index, height);
-          }
-        }
-      });
+      return () => props.observer?.unobserve(el);
     }
+    requestAnimationFrame(() => {
+      if (itemRef) {
+        const height = itemRef.offsetHeight;
+        if (height > 0) {
+          props.measureItem(props.index, height);
+        }
+      }
+    });
   });
 
   // Style computed reactively
@@ -177,10 +176,9 @@ export function VirtualList<D = unknown, C = unknown>(
 
   // --- Clean cache when totalCount changes ---
   // This prevents stale indices pointing to non-existent data
-  let prevTotalCount = totalCount();
-  createEffect(() => {
-    const count = totalCount();
-
+  let prevTotalCount: number | undefined;
+  createEffect(totalCount, (count) => {
+    prevTotalCount ??= count;
     // If totalCount decreased, remove invalid indices from cache
     if (count < prevTotalCount) {
       setCachedIndices((prev) => {
@@ -202,44 +200,46 @@ export function VirtualList<D = unknown, C = unknown>(
   });
 
   // --- Update cached indices when visible items change ---
-  createEffect(() => {
-    const items = virtualizer.items();
-    const range = virtualizer.range();
+  createEffect(
+    () => [virtualizer.items(), virtualizer.range()] as const,
+    ([items, range]) => {
+      setCachedIndices((prev) => {
+        const indexSet = new Set(prev);
 
-    setCachedIndices((prev) => {
-      const indexSet = new Set(prev);
+        // Add new visible indices
+        for (const item of items) {
+          indexSet.add(item.index);
+        }
 
-      // Add new visible indices
-      for (const item of items) {
-        indexSet.add(item.index);
-      }
+        // Convert to array
+        let indices = Array.from(indexSet);
 
-      // Convert to array
-      let indices = Array.from(indexSet);
+        // Prune if too large - keep items closest to current viewport
+        if (indices.length > MAX_CACHE_SIZE) {
+          const centerIndex = Math.floor(
+            (range.startIndex + range.endIndex) / 2,
+          );
+          indices.sort(
+            (a, b) => Math.abs(a - centerIndex) - Math.abs(b - centerIndex),
+          );
+          indices = indices.slice(0, MAX_CACHE_SIZE);
+        }
 
-      // Prune if too large - keep items closest to current viewport
-      if (indices.length > MAX_CACHE_SIZE) {
-        const centerIndex = Math.floor((range.startIndex + range.endIndex) / 2);
-        indices.sort(
-          (a, b) => Math.abs(a - centerIndex) - Math.abs(b - centerIndex),
-        );
-        indices = indices.slice(0, MAX_CACHE_SIZE);
-      }
+        // Sort by index for stable rendering order
+        indices.sort((a, b) => a - b);
 
-      // Sort by index for stable rendering order
-      indices.sort((a, b) => a - b);
+        // Only update if the array actually changed
+        if (
+          indices.length === prev.length &&
+          indices.every((v, i) => v === prev[i])
+        ) {
+          return prev;
+        }
 
-      // Only update if the array actually changed
-      if (
-        indices.length === prev.length &&
-        indices.every((v, i) => v === prev[i])
-      ) {
-        return prev;
-      }
-
-      return indices;
-    });
-  });
+        return indices;
+      });
+    },
+  );
 
   // --- Shared ResizeObserver for all items ---
   // Reading entry.borderBoxSize avoids the forced layout that offsetHeight triggers.
@@ -280,29 +280,32 @@ export function VirtualList<D = unknown, C = unknown>(
   };
 
   // --- Expose handle ---
-  createEffect(() => {
-    if (props.ref) {
-      const handle: VirtualHandle = {
-        scrollToIndex: (location) => {
-          if (typeof location === 'number') {
-            virtualizer.scrollToIndex(location);
-          } else {
-            virtualizer.scrollToIndex(location.index, {
-              align: location.align,
-              behavior: location.behavior,
-            });
-          }
-        },
-        scrollTo: virtualizer.scrollTo,
-        scrollBy: virtualizer.scrollBy,
-        getScrollTop: virtualizer.getScrollTop,
-      };
-      props.ref(handle);
-    }
-  });
+  createEffect(
+    () => props.ref,
+    (ref) => {
+      if (ref) {
+        const handle: VirtualHandle = {
+          scrollToIndex: (location) => {
+            if (typeof location === 'number') {
+              virtualizer.scrollToIndex(location);
+            } else {
+              virtualizer.scrollToIndex(location.index, {
+                align: location.align,
+                behavior: location.behavior,
+              });
+            }
+          },
+          scrollTo: virtualizer.scrollTo,
+          scrollBy: virtualizer.scrollBy,
+          getScrollTop: virtualizer.getScrollTop,
+        };
+        ref(handle);
+      }
+    },
+  );
 
   // --- Initial scroll ---
-  onMount(() => {
+  onSettled(() => {
     const scroller = scrollerRef();
     if (props.initialScrollTop !== undefined && scroller) {
       scroller.scrollTop = props.initialScrollTop;
@@ -312,19 +315,23 @@ export function VirtualList<D = unknown, C = unknown>(
   });
 
   // --- Items rendered callback ---
-  createEffect(() => {
-    const items = virtualizer.items();
-    if (props.itemsRendered) {
-      props.itemsRendered(
-        items.map((item) => ({
+  createEffect(
+    () => {
+      const notify = props.itemsRendered;
+      if (notify) {
+        const items = virtualizer.items().map((item) => ({
           index: item.index,
           offset: item.offset,
           size: item.size,
           data: props.data?.[item.index],
-        })) as ListItem<D>[],
-      );
-    }
-  });
+        })) as ListItem<D>[];
+        return { notify, items };
+      }
+    },
+    (update) => {
+      update?.notify(update.items);
+    },
+  );
 
   // --- Components ---
   const Scroller = props.Scroller ?? DefaultScroller;

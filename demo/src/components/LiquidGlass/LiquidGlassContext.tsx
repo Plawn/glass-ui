@@ -4,7 +4,9 @@ import type { LiquidGlassContextValue } from './types';
 /**
  * Context for sharing LiquidGlass state between provider and surfaces
  */
-export const LiquidGlassContext = createContext<LiquidGlassContextValue>();
+export const LiquidGlassContext = createContext<LiquidGlassContextValue | null>(
+  null,
+);
 
 /**
  * Hook to access the LiquidGlass context
@@ -22,5 +24,5 @@ export function useLiquidGlass(): LiquidGlassContextValue {
  * Hook to optionally access the LiquidGlass context (returns undefined if not in provider)
  */
 export function useLiquidGlassOptional(): LiquidGlassContextValue | undefined {
-  return useContext(LiquidGlassContext);
+  return useContext(LiquidGlassContext) ?? undefined;
 }

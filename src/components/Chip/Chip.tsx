@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, splitProps } from 'solid-js';
+import { Show, omit } from 'solid-js';
 import {
   GAP_SIZES,
   ICON_SIZES_SMALL,
@@ -39,7 +39,8 @@ const chipColorToSemantic: Record<ChipColor, SemanticColor> = {
 };
 
 export const Chip: Component<ChipProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'variant',
     'color',
     'size',
@@ -47,10 +48,10 @@ export const Chip: Component<ChipProps> = (props) => {
     'onRemove',
     'children',
     'class',
-  ]);
-  const variant = () => local.variant ?? 'filled';
-  const color = () => local.color ?? 'default';
-  const size = () => local.size ?? 'md';
+  );
+  const variant = () => props.variant ?? 'filled';
+  const color = () => props.color ?? 'default';
+  const size = () => props.size ?? 'md';
   const styles = () => sizeStyles[size()];
 
   const getColorStyle = () => {
@@ -68,16 +69,16 @@ export const Chip: Component<ChipProps> = (props) => {
 
   const handleRemove = (e: MouseEvent) => {
     e.stopPropagation();
-    local.onRemove?.();
+    props.onRemove?.();
   };
 
   return (
     <span
       {...rest}
-      class={`inline-flex items-center rounded-full font-medium transition-all ${styles().container} ${getColorStyle()} ${local.disabled ? 'opacity-50 cursor-not-allowed' : ''} ${local.class ?? ''}`}
+      class={`inline-flex items-center rounded-full font-medium transition-all ${styles().container} ${getColorStyle()} ${props.disabled ? 'opacity-50 cursor-not-allowed' : ''} ${props.class ?? ''}`}
     >
-      {local.children}
-      <Show when={local.onRemove && !local.disabled}>
+      {props.children}
+      <Show when={props.onRemove && !props.disabled}>
         <button
           type="button"
           class="inline-flex items-center justify-center rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors -mr-0.5"

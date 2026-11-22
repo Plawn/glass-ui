@@ -45,7 +45,7 @@ export const AccordionPanel: Component<AccordionPanelProps> = (props) => {
         type="button"
         onClick={() => setOpen(!open())}
         class={`w-full flex items-center justify-between ${PANEL_HEADER_PADDING[size()]} hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors`}
-        aria-expanded={open()}
+        aria-expanded={open() ? 'true' : 'false'}
       >
         <div class="flex items-center gap-2 text-left">
           <ChevronRightIcon

@@ -1,5 +1,6 @@
-import type { JSX } from 'solid-js';
-import { Portal } from 'solid-js/web';
+import type { JSX } from '@solidjs/web';
+
+import { Portal } from '@solidjs/web';
 import { useIsDark } from '../../../hooks';
 
 export interface PortalWithDarkModeProps {

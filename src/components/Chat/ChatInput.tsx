@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, createEffect, createSignal, onMount } from 'solid-js';
+import { Show, createEffect, createSignal, onSettled } from 'solid-js';
 import { SendIcon, StopIcon } from './icons';
 import type { ChatInputProps } from './types';
 
@@ -29,13 +29,9 @@ export const ChatInput: Component<ChatInputProps> = (props) => {
     }
   };
 
-  createEffect(() => {
-    // Trigger resize when value changes
-    value();
-    adjustHeight();
-  });
+  createEffect(value, adjustHeight);
 
-  onMount(() => {
+  onSettled(() => {
     adjustHeight();
   });
 

@@ -1,5 +1,5 @@
-import { type Component, For, Show, splitProps } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { Dynamic } from '@solidjs/web';
+import { type Component, For, Show, omit } from 'solid-js';
 import type { BreadcrumbItem, BreadcrumbProps } from './types';
 
 const DefaultSeparator: Component = () => (
@@ -14,8 +14,8 @@ const staticClass =
   'flex items-center text-sm text-surface-500 dark:text-surface-400';
 
 export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
-  const [local, rest] = splitProps(props, ['items', 'separator', 'class']);
-  const isLast = (index: number) => index === local.items.length - 1;
+  const rest = omit(props, 'items', 'separator', 'class');
+  const isLast = (index: number) => index === props.items.length - 1;
 
   const renderItem = (item: BreadcrumbItem, index: number) => {
     const content = (
@@ -44,7 +44,7 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
     // Polymorphic, explicit element selection (no href inference).
     const tag = item.as ?? (item.onClick ? 'button' : 'span');
     const interactive = Boolean(item.as || item.onClick);
-    const [, forwarded] = splitProps(item, ['label', 'icon', 'as']);
+    const forwarded = omit(item, 'label', 'icon', 'as');
 
     return (
       <Dynamic
@@ -61,16 +61,16 @@ export const Breadcrumb: Component<BreadcrumbProps> = (props) => {
   return (
     <nav
       {...rest}
-      class={`flex items-center ${local.class ?? ''}`}
+      class={`flex items-center ${props.class ?? ''}`}
       aria-label="Breadcrumb"
     >
       <ol class="flex items-center">
-        <For each={local.items}>
+        <For each={props.items}>
           {(item, index) => (
             <li class="flex items-center">
               {renderItem(item, index())}
               <Show when={!isLast(index())}>
-                {local.separator ?? <DefaultSeparator />}
+                {props.separator ?? <DefaultSeparator />}
               </Show>
             </li>
           )}

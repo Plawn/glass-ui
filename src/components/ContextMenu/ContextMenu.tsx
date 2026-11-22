@@ -1,4 +1,5 @@
-import { type JSX, createEffect, createSignal, splitProps } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+import { createEffect, createSignal, omit, untrack } from 'solid-js';
 import type { Accessor } from 'solid-js';
 import { ContextMenuContext } from './ContextMenuContext';
 import type { ContextMenuContextValue, ContextMenuProps } from './types';
@@ -46,16 +47,18 @@ import type { ContextMenuContextValue, ContextMenuProps } from './types';
 export function ContextMenu<T = unknown>(
   props: ContextMenuProps<T>,
 ): JSX.Element {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'class',
     'style',
     'children',
     'onOpenChange',
     '__internal',
-  ]);
+  );
 
   // Use internal state if provided (from createContextMenu), otherwise create our own
-  const internal = local.__internal;
+  // Read once: which state backs the menu cannot change after mount.
+  const internal = untrack(() => props.__internal);
 
   const [ownOpen, setOwnOpen] = internal
     ? [internal.open, internal.setOpen]
@@ -74,24 +77,23 @@ export function ContextMenu<T = unknown>(
 
   const close = () => {
     setOwnOpen(false);
-    local.onOpenChange?.(false, ownData());
+    props.onOpenChange?.(false, ownData());
   };
 
   const openMenu = (pos: { x: number; y: number }, data: T | null) => {
     setOwnPosition(pos);
     setOwnData(data);
     setOwnOpen(true);
-    local.onOpenChange?.(true, data);
+    props.onOpenChange?.(true, data);
   };
 
   // Notify parent of state changes when using internal state
-  createEffect(() => {
-    if (internal) {
-      const isOpen = ownOpen();
-      // Only trigger callback, don't update internal state
-      local.onOpenChange?.(isOpen, ownData());
-    }
-  });
+  if (internal) {
+    createEffect(
+      () => [ownOpen(), ownData()] as const,
+      ([open, data]) => untrack(() => props.onOpenChange)?.(open, data),
+    );
+  }
 
   // Context value uses unknown since context is not generic at runtime
   const contextValue: ContextMenuContextValue = {
@@ -106,10 +108,10 @@ export function ContextMenu<T = unknown>(
   };
 
   return (
-    <ContextMenuContext.Provider value={contextValue}>
-      <div {...rest} class={local.class ?? ''} style={local.style}>
-        {local.children}
+    <ContextMenuContext value={contextValue}>
+      <div {...rest} class={props.class ?? ''} style={props.style}>
+        {props.children}
       </div>
-    </ContextMenuContext.Provider>
+    </ContextMenuContext>
   );
 }

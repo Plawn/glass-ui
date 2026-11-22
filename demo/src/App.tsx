@@ -1,7 +1,6 @@
 import {
-  Route,
   type RouteSectionProps,
-  Router,
+  createRouter,
   useNavigate,
 } from '@solidjs/router';
 import {
@@ -14,10 +13,10 @@ import {
   ToastContainer,
   useIsDark,
 } from 'glass-ui-solid';
-import { Suspense, createSignal, lazy, onMount } from 'solid-js';
+import { Loading, createSignal, lazy, onSettled } from 'solid-js';
 import { version } from '../../package.json';
 import DocSidebar from './components/DocSidebar';
-import { navigation } from './config/navigation';
+import { demoPath, navigation } from './config/navigation';
 
 // Pages
 const Home = lazy(() => import('./pages/Home'));
@@ -122,7 +121,7 @@ function Layout(props: RouteSectionProps) {
 
   const [darkMode, setDarkMode] = createSignal(prefersDarkMode());
 
-  onMount(() => {
+  onSettled(() => {
     if (prefersDarkMode()) {
       document.documentElement.classList.add('dark');
     }
@@ -154,9 +153,9 @@ function Layout(props: RouteSectionProps) {
     ),
   ];
 
-  const handleCommandSelect = (item: CommandPaletteItemType<string>) => {
-    if (item.data) {
-      navigate(item.data);
+  const handleCommandSelect = (item: CommandPaletteItemType) => {
+    if (typeof item.data === 'string') {
+      navigate(demoPath(item.data));
     }
   };
 
@@ -234,97 +233,91 @@ function Layout(props: RouteSectionProps) {
         <DocSidebar />
 
         <main class="flex-1 min-w-0">
-          <Suspense fallback={<PageLoader />}>{props.children}</Suspense>
+          <Loading fallback={<PageLoader />}>{props.children}</Loading>
         </main>
       </div>
     </GlassBackground>
   );
 }
 
-// Get base path from Vite config (set during build)
-const basePath = import.meta.env.BASE_URL;
+const Router = createRouter({
+  base: import.meta.env.BASE_URL,
+  routes: [
+    { path: '/', component: Home },
+
+    // Styles
+    { path: '/styles/glass-chromatic', component: GlassChromaticPage },
+    { path: '/styles/glass-3d-buttons', component: Glass3DButtonsPage },
+    { path: '/styles/liquid-glass', component: LiquidGlassPage },
+    { path: '/styles/glass-background', component: GlassBackgroundPage },
+
+    // Layout
+    { path: '/layout/card', component: CardPage },
+    { path: '/layout/section', component: SectionPage },
+    { path: '/layout/accordion', component: AccordionPage },
+    { path: '/layout/modal', component: ModalPage },
+    { path: '/layout/dialog', component: DialogPage },
+    { path: '/layout/drawer', component: DrawerPage },
+    { path: '/layout/sheet', component: SheetPage },
+    { path: '/layout/divider', component: DividerPage },
+    { path: '/layout/collapsible', component: CollapsiblePage },
+    { path: '/layout/sidebar', component: SidebarPage },
+    { path: '/layout/navbar', component: NavbarPage },
+    { path: '/layout/window', component: WindowPage },
+
+    // Forms
+    { path: '/forms/button', component: ButtonPage },
+    { path: '/forms/input', component: InputPage },
+    { path: '/forms/textarea', component: TextareaPage },
+    { path: '/forms/select', component: SelectPage },
+    { path: '/forms/checkbox', component: CheckboxPage },
+    { path: '/forms/radio-group', component: RadioGroupPage },
+    { path: '/forms/switch', component: SwitchPage },
+    { path: '/forms/slider', component: SliderPage },
+    { path: '/forms/autocomplete', component: AutocompletePage },
+    { path: '/forms/date-picker', component: DatePickerPage },
+    { path: '/forms/number-input', component: NumberInputPage },
+    { path: '/forms/file-upload', component: FileUploadPage },
+    { path: '/forms/stepper', component: StepperPage },
+    { path: '/forms/json-schema-form', component: JsonSchemaFormPage },
+
+    // Feedback
+    { path: '/feedback/alert', component: AlertPage },
+    { path: '/feedback/progress', component: ProgressPage },
+    { path: '/feedback/skeleton', component: SkeletonPage },
+    { path: '/feedback/spinner', component: SpinnerPage },
+    { path: '/feedback/error-display', component: ErrorDisplayPage },
+    { path: '/feedback/snackbar', component: SnackbarPage },
+    { path: '/feedback/toast', component: ToastPage },
+    { path: '/feedback/empty-state', component: EmptyStatePage },
+    { path: '/feedback/chat', component: ChatPage },
+
+    // Navigation
+    { path: '/navigation/tabs', component: TabsPage },
+    { path: '/navigation/segmented-control', component: SegmentedControlPage },
+    { path: '/navigation/breadcrumb', component: BreadcrumbPage },
+    { path: '/navigation/pagination', component: PaginationPage },
+    { path: '/navigation/menu', component: MenuPage },
+    { path: '/navigation/dropdown', component: DropdownPage },
+    { path: '/navigation/context-menu', component: ContextMenuPage },
+    { path: '/navigation/command-palette', component: CommandPalettePage },
+
+    // Data Display
+    { path: '/data/table', component: TablePage },
+    { path: '/data/badge', component: BadgePage },
+    { path: '/data/chip', component: ChipPage },
+    { path: '/data/avatar', component: AvatarPage },
+    { path: '/data/tooltip', component: TooltipPage },
+    { path: '/data/popover', component: PopoverPage },
+    { path: '/data/hover-card', component: HoverCardPage },
+    { path: '/data/code-block', component: CodeBlockPage },
+    { path: '/data/json-viewer', component: JsonViewerPage },
+    { path: '/data/markdown', component: MarkdownPage },
+    { path: '/data/virtual-list', component: VirtualListPage },
+    { path: '/data/virtual-table', component: VirtualTablePage },
+  ],
+});
 
 export default function App() {
-  return (
-    <Router root={Layout} base={basePath}>
-      <Route path="/" component={Home} />
-
-      {/* Styles */}
-      <Route path="/styles/glass-chromatic" component={GlassChromaticPage} />
-      <Route path="/styles/glass-3d-buttons" component={Glass3DButtonsPage} />
-      <Route path="/styles/liquid-glass" component={LiquidGlassPage} />
-      <Route path="/styles/glass-background" component={GlassBackgroundPage} />
-
-      {/* Layout */}
-      <Route path="/layout/card" component={CardPage} />
-      <Route path="/layout/section" component={SectionPage} />
-      <Route path="/layout/accordion" component={AccordionPage} />
-      <Route path="/layout/modal" component={ModalPage} />
-      <Route path="/layout/dialog" component={DialogPage} />
-      <Route path="/layout/drawer" component={DrawerPage} />
-      <Route path="/layout/sheet" component={SheetPage} />
-      <Route path="/layout/divider" component={DividerPage} />
-      <Route path="/layout/collapsible" component={CollapsiblePage} />
-      <Route path="/layout/sidebar" component={SidebarPage} />
-      <Route path="/layout/navbar" component={NavbarPage} />
-      <Route path="/layout/window" component={WindowPage} />
-
-      {/* Forms */}
-      <Route path="/forms/button" component={ButtonPage} />
-      <Route path="/forms/input" component={InputPage} />
-      <Route path="/forms/textarea" component={TextareaPage} />
-      <Route path="/forms/select" component={SelectPage} />
-      <Route path="/forms/checkbox" component={CheckboxPage} />
-      <Route path="/forms/radio-group" component={RadioGroupPage} />
-      <Route path="/forms/switch" component={SwitchPage} />
-      <Route path="/forms/slider" component={SliderPage} />
-      <Route path="/forms/autocomplete" component={AutocompletePage} />
-      <Route path="/forms/date-picker" component={DatePickerPage} />
-      <Route path="/forms/number-input" component={NumberInputPage} />
-      <Route path="/forms/file-upload" component={FileUploadPage} />
-      <Route path="/forms/stepper" component={StepperPage} />
-      <Route path="/forms/json-schema-form" component={JsonSchemaFormPage} />
-
-      {/* Feedback */}
-      <Route path="/feedback/alert" component={AlertPage} />
-      <Route path="/feedback/progress" component={ProgressPage} />
-      <Route path="/feedback/skeleton" component={SkeletonPage} />
-      <Route path="/feedback/spinner" component={SpinnerPage} />
-      <Route path="/feedback/error-display" component={ErrorDisplayPage} />
-      <Route path="/feedback/snackbar" component={SnackbarPage} />
-      <Route path="/feedback/toast" component={ToastPage} />
-      <Route path="/feedback/empty-state" component={EmptyStatePage} />
-      <Route path="/feedback/chat" component={ChatPage} />
-
-      {/* Navigation */}
-      <Route path="/navigation/tabs" component={TabsPage} />
-      <Route
-        path="/navigation/segmented-control"
-        component={SegmentedControlPage}
-      />
-      <Route path="/navigation/breadcrumb" component={BreadcrumbPage} />
-      <Route path="/navigation/pagination" component={PaginationPage} />
-      <Route path="/navigation/menu" component={MenuPage} />
-      <Route path="/navigation/dropdown" component={DropdownPage} />
-      <Route path="/navigation/context-menu" component={ContextMenuPage} />
-      <Route
-        path="/navigation/command-palette"
-        component={CommandPalettePage}
-      />
-
-      {/* Data Display */}
-      <Route path="/data/table" component={TablePage} />
-      <Route path="/data/badge" component={BadgePage} />
-      <Route path="/data/chip" component={ChipPage} />
-      <Route path="/data/avatar" component={AvatarPage} />
-      <Route path="/data/tooltip" component={TooltipPage} />
-      <Route path="/data/popover" component={PopoverPage} />
-      <Route path="/data/hover-card" component={HoverCardPage} />
-      <Route path="/data/code-block" component={CodeBlockPage} />
-      <Route path="/data/json-viewer" component={JsonViewerPage} />
-      <Route path="/data/markdown" component={MarkdownPage} />
-      <Route path="/data/virtual-list" component={VirtualListPage} />
-      <Route path="/data/virtual-table" component={VirtualTablePage} />
-    </Router>
-  );
+  return <Router>{Layout}</Router>;
 }

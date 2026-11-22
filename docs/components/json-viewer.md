@@ -55,18 +55,19 @@ const data = {
 
 ```tsx
 function ApiDebugger() {
-  const [response] = createResource(() => fetchApi());
+  // Async memo: not ready until the request resolves
+  const response = createMemo(() => fetchApi());
 
   return (
     <div class="space-y-4">
       <h3 class="font-medium">API Response</h3>
-      <Show when={response()} fallback={<Skeleton height="200px" />}>
+      <Loading fallback={<Skeleton height="200px" />}>
         <JsonViewer
           data={response()}
           initialExpandDepth={2}
           maxHeight="500px"
         />
-      </Show>
+      </Loading>
     </div>
   );
 }

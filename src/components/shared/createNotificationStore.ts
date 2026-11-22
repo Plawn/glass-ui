@@ -1,4 +1,4 @@
-import { createStore, produce } from 'solid-js/store';
+import { createStore } from 'solid-js';
 import type { StatusColor } from '../../types';
 
 // =============================================================================
@@ -142,11 +142,9 @@ export function createNotificationStore<T extends BaseNotification>(
     const id = `${idPrefix}-${++idCounter}`;
     const item = { ...notification, id } as T;
 
-    setStore(
-      produce((state) => {
-        state.items.push(item);
-      }),
-    );
+    setStore((state) => {
+      state.items.push(item);
+    });
 
     const duration = notification.duration ?? defaultDuration;
     if (duration > 0) {
@@ -164,11 +162,9 @@ export function createNotificationStore<T extends BaseNotification>(
       clearTimeout(countdown.timer);
       countdowns.delete(id);
     }
-    setStore(
-      produce((state) => {
-        state.items = state.items.filter((item) => item.id !== id);
-      }),
-    );
+    setStore((state) => {
+      state.items = state.items.filter((item) => item.id !== id);
+    });
   }
 
   function clear(): void {
@@ -176,7 +172,9 @@ export function createNotificationStore<T extends BaseNotification>(
       clearTimeout(countdown.timer);
     }
     countdowns.clear();
-    setStore('items', []);
+    setStore((state) => {
+      state.items = [];
+    });
   }
 
   function pause(id: string): void {

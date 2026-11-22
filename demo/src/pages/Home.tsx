@@ -1,8 +1,7 @@
-import { A } from '@solidjs/router';
 import { Button, Card } from 'glass-ui-solid';
 import { For } from 'solid-js';
 import { PageHeader } from '../components/demo';
-import { navigation } from '../config/navigation';
+import { demoPath, navigation } from '../config/navigation';
 
 export default function Home() {
   return (
@@ -22,11 +21,11 @@ export default function Home() {
               <div class="flex flex-wrap gap-2">
                 <For each={group.items}>
                   {(item) => (
-                    <A href={item.path}>
+                    <a href={demoPath(item.path)}>
                       <Button variant="ghost" size="sm">
                         {item.label}
                       </Button>
-                    </A>
+                    </a>
                   )}
                 </For>
               </div>

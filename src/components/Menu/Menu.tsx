@@ -1,35 +1,28 @@
+import { Dynamic } from '@solidjs/web';
 import {
   type Component,
   For,
   Show,
   createEffect,
   createSignal,
-  on,
-  splitProps,
+  omit,
 } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
 import { Popover } from '../Popover';
 import type { MenuItem, MenuProps } from './types';
 
 type MenuActionItem = Extract<MenuItem, { divider?: false }>;
 
 export const Menu: Component<MenuProps> = (props) => {
-  const [local, rest] = splitProps(props, [
-    'trigger',
-    'items',
-    'placement',
-    'class',
-    'style',
-  ]);
+  const rest = omit(props, 'trigger', 'items', 'placement', 'class', 'style');
   const [isOpen, setIsOpen] = createSignal(false);
   const [focusedIndex, setFocusedIndex] = createSignal(-1);
   let menuRef: HTMLDivElement | undefined;
 
-  const placement = () => local.placement ?? 'bottom-start';
+  const placement = () => props.placement ?? 'bottom-start';
 
   // Get focusable items (non-divider, non-disabled)
   const focusableItems = () =>
-    local.items
+    props.items
       .map((item, index) => ({ item, index }))
       .filter(({ item }) => !item.divider && !item.disabled);
 
@@ -69,21 +62,19 @@ export const Menu: Component<MenuProps> = (props) => {
   };
 
   // Focus first menu item when menu opens
-  createEffect(
-    on(isOpen, (open) => {
-      if (open && menuRef) {
-        requestAnimationFrame(() => {
-          const firstItem = menuRef?.querySelector<HTMLElement>(
-            '[role="menuitem"]:not([disabled])',
-          );
-          if (firstItem) {
-            firstItem.focus();
-            setFocusedIndex(0);
-          }
-        });
-      }
-    }),
-  );
+  createEffect(isOpen, (open) => {
+    if (open && menuRef) {
+      requestAnimationFrame(() => {
+        const firstItem = menuRef?.querySelector<HTMLElement>(
+          '[role="menuitem"]:not([disabled])',
+        );
+        if (firstItem) {
+          firstItem.focus();
+          setFocusedIndex(0);
+        }
+      });
+    }
+  });
 
   // Handle keyboard navigation on the trigger
   const handleTriggerKeyDown = (e: KeyboardEvent) => {
@@ -160,12 +151,12 @@ export const Menu: Component<MenuProps> = (props) => {
   return (
     <Popover
       {...rest}
-      trigger={local.trigger}
+      trigger={props.trigger}
       placement={placement()}
       open={isOpen()}
       onOpenChange={handleOpenChange}
-      class={local.class}
-      style={local.style}
+      class={props.class}
+      style={props.style}
       contentClass="min-w-[180px] py-1.5"
       triggerProps={{
         onKeyDown: handleTriggerKeyDown,
@@ -178,19 +169,20 @@ export const Menu: Component<MenuProps> = (props) => {
         aria-orientation="vertical"
         onKeyDown={handleMenuKeyDown}
       >
-        <For each={local.items}>
+        <For each={props.items}>
           {(item, index) => {
             const menuItem = item as MenuActionItem;
             const tag = () => menuItem.as ?? 'button';
             const isItemButton = () => tag() === 'button';
-            const [, forwarded] = splitProps(menuItem, [
+            const forwarded = omit(
+              menuItem,
               'label',
               'onClick',
               'divider',
               'icon',
               'disabled',
               'as',
-            ]);
+            );
             return (
               <Show
                 when={!item.divider}
@@ -215,7 +207,7 @@ export const Menu: Component<MenuProps> = (props) => {
                     !isItemButton() && menuItem.disabled ? 'true' : undefined
                   }
                   role="menuitem"
-                  tabIndex={-1}
+                  tabindex={-1}
                 >
                   <Show when={menuItem.icon}>
                     <span

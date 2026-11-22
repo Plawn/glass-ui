@@ -1,4 +1,3 @@
-import { A } from '@solidjs/router';
 import { Breadcrumb } from 'glass-ui-solid';
 import { createSignal } from 'solid-js';
 import {
@@ -86,22 +85,20 @@ export default function BreadcrumbPage() {
       </DemoSection>
 
       <DemoSection
-        title="Router Links (as={A})"
-        description="Pass a router component via `as` for client-side navigation while keeping ⌘/middle-click affordances."
-        code={`import { A } from '@solidjs/router';
-
-<Breadcrumb
+        title="Router Links"
+        description="Solid Router handles links rendered with native anchors."
+        code={`<Breadcrumb
   items={[
-    { label: 'Components', as: A, href: '/components' },
-    { label: 'Navigation', as: A, href: '/components/navigation' },
+    { label: 'Components', as: 'a', href: '/components' },
+    { label: 'Navigation', as: 'a', href: '/components/navigation' },
     { label: 'Breadcrumb' },
   ]}
 />`}
       >
         <Breadcrumb
           items={[
-            { label: 'Components', as: A, href: '/components' },
-            { label: 'Navigation', as: A, href: '/components/navigation' },
+            { label: 'Components', as: 'a', href: '/components' },
+            { label: 'Navigation', as: 'a', href: '/components/navigation' },
             { label: 'Breadcrumb' },
           ]}
         />

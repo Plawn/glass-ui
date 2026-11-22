@@ -1,5 +1,6 @@
+import type { JSX } from '@solidjs/web';
 import clsx from 'clsx';
-import { type JSX, createEffect, onCleanup, splitProps } from 'solid-js';
+import { createTrackedEffect, omit } from 'solid-js';
 import { useLiquidGlassOptional } from './LiquidGlassContext';
 import type {
   LensOptions,
@@ -22,22 +23,23 @@ import type {
  * ```
  */
 export function LiquidSurface(props: LiquidSurfaceProps): JSX.Element {
-  const [local, surfaceOptions, divProps] = splitProps(
+  const surfaceOptions = props;
+  const divProps = omit(
     props,
-    ['children', 'class', 'ref'],
-    [
-      'refraction',
-      'bevelDepth',
-      'bevelWidth',
-      'frost',
-      'shadow',
-      'specular',
-      'reveal',
-      'tilt',
-      'tiltFactor',
-      'magnify',
-      'onInit',
-    ],
+    'children',
+    'class',
+    'ref',
+    'refraction',
+    'bevelDepth',
+    'bevelWidth',
+    'frost',
+    'shadow',
+    'specular',
+    'reveal',
+    'tilt',
+    'tiltFactor',
+    'magnify',
+    'onInit',
   );
 
   const context = useLiquidGlassOptional();
@@ -46,12 +48,12 @@ export function LiquidSurface(props: LiquidSurfaceProps): JSX.Element {
 
   const setRef = (el: HTMLDivElement) => {
     elementRef = el;
-    if (typeof local.ref === 'function') {
-      local.ref(el);
+    if (typeof props.ref === 'function') {
+      props.ref(el);
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!context || !elementRef) {
       return;
     }
@@ -82,12 +84,12 @@ export function LiquidSurface(props: LiquidSurfaceProps): JSX.Element {
     // Add lens to renderer
     lensRef = renderer.addLens(elementRef, options);
 
-    onCleanup(() => {
+    return () => {
       if (lensRef && renderer) {
         renderer.removeLens(lensRef);
         lensRef = null;
       }
-    });
+    };
   });
 
   // Fallback styles for when WebGL is not available
@@ -107,7 +109,7 @@ export function LiquidSurface(props: LiquidSurfaceProps): JSX.Element {
     <div
       {...divProps}
       ref={setRef}
-      class={clsx('liquid-glass-surface', local.class)}
+      class={clsx('liquid-glass-surface', props.class)}
       style={fallbackStyles()}
       data-liquid-glass
     >
@@ -120,7 +122,7 @@ export function LiquidSurface(props: LiquidSurfaceProps): JSX.Element {
           'z-index': '100',
         }}
       >
-        {local.children}
+        {props.children}
       </div>
     </div>
   );

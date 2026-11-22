@@ -1,13 +1,14 @@
+import type { JSX } from '@solidjs/web';
 import {
   type Component,
   For,
-  type JSX,
   Show,
   createEffect,
   createMemo,
   createSignal,
   onCleanup,
-  onMount,
+  onSettled,
+  untrack,
 } from 'solid-js';
 import type {
   ListItem,
@@ -238,7 +239,7 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
   // The shared ResizeObserver fires once on observe(), which covers the
   // initial measurement; the rAF path is only a fallback for environments
   // without ResizeObserver.
-  onMount(() => {
+  onSettled(() => {
     if (props.fixedItemHeight !== undefined || !rowRef) {
       return;
     }
@@ -246,17 +247,16 @@ function RowWrapper<D, C>(props: RowWrapperProps<D, C>) {
     if (props.observer) {
       const el = rowRef;
       props.observer.observe(el);
-      onCleanup(() => props.observer?.unobserve(el));
-    } else {
-      requestAnimationFrame(() => {
-        if (rowRef) {
-          const height = rowRef.offsetHeight;
-          if (height > 0) {
-            props.measureItem(props.index, height);
-          }
-        }
-      });
+      return () => props.observer?.unobserve(el);
     }
+    requestAnimationFrame(() => {
+      if (rowRef) {
+        const height = rowRef.offsetHeight;
+        if (height > 0) {
+          props.measureItem(props.index, height);
+        }
+      }
+    });
   });
 
   return (
@@ -434,7 +434,7 @@ export function VirtualTable<D = unknown, C = unknown>(
   };
 
   // Observe header/footer size changes
-  createEffect(() => {
+  onSettled(() => {
     if (typeof ResizeObserver === 'undefined') {
       return;
     }
@@ -455,29 +455,32 @@ export function VirtualTable<D = unknown, C = unknown>(
   });
 
   // --- Expose handle ---
-  createEffect(() => {
-    if (props.ref) {
-      const handle: VirtualHandle = {
-        scrollToIndex: (location) => {
-          if (typeof location === 'number') {
-            virtualizer.scrollToIndex(location);
-          } else {
-            virtualizer.scrollToIndex(location.index, {
-              align: location.align,
-              behavior: location.behavior,
-            });
-          }
-        },
-        scrollTo: virtualizer.scrollTo,
-        scrollBy: virtualizer.scrollBy,
-        getScrollTop: virtualizer.getScrollTop,
-      };
-      props.ref(handle);
-    }
-  });
+  createEffect(
+    () => props.ref,
+    (ref) => {
+      if (ref) {
+        const handle: VirtualHandle = {
+          scrollToIndex: (location) => {
+            if (typeof location === 'number') {
+              virtualizer.scrollToIndex(location);
+            } else {
+              virtualizer.scrollToIndex(location.index, {
+                align: location.align,
+                behavior: location.behavior,
+              });
+            }
+          },
+          scrollTo: virtualizer.scrollTo,
+          scrollBy: virtualizer.scrollBy,
+          getScrollTop: virtualizer.getScrollTop,
+        };
+        ref(handle);
+      }
+    },
+  );
 
   // --- Initial scroll ---
-  onMount(() => {
+  onSettled(() => {
     const scroller = scrollerRef();
     if (props.initialScrollTop !== undefined && scroller) {
       scroller.scrollTop = props.initialScrollTop;
@@ -493,19 +496,23 @@ export function VirtualTable<D = unknown, C = unknown>(
   });
 
   // --- Items rendered callback ---
-  createEffect(() => {
-    const items = virtualizer.items();
-    if (props.itemsRendered) {
-      props.itemsRendered(
-        items.map((item) => ({
+  createEffect(
+    () => {
+      const notify = props.itemsRendered;
+      if (notify) {
+        const items = virtualizer.items().map((item) => ({
           index: item.index,
           offset: item.offset,
           size: item.size,
           data: props.data?.[item.index],
-        })) as ListItem<D>[],
-      );
-    }
-  });
+        })) as ListItem<D>[];
+        return { notify, items };
+      }
+    },
+    (update) => {
+      update?.notify(update.items);
+    },
+  );
 
   // --- Styles ---
   const scrollerStyle = createMemo(
@@ -544,13 +551,17 @@ export function VirtualTable<D = unknown, C = unknown>(
   );
 
   // --- Render ---
-  const Scroller = components().Scroller;
-  const Table = components().Table;
-  const TableHead = components().TableHead;
-  const TableBody = components().TableBody;
-  const TableFoot = components().TableFoot;
-  const FillerRow = components().FillerRow;
-  const EmptyPlaceholder = components().EmptyPlaceholder;
+  // Component overrides are resolved once, at mount: swapping the element
+  // types afterwards would tear down the whole table.
+  const {
+    Scroller,
+    Table,
+    TableHead,
+    TableBody,
+    TableFoot,
+    FillerRow,
+    EmptyPlaceholder,
+  } = untrack(components);
 
   return (
     <Scroller
@@ -590,7 +601,7 @@ export function VirtualTable<D = unknown, C = unknown>(
           {/* Empty state */}
           <Show when={totalCount() === 0}>
             <tr>
-              <td colSpan={Number.MAX_SAFE_INTEGER}>
+              <td colspan={Number.MAX_SAFE_INTEGER}>
                 <EmptyPlaceholder context={props.context} />
               </td>
             </tr>

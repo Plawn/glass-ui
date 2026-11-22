@@ -4,7 +4,7 @@ import {
   Show,
   createEffect,
   createSignal,
-  onCleanup,
+  onSettled,
 } from 'solid-js';
 import {
   ANIMATION_DURATION_SLOW,
@@ -62,25 +62,28 @@ export const Sidebar: Component<SidebarProps> = (props) => {
   const collapsedWidth = () => props.collapsedWidth ?? DEFAULT_COLLAPSED_WIDTH;
 
   // Check for mobile viewport
-  createEffect(() => {
+  onSettled(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
     };
 
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    onCleanup(() => window.removeEventListener('resize', checkMobile));
+    return () => window.removeEventListener('resize', checkMobile);
   });
 
   // Handle body scroll lock on mobile
-  createEffect(() => {
-    if (isMobile() && mobileOpen()) {
-      document.body.style.overflow = 'hidden';
-      onCleanup(() => {
-        document.body.style.overflow = '';
-      });
-    }
-  });
+  createEffect(
+    () => isMobile() && mobileOpen(),
+    (open) => {
+      if (open) {
+        document.body.style.overflow = 'hidden';
+        return () => {
+          document.body.style.overflow = '';
+        };
+      }
+    },
+  );
 
   // Animation state for mobile drawer
   const { visible: mobileVisible, isClosing: mobileClosing } =
@@ -120,20 +123,23 @@ export const Sidebar: Component<SidebarProps> = (props) => {
   };
 
   // Handle escape key for mobile drawer
-  createEffect(() => {
-    if (!isMobile() || !mobileOpen()) {
-      return;
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeMobileDrawer();
+  createEffect(
+    () => isMobile() && mobileOpen(),
+    (open) => {
+      if (!open) {
+        return;
       }
-    };
 
-    document.addEventListener('keydown', handleKeyDown);
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
-  });
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          closeMobileDrawer();
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    },
+  );
 
   // Collapse toggle button
   const CollapseButton = () => (

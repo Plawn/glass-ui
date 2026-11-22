@@ -1,4 +1,4 @@
-import { type Component, Show, createUniqueId, splitProps } from 'solid-js';
+import { type Component, Show, createUniqueId, omit } from 'solid-js';
 import {
   ANIMATION_DURATION,
   BACKDROP_ENTER,
@@ -22,7 +22,8 @@ const positionPanelStyles: Record<DrawerPosition, string> = {
 export const Drawer: Component<DrawerProps> = (props) => {
   let backdropRef: HTMLDivElement | undefined;
 
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'open',
     'onClose',
     'onOpenChange',
@@ -40,26 +41,26 @@ export const Drawer: Component<DrawerProps> = (props) => {
     'role',
     'aria-label',
     'aria-labelledby',
-  ]);
+  );
 
   const titleId = `glass-drawer-${createUniqueId()}-title`;
   // A caller-provided name wins over the visible title
   const labelledBy = () =>
-    local['aria-labelledby'] ??
-    (local.title && !local['aria-label'] ? titleId : undefined);
+    props['aria-labelledby'] ??
+    (props.title && !props['aria-label'] ? titleId : undefined);
 
-  const position = () => local.position ?? 'right';
-  const size = () => local.size ?? 'md';
-  const showClose = () => local.showClose ?? true;
+  const position = () => props.position ?? 'right';
+  const size = () => props.size ?? 'md';
+  const showClose = () => props.showClose ?? true;
 
   const requestClose = () => {
-    local.onClose?.();
-    local.onOpenChange?.(false);
+    props.onClose?.();
+    props.onOpenChange?.(false);
   };
 
   // Use animation state hook for enter/exit animations
   const { visible, isClosing } = useAnimationState({
-    open: () => local.open,
+    open: () => props.open,
     duration: () => ANIMATION_DURATION,
   });
 
@@ -67,15 +68,15 @@ export const Drawer: Component<DrawerProps> = (props) => {
   const { handleBackdropClick } = useDialogState({
     open: visible,
     onClose: requestClose,
-    closeOnEscape: () => local.closeOnEscape ?? true,
-    closeOnBackdrop: () => local.closeOnBackdrop ?? true,
+    closeOnEscape: () => props.closeOnEscape ?? true,
+    closeOnBackdrop: () => props.closeOnBackdrop ?? true,
   });
 
   // Focus trap
   useFocusTrap({
     enabled: visible,
     containerRef: () => backdropRef,
-    returnFocusTo: () => local.returnFocusTo,
+    returnFocusTo: () => props.returnFocusTo,
   });
 
   const panelStyle = () => positionPanelStyles[position()];
@@ -104,24 +105,24 @@ export const Drawer: Component<DrawerProps> = (props) => {
         >
           <div
             {...rest}
-            role={local.role ?? 'dialog'}
+            role={props.role ?? 'dialog'}
             aria-modal="true"
-            aria-label={local['aria-label']}
+            aria-label={props['aria-label']}
             aria-labelledby={labelledBy()}
-            class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()} ${local.class ?? ''}`}
+            class={`absolute inset-y-0 ${panelStyle()} w-full ${DRAWER_MAX_WIDTHS[size()]} glass-thick shadow-2xl overflow-hidden ${drawerClasses()} ${props.class ?? ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div class="flex flex-col h-full overflow-hidden">
               <OverlayContent
-                title={local.title}
+                title={props.title}
                 titleId={titleId}
                 showClose={showClose()}
                 onClose={requestClose}
-                footer={local.footer}
-                noPadding={local.noPadding}
+                footer={props.footer}
+                noPadding={props.noPadding}
                 flexContent
               >
-                {local.children}
+                {props.children}
               </OverlayContent>
             </div>
           </div>

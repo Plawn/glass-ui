@@ -1,4 +1,4 @@
-import { type Accessor, createEffect, onCleanup } from 'solid-js';
+import { type Accessor, createEffect } from 'solid-js';
 
 /**
  * Options for the useClickOutside hook
@@ -46,40 +46,39 @@ export interface UseClickOutsideOptions {
  * ```
  */
 export function useClickOutside(options: UseClickOutsideOptions): void {
-  createEffect(() => {
-    if (!options.enabled()) {
-      return;
-    }
-
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      const refs = options.refs();
-
-      // Check if click is inside any of the provided refs
-      const isInsideAnyRef = refs.some((ref) => ref?.contains(target));
-
-      if (!isInsideAnyRef) {
-        options.onClickOutside();
+  createEffect(
+    () => (options.enabled() ? (options.delay ?? 0) : undefined),
+    (delay) => {
+      if (delay === undefined) {
+        return;
       }
-    };
 
-    const delay = options.delay ?? 0;
+      const handleClickOutside = (e: MouseEvent) => {
+        const target = e.target as Node;
+        const refs = options.refs();
 
-    if (delay > 0) {
-      // Use setTimeout to delay attaching the listener
-      const timeoutId = setTimeout(() => {
-        document.addEventListener('mousedown', handleClickOutside);
-      }, delay);
+        // Check if click is inside any of the provided refs
+        const isInsideAnyRef = refs.some((ref) => ref?.contains(target));
 
-      onCleanup(() => {
-        clearTimeout(timeoutId);
-        document.removeEventListener('mousedown', handleClickOutside);
-      });
-    } else {
+        if (!isInsideAnyRef) {
+          options.onClickOutside();
+        }
+      };
+
+      if (delay > 0) {
+        // Use setTimeout to delay attaching the listener
+        const timeoutId = setTimeout(() => {
+          document.addEventListener('mousedown', handleClickOutside);
+        }, delay);
+
+        return () => {
+          clearTimeout(timeoutId);
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }
       document.addEventListener('mousedown', handleClickOutside);
-      onCleanup(() =>
-        document.removeEventListener('mousedown', handleClickOutside),
-      );
-    }
-  });
+      return () =>
+        document.removeEventListener('mousedown', handleClickOutside);
+    },
+  );
 }

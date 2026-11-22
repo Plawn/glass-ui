@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { For, Show, createMemo, splitProps } from 'solid-js';
+import { For, Show, createMemo, omit } from 'solid-js';
 import { TEXT_SIZES } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { SliderProps, SliderSize } from './types';
@@ -24,7 +24,8 @@ const markLabelSizes: Record<SliderSize, string> = {
 };
 
 export const Slider: Component<SliderProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'value',
     'defaultValue',
     'onChange',
@@ -43,16 +44,16 @@ export const Slider: Component<SliderProps> = (props) => {
     'ref',
     'class',
     'style',
-  ]);
-  const min = () => local.min ?? 0;
-  const max = () => local.max ?? 100;
-  const step = () => local.step ?? 1;
-  const size = () => local.size ?? 'md';
+  );
+  const min = () => props.min ?? 0;
+  const max = () => props.max ?? 100;
+  const step = () => props.step ?? 1;
+  const size = () => props.size ?? 'md';
 
   const [value, setValue] = useControlled({
-    value: () => local.value,
-    defaultValue: local.defaultValue ?? local.min ?? 0,
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.value,
+    getDefaultValue: () => props.defaultValue ?? props.min ?? 0,
+    onChange: (v) => props.onChange?.(v),
   });
 
   const percentage = () => {
@@ -83,22 +84,22 @@ export const Slider: Component<SliderProps> = (props) => {
   };
 
   return (
-    <div {...rest} class={`w-full ${local.class ?? ''}`} style={local.style}>
+    <div {...rest} class={`w-full ${props.class ?? ''}`} style={props.style}>
       {/* Label and value display */}
-      <Show when={local.label || local.showValue}>
+      <Show when={props.label || props.showValue}>
         <div class="flex justify-between items-center mb-2">
-          <Show when={local.label}>
+          <Show when={props.label}>
             <label
-              for={local.id}
+              for={props.id}
               class={`font-medium text-surface-700 dark:text-surface-300 ${TEXT_SIZES[size()]}`}
             >
-              {local.label}
-              <Show when={local.required}>
+              {props.label}
+              <Show when={props.required}>
                 <span class="text-error-500 ml-0.5">*</span>
               </Show>
             </label>
           </Show>
-          <Show when={local.showValue}>
+          <Show when={props.showValue}>
             <span
               class={`font-medium text-surface-600 dark:text-surface-400 tabular-nums ${TEXT_SIZES[size()]}`}
             >
@@ -110,35 +111,35 @@ export const Slider: Component<SliderProps> = (props) => {
 
       {/* Native range input with CSS-based fill */}
       <input
-        ref={local.ref}
+        ref={props.ref}
         type="range"
-        id={local.id}
-        name={local.name}
+        id={props.id}
+        name={props.name}
         min={min()}
         max={max()}
         step={step()}
         value={value()}
-        disabled={local.disabled}
+        disabled={props.disabled}
         onInput={handleInput}
         class="slider-input w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none"
         style={sliderStyle()}
         aria-valuemin={min()}
         aria-valuemax={max()}
         aria-valuenow={value()}
-        aria-label={local.label}
-        aria-invalid={!!local.error}
+        aria-label={props.label}
+        aria-invalid={props.error ? 'true' : 'false'}
         aria-describedby={
-          local.error && local.id ? `${local.id}-error` : undefined
+          props.error && props.id ? `${props.id}-error` : undefined
         }
       />
 
       {/* Marks */}
-      <Show when={local.marks && local.marks.length > 0}>
+      <Show when={props.marks && props.marks.length > 0}>
         <div
           class="relative mt-1"
-          style={{ height: local.marks?.some((m) => m.label) ? '20px' : '8px' }}
+          style={{ height: props.marks?.some((m) => m.label) ? '20px' : '8px' }}
         >
-          <For each={local.marks}>
+          <For each={props.marks}>
             {(mark) => (
               <div
                 class="absolute flex flex-col items-center"
@@ -168,13 +169,13 @@ export const Slider: Component<SliderProps> = (props) => {
       </Show>
 
       {/* Error message */}
-      <Show when={local.error}>
+      <Show when={props.error}>
         <p
-          id={local.id ? `${local.id}-error` : undefined}
+          id={props.id ? `${props.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {local.error}
+          {props.error}
         </p>
       </Show>
     </div>

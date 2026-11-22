@@ -1,13 +1,12 @@
+import { Dynamic } from '@solidjs/web';
 import {
   type Component,
   For,
   Show,
   createSignal,
-  onCleanup,
-  onMount,
-  splitProps,
+  omit,
+  onSettled,
 } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
 import { TRANSITION_ALL, TRANSITION_TRANSFORM } from '../../constants';
 import { useDisclosure } from '../../hooks';
 import type { NavbarItem, NavbarProps } from './types';
@@ -53,12 +52,7 @@ const NavItem: Component<{ item: NavbarItem }> = (props) => {
 
   const tag = () => props.item.as ?? 'button';
   const isButton = () => tag() === 'button';
-  const [, forwarded] = splitProps(props.item, [
-    'label',
-    'as',
-    'onClick',
-    'active',
-  ]);
+  const forwarded = omit(props.item, 'label', 'as', 'onClick', 'active');
 
   const handleClick = () => {
     props.item.onClick?.();
@@ -92,12 +86,7 @@ const MobileNavItem: Component<{ item: NavbarItem; onClose: () => void }> = (
 
   const tag = () => props.item.as ?? 'button';
   const isButton = () => tag() === 'button';
-  const [, forwarded] = splitProps(props.item, [
-    'label',
-    'as',
-    'onClick',
-    'active',
-  ]);
+  const forwarded = omit(props.item, 'label', 'as', 'onClick', 'active');
 
   const handleClick = () => {
     props.item.onClick?.();
@@ -143,14 +132,15 @@ const MobileNavItem: Component<{ item: NavbarItem; onClose: () => void }> = (
  * ```
  */
 export const Navbar: Component<NavbarProps> = (props) => {
-  const [, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'brand',
     'items',
     'actions',
     'sticky',
     'transparent',
     'class',
-  ]);
+  );
 
   const sticky = () => props.sticky ?? false;
   const transparent = () => props.transparent ?? false;
@@ -159,7 +149,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
   const [scrolled, setScrolled] = createSignal(false);
 
   // Track scroll position for transparent navbar
-  onMount(() => {
+  onSettled(() => {
     if (transparent()) {
       const handleScroll = () => {
         setScrolled(window.scrollY > 10);
@@ -168,14 +158,14 @@ export const Navbar: Component<NavbarProps> = (props) => {
       handleScroll(); // Check initial position
       window.addEventListener('scroll', handleScroll, { passive: true });
 
-      onCleanup(() => {
+      return () => {
         window.removeEventListener('scroll', handleScroll);
-      });
+      };
     }
   });
 
   // Close mobile menu on escape key
-  onMount(() => {
+  onSettled(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && mobileMenu.isOpen()) {
         mobileMenu.onClose();
@@ -184,9 +174,9 @@ export const Navbar: Component<NavbarProps> = (props) => {
 
     document.addEventListener('keydown', handleKeyDown);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener('keydown', handleKeyDown);
-    });
+    };
   });
 
   const showBackground = () => !transparent() || scrolled();
@@ -242,7 +232,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
                 type="button"
                 onClick={mobileMenu.onToggle}
                 class="md:hidden p-2 rounded-lg text-surface-600 dark:text-surface-300 hover:text-surface-900 dark:hover:text-surface-100 hover:bg-black/5 dark:hover:bg-white/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500"
-                aria-expanded={mobileMenu.isOpen()}
+                aria-expanded={mobileMenu.isOpen() ? 'true' : 'false'}
                 aria-controls="mobile-menu"
                 aria-label={mobileMenu.isOpen() ? 'Close menu' : 'Open menu'}
               >
@@ -257,7 +247,7 @@ export const Navbar: Component<NavbarProps> = (props) => {
       <div
         id="mobile-menu"
         class={mobileMenuClasses()}
-        aria-hidden={!mobileMenu.isOpen()}
+        aria-hidden={!mobileMenu.isOpen() ? 'true' : 'false'}
       >
         <div class="py-2">
           {/* Mobile Navigation Items */}

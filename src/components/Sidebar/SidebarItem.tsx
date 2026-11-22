@@ -1,5 +1,5 @@
-import { type Component, For, Show, createMemo, splitProps } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { Dynamic } from '@solidjs/web';
+import { type Component, For, Show, createMemo, omit } from 'solid-js';
 import {
   ACCORDION_CONTENT_ENTER,
   TRANSITION_ALL_SLOW,
@@ -66,7 +66,8 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
   const leafTag = () => props.item.as ?? 'button';
   const isLeafButton = () => leafTag() === 'button';
   // Props forwarded to the rendered leaf element (href, target, rel, router extras…).
-  const [, forwarded] = splitProps(props.item, [
+  const forwarded = omit(
+    props.item,
     'id',
     'label',
     'icon',
@@ -75,7 +76,7 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
     'disabled',
     'as',
     'onClick',
-  ]);
+  );
 
   const baseClasses = () => {
     const base = `
@@ -194,7 +195,7 @@ export const SidebarItemComponent: Component<SidebarItemComponentProps> = (
           onClick={handleClick}
           onKeyDown={handleKeyDown}
           disabled={props.item.disabled}
-          aria-expanded={isExpanded()}
+          aria-expanded={isExpanded() ? 'true' : 'false'}
           aria-current={isActive() ? 'page' : undefined}
           title={collapsed() ? props.item.label : undefined}
         >

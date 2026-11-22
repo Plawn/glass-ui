@@ -206,9 +206,13 @@ const generateCalendarDays = (
  */
 export const Calendar: Component<CalendarProps> = (props) => {
   // Track current view month/year using signals for reactivity
-  const initialDate = () => props.value ?? props.rangeStart ?? new Date();
-  const [viewYear, setViewYear] = createSignal(initialDate().getFullYear());
-  const [viewMonth, setViewMonth] = createSignal(initialDate().getMonth());
+  // The view follows the selected date until the user navigates, and jumps
+  // back to it when the selection moves to another month.
+  const anchorDate = () => props.value ?? props.rangeStart ?? new Date();
+  const anchorYear = createMemo(() => anchorDate().getFullYear());
+  const anchorMonth = createMemo(() => anchorDate().getMonth());
+  const [viewYear, setViewYear] = createSignal(() => anchorYear());
+  const [viewMonth, setViewMonth] = createSignal(() => anchorMonth());
 
   // Check if we're in range mode
   const isRangeMode = () => props.rangeStart !== undefined;
@@ -361,6 +365,8 @@ export const Calendar: Component<CalendarProps> = (props) => {
               aria-label={day.date.toLocaleDateString()}
               aria-selected={
                 day.isSelected || day.isRangeStart || day.isRangeEnd
+                  ? 'true'
+                  : undefined
               }
             >
               {day.day}

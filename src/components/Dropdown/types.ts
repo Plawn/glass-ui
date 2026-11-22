@@ -1,4 +1,5 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+
 import type { OverlayScrollBehavior } from '../../hooks';
 import type { DropdownPlacement } from '../../types';
 

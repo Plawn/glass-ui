@@ -79,7 +79,7 @@ const isValid = () => name().trim().length >= 3;
   <Input
     label="Full name"
     value={name()}
-    onInput={(e) => setName(e.currentTarget.value)}
+    onInput={setName}
     error={name().length > 0 && !isValid() ? 'At least 3 characters' : undefined}
   />
 </Dialog>`;
@@ -201,7 +201,7 @@ export default function DialogPage() {
           <Input
             label="Full name"
             value={name()}
-            onInput={(e) => setName(e.currentTarget.value)}
+            onInput={setName}
             error={
               name().length > 0 && !isValid()
                 ? 'At least 3 characters'

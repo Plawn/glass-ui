@@ -1,4 +1,5 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+
 import type { CodeBlockAction } from '../Markdown/types';
 
 // Re-export code block action types for convenience

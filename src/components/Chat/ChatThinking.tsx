@@ -28,7 +28,7 @@ export const ChatThinking: Component<ChatThinkingProps> = (props) => {
         type="button"
         onClick={handleToggle}
         class="flex items-center gap-2 text-sm text-surface-500 dark:text-surface-400 hover:text-surface-700 dark:hover:text-surface-300 transition-colors cursor-pointer"
-        aria-expanded={isOpen()}
+        aria-expanded={isOpen() ? 'true' : 'false'}
       >
         <ThinkingIcon
           size={14}

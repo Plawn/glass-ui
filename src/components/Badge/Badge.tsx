@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { splitProps } from 'solid-js';
+import { omit } from 'solid-js';
 import { SEMANTIC_COLORS_FILLED, getFilledClasses } from '../../constants';
 import type { BadgeProps, BadgeSize } from './types';
 
@@ -10,14 +10,9 @@ const sizeStyles: Record<BadgeSize, string> = {
 };
 
 export const Badge: Component<BadgeProps> = (props) => {
-  const [local, rest] = splitProps(props, [
-    'variant',
-    'size',
-    'class',
-    'children',
-  ]);
-  const variant = () => local.variant ?? 'default';
-  const size = () => local.size ?? 'md';
+  const rest = omit(props, 'variant', 'size', 'class', 'children');
+  const variant = () => props.variant ?? 'default';
+  const size = () => props.size ?? 'md';
 
   const variantStyle = () =>
     getFilledClasses(SEMANTIC_COLORS_FILLED[variant()]);
@@ -25,9 +20,9 @@ export const Badge: Component<BadgeProps> = (props) => {
   return (
     <span
       {...rest}
-      class={`inline-flex items-center font-semibold rounded-md ${sizeStyles[size()]} ${variantStyle()} ${local.class ?? ''}`}
+      class={`inline-flex items-center font-semibold rounded-md ${sizeStyles[size()]} ${variantStyle()} ${props.class ?? ''}`}
     >
-      {local.children}
+      {props.children}
     </span>
   );
 };

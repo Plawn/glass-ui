@@ -1,4 +1,5 @@
-import type { JSX, ValidComponent } from 'solid-js';
+import type { JSX, ValidComponent } from '@solidjs/web';
+
 import type { BaseComponentProps } from '../../types';
 
 /**

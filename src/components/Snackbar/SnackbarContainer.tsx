@@ -31,15 +31,17 @@ const SnackbarItemComponent: Component<{
   onCleanup(() => clearTimeout(exitTimer));
 
   // Auto-dismiss timer
-  createEffect(() => {
-    const duration = props.snackbar.duration ?? 4000;
-    if (duration > 0) {
-      const timer = setTimeout(() => {
-        handleDismiss();
-      }, duration);
-      onCleanup(() => clearTimeout(timer));
-    }
-  });
+  createEffect(
+    () => props.snackbar.duration ?? 4000,
+    (duration) => {
+      if (duration > 0) {
+        const timer = setTimeout(() => {
+          handleDismiss();
+        }, duration);
+        return () => clearTimeout(timer);
+      }
+    },
+  );
 
   const handleDismiss = () => {
     setExiting(true);

@@ -44,6 +44,26 @@ describe('useAnimationState', () => {
     });
   });
 
+  test('reopening cancels a pending exit', async () => {
+    const [open, setOpen] = createSignal(true);
+    const { state, dispose } = createRoot((dispose) => ({
+      state: useAnimationState({ open, duration: () => 10 }),
+      dispose,
+    }));
+    try {
+      await flush();
+      setOpen(false);
+      await flush();
+      expect(state.isClosing()).toBe(true);
+      setOpen(true);
+      await wait(30);
+      expect(state.visible()).toBe(true);
+      expect(state.isClosing()).toBe(false);
+    } finally {
+      dispose();
+    }
+  });
+
   test('stays visible during the closing animation, then hides', async () => {
     await new Promise<void>((resolve) => {
       createRoot(async (dispose) => {

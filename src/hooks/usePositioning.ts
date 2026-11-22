@@ -1,9 +1,9 @@
+import type { JSX } from '@solidjs/web';
 import {
   type Accessor,
-  type JSX,
   createEffect,
   createSignal,
-  onCleanup,
+  createTrackedEffect,
 } from 'solid-js';
 import type { Direction, Placement } from '../types';
 
@@ -421,7 +421,7 @@ export function usePositioning(
   };
 
   // Update position when isOpen changes or dependencies change
-  createEffect(() => {
+  createTrackedEffect(() => {
     const isOpen = options.isOpen?.() ?? true;
     if (!isOpen) {
       return;
@@ -431,40 +431,43 @@ export function usePositioning(
     updatePosition();
 
     // Recalculate after a frame to get accurate content dimensions
-    requestAnimationFrame(() => {
-      updatePosition();
-    });
+    const frame = requestAnimationFrame(updatePosition);
+    return () => cancelAnimationFrame(frame);
   });
 
   // Set up scroll listener if needed
-  createEffect(() => {
-    const isOpen = options.isOpen?.() ?? true;
-    if (!isOpen || !updateOnScroll) {
-      return;
-    }
+  createEffect(
+    () => updateOnScroll && (options.isOpen?.() ?? true),
+    (enabled) => {
+      if (!enabled) {
+        return;
+      }
 
-    const handleScroll = () => {
-      updatePosition();
-    };
+      const handleScroll = () => {
+        updatePosition();
+      };
 
-    window.addEventListener('scroll', handleScroll, true);
-    onCleanup(() => window.removeEventListener('scroll', handleScroll, true));
-  });
+      window.addEventListener('scroll', handleScroll, true);
+      return () => window.removeEventListener('scroll', handleScroll, true);
+    },
+  );
 
   // Set up resize listener
-  createEffect(() => {
-    const isOpen = options.isOpen?.() ?? true;
-    if (!isOpen || !updateOnResize) {
-      return;
-    }
+  createEffect(
+    () => updateOnResize && (options.isOpen?.() ?? true),
+    (enabled) => {
+      if (!enabled) {
+        return;
+      }
 
-    const handleResize = () => {
-      updatePosition();
-    };
+      const handleResize = () => {
+        updatePosition();
+      };
 
-    window.addEventListener('resize', handleResize);
-    onCleanup(() => window.removeEventListener('resize', handleResize));
-  });
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    },
+  );
 
   return {
     positionStyles,
@@ -498,30 +501,31 @@ export function useContextMenuPositioning(
 
   const [positionStyles, setPositionStyles] = createSignal<PositionStyles>({});
 
-  createEffect(() => {
-    const pos = options.position();
-    const contentEl = options.contentRef();
-    const menuHeight = contentEl?.offsetHeight || estimatedHeight;
-    const menuWidth = contentEl?.offsetWidth || estimatedWidth;
+  createEffect(
+    () => [options.position(), options.contentRef()] as const,
+    ([pos, contentEl]) => {
+      const menuHeight = contentEl?.offsetHeight || estimatedHeight;
+      const menuWidth = contentEl?.offsetWidth || estimatedWidth;
 
-    const styles: PositionStyles = {};
+      const styles: PositionStyles = {};
 
-    // Vertical: prefer below cursor, flip if not enough space
-    if (pos.y + menuHeight + viewportPadding > window.innerHeight) {
-      styles.bottom = `${window.innerHeight - pos.y}px`;
-    } else {
-      styles.top = `${pos.y}px`;
-    }
+      // Vertical: prefer below cursor, flip if not enough space
+      if (pos.y + menuHeight + viewportPadding > window.innerHeight) {
+        styles.bottom = `${window.innerHeight - pos.y}px`;
+      } else {
+        styles.top = `${pos.y}px`;
+      }
 
-    // Horizontal: prefer right of cursor, flip if not enough space
-    if (pos.x + menuWidth + viewportPadding > window.innerWidth) {
-      styles.right = `${window.innerWidth - pos.x}px`;
-    } else {
-      styles.left = `${pos.x}px`;
-    }
+      // Horizontal: prefer right of cursor, flip if not enough space
+      if (pos.x + menuWidth + viewportPadding > window.innerWidth) {
+        styles.right = `${window.innerWidth - pos.x}px`;
+      } else {
+        styles.left = `${pos.x}px`;
+      }
 
-    setPositionStyles(styles);
-  });
+      setPositionStyles(styles);
+    },
+  );
 
   return {
     positionStyles,

@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, splitProps } from 'solid-js';
+import { Show, omit } from 'solid-js';
 import { ChatInput } from './ChatInput';
 import { ChatMessageList } from './ChatMessageList';
 import type { ChatProps } from './types';
@@ -36,7 +36,8 @@ import type { ChatProps } from './types';
  * ```
  */
 export const Chat: Component<ChatProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'messages',
     'onSendMessage',
     'onCancelStream',
@@ -52,39 +53,39 @@ export const Chat: Component<ChatProps> = (props) => {
     'emptyState',
     'class',
     'codeBlockActions',
-  ]);
+  );
   return (
     <div
       {...rest}
-      class={`flex flex-col h-full bg-white/30 dark:bg-surface-900/30 backdrop-blur-sm rounded-2xl overflow-hidden ${local.class ?? ''}`}
+      class={`flex flex-col h-full bg-white/30 dark:bg-surface-900/30 backdrop-blur-sm rounded-2xl overflow-hidden ${props.class ?? ''}`}
     >
       {/* Optional header */}
-      <Show when={local.header}>
+      <Show when={props.header}>
         <div class="border-b border-surface-200 dark:border-surface-700">
-          {local.header}
+          {props.header}
         </div>
       </Show>
 
       {/* Message list */}
       <ChatMessageList
-        messages={local.messages}
-        userName={local.userName}
-        userAvatarUrl={local.userAvatarUrl}
-        assistantName={local.assistantName}
-        assistantAvatarUrl={local.assistantAvatarUrl}
-        showTypingIndicator={local.showTypingIndicator}
-        isStreaming={local.isStreaming}
-        emptyState={local.emptyState}
-        codeBlockActions={local.codeBlockActions}
+        messages={props.messages}
+        userName={props.userName}
+        userAvatarUrl={props.userAvatarUrl}
+        assistantName={props.assistantName}
+        assistantAvatarUrl={props.assistantAvatarUrl}
+        showTypingIndicator={props.showTypingIndicator}
+        isStreaming={props.isStreaming}
+        emptyState={props.emptyState}
+        codeBlockActions={props.codeBlockActions}
       />
 
       {/* Input area */}
       <ChatInput
-        onSendMessage={local.onSendMessage}
-        onCancelStream={local.onCancelStream}
-        isStreaming={local.isStreaming}
-        disabled={local.disabled}
-        placeholder={local.placeholder}
+        onSendMessage={props.onSendMessage}
+        onCancelStream={props.onCancelStream}
+        isStreaming={props.isStreaming}
+        disabled={props.disabled}
+        placeholder={props.placeholder}
       />
     </div>
   );

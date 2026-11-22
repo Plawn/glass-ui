@@ -1,4 +1,4 @@
-import { type Component, Show, splitProps } from 'solid-js';
+import { type Component, Show, omit } from 'solid-js';
 import { INPUT_SIZE_CLASSES } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { NumberInputProps, NumberInputSize } from './types';
@@ -34,7 +34,8 @@ const getButtonSizeClasses = (size: NumberInputSize): string => {
  * ```
  */
 export const NumberInput: Component<NumberInputProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'value',
     'defaultValue',
     'onChange',
@@ -51,16 +52,16 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
     'name',
     'class',
     'style',
-  ]);
-  const size = () => local.size ?? 'md';
-  const step = () => local.step ?? 1;
-  const min = () => local.min;
-  const max = () => local.max;
+  );
+  const size = () => props.size ?? 'md';
+  const step = () => props.step ?? 1;
+  const min = () => props.min;
+  const max = () => props.max;
 
   const [value, setValue] = useControlled({
-    value: () => local.value,
-    defaultValue: local.defaultValue ?? local.min ?? 0,
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.value,
+    getDefaultValue: () => props.defaultValue ?? props.min ?? 0,
+    onChange: (v) => props.onChange?.(v),
   });
 
   const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
@@ -69,14 +70,14 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
   const clampValue = (value: number): number => clamp(value, min(), max());
 
   const increment = () => {
-    if (local.disabled) {
+    if (props.disabled) {
       return;
     }
     setValue(clampValue(value() + step()));
   };
 
   const decrement = () => {
-    if (local.disabled) {
+    if (props.disabled) {
       return;
     }
     setValue(clampValue(value() - step()));
@@ -105,7 +106,7 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    if (local.disabled) {
+    if (props.disabled) {
       return;
     }
     if (e.key === 'ArrowUp') {
@@ -128,14 +129,14 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
   };
 
   return (
-    <div class={`w-full ${local.class ?? ''}`} style={local.style}>
-      <Show when={local.label}>
+    <div class={`w-full ${props.class ?? ''}`} style={props.style}>
+      <Show when={props.label}>
         <label
-          for={local.id}
+          for={props.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {local.label}
-          <Show when={local.required}>
+          {props.label}
+          <Show when={props.required}>
             <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
@@ -145,7 +146,7 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
           type="button"
           class={`shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
           onClick={decrement}
-          disabled={local.disabled || !canDecrement()}
+          disabled={props.disabled || !canDecrement()}
           aria-label="Decrement"
         >
           -
@@ -153,17 +154,17 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
         <input
           {...rest}
           type="text"
-          inputMode="decimal"
-          id={local.id}
-          name={local.name}
-          class={`flex-1 min-w-0 glass-input text-center text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${local.error ? 'border-error-500 dark:border-error-400' : ''}`}
-          placeholder={local.placeholder}
+          inputmode="decimal"
+          id={props.id}
+          name={props.name}
+          class={`flex-1 min-w-0 glass-input text-center text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.error ? 'border-error-500 dark:border-error-400' : ''}`}
+          placeholder={props.placeholder}
           value={value()}
-          disabled={local.disabled}
-          required={local.required}
-          aria-invalid={!!local.error}
+          disabled={props.disabled}
+          required={props.required}
+          aria-invalid={props.error ? 'true' : 'false'}
           aria-describedby={
-            local.error && local.id ? `${local.id}-error` : undefined
+            props.error && props.id ? `${props.id}-error` : undefined
           }
           onInput={handleInput}
           onBlur={handleBlur}
@@ -173,19 +174,19 @@ export const NumberInput: Component<NumberInputProps> = (props) => {
           type="button"
           class={`shrink-0 flex items-center justify-center rounded-lg glass-input font-medium text-surface-700 dark:text-surface-300 hover:bg-surface-200/50 dark:hover:bg-surface-700/50 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 ${buttonSizeClasses()}`}
           onClick={increment}
-          disabled={local.disabled || !canIncrement()}
+          disabled={props.disabled || !canIncrement()}
           aria-label="Increment"
         >
           +
         </button>
       </div>
-      <Show when={local.error}>
+      <Show when={props.error}>
         <p
-          id={local.id ? `${local.id}-error` : undefined}
+          id={props.id ? `${props.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {local.error}
+          {props.error}
         </p>
       </Show>
     </div>

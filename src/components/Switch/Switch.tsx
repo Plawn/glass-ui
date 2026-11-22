@@ -1,4 +1,4 @@
-import { type Component, Show, splitProps } from 'solid-js';
+import { type Component, Show, omit } from 'solid-js';
 import { TRANSITION_ALL_SLOW } from '../../constants';
 import { useControlled } from '../../hooks';
 import type { SwitchProps, SwitchSize } from './types';
@@ -41,7 +41,8 @@ const sizeConfig: Record<
  * ```
  */
 export const Switch: Component<SwitchProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'checked',
     'defaultChecked',
     'onChange',
@@ -53,19 +54,19 @@ export const Switch: Component<SwitchProps> = (props) => {
     'name',
     'ref',
     'class',
-  ]);
-  const size = () => local.size ?? 'md';
-  const labelPosition = () => local.labelPosition ?? 'right';
+  );
+  const size = () => props.size ?? 'md';
+  const labelPosition = () => props.labelPosition ?? 'right';
   const config = () => sizeConfig[size()];
 
   const [checked, setChecked] = useControlled({
-    value: () => local.checked,
-    defaultValue: local.defaultChecked ?? false,
-    onChange: (v) => local.onChange?.(v),
+    value: () => props.checked,
+    getDefaultValue: () => props.defaultChecked ?? false,
+    onChange: (v) => props.onChange?.(v),
   });
 
   const handleClick = () => {
-    if (!local.disabled) {
+    if (!props.disabled) {
       setChecked(!checked());
     }
   };
@@ -78,9 +79,9 @@ export const Switch: Component<SwitchProps> = (props) => {
   };
 
   const Label = () => (
-    <Show when={local.label}>
+    <Show when={props.label}>
       <span class="text-sm text-surface-700 dark:text-surface-300">
-        {local.label}
+        {props.label}
       </span>
     </Show>
   );
@@ -89,21 +90,21 @@ export const Switch: Component<SwitchProps> = (props) => {
     <label
       {...rest}
       class={`inline-flex items-center gap-3 cursor-pointer select-none ${
-        local.disabled ? 'opacity-50 cursor-not-allowed' : ''
-      } ${local.class ?? ''}`}
+        props.disabled ? 'opacity-50 cursor-not-allowed' : ''
+      } ${props.class ?? ''}`}
     >
-      <Show when={local.label && labelPosition() === 'left'}>
+      <Show when={props.label && labelPosition() === 'left'}>
         <Label />
       </Show>
 
       {/* Hidden input for form submission */}
       <input
-        ref={local.ref}
+        ref={props.ref}
         type="checkbox"
-        id={local.id}
-        name={local.name}
+        id={props.id}
+        name={props.name}
         checked={checked()}
-        disabled={local.disabled}
+        disabled={props.disabled}
         onChange={(e) => setChecked(e.currentTarget.checked)}
         class="sr-only"
       />
@@ -112,9 +113,9 @@ export const Switch: Component<SwitchProps> = (props) => {
       <button
         type="button"
         role="switch"
-        aria-checked={checked()}
-        aria-disabled={local.disabled}
-        tabIndex={local.disabled ? -1 : 0}
+        aria-checked={checked() ? 'true' : 'false'}
+        aria-disabled={props.disabled ? 'true' : undefined}
+        tabindex={props.disabled ? -1 : 0}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         class={`
@@ -131,7 +132,7 @@ export const Switch: Component<SwitchProps> = (props) => {
               ? 'bg-accent-500/40 dark:bg-accent-400/30 border-accent-300/30'
               : 'bg-white/10 dark:bg-white/5'
           }
-          ${local.disabled ? 'pointer-events-none' : ''}
+          ${props.disabled ? 'pointer-events-none' : ''}
         `}
       >
         {/* Switch thumb */}
@@ -149,7 +150,7 @@ export const Switch: Component<SwitchProps> = (props) => {
         />
       </button>
 
-      <Show when={local.label && labelPosition() === 'right'}>
+      <Show when={props.label && labelPosition() === 'right'}>
         <Label />
       </Show>
     </label>

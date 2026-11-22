@@ -1,17 +1,13 @@
-import {
-  type ComponentProps,
-  type JSX,
-  type ValidComponent,
-  splitProps,
-} from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import type { ComponentProps, JSX, ValidComponent } from '@solidjs/web';
+import { Dynamic } from '@solidjs/web';
+import { omit } from 'solid-js';
 
 /**
  * Props for a polymorphic component.
  *
  * Merges a component's own props with the forwarded props of the element /
- * component supplied via `as`. When `as={A}` (e.g. `@solidjs/router`'s `<A>`),
- * the props of `A` — including `href` — become type-known on the call site.
+ * component supplied via `as`. When `as={Link}` uses a custom link component,
+ * the props of `Link` — including `href` — become type-known on the call site.
  *
  * @typeParam T - The element tag or component to render (`'a'`, `'button'`, `A`, …)
  * @typeParam OwnProps - The component's own (non-forwarded) props
@@ -33,6 +29,7 @@ export type PolymorphicProps<
 export function Polymorphic<T extends ValidComponent>(
   props: PolymorphicProps<T> & { as: T },
 ): JSX.Element {
-  const [local, others] = splitProps(props as { as: ValidComponent }, ['as']);
+  const local = props as { as: ValidComponent };
+  const others = omit(local, 'as');
   return <Dynamic component={local.as} {...others} />;
 }

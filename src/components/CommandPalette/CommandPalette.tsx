@@ -5,10 +5,8 @@ import {
   createEffect,
   createMemo,
   createSignal,
-  on,
-  onCleanup,
-  onMount,
-  splitProps,
+  omit,
+  onSettled,
 } from 'solid-js';
 import { BACKDROP_ENTER, COMMAND_PALETTE_PANEL_ENTER } from '../../constants';
 import { useControlled, useDialogState, useFocusTrap } from '../../hooks';
@@ -158,7 +156,8 @@ const Kbd: Component<{ children: string }> = (props) => (
  * ```
  */
 export const CommandPalette: Component<CommandPaletteProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'items',
     'onSelect',
     'searchFn',
@@ -172,7 +171,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
     'onOpenChange',
     'footer',
     'class',
-  ]);
+  );
   // State
   const listboxId = `cmd-palette-${Math.random().toString(36).slice(2, 8)}`;
   const [query, setQuery] = createSignal('');
@@ -185,23 +184,23 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
   // Controlled/uncontrolled state management
   const [isOpen, setOpen] = useControlled({
-    value: () => local.open,
+    value: () => props.open,
     defaultValue: false,
-    onChange: local.onOpenChange,
+    onChange: (v) => props.onOpenChange?.(v),
   });
 
   // Config
-  const shortcutKey = () => local.shortcutKey ?? 'k';
-  const placeholder = () => local.placeholder ?? 'Search...';
-  const emptyText = () => local.emptyText ?? 'No results found';
+  const shortcutKey = () => props.shortcutKey ?? 'k';
+  const placeholder = () => props.placeholder ?? 'Search...';
+  const emptyText = () => props.emptyText ?? 'No results found';
 
   // Recent IDs from props
-  const recentIds = () => local.recentIds ?? [];
+  const recentIds = () => props.recentIds ?? [];
 
   // Create item lookup map
   const itemMap = createMemo(() => {
     const map = new Map<string, ItemType>();
-    for (const item of local.items) {
+    for (const item of props.items) {
       map.set(item.id, item);
     }
     return map;
@@ -224,7 +223,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
       // No query: show recents first, then other items
       const recent = recentItems();
       const recentIdSet = new Set(recent.map((r) => r.id));
-      const others = local.items.filter((item) => !recentIdSet.has(item.id));
+      const others = props.items.filter((item) => !recentIdSet.has(item.id));
 
       return [
         ...recent.map((item) => ({ item, isRecent: true })),
@@ -235,11 +234,11 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
     }
 
     // Use custom search or default fuzzy search
-    if (local.searchFn) {
-      return local.searchFn(q, local.items);
+    if (props.searchFn) {
+      return props.searchFn(q, props.items);
     }
 
-    return fuzzySearch(q, local.items);
+    return fuzzySearch(q, props.items);
   });
 
   // Group results by category
@@ -273,8 +272,8 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   });
 
   // Expose handle
-  onMount(() => {
-    local.ref?.({
+  onSettled(() => {
+    props.ref?.({
       open: () => setOpen(true),
       close: () => setOpen(false),
       toggle: () => setOpen(!isOpen()),
@@ -283,26 +282,29 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
   });
 
   // Global keyboard shortcut
-  createEffect(() => {
-    if (local.disableShortcut || local.items.length === 0) {
-      return;
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const key = shortcutKey();
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === key) {
-        e.preventDefault();
-        setOpen(!isOpen());
+  createEffect(
+    () => !props.disableShortcut && props.items.length > 0,
+    (enabled) => {
+      if (!enabled) {
+        return;
       }
-    };
 
-    document.addEventListener('keydown', handleKeyDown);
-    onCleanup(() => document.removeEventListener('keydown', handleKeyDown));
-  });
+      const handleKeyDown = (e: KeyboardEvent) => {
+        const key = shortcutKey();
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === key) {
+          e.preventDefault();
+          setOpen(!isOpen());
+        }
+      };
+
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    },
+  );
 
   // Focus input and reset state when opened
-  createEffect(() => {
-    if (isOpen()) {
+  createEffect(isOpen, (open) => {
+    if (open) {
       setQuery('');
       setSelectedIndex(0);
       setMouseEnabled(false);
@@ -315,15 +317,14 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
   // Reset selection when results change
   createEffect(
-    on(
-      () => flatResults(),
-      () => setSelectedIndex(0),
-    ),
+    () => flatResults(),
+    () => {
+      setSelectedIndex(0);
+    },
   );
 
   // Scroll selected item into view
-  createEffect(() => {
-    const idx = selectedIndex();
+  createEffect(selectedIndex, (idx) => {
     const container = listRef;
     if (!container) {
       return;
@@ -354,7 +355,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
       return;
     }
     setOpen(false);
-    local.onSelect(item);
+    props.onSelect(item);
   };
 
   const handleInputKeyDown = (e: KeyboardEvent) => {
@@ -402,7 +403,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
         >
           <div
             {...rest}
-            class={`w-full max-w-xl mx-2 sm:mx-4 glass-card rounded-2xl shadow-2xl overflow-hidden ${COMMAND_PALETTE_PANEL_ENTER} ${local.class ?? ''}`}
+            class={`w-full max-w-xl mx-2 sm:mx-4 glass-card rounded-2xl shadow-2xl overflow-hidden ${COMMAND_PALETTE_PANEL_ENTER} ${props.class ?? ''}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Search input */}
@@ -415,7 +416,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                 placeholder={placeholder()}
                 value={query()}
                 role="combobox"
-                aria-expanded={flatResults().length > 0}
+                aria-expanded={flatResults().length > 0 ? 'true' : 'false'}
                 aria-controls={listboxId}
                 aria-autocomplete="list"
                 aria-activedescendant={
@@ -452,7 +453,9 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                       data-command-item
                       role="option"
                       id={`${listboxId}-item-${index()}`}
-                      aria-selected={selectedIndex() === index()}
+                      aria-selected={
+                        selectedIndex() === index() ? 'true' : 'false'
+                      }
                     >
                       <CommandPaletteItem
                         item={result.item}
@@ -501,7 +504,11 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                               data-command-item
                               role="option"
                               id={`${listboxId}-item-${globalIndex()}`}
-                              aria-selected={selectedIndex() === globalIndex()}
+                              aria-selected={
+                                selectedIndex() === globalIndex()
+                                  ? 'true'
+                                  : 'false'
+                              }
                             >
                               <CommandPaletteItem
                                 item={result.item}
@@ -526,7 +533,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
 
             {/* Footer */}
             <Show
-              when={local.footer}
+              when={props.footer}
               fallback={
                 <div class="flex items-center justify-between px-4 py-2 border-t border-surface-200 dark:border-white/10 text-xs text-surface-500 dark:text-surface-400">
                   <div class="flex items-center gap-3">
@@ -543,7 +550,7 @@ export const CommandPalette: Component<CommandPaletteProps> = (props) => {
                 </div>
               }
             >
-              {local.footer}
+              {props.footer}
             </Show>
           </div>
         </div>

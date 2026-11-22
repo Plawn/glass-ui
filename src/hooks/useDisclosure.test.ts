@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { createRoot } from 'solid-js';
+import { createRoot, flush } from 'solid-js';
 import { useDisclosure } from './useDisclosure';
 
 describe('useDisclosure', () => {
@@ -23,12 +23,16 @@ describe('useDisclosure', () => {
     createRoot((dispose) => {
       const { isOpen, onOpen, onClose } = useDisclosure();
       onOpen();
+      flush();
       expect(isOpen()).toBe(true);
       onOpen(); // idempotent
+      flush();
       expect(isOpen()).toBe(true);
       onClose();
+      flush();
       expect(isOpen()).toBe(false);
       onClose(); // idempotent
+      flush();
       expect(isOpen()).toBe(false);
       dispose();
     });
@@ -38,8 +42,10 @@ describe('useDisclosure', () => {
     createRoot((dispose) => {
       const { isOpen, onToggle } = useDisclosure();
       onToggle();
+      flush();
       expect(isOpen()).toBe(true);
       onToggle();
+      flush();
       expect(isOpen()).toBe(false);
       dispose();
     });

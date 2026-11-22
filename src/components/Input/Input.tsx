@@ -1,4 +1,4 @@
-import { type Component, Show, splitProps } from 'solid-js';
+import { type Component, Show, omit } from 'solid-js';
 import { INPUT_SIZE_CLASSES } from '../../constants';
 import { useControlled } from '../../hooks';
 import { Spinner } from '../Spinner';
@@ -18,7 +18,8 @@ import type { InputProps } from './types';
  * ```
  */
 export const Input: Component<InputProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'size',
     'label',
     'error',
@@ -36,25 +37,25 @@ export const Input: Component<InputProps> = (props) => {
     'class',
     'onKeyDown',
     'loading',
-  ]);
-  const size = () => local.size ?? 'md';
+  );
+  const size = () => props.size ?? 'md';
   const sizeClasses = () => INPUT_SIZE_CLASSES[size()];
 
   const [value, setValue] = useControlled({
-    value: () => local.value,
-    defaultValue: local.defaultValue ?? '',
-    onChange: (v) => local.onInput?.(v),
+    value: () => props.value,
+    getDefaultValue: () => props.defaultValue ?? '',
+    onChange: (v) => props.onInput?.(v),
   });
 
   return (
     <div class="w-full">
-      <Show when={local.label}>
+      <Show when={props.label}>
         <label
-          for={local.id}
+          for={props.id}
           class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5"
         >
-          {local.label}
-          <Show when={local.required}>
+          {props.label}
+          <Show when={props.required}>
             <span class="text-error-500 ml-0.5">*</span>
           </Show>
         </label>
@@ -62,37 +63,37 @@ export const Input: Component<InputProps> = (props) => {
       <div class="relative">
         <input
           {...rest}
-          type={local.type ?? 'text'}
-          id={local.id}
-          name={local.name}
-          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${local.loading ? 'pr-10' : ''} ${local.error ? 'border-error-500 dark:border-error-400' : ''} ${local.class ?? ''}`}
-          placeholder={local.placeholder}
+          type={props.type ?? 'text'}
+          id={props.id}
+          name={props.name}
+          class={`w-full glass-input text-surface-900 dark:text-surface-100 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${sizeClasses()} ${props.loading ? 'pr-10' : ''} ${props.error ? 'border-error-500 dark:border-error-400' : ''} ${props.class ?? ''}`}
+          placeholder={props.placeholder}
           value={value()}
-          disabled={local.disabled}
-          readonly={local.readonly}
-          required={local.required}
-          autocomplete={local.autocomplete}
-          aria-invalid={!!local.error}
-          aria-busy={local.loading || undefined}
+          disabled={props.disabled}
+          readonly={props.readonly}
+          required={props.required}
+          autocomplete={props.autocomplete}
+          aria-invalid={props.error ? 'true' : 'false'}
+          aria-busy={props.loading ? 'true' : undefined}
           aria-describedby={
-            local.error && local.id ? `${local.id}-error` : undefined
+            props.error && props.id ? `${props.id}-error` : undefined
           }
           onInput={(e) => setValue(e.currentTarget.value)}
-          onKeyDown={local.onKeyDown}
+          onKeyDown={props.onKeyDown}
         />
-        <Show when={local.loading}>
+        <Show when={props.loading}>
           <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <Spinner size="sm" />
           </div>
         </Show>
       </div>
-      <Show when={local.error}>
+      <Show when={props.error}>
         <p
-          id={local.id ? `${local.id}-error` : undefined}
+          id={props.id ? `${props.id}-error` : undefined}
           class="mt-1.5 text-sm text-error-500 dark:text-error-400"
           role="alert"
         >
-          {local.error}
+          {props.error}
         </p>
       </Show>
     </div>

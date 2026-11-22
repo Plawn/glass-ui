@@ -25,13 +25,12 @@ const basicCode = `<Navbar
 />`;
 
 // Pass a router component via `as` for client-side navigation:
-const routerNavCode = `import { A } from '@solidjs/router';
-
+const routerNavCode = `
 <Navbar
   brand={<Logo />}
   items={[
-    { label: 'Home', as: A, href: '/', active: true },
-    { label: 'Docs', as: A, href: '/docs' },
+    { label: 'Home', as: 'a', href: '/', active: true },
+    { label: 'Docs', as: 'a', href: '/docs' },
   ]}
 />`;
 
@@ -73,7 +72,7 @@ export default function NavbarPage() {
   const [activeNav, setActiveNav] = createSignal('home');
 
   // Button-style items (onClick toggles active state, no navigation).
-  const items: NavbarItem[] = [
+  const items = (): NavbarItem[] => [
     {
       label: 'Home',
       active: activeNav() === 'home',
@@ -128,7 +127,7 @@ export default function NavbarPage() {
                   </span>
                 </div>
               }
-              items={items}
+              items={items()}
             />
           </DemoSection>
 
@@ -150,7 +149,7 @@ export default function NavbarPage() {
                   </span>
                 </div>
               }
-              items={items}
+              items={items()}
               actions={
                 <div class="flex items-center gap-2">
                   <Button variant="ghost" size="sm">
@@ -269,13 +268,13 @@ export default function NavbarPage() {
 
           {/* Router Links */}
           <DemoSection
-            title="Router Links (as={A})"
+            title="Router Links"
             subsection
             code={routerNavCode}
             cardClass="p-6"
           >
             <p class="text-sm text-surface-600 dark:text-surface-400">
-              Set <CodePill>as: A</CodePill> (or <CodePill>as: 'a'</CodePill>)
+              Set <CodePill>as: 'a'</CodePill>
               on an item to render a real anchor — enabling ⌘/middle-click to
               open in a new tab and client-side routing. Without{' '}
               <CodePill>as</CodePill>, items render as buttons.

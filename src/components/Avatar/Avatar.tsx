@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, createMemo, createSignal, splitProps } from 'solid-js';
+import { Show, createMemo, createSignal, omit } from 'solid-js';
 import type { AvatarProps, AvatarSize } from './types';
 
 const sizeStyles: Record<AvatarSize, { container: string; text: string }> = {
@@ -42,29 +42,30 @@ const getInitials = (name: string): string => {
 };
 
 export const Avatar: Component<AvatarProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'src',
     'name',
     'size',
     'fallbackColor',
     'alt',
     'class',
-  ]);
+  );
   const [imageError, setImageError] = createSignal(false);
-  const size = () => local.size ?? 'md';
+  const size = () => props.size ?? 'md';
   const styles = () => sizeStyles[size()];
 
-  const initials = createMemo(() => getInitials(local.name));
+  const initials = createMemo(() => getInitials(props.name));
   const fallbackBg = createMemo(
-    () => local.fallbackColor ?? getColorFromName(local.name),
+    () => props.fallbackColor ?? getColorFromName(props.name),
   );
 
-  const showImage = () => local.src && !imageError();
+  const showImage = () => props.src && !imageError();
 
   return (
     <div
       {...rest}
-      class={`relative inline-flex items-center justify-center rounded-full overflow-hidden border-2 border-white/30 dark:border-white/10 shadow-sm ${styles().container} ${local.class ?? ''}`}
+      class={`relative inline-flex items-center justify-center rounded-full overflow-hidden border-2 border-white/30 dark:border-white/10 shadow-sm ${styles().container} ${props.class ?? ''}`}
     >
       <Show
         when={showImage()}
@@ -72,15 +73,15 @@ export const Avatar: Component<AvatarProps> = (props) => {
           <div
             class={`w-full h-full flex items-center justify-center font-semibold text-white ${fallbackBg()}`}
             role="img"
-            aria-label={local.name}
+            aria-label={props.name}
           >
             <span class={styles().text}>{initials()}</span>
           </div>
         }
       >
         <img
-          src={local.src}
-          alt={local.alt ?? local.name}
+          src={props.src}
+          alt={props.alt ?? props.name}
           class="w-full h-full object-cover"
           onError={() => setImageError(true)}
         />

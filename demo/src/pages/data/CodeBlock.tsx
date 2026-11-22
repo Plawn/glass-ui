@@ -26,7 +26,7 @@ function getUser(id: string): Promise<User> {
   "version": "1.0.0",
   "description": "iOS 26-inspired glassmorphism UI components",
   "dependencies": {
-    "solid-js": "^1.8.0",
+    "solid-js": "^2.0.3",
     "clsx": "^2.0.0"
   }
 }`;

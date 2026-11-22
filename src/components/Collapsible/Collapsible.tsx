@@ -1,10 +1,11 @@
 import type { Component } from 'solid-js';
-import { Show, createEffect, createSignal, splitProps } from 'solid-js';
+import { Show, createSignal, omit } from 'solid-js';
 import { ACCORDION_CONTENT_ENTER } from '../../constants';
 import type { CollapsibleProps } from './types';
 
 export const Collapsible: Component<CollapsibleProps> = (props) => {
-  const [, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'open',
     'onOpenChange',
     'defaultOpen',
@@ -12,11 +13,13 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
     'children',
     'disabled',
     'class',
-  ]);
+  );
 
   // Internal state for uncontrolled mode
+  // Writable derived: mirrors the controlled value so the state is kept if
+  // the component later becomes uncontrolled.
   const [internalOpen, setInternalOpen] = createSignal(
-    props.defaultOpen ?? false,
+    () => props.open ?? props.defaultOpen ?? false,
   );
 
   // Determine if controlled
@@ -24,13 +27,6 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
 
   // Current open state
   const isOpen = () => (isControlled() ? props.open! : internalOpen());
-
-  // Sync internal state when controlled value changes
-  createEffect(() => {
-    if (isControlled() && props.open !== undefined) {
-      setInternalOpen(props.open);
-    }
-  });
 
   // Handle toggle
   const handleToggle = (e: MouseEvent) => {
@@ -53,8 +49,8 @@ export const Collapsible: Component<CollapsibleProps> = (props) => {
       {/* Trigger wrapper - using native button for better event handling */}
       <button
         type="button"
-        tabIndex={props.disabled ? -1 : 0}
-        aria-expanded={isOpen()}
+        tabindex={props.disabled ? -1 : 0}
+        aria-expanded={isOpen() ? 'true' : 'false'}
         aria-controls={id}
         disabled={props.disabled}
         onClick={handleToggle}

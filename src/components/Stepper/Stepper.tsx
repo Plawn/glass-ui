@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import type { Component } from 'solid-js';
-import { For, Show, createMemo, splitProps } from 'solid-js';
+import { For, Show, createMemo, omit } from 'solid-js';
 import { TRANSITION_ALL, TRANSITION_COLORS } from '../../constants';
 import type { ComponentSize } from '../../types';
 import { CheckIcon } from '../shared';
@@ -69,7 +69,8 @@ const verticalConnectorStyles: Record<
 // =============================================================================
 
 export const Stepper: Component<StepperProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'class',
     'style',
     'steps',
@@ -78,12 +79,12 @@ export const Stepper: Component<StepperProps> = (props) => {
     'orientation',
     'size',
     'allowClickPrevious',
-  ]);
+  );
 
   // --- Defaults ---
-  const size = () => local.size ?? 'md';
-  const orientation = () => local.orientation ?? 'horizontal';
-  const allowClickPrevious = () => local.allowClickPrevious ?? false;
+  const size = () => props.size ?? 'md';
+  const orientation = () => props.orientation ?? 'horizontal';
+  const allowClickPrevious = () => props.allowClickPrevious ?? false;
 
   const styles = () => sizeStyles[size()];
   const isVertical = () => orientation() === 'vertical';
@@ -93,11 +94,11 @@ export const Stepper: Component<StepperProps> = (props) => {
   }));
 
   // --- Step state helpers ---
-  const isCompleted = (index: number) => index < local.currentStep;
-  const isCurrent = (index: number) => index === local.currentStep;
+  const isCompleted = (index: number) => index < props.currentStep;
+  const isCurrent = (index: number) => index === props.currentStep;
 
   const isClickable = (index: number) => {
-    if (!local.onStepClick) {
+    if (!props.onStepClick) {
       return false;
     }
     if (allowClickPrevious() && isCompleted(index)) {
@@ -108,7 +109,7 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   const handleStepClick = (index: number) => {
     if (isClickable(index)) {
-      local.onStepClick?.(index);
+      props.onStepClick?.(index);
     }
   };
 
@@ -178,7 +179,7 @@ export const Stepper: Component<StepperProps> = (props) => {
 
   // --- Render horizontal step ---
   const renderHorizontalStep = (
-    step: (typeof local.steps)[0],
+    step: (typeof props.steps)[0],
     index: number,
   ) => {
     const clickable = () => isClickable(index);
@@ -192,7 +193,7 @@ export const Stepper: Component<StepperProps> = (props) => {
         )}
         onClick={() => handleStepClick(index)}
         role={clickable() ? 'button' : undefined}
-        tabIndex={clickable() ? 0 : undefined}
+        tabindex={clickable() ? 0 : undefined}
         onKeyDown={(e) => {
           if (clickable() && (e.key === 'Enter' || e.key === ' ')) {
             e.preventDefault();
@@ -233,10 +234,10 @@ export const Stepper: Component<StepperProps> = (props) => {
   };
 
   // --- Render vertical step ---
-  const renderVerticalStep = (step: (typeof local.steps)[0], index: number) => {
+  const renderVerticalStep = (step: (typeof props.steps)[0], index: number) => {
     const clickable = () => isClickable(index);
     const verticalStyles = () => verticalConnectorStyles[size()];
-    const isLast = () => index === local.steps.length - 1;
+    const isLast = () => index === props.steps.length - 1;
 
     return (
       <div class="relative">
@@ -262,7 +263,7 @@ export const Stepper: Component<StepperProps> = (props) => {
           )}
           onClick={() => handleStepClick(index)}
           role={clickable() ? 'button' : undefined}
-          tabIndex={clickable() ? 0 : undefined}
+          tabindex={clickable() ? 0 : undefined}
           onKeyDown={(e) => {
             if (clickable() && (e.key === 'Enter' || e.key === ' ')) {
               e.preventDefault();
@@ -312,10 +313,10 @@ export const Stepper: Component<StepperProps> = (props) => {
         fallback={
           // Horizontal layout
           <ol
-            class={clsx('flex items-start list-none p-0 m-0', local.class)}
-            style={local.style}
+            class={clsx('flex items-start list-none p-0 m-0', props.class)}
+            style={props.style}
           >
-            <For each={local.steps}>
+            <For each={props.steps}>
               {(step, index) => (
                 <li
                   class="flex items-start"
@@ -323,7 +324,7 @@ export const Stepper: Component<StepperProps> = (props) => {
                 >
                   {renderHorizontalStep(step, index())}
                   {/* Connector between steps */}
-                  <Show when={index() < local.steps.length - 1}>
+                  <Show when={index() < props.steps.length - 1}>
                     <div
                       aria-hidden="true"
                       class={clsx(
@@ -343,10 +344,10 @@ export const Stepper: Component<StepperProps> = (props) => {
       >
         {/* Vertical layout */}
         <ol
-          class={clsx('flex flex-col list-none p-0 m-0', local.class)}
-          style={local.style}
+          class={clsx('flex flex-col list-none p-0 m-0', props.class)}
+          style={props.style}
         >
-          <For each={local.steps}>
+          <For each={props.steps}>
             {(step, index) => (
               <li aria-current={isCurrent(index()) ? 'step' : undefined}>
                 {renderVerticalStep(step, index())}

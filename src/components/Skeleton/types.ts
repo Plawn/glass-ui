@@ -1,4 +1,5 @@
-import type { JSX } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+
 import type { SkeletonVariant } from '../../types';
 
 export interface SkeletonProps extends JSX.HTMLAttributes<HTMLDivElement> {

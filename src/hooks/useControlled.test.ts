@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { createRoot, createSignal } from 'solid-js';
+import { createRoot, createSignal, flush } from 'solid-js';
 import { useControlled } from './useControlled';
 
 describe('useControlled', () => {
@@ -15,6 +15,7 @@ describe('useControlled', () => {
       expect(value()).toBe('initial');
 
       setValue('next');
+      flush();
       expect(value()).toBe('next');
       expect(changes).toEqual(['next']);
 
@@ -36,11 +37,13 @@ describe('useControlled', () => {
 
       // setValue notifies but does not change the value (parent owns it)
       setValue('b');
+      flush();
       expect(value()).toBe('a');
       expect(changes).toEqual(['b']);
 
       // Parent updates -> value follows
       setExternal('c');
+      flush();
       expect(value()).toBe('c');
 
       dispose();
@@ -58,8 +61,26 @@ describe('useControlled', () => {
       expect(value()).toBe(null);
 
       setValue('ignored');
+      flush();
       expect(value()).toBe(null);
 
+      dispose();
+    });
+  });
+
+  test('stores a function-valued default and replacement without invoking them', () => {
+    createRoot((dispose) => {
+      const initial = () => 'initial';
+      const next = () => 'next';
+      const [value, setValue] = useControlled({
+        value: undefined,
+        defaultValue: initial,
+      });
+
+      expect(value()).toBe(initial);
+      setValue(next);
+      flush();
+      expect(value()).toBe(next);
       dispose();
     });
   });
@@ -72,7 +93,29 @@ describe('useControlled', () => {
       });
 
       setValue(42);
+      flush();
       expect(value()).toBe(42);
+
+      dispose();
+    });
+  });
+
+  test('follows a reactive default until the value is set, and resets when it changes', () => {
+    createRoot((dispose) => {
+      const [first, setFirst] = createSignal('a');
+      const [value, setValue] = useControlled<string>({
+        value: () => undefined,
+        getDefaultValue: () => first(),
+      });
+
+      expect(value()).toBe('a');
+      setValue('picked');
+      flush();
+      expect(value()).toBe('picked');
+
+      setFirst('b');
+      flush();
+      expect(value()).toBe('b');
 
       dispose();
     });

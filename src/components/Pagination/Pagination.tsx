@@ -1,10 +1,11 @@
-import { type Component, For, Show, createMemo, splitProps } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { Dynamic } from '@solidjs/web';
+import { type Component, For, Show, createMemo, omit } from 'solid-js';
 import { ChevronLeftIcon, ChevronRightIcon } from '../shared/icons';
 import type { PaginationProps } from './types';
 
 export const Pagination: Component<PaginationProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'pageSizeOptions',
     'total',
     'pageSize',
@@ -15,49 +16,49 @@ export const Pagination: Component<PaginationProps> = (props) => {
     'as',
     'getPageProps',
     'class',
-  ]);
+  );
 
-  const pageTag = () => local.as ?? 'button';
+  const pageTag = () => props.as ?? 'button';
   const isPageButton = () => pageTag() === 'button';
 
   const defaultPageSizeOptions = [10, 20, 50, 100];
-  const pageSizeOptions = () => local.pageSizeOptions ?? defaultPageSizeOptions;
+  const pageSizeOptions = () => props.pageSizeOptions ?? defaultPageSizeOptions;
 
-  const totalPages = createMemo(() => Math.ceil(local.total / local.pageSize));
+  const totalPages = createMemo(() => Math.ceil(props.total / props.pageSize));
 
-  const canGoPrev = () => local.page > 1;
-  const canGoNext = () => local.page < totalPages();
+  const canGoPrev = () => props.page > 1;
+  const canGoNext = () => props.page < totalPages();
 
   const handlePrev = () => {
     if (canGoPrev()) {
-      local.onChange(local.page - 1);
+      props.onChange(props.page - 1);
     }
   };
 
   const handleNext = () => {
     if (canGoNext()) {
-      local.onChange(local.page + 1);
+      props.onChange(props.page + 1);
     }
   };
 
   const handlePageClick = (page: number) => {
-    if (page !== local.page) {
-      local.onChange(page);
+    if (page !== props.page) {
+      props.onChange(page);
     }
   };
 
   const handlePageSizeChange = (e: Event) => {
     const target = e.target as HTMLSelectElement;
     const newPageSize = Number.parseInt(target.value, 10);
-    local.onPageSizeChange?.(newPageSize);
+    props.onPageSizeChange?.(newPageSize);
     // Reset to page 1 when page size changes
-    local.onChange(1);
+    props.onChange(1);
   };
 
   // Generate page numbers to display
   const pageNumbers = createMemo(() => {
     const total = totalPages();
-    const current = local.page;
+    const current = props.page;
     const pages: (number | 'ellipsis')[] = [];
 
     if (total <= 7) {
@@ -107,16 +108,16 @@ export const Pagination: Component<PaginationProps> = (props) => {
     <nav
       {...rest}
       aria-label="Pagination"
-      class={`flex items-center gap-4 ${local.class ?? ''}`}
+      class={`flex items-center gap-4 ${props.class ?? ''}`}
     >
       {/* Page size selector */}
-      <Show when={local.showPageSize}>
+      <Show when={props.showPageSize}>
         <div class="flex items-center gap-2">
           <span class="text-sm text-surface-600 dark:text-surface-400">
             Show
           </span>
           <select
-            value={local.pageSize}
+            value={props.pageSize}
             onChange={handlePageSizeChange}
             class="glass-input px-2 py-1 text-sm rounded-lg"
             aria-label="Items per page"
@@ -160,14 +161,14 @@ export const Pagination: Component<PaginationProps> = (props) => {
             >
               <Dynamic
                 component={pageTag()}
-                {...(local.getPageProps?.(page as number) ?? {})}
+                {...(props.getPageProps?.(page as number) ?? {})}
                 type={isPageButton() ? 'button' : undefined}
                 onClick={() => handlePageClick(page as number)}
                 class={`${buttonBaseClass} ${
-                  local.page === page ? buttonActiveClass : buttonInactiveClass
+                  props.page === page ? buttonActiveClass : buttonInactiveClass
                 }`}
                 aria-label={`Page ${page}`}
-                aria-current={local.page === page ? 'page' : undefined}
+                aria-current={props.page === page ? 'page' : undefined}
               >
                 {page}
               </Dynamic>
@@ -188,10 +189,10 @@ export const Pagination: Component<PaginationProps> = (props) => {
       </div>
 
       {/* Page info */}
-      <Show when={local.total > 0}>
+      <Show when={props.total > 0}>
         <span class="text-sm text-surface-600 dark:text-surface-400">
-          {(local.page - 1) * local.pageSize + 1}-
-          {Math.min(local.page * local.pageSize, local.total)} of {local.total}
+          {(props.page - 1) * props.pageSize + 1}-
+          {Math.min(props.page * props.pageSize, props.total)} of {props.total}
         </span>
       </Show>
     </nav>

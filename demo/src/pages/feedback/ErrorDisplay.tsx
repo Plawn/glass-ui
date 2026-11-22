@@ -69,22 +69,22 @@ export default function ErrorDisplayPage() {
 
       <DemoSection
         title="With Error Boundary"
-        description="Use ErrorDisplay as a fallback in SolidJS error boundaries."
-        code={`import { ErrorBoundary } from 'solid-js';
+        description="Use ErrorDisplay as a fallback in a SolidJS Errored boundary."
+        code={`import { Errored } from 'solid-js';
 import { ErrorDisplay } from 'glass-ui-solid';
 
 function App() {
   return (
-    <ErrorBoundary
+    <Errored
       fallback={(err) => (
         <ErrorDisplay
           title="Something went wrong"
-          message={err.message}
+          message={String(err())}
         />
       )}
     >
       <MainContent />
-    </ErrorBoundary>
+    </Errored>
   );
 }`}
       />

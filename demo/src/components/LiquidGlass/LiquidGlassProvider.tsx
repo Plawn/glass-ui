@@ -1,4 +1,5 @@
-import { type JSX, createEffect, createSignal, onCleanup } from 'solid-js';
+import type { JSX } from '@solidjs/web';
+import { createSignal, createTrackedEffect } from 'solid-js';
 import { LiquidGlassContext } from './LiquidGlassContext';
 import {
   LiquidGLRenderer,
@@ -34,7 +35,7 @@ export function LiquidGlassProvider(
   // Check if we're in a browser environment
   const isBrowser = typeof window !== 'undefined';
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!isBrowser || props.disabled) {
       setIsSupported(false);
       return;
@@ -96,7 +97,7 @@ export function LiquidGlassProvider(
     };
     const timeoutId = setTimeout(startInit, 50); // Small delay for initial render
 
-    onCleanup(() => {
+    return () => {
       clearTimeout(timeoutId);
       if (rafId) {
         cancelAnimationFrame(rafId);
@@ -105,7 +106,7 @@ export function LiquidGlassProvider(
       if (currentRenderer) {
         currentRenderer.destroy();
       }
-    });
+    };
   });
 
   const defaultOptions = {
@@ -143,8 +144,8 @@ export function LiquidGlassProvider(
   };
 
   return (
-    <LiquidGlassContext.Provider value={contextValue}>
+    <LiquidGlassContext value={contextValue}>
       {props.children}
-    </LiquidGlassContext.Provider>
+    </LiquidGlassContext>
   );
 }

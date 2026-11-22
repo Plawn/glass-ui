@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+import { flush } from 'solid-js';
 import {
   createNotificationStore,
   createTypedNotificationStore,
@@ -16,6 +17,7 @@ describe('createNotificationStore', () => {
     const id1 = add({ message: 'hello' });
     const id2 = add({ message: 'world' });
 
+    flush();
     expect(id1).toBe('test-1');
     expect(id2).toBe('test-2');
     expect(store.items).toHaveLength(2);
@@ -32,6 +34,7 @@ describe('createNotificationStore', () => {
 
     dismiss(id);
 
+    flush();
     expect(store.items).toHaveLength(1);
     expect(store.items[0]?.message).toBe('b');
   });
@@ -44,6 +47,7 @@ describe('createNotificationStore', () => {
     add({ message: 'a' });
     dismiss('does-not-exist');
 
+    flush();
     expect(store.items).toHaveLength(1);
   });
 
@@ -56,6 +60,7 @@ describe('createNotificationStore', () => {
     add({ message: 'b' });
     clear();
 
+    flush();
     expect(store.items).toHaveLength(0);
   });
 
@@ -63,6 +68,7 @@ describe('createNotificationStore', () => {
     const { store, add } = createNotificationStore({ defaultDuration: 0 });
 
     add({ message: 'ephemeral', duration: 10 });
+    flush();
     expect(store.items).toHaveLength(1);
 
     await sleep(30);
@@ -117,6 +123,7 @@ describe('createNotificationStore', () => {
     resume(id);
     pause('missing');
     resume('missing');
+    flush();
     expect(store.items).toHaveLength(1);
   });
 });
@@ -130,6 +137,7 @@ describe('createTypedNotificationStore', () => {
     api.warning('careful');
     api.info('fyi');
 
+    flush();
     expect(api.store.items.map((i) => i.type)).toEqual([
       'success',
       'error',

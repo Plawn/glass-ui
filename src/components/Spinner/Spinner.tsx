@@ -1,5 +1,5 @@
 import type { Component } from 'solid-js';
-import { Show, splitProps } from 'solid-js';
+import { Show, omit } from 'solid-js';
 import type { SpinnerColor, SpinnerProps, SpinnerSize } from './types';
 
 const sizeClasses: Record<SpinnerSize, string> = {
@@ -33,7 +33,8 @@ const colorClasses: Record<
 };
 
 export const Spinner: Component<SpinnerProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     'class',
     'style',
     'size',
@@ -43,32 +44,31 @@ export const Spinner: Component<SpinnerProps> = (props) => {
     'role',
     'aria-label',
     'aria-hidden',
-  ]);
+  );
 
   // A decorative spinner (aria-hidden) must not also be a live status region
-  const isHidden = () =>
-    local['aria-hidden'] === true || local['aria-hidden'] === 'true';
-  const role = () => local.role ?? (isHidden() ? undefined : 'status');
+  const isHidden = () => props['aria-hidden'] === 'true';
+  const role = () => props.role ?? (isHidden() ? undefined : 'status');
   const ariaLabel = () =>
-    isHidden() ? undefined : (local['aria-label'] ?? local.label ?? 'Loading');
+    isHidden() ? undefined : (props['aria-label'] ?? props.label ?? 'Loading');
 
-  const size = () => local.size ?? 'md';
-  const color = () => local.color ?? 'default';
-  const centered = () => local.centered ?? false;
+  const size = () => props.size ?? 'md';
+  const color = () => props.color ?? 'default';
+  const centered = () => props.centered ?? false;
 
   const wrapperClasses = () => {
     const base = 'inline-flex items-center gap-2';
     const centerClasses = centered() ? 'justify-center w-full h-full' : '';
-    return `${base} ${centerClasses} ${local.class ?? ''}`.trim();
+    return `${base} ${centerClasses} ${props.class ?? ''}`.trim();
   };
 
   return (
     <div
       {...rest}
       class={wrapperClasses()}
-      style={local.style}
+      style={props.style}
       role={role()}
-      aria-hidden={local['aria-hidden']}
+      aria-hidden={props['aria-hidden']}
       aria-label={ariaLabel()}
     >
       <svg
@@ -92,11 +92,11 @@ export const Spinner: Component<SpinnerProps> = (props) => {
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
         />
       </svg>
-      <Show when={local.label}>
+      <Show when={props.label}>
         <span
           class={`${labelSizeClasses[size()]} ${colorClasses[color()].label}`}
         >
-          {local.label}
+          {props.label}
         </span>
       </Show>
     </div>
