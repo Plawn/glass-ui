@@ -141,10 +141,6 @@ The demo app uses a Vite plugin (`demo/plugins/demo-code-capture.ts`) that **aut
 
 ## Releasing
 
-Releases are published by `.github/workflows/release.yml` when a `vX.Y.Z` tag is pushed. Never run `npm publish` by hand.
+Releases are published by `.github/workflows/release.yml` when a `vX.Y.Z` tag is pushed. Never run `npm publish` by hand. The full runbook (release lines, dist-tags, backports, recovery) is in `RELEASING.md`.
 
-1. Bump `version` in `package.json` (and the version line in `llm.txt`) and add a `## X.Y.Z` section at the top of `CHANGELOG.md` — the workflow fails if the tag, the version and the changelog heading do not match.
-2. Commit, then `git tag vX.Y.Z && git push origin <branch> vX.Y.Z`.
-3. The workflow runs typecheck, lint, tests and build, publishes to npm (trusted publishing, no token) and creates the GitHub release from the changelog section.
-
-npm dist-tag: prereleases (`X.Y.Z-rc.1`) go to `next`; a branch whose `package.json` sets `publishConfig.tag` publishes under that tag (the Solid 1 maintenance branch `release/0.7.x` uses `solid1`); everything else goes to `latest`. A version older than the current `latest` without `publishConfig.tag` is rejected.
+In short: bump `version` in `package.json` and the `Package:` line of `llm.txt`, add a `## X.Y.Z` section at the top of `CHANGELOG.md`, commit, then `git tag vX.Y.Z && git push origin <branch> vX.Y.Z`. The workflow fails if the tag, the version and the changelog heading do not match.
