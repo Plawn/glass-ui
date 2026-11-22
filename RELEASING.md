@@ -28,6 +28,9 @@ On npmjs.com, package settings → **Trusted Publisher** → GitHub Actions:
 - Organization or user: `Plawn`
 - Repository: `glass-ui`
 - Workflow filename: `release.yml`
+- Environment name: leave empty
+- Permissions: enable **npm publish**. Managing dist-tags (`npm dist-tag`) is
+  not needed: the workflow sets the tag through `npm publish --tag`.
 
 The workflow authenticates with OIDC; no npm token is stored in the
 repository.
